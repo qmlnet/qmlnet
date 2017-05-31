@@ -10,4 +10,9 @@ public:
     QtNetCoreQml();
 };
 
+extern "C"
+{
+    QTNETCOREQMLSHARED_EXPORT void Test();
+}
+
 #endif // QTNETCOREQML_H

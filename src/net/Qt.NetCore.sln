@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qt.NetCore", "Qt.NetCore\Qt.NetCore.csproj", "{A54DB46F-B210-454E-B49F-3BD1A93283F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qt.NetCore", "Qt.NetCore\Qt.NetCore.csproj", "{A54DB46F-B210-454E-B49F-3BD1A93283F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qt.NetCore.Sandbox", "Qt.NetCore.Sandbox\Qt.NetCore.Sandbox.csproj", "{479F6609-352D-47E3-93DD-DED91439239A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A54DB46F-B210-454E-B49F-3BD1A93283F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54DB46F-B210-454E-B49F-3BD1A93283F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54DB46F-B210-454E-B49F-3BD1A93283F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{479F6609-352D-47E3-93DD-DED91439239A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{479F6609-352D-47E3-93DD-DED91439239A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{479F6609-352D-47E3-93DD-DED91439239A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{479F6609-352D-47E3-93DD-DED91439239A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
