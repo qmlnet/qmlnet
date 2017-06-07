@@ -13,7 +13,7 @@ DEFINES += QTNETCOREQML_LIBRARY
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += qguiapplication_helpers.cpp \
-    QGuiApplication_wrap.cxx
+    QtNetCoreQml_wrap.cxx
 
 HEADERS += qguiapplication_helpers.h \
     qtnetcoreqml_global.h

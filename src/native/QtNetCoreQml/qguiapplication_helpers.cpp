@@ -1,12 +1,16 @@
 #include "qguiapplication_helpers.h"
 #include <iostream>
+#include <QDebug>
+#include <QThread>
 
 QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
 {
-    int size = argv.size();
+    // this obviously will cause a memory leak, but only one should be created, per app instance.
+    int* var = new int();
+    *var = (int)argv.size();
 
-    if(size == 0)
-        return new QGuiApplication(size, NULL);
+    if(*var == 0)
+        return new QGuiApplication(*var, NULL);
 
     std::vector<const char*> newArgs;
     for(int x = 0; x < argv.size(); x++)
@@ -14,32 +18,14 @@ QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
         newArgs.push_back(argv.at(x).c_str());
     }
 
-        // // append the pointer to our interop structure.
-        // wchar_t interopPointerBuffer[256];
-        // swprintf_s(interopPointerBuffer, L"%llu", (unsigned long long)&interopData);
-        // newArgs.push_back(const_cast<wchar_t*>(&interopPointerBuffer[0]));
-
-        // std::wcout << (unsigned long long)&interopData;
-        // std::wcout << newArgs.at(newArgs.size() - 1) << "\n";
-
-        // int runResult = RunCoreCLR(newArgs.size(), &newArgs[0]);
-
-        // qDebug() << "Finished running the corclr with a result of " << runResult;
-
-    auto app = new QGuiApplication(size, (char**)&newArgs[0]);
-
-    std::cout << "working\n";
-
-
-    for(int x = 0; x < app->arguments().size(); x++)
-    {
-        //QString t = app->arguments().at(x);
-        //std::cout << t.Data.data() << "\n";
-    }
+    auto app = new QGuiApplication(*var, (char**)&newArgs[0]);
 
     app->exec();
 
-    std::cout << "done\n";
-
     return app;
+}
+
+void QQmlApplicationEngine_loadFile(QQmlApplicationEngine* instance, std::string filePath)
+{
+    instance->load(QString::fromUtf8("main.qml"));
 }

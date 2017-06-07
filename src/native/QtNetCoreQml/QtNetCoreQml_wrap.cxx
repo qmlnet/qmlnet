@@ -297,10 +297,6 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_QtNetCoreQml(SWIG_CSharpS
 #define SWIG_contract_assert(nullreturn, expr, msg) if (!(expr)) {SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, msg, ""); return nullreturn; } else
 
 
-#include <QGuiApplication>
-#include "qguiapplication_helpers.h"
-
-
 #include <stdexcept>
 
 
@@ -427,6 +423,16 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
         }
         return false;
       }
+
+#include <QCoreApplication>
+
+
+#include <QGuiApplication>
+#include "qguiapplication_helpers.h"
+
+
+#include <QQmlApplicationEngine>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -892,6 +898,44 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_StringVector(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_QCoreApplication_setAttribute__SWIG_0(int jarg1, unsigned int jarg2) {
+  Qt::ApplicationAttribute arg1 ;
+  bool arg2 ;
+  
+  arg1 = (Qt::ApplicationAttribute)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  QCoreApplication::setAttribute(arg1,arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_QCoreApplication_setAttribute__SWIG_1(int jarg1) {
+  Qt::ApplicationAttribute arg1 ;
+  
+  arg1 = (Qt::ApplicationAttribute)jarg1; 
+  QCoreApplication::setAttribute(arg1);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_QCoreApplication_exec(void * jarg1) {
+  int jresult ;
+  QCoreApplication *arg1 = (QCoreApplication *) 0 ;
+  int result;
+  
+  arg1 = (QCoreApplication *)jarg1; 
+  result = (int)(arg1)->exec();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_QCoreApplication(void * jarg1) {
+  QCoreApplication *arg1 = (QCoreApplication *) 0 ;
+  
+  arg1 = (QCoreApplication *)jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_QGuiApplication(void * jarg1) {
   void * jresult ;
   std::vector< std::string > arg1 ;
@@ -926,6 +970,38 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_QGuiApplication(void * jarg1) {
   QGuiApplication *arg1 = (QGuiApplication *) 0 ;
   
   arg1 = (QGuiApplication *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_QQmlApplicationEngine_loadFile(void * jarg1, char * jarg2) {
+  QQmlApplicationEngine *arg1 = (QQmlApplicationEngine *) 0 ;
+  std::string arg2 ;
+  
+  arg1 = (QQmlApplicationEngine *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  (&arg2)->assign(jarg2); 
+  QQmlApplicationEngine_loadFile(arg1,arg2);
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_QQmlApplicationEngine() {
+  void * jresult ;
+  QQmlApplicationEngine *result = 0 ;
+  
+  result = (QQmlApplicationEngine *)new QQmlApplicationEngine();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_QQmlApplicationEngine(void * jarg1) {
+  QQmlApplicationEngine *arg1 = (QQmlApplicationEngine *) 0 ;
+  
+  arg1 = (QQmlApplicationEngine *)jarg1; 
   delete arg1;
 }
 

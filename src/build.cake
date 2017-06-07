@@ -17,7 +17,7 @@ Task("PrepareSwigContainer")
 Task("RunSwig")
     .Does(() =>
 {
-    RunSwigCommand("bash");
+    RunSwigCommand("swig3.0 -csharp -c++ -namespace Qt.NetCore -outfile Interop.cs -outdir interop native/QtNetCoreQml/QtNetCoreQml.i");
 });
 
 Task("Default")
@@ -39,6 +39,6 @@ void RunSwigCommand(string command)
             Tty = true
         },
         "net-core-qml-swig",
-        "sh -c '" + command + "'");
+        command);
 
 }

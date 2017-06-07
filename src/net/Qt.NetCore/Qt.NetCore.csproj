@@ -40,17 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\interop\QGuiApplication.cs">
-      <Link>QGuiApplication.cs</Link>
-    </Compile>
-    <Compile Include="..\..\interop\QtNetCoreQml.cs">
-      <Link>QtNetCoreQml.cs</Link>
-    </Compile>
-    <Compile Include="..\..\interop\QtNetCoreQmlPINVOKE.cs">
-      <Link>QtNetCoreQmlPINVOKE.cs</Link>
-    </Compile>
-    <Compile Include="..\..\interop\StringVector.cs">
-      <Link>StringVector.cs</Link>
+    <Compile Include="..\..\interop\Interop.cs">
+      <Link>Interop.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
