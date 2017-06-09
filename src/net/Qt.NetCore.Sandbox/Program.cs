@@ -1,5 +1,12 @@
-﻿namespace Qt.NetCore.Sandbox
+﻿using System;
+
+namespace Qt.NetCore.Sandbox
 {
+    class TestQmlImport
+    {
+        
+    }
+
     class Program
     {
         static int Main(string[] args)
@@ -16,6 +23,8 @@
                 {
                     using (var engine = new QQmlApplicationEngine())
                     {
+                        Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+
                         engine.loadFile("main.qml");
                         return app.exec();
                     }

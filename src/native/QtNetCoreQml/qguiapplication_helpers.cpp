@@ -3,11 +3,15 @@
 #include <QDebug>
 #include <QThread>
 
+
+
 QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
 {
     // this obviously will cause a memory leak, but only one should be created, per app instance.
     int* var = new int();
     *var = (int)argv.size();
+
+    qmlRegisterType<Message>("com.mycompany.messaging", 1, 0, "Message");
 
     if(*var == 0)
         return new QGuiApplication(*var, NULL);

@@ -19,7 +19,7 @@ public:
     {
         m_author = newAuthor;
     }
-    QDateTime creationDate() const { return m_creationDate; }
+    QDateTime creationDate() const { return m_author; }
     void setCreationDate(QDateTime newCreationDate)
     {
         m_creationDate = newCreationDate;

@@ -434,6 +434,9 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
 #include <QQmlApplicationEngine>
 
 
+#include "net_qml_register_type.h"
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -1003,6 +1006,38 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_QQmlApplicationEngine(void * jarg1) {
   
   arg1 = (QQmlApplicationEngine *)jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(char * jarg1, char * jarg2, int jarg3, int jarg4, char * jarg5) {
+  int jresult ;
+  std::string arg1 ;
+  std::string arg2 ;
+  int arg3 ;
+  int arg4 ;
+  std::string arg5 ;
+  int result;
+  
+  if (!jarg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg1)->assign(jarg1); 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  if (!jarg5) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg5)->assign(jarg5); 
+  result = (int)registerNetType(arg1,arg2,arg3,arg4,arg5);
+  jresult = result; 
+  return jresult;
 }
 
 

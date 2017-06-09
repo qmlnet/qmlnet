@@ -9,4 +9,7 @@
 #  define QTNETCOREQMLSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
+#define GoAddr int
+#define GoTypeInfo int
+#define GoTypeSpec_ int
 #endif // QTNETCOREQML_GLOBAL_H
