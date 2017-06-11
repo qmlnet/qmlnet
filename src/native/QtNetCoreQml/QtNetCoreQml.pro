@@ -13,20 +13,34 @@ DEFINES += QTNETCOREQML_LIBRARY
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += qguiapplication_helpers.cpp \
-    QtNetCoreQml_wrap.cxx \
+    swig.cpp \
     net_qml_register_type.cpp \
     net_qml_meta.cpp \
     net_qml_value.cpp \
-    net_qml_value_type.cpp
+    net_qml_value_type.cpp \
+    net_type_info.cpp \
+    net_invoker.cpp
 
-HEADERS += qguiapplication_helpers.h \
-    qtnetcoreqml_global.h \
+HEADERS += qtnetcoreqml_global.h \
+    qguiapplication_helpers.h \
+    swig.h \
     net_qml_register_type.h \
     net_qml_meta.h \
     net_qml_value.h \
-    net_qml_value_type.h
+    net_qml_value_type.h \
+    net_type_info.h \
+    net_invoker.h
 
 unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+DISTFILES += \
+    swig/QtNetCoreQml.i \
+    swig/NetInvoker.i \
+    swig/NetTypeInfo.i \
+    swig/QCoreApplication.i \
+    swig/QGuiApplication.i \
+    swig/QQmlApplicationEngine.i \
+    swig/QQmlRegisterType.i

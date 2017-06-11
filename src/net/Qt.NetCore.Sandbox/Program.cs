@@ -1,11 +1,28 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Qt.NetCore.Sandbox
 {
-    class TestQmlImport
+    public class TestQmlImport
     {
-        
+        public void TestMethod()
+        {
+            
+        }
     }
+
+public class RuntimeNetInvoker : Qt.NetCore.NetInvokerBase
+{
+    public override bool IsValidType(string type)
+    {
+        return true;
+    }
+
+    public override NetMethodInfo GetMethodInfo(string tt)
+    {
+        return null;
+    }
+}
 
     class Program
     {
@@ -16,14 +33,21 @@ namespace Qt.NetCore.Sandbox
             System.Environment.SetEnvironmentVariable("PATH", path);
             
             QCoreApplication.setAttribute(ApplicationAttribute.AA_EnableHighDpiScaling);
-
+            
+            NetInvoker.set(new RuntimeNetInvoker());
+            
             using (var r = new StringVector(0))
             {
                 using (var app = new QGuiApplication(r))
                 {
                     using (var engine = new QQmlApplicationEngine())
                     {
-                        Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+                        while (true)
+                        {
+                            Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+                            GC.Collect(GC.MaxGeneration);
+                        }
+                        //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
 
                         engine.loadFile("main.qml");
                         return app.exec();

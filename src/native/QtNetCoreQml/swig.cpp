@@ -13,6 +13,7 @@
 #define SWIGCSHARP
 #endif
 
+#define SWIG_DIRECTORS
 
 
 #ifdef __cplusplus
@@ -296,6 +297,67 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_QtNetCoreQml(SWIG_CSharpS
 
 #define SWIG_contract_assert(nullreturn, expr, msg) if (!(expr)) {SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, msg, ""); return nullreturn; } else
 
+/* -----------------------------------------------------------------------------
+ * director_common.swg
+ *
+ * This file contains support for director classes which is common between
+ * languages.
+ * ----------------------------------------------------------------------------- */
+
+/*
+  Use -DSWIG_DIRECTOR_STATIC if you prefer to avoid the use of the
+  'Swig' namespace. This could be useful for multi-modules projects.
+*/
+#ifdef SWIG_DIRECTOR_STATIC
+/* Force anonymous (static) namespace */
+#define Swig
+#endif
+/* -----------------------------------------------------------------------------
+ * director.swg
+ *
+ * This file contains support for director classes so that C# proxy
+ * methods can be called from C++.
+ * ----------------------------------------------------------------------------- */
+
+#if defined(DEBUG_DIRECTOR_OWNED)
+#include <iostream>
+#endif
+#include <string>
+#include <exception>
+
+namespace Swig {
+  /* Director base class - not currently used in C# directors */
+  class Director {
+  };
+
+  /* Base class for director exceptions */
+  class DirectorException : public std::exception {
+  protected:
+    std::string swig_msg;
+
+  public:
+    DirectorException(const char *msg) : swig_msg(msg) {
+    }
+
+    DirectorException(const std::string &msg) : swig_msg(msg) {
+    }
+
+    virtual ~DirectorException() throw() {
+    }
+
+    const char *what() const throw() {
+      return swig_msg.c_str();
+    }
+  };
+
+  /* Pure virtual method exception */
+  class DirectorPureVirtualException : public DirectorException {
+  public:
+    DirectorPureVirtualException(const char *msg) : DirectorException(std::string("Attempt to invoke pure virtual method ") + msg) {
+    }
+  };
+}
+
 
 #include <stdexcept>
 
@@ -424,6 +486,12 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
         return false;
       }
 
+#include "net_type_info.h"
+
+
+#include "net_invoker.h"
+
+
 #include <QCoreApplication>
 
 
@@ -435,6 +503,63 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
 
 
 #include "net_qml_register_type.h"
+
+
+
+/* ---------------------------------------------------
+ * C++ director class methods
+ * --------------------------------------------------- */
+
+#include "swig.h"
+
+SwigDirector_NetInvokerBase::SwigDirector_NetInvokerBase() : NetInvokerBase(), Swig::Director() {
+  swig_init_callbacks();
+}
+
+SwigDirector_NetInvokerBase::~SwigDirector_NetInvokerBase() {
+  
+}
+
+
+bool SwigDirector_NetInvokerBase::IsValidType(std::string type) {
+  bool c_result = SwigValueInit< bool >() ;
+  unsigned int jresult = 0 ;
+  char * jtype  ;
+  
+  if (!swig_callbackIsValidType) {
+    return NetInvokerBase::IsValidType(type);
+  } else {
+    jtype = (char*)(&type)->c_str(); 
+    jresult = (unsigned int) swig_callbackIsValidType(jtype);
+    c_result = jresult ? true : false; 
+  }
+  return c_result;
+}
+
+NetMethodInfo const *SwigDirector_NetInvokerBase::GetMethodInfo(std::string tt) {
+  NetMethodInfo *c_result = 0 ;
+  void * jresult = 0 ;
+  char * jtt  ;
+  
+  if (!swig_callbackGetMethodInfo) {
+    return NetInvokerBase::GetMethodInfo(tt);
+  } else {
+    jtt = (char*)(&tt)->c_str(); 
+    jresult = (void *) swig_callbackGetMethodInfo(jtt);
+    c_result = (NetMethodInfo *)jresult; 
+  }
+  return (NetMethodInfo const *)c_result;
+}
+
+void SwigDirector_NetInvokerBase::swig_connect_director(SWIG_Callback0_t callbackIsValidType, SWIG_Callback1_t callbackGetMethodInfo) {
+  swig_callbackIsValidType = callbackIsValidType;
+  swig_callbackGetMethodInfo = callbackGetMethodInfo;
+}
+
+void SwigDirector_NetInvokerBase::swig_init_callbacks() {
+  swig_callbackIsValidType = 0;
+  swig_callbackGetMethodInfo = 0;
+}
 
 
 #ifdef __cplusplus
@@ -897,6 +1022,170 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_StringVector(void * jarg1) {
   std::vector< std::string > *arg1 = (std::vector< std::string > *) 0 ;
   
   arg1 = (std::vector< std::string > *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetMethodInfo() {
+  void * jresult ;
+  NetMethodInfo *result = 0 ;
+  
+  result = (NetMethodInfo *)new NetMethodInfo();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetMethodInfo(void * jarg1) {
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetInvokerBase(void * jarg1) {
+  NetInvokerBase *arg1 = (NetInvokerBase *) 0 ;
+  
+  arg1 = (NetInvokerBase *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInvokerBase_IsValidType(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  NetInvokerBase *arg1 = (NetInvokerBase *) 0 ;
+  std::string arg2 ;
+  bool result;
+  
+  arg1 = (NetInvokerBase *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  result = (bool)(arg1)->IsValidType(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInvokerBase_IsValidTypeSwigExplicitNetInvokerBase(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  NetInvokerBase *arg1 = (NetInvokerBase *) 0 ;
+  std::string arg2 ;
+  bool result;
+  
+  arg1 = (NetInvokerBase *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  result = (bool)(arg1)->NetInvokerBase::IsValidType(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetInvokerBase_GetMethodInfo(void * jarg1, char * jarg2) {
+  void * jresult ;
+  NetInvokerBase *arg1 = (NetInvokerBase *) 0 ;
+  std::string arg2 ;
+  NetMethodInfo *result = 0 ;
+  
+  arg1 = (NetInvokerBase *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  result = (NetMethodInfo *)(arg1)->GetMethodInfo(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetInvokerBase_GetMethodInfoSwigExplicitNetInvokerBase(void * jarg1, char * jarg2) {
+  void * jresult ;
+  NetInvokerBase *arg1 = (NetInvokerBase *) 0 ;
+  std::string arg2 ;
+  NetMethodInfo *result = 0 ;
+  
+  arg1 = (NetInvokerBase *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  result = (NetMethodInfo *)(arg1)->NetInvokerBase::GetMethodInfo(arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInvokerBase() {
+  void * jresult ;
+  NetInvokerBase *result = 0 ;
+  
+  result = (NetInvokerBase *)new SwigDirector_NetInvokerBase();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetInvokerBase_director_connect(void *objarg, SwigDirector_NetInvokerBase::SWIG_Callback0_t callback0, SwigDirector_NetInvokerBase::SWIG_Callback1_t callback1) {
+  NetInvokerBase *obj = (NetInvokerBase *)objarg;
+  SwigDirector_NetInvokerBase *director = dynamic_cast<SwigDirector_NetInvokerBase *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0, callback1);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetInvoker_set(void * jarg1) {
+  NetInvokerBase *arg1 = (NetInvokerBase *) 0 ;
+  
+  arg1 = (NetInvokerBase *)jarg1; 
+  NetInvoker::set(arg1);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetInvoker_reset() {
+  NetInvoker::reset();
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInvoker_IsValidType(char * jarg1) {
+  unsigned int jresult ;
+  std::string arg1 ;
+  bool result;
+  
+  if (!jarg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg1)->assign(jarg1); 
+  result = (bool)NetInvoker::IsValidType(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInvoker() {
+  void * jresult ;
+  NetInvoker *result = 0 ;
+  
+  result = (NetInvoker *)new NetInvoker();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetInvoker(void * jarg1) {
+  NetInvoker *arg1 = (NetInvoker *) 0 ;
+  
+  arg1 = (NetInvoker *)jarg1; 
   delete arg1;
 }
 
