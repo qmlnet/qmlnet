@@ -1,7 +1,7 @@
 %module(directors="1") QtNetCoreQml
 
 %include "std_vector.i"
-%include "std_string.i"
+%include "std_string_custom.i"
 
 %template(StringVector) std::vector< std::string >;
 
