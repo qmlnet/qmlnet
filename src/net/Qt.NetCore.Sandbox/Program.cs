@@ -11,19 +11,6 @@ namespace Qt.NetCore.Sandbox
         }
     }
 
-public class RuntimeNetInvoker : Qt.NetCore.NetInvokerBase
-{
-    public override bool IsValidType(string type)
-    {
-        return true;
-    }
-
-    public override NetMethodInfo GetMethodInfo(string tt)
-    {
-        return null;
-    }
-}
-
     class Program
     {
         static int Main(string[] args)
@@ -34,7 +21,7 @@ public class RuntimeNetInvoker : Qt.NetCore.NetInvokerBase
             
             QCoreApplication.setAttribute(ApplicationAttribute.AA_EnableHighDpiScaling);
             
-            NetInvoker.set(new RuntimeNetInvoker());
+            NetInvoker.setGetMethodInfo();
             
             using (var r = new StringVector(0))
             {

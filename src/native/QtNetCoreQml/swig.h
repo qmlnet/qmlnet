@@ -11,23 +11,5 @@
 #ifndef SWIG_QtNetCoreQml_WRAP_H_
 #define SWIG_QtNetCoreQml_WRAP_H_
 
-class SwigDirector_NetInvokerBase : public NetInvokerBase, public Swig::Director {
-
-public:
-    SwigDirector_NetInvokerBase();
-    virtual ~SwigDirector_NetInvokerBase();
-    virtual bool IsValidType(std::string type);
-    virtual NetMethodInfo const *GetMethodInfo(std::string tt);
-
-    typedef unsigned int (SWIGSTDCALL* SWIG_Callback0_t)(char *);
-    typedef void * (SWIGSTDCALL* SWIG_Callback1_t)(char *);
-    void swig_connect_director(SWIG_Callback0_t callbackIsValidType, SWIG_Callback1_t callbackGetMethodInfo);
-
-private:
-    SWIG_Callback0_t swig_callbackIsValidType;
-    SWIG_Callback1_t swig_callbackGetMethodInfo;
-    void swig_init_callbacks();
-};
-
 
 #endif

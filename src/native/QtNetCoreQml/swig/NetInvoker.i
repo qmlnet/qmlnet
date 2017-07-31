@@ -2,31 +2,13 @@
 #include "net_invoker.h"
 %}
 
-%feature("director") NetInvokerBase;
+%typemap(ctype) GetMethodInfoCb "GetMethodInfoCb*"
+%typemap(imtype) GetMethodInfoCb "GetMethodInfoCb*"
+%typemap(cstype) GetMethodInfoCb "GetMethodInfoCb*"
 
-class NetInvokerBase {
-public:
-    virtual ~NetInvokerBase() {}
-
-    virtual bool IsValidType(std::string type)
-    {
-        return false;
-    }
-
-    virtual const NetMethodInfo* GetMethodInfo(std::string tt)
-    {
-        return NULL;
-    }
-};
+typedef NetMethodInfo* (*GetMethodInfoCb)(char*);
 
 class NetInvoker {
 public:
-  static void set(NetInvokerBase* invoker) { NetInvoker::invoker = invoker; }
-  static void reset() { NetInvoker::invoker = 0; }
-  static bool IsValidType(std::string type)
-  {
-      return NetInvoker::invoker->IsValidType(type);
-  }
-private:
-  static NetInvokerBase *invoker;
+    static void setGetMethodInfo(GetMethodInfoCb getMethodInfo);
 };

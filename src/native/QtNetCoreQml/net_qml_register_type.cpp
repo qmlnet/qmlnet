@@ -18,7 +18,7 @@ int registerNetType(std::string netType, std::string uri, int versionMajor, int 
 {
     std::string r;
     std::string e;
-    const NetMethodInfo* test = NetInvoker::invoker->GetMethodInfo(netType);
+    const NetMethodInfo* test = NetInvoker::GetMethodInfo(netType.c_str());
     //delete test;
     return true;
 
