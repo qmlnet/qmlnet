@@ -10,6 +10,5 @@
 #endif
 
 #define NetAddr int
-#define GoTypeSpec_ int
 
 #endif // QTNETCOREQML_GLOBAL_H

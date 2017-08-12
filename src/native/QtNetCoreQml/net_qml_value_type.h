@@ -13,14 +13,12 @@ public:
     GoValueType()
         : GoValue(NULL, typeInfo, 0) {};
 
-    static void init(NetTypeInfo *info, GoTypeSpec_ *spec)
+    static void init(NetTypeInfo *info)
     {
         typeInfo = info;
-        typeSpec = spec;
         static_cast<QMetaObject &>(staticMetaObject) = *metaObjectFor(typeInfo);
     };
 
-    static GoTypeSpec_ *typeSpec;
     static NetTypeInfo *typeInfo;
     static QMetaObject staticMetaObject;
 };
