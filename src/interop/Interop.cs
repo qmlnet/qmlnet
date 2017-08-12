@@ -333,20 +333,20 @@ public class StringVector : global::System.IDisposable, global::System.Collectio
 }
 namespace Qt.NetCore {
 
-public class NetMethodInfo : global::System.IDisposable {
+public class NetTypeInfoCallbacks : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal NetMethodInfo(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal NetTypeInfoCallbacks(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(NetMethodInfo obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(NetTypeInfoCallbacks obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~NetMethodInfo() {
+  ~NetTypeInfoCallbacks() {
     Dispose();
   }
 
@@ -355,7 +355,7 @@ public class NetMethodInfo : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          QtNetCoreQmlPINVOKE.delete_NetMethodInfo(swigCPtr);
+          QtNetCoreQmlPINVOKE.delete_NetTypeInfoCallbacks(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -363,28 +363,55 @@ public class NetMethodInfo : global::System.IDisposable {
     }
   }
 
-  public NetMethodInfo() : this(QtNetCoreQmlPINVOKE.new_NetMethodInfo(), true) {
+  public virtual bool isValidType(string typeName) {
+    bool ret = (SwigDerivedClassHasMethod("isValidType", swigMethodTypes0) ? QtNetCoreQmlPINVOKE.NetTypeInfoCallbacks_isValidTypeSwigExplicitNetTypeInfoCallbacks(swigCPtr, typeName) : QtNetCoreQmlPINVOKE.NetTypeInfoCallbacks_isValidType(swigCPtr, typeName));
+    return ret;
   }
 
+  public NetTypeInfoCallbacks() : this(QtNetCoreQmlPINVOKE.new_NetTypeInfoCallbacks(), true) {
+    SwigDirectorConnect();
+  }
+
+  private void SwigDirectorConnect() {
+    if (SwigDerivedClassHasMethod("isValidType", swigMethodTypes0))
+      swigDelegate0 = new SwigDelegateNetTypeInfoCallbacks_0(SwigDirectorisValidType);
+    QtNetCoreQmlPINVOKE.NetTypeInfoCallbacks_director_connect(swigCPtr, swigDelegate0);
+  }
+
+  private bool SwigDerivedClassHasMethod(string methodName, global::System.Type[] methodTypes) {
+    global::System.Reflection.MethodInfo methodInfo = this.GetType().GetMethod(methodName, global::System.Reflection.BindingFlags.Public | global::System.Reflection.BindingFlags.NonPublic | global::System.Reflection.BindingFlags.Instance, null, methodTypes, null);
+    bool hasDerivedMethod = methodInfo.DeclaringType.IsSubclassOf(typeof(NetTypeInfoCallbacks));
+    return hasDerivedMethod;
+  }
+
+  private bool SwigDirectorisValidType(string typeName) {
+    return isValidType(typeName);
+  }
+
+  public delegate bool SwigDelegateNetTypeInfoCallbacks_0(string typeName);
+
+  private SwigDelegateNetTypeInfoCallbacks_0 swigDelegate0;
+
+  private static global::System.Type[] swigMethodTypes0 = new global::System.Type[] { typeof(string) };
 }
 
 }
 namespace Qt.NetCore {
 
-public class NetInvoker : global::System.IDisposable {
+public class NetTypeInfoManager : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal NetInvoker(global::System.IntPtr cPtr, bool cMemoryOwn) {
+  internal NetTypeInfoManager(global::System.IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
   }
 
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(NetInvoker obj) {
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(NetTypeInfoManager obj) {
     return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~NetInvoker() {
+  ~NetTypeInfoManager() {
     Dispose();
   }
 
@@ -393,7 +420,7 @@ public class NetInvoker : global::System.IDisposable {
       if (swigCPtr.Handle != global::System.IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          QtNetCoreQmlPINVOKE.delete_NetInvoker(swigCPtr);
+          QtNetCoreQmlPINVOKE.delete_NetTypeInfoManager(swigCPtr);
         }
         swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
       }
@@ -401,11 +428,16 @@ public class NetInvoker : global::System.IDisposable {
     }
   }
 
-  public static void setGetMethodInfo(GetMethodInfoCb* getMethodInfo) {
-    QtNetCoreQmlPINVOKE.NetInvoker_setGetMethodInfo(SWIGTYPE_p_f_p_char__p_NetMethodInfo.getCPtr(getMethodInfo));
+  public static void setCallbacks(NetTypeInfoCallbacks callbacks) {
+    QtNetCoreQmlPINVOKE.NetTypeInfoManager_setCallbacks(NetTypeInfoCallbacks.getCPtr(callbacks));
   }
 
-  public NetInvoker() : this(QtNetCoreQmlPINVOKE.new_NetInvoker(), true) {
+  public static bool isValidType(string typeName) {
+    bool ret = QtNetCoreQmlPINVOKE.NetTypeInfoManager_isValidType(typeName);
+    return ret;
+  }
+
+  public NetTypeInfoManager() : this(QtNetCoreQmlPINVOKE.new_NetTypeInfoManager(), true) {
   }
 
 }
@@ -838,20 +870,32 @@ class QtNetCoreQmlPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_StringVector")]
   public static extern void delete_StringVector(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetMethodInfo")]
-  public static extern global::System.IntPtr new_NetMethodInfo();
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetTypeInfoCallbacks")]
+  public static extern void delete_NetTypeInfoCallbacks(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetMethodInfo")]
-  public static extern void delete_NetMethodInfo(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfoCallbacks_isValidType")]
+  public static extern bool NetTypeInfoCallbacks_isValidType(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetInvoker_setGetMethodInfo")]
-  public static extern void NetInvoker_setGetMethodInfo(GetMethodInfoCb* jarg1);
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfoCallbacks_isValidTypeSwigExplicitNetTypeInfoCallbacks")]
+  public static extern bool NetTypeInfoCallbacks_isValidTypeSwigExplicitNetTypeInfoCallbacks(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetInvoker")]
-  public static extern global::System.IntPtr new_NetInvoker();
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetTypeInfoCallbacks")]
+  public static extern global::System.IntPtr new_NetTypeInfoCallbacks();
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetInvoker")]
-  public static extern void delete_NetInvoker(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfoCallbacks_director_connect")]
+  public static extern void NetTypeInfoCallbacks_director_connect(global::System.Runtime.InteropServices.HandleRef jarg1, NetTypeInfoCallbacks.SwigDelegateNetTypeInfoCallbacks_0 delegate0);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfoManager_setCallbacks")]
+  public static extern void NetTypeInfoManager_setCallbacks(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfoManager_isValidType")]
+  public static extern bool NetTypeInfoManager_isValidType(string jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetTypeInfoManager")]
+  public static extern global::System.IntPtr new_NetTypeInfoManager();
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetTypeInfoManager")]
+  public static extern void delete_NetTypeInfoManager(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_QCoreApplication_setAttribute__SWIG_0")]
   public static extern void QCoreApplication_setAttribute__SWIG_0(int jarg1, bool jarg2);
@@ -897,25 +941,6 @@ public class QtNetCoreQml {
     return ret;
   }
 
-}
-
-}
-namespace Qt.NetCore {
-
-public class SWIGTYPE_p_f_p_char__p_NetMethodInfo {
-  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
-
-  internal SWIGTYPE_p_f_p_char__p_NetMethodInfo(global::System.IntPtr cPtr, bool futureUse) {
-    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
-  }
-
-  protected SWIGTYPE_p_f_p_char__p_NetMethodInfo() {
-    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
-  }
-
-  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(SWIGTYPE_p_f_p_char__p_NetMethodInfo obj) {
-    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
-  }
 }
 
 }

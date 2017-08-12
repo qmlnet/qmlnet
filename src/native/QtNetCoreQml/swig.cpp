@@ -489,9 +489,6 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
 #include "net_type_info.h"
 
 
-#include "net_invoker.h"
-
-
 #include <QCoreApplication>
 
 
@@ -511,6 +508,38 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
  * --------------------------------------------------- */
 
 #include "swig.h"
+
+SwigDirector_NetTypeInfoCallbacks::SwigDirector_NetTypeInfoCallbacks() : NetTypeInfoCallbacks(), Swig::Director() {
+  swig_init_callbacks();
+}
+
+SwigDirector_NetTypeInfoCallbacks::~SwigDirector_NetTypeInfoCallbacks() {
+  
+}
+
+
+bool SwigDirector_NetTypeInfoCallbacks::isValidType(char *typeName) {
+  bool c_result = SwigValueInit< bool >() ;
+  unsigned int jresult = 0 ;
+  char * jtypeName = 0 ;
+  
+  if (!swig_callbackisValidType) {
+    return NetTypeInfoCallbacks::isValidType(typeName);
+  } else {
+    jtypeName = SWIG_csharp_string_callback((const char *)typeName); 
+    jresult = (unsigned int) swig_callbackisValidType(jtypeName);
+    c_result = jresult ? true : false; 
+  }
+  return c_result;
+}
+
+void SwigDirector_NetTypeInfoCallbacks::swig_connect_director(SWIG_Callback0_t callbackisValidType) {
+  swig_callbackisValidType = callbackisValidType;
+}
+
+void SwigDirector_NetTypeInfoCallbacks::swig_init_callbacks() {
+  swig_callbackisValidType = 0;
+}
 
 
 #ifdef __cplusplus
@@ -977,46 +1006,95 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_StringVector(void * jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetMethodInfo() {
-  void * jresult ;
-  NetMethodInfo *result = 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfoCallbacks(void * jarg1) {
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   
-  result = (NetMethodInfo *)new NetMethodInfo();
-  jresult = (void *)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetMethodInfo(void * jarg1) {
-  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
-  
-  arg1 = (NetMethodInfo *)jarg1; 
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInvoker_setGetMethodInfo(GetMethodInfoCb* jarg1) {
-  GetMethodInfoCb arg1 = (GetMethodInfoCb) 0 ;
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfoCallbacks_isValidType(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
   
-  arg1 = (GetMethodInfoCb)jarg1; 
-  NetInvoker::setGetMethodInfo(arg1);
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->isValidType(arg2);
+  jresult = result; 
+  return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInvoker() {
-  void * jresult ;
-  NetInvoker *result = 0 ;
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfoCallbacks_isValidTypeSwigExplicitNetTypeInfoCallbacks(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
   
-  result = (NetInvoker *)new NetInvoker();
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->NetTypeInfoCallbacks::isValidType(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTypeInfoCallbacks() {
+  void * jresult ;
+  NetTypeInfoCallbacks *result = 0 ;
+  
+  result = (NetTypeInfoCallbacks *)new SwigDirector_NetTypeInfoCallbacks();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetInvoker(void * jarg1) {
-  NetInvoker *arg1 = (NetInvoker *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_director_connect(void *objarg, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback0_t callback0) {
+  NetTypeInfoCallbacks *obj = (NetTypeInfoCallbacks *)objarg;
+  SwigDirector_NetTypeInfoCallbacks *director = dynamic_cast<SwigDirector_NetTypeInfoCallbacks *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0);
+  }
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoManager_setCallbacks(void * jarg1) {
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   
-  arg1 = (NetInvoker *)jarg1; 
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  NetTypeInfoManager::setCallbacks(arg1);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfoManager_isValidType(char * jarg1) {
+  unsigned int jresult ;
+  char *arg1 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (char *)jarg1; 
+  result = (bool)NetTypeInfoManager::isValidType(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTypeInfoManager() {
+  void * jresult ;
+  NetTypeInfoManager *result = 0 ;
+  
+  result = (NetTypeInfoManager *)new NetTypeInfoManager();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfoManager(void * jarg1) {
+  NetTypeInfoManager *arg1 = (NetTypeInfoManager *) 0 ;
+  
+  arg1 = (NetTypeInfoManager *)jarg1; 
   delete arg1;
 }
 

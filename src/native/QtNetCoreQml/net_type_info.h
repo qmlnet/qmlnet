@@ -4,14 +4,23 @@
 #include <string>
 #include <QDebug>
 
-class NetMethodInfo
+class NetTypeInfoCallbacks {
+public:
+    virtual ~NetTypeInfoCallbacks() { }
+    virtual bool isValidType(char* typeName) {
+        qDebug() << "sdfsdfsfd";
+        return false;
+    }
+};
+
+class NetTypeInfoManager
 {
 public:
-    NetMethodInfo();
-    ~NetMethodInfo(){
-        qDebug() << "dstr";
-    }
+    NetTypeInfoManager();
+    static void setCallbacks(NetTypeInfoCallbacks* callbacks);
+    static bool isValidType(char* typeName);
 private:
+    static NetTypeInfoCallbacks* callbacks;
 };
 
 #endif // NET_TYPE_INFO_H

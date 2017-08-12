@@ -16,12 +16,12 @@ namespace Qt.NetCore.Sandbox
         static int Main(string[] args)
         {
             var path = System.Environment.GetEnvironmentVariable("PATH");
-            path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Visual_Studio_64bit-Debug\debug";
+            path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
             System.Environment.SetEnvironmentVariable("PATH", path);
-            
+         
+            Initializer.Initialize();
+
             QCoreApplication.setAttribute(ApplicationAttribute.AA_EnableHighDpiScaling);
-            
-            NetInvoker.setGetMethodInfo();
             
             using (var r = new StringVector(0))
             {
@@ -31,7 +31,7 @@ namespace Qt.NetCore.Sandbox
                     {
                         while (true)
                         {
-                            Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+                            Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
                             GC.Collect(GC.MaxGeneration);
                         }
                         //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));

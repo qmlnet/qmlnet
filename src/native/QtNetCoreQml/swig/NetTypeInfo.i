@@ -1,10 +1,19 @@
+%module(directors="1") example
 %{
 #include "net_type_info.h"
 %}
 
-class NetMethodInfo
+%feature("director") NetTypeInfoCallbacks;
+
+class NetTypeInfoCallbacks {
+public:
+    virtual ~NetTypeInfoCallbacks() { }
+	virtual bool isValidType(char* typeName);
+};
+
+class NetTypeInfoManager
 {
 public:
-    NetMethodInfo();
-    ~NetMethodInfo();
+    static void setCallbacks(NetTypeInfoCallbacks* callbacks);
+    static bool isValidType(char* typeName);
 };

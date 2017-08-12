@@ -1,25 +1,18 @@
 #include "net_type_info.h"
+#include <QDebug>
 
-//NetTypeInfo::NetTypeInfo()
-//    : netType(NT_Unknown)
-//{
-//}
+NetTypeInfoCallbacks* NetTypeInfoManager::callbacks = NULL;
 
-//NetTypeInfo::~NetTypeInfo()
-//{
-//}
-
-//void NetTypeInfo::SetType(NetType netType)
-//{
-//    this->netType = netType;
-//}
-
-//NetType NetTypeInfo::GetType()
-//{
-//    return netType;
-//}
-
-NetMethodInfo::NetMethodInfo()
+NetTypeInfoManager::NetTypeInfoManager()
 {
-    qDebug() << "ctor";
+}
+
+void NetTypeInfoManager::setCallbacks(NetTypeInfoCallbacks* callbacks)
+{
+    NetTypeInfoManager::callbacks = callbacks;
+}
+
+bool NetTypeInfoManager::isValidType(char* typeName)
+{
+    return NetTypeInfoManager::callbacks->isValidType(typeName);
 }
