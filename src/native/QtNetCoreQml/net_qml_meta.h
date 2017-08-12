@@ -3,13 +3,14 @@
 
 #include "qtnetcoreqml_global.h"
 #include <private/qobject_p.h>
+#include "net_type_info.h"
 
-QMetaObject *metaObjectFor(GoTypeInfo *typeInfo);
+QMetaObject *metaObjectFor(NetTypeInfo *typeInfo);
 
 class GoValueMetaObject : public QAbstractDynamicMetaObject
 {
 public:
-    GoValueMetaObject(QObject* value, GoAddr *addr, GoTypeInfo *typeInfo);
+    GoValueMetaObject(QObject* value, GoAddr *addr, NetTypeInfo *typeInfo);
 
     void activatePropIndex(int propIndex);
 
@@ -19,7 +20,7 @@ protected:
 private:
     QObject *value;
     GoAddr *addr;
-    GoTypeInfo *typeInfo;
+    NetTypeInfo *typeInfo;
 };
 
 #endif // NET_QML_META_H

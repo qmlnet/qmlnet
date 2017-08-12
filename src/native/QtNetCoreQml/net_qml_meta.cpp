@@ -1,11 +1,11 @@
 #include "net_qml_meta.h"
 
-QMetaObject *metaObjectFor(GoTypeInfo *typeInfo)
+QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 {
     return NULL;
 }
 
-GoValueMetaObject::GoValueMetaObject(QObject *value, GoAddr *addr, GoTypeInfo *typeInfo)
+GoValueMetaObject::GoValueMetaObject(QObject *value, GoAddr *addr, NetTypeInfo *typeInfo)
     : value(value), addr(addr), typeInfo(typeInfo)
 {
     //d->parent = static_cast<QAbstractDynamicMetaObject *>(priv->metaObject);

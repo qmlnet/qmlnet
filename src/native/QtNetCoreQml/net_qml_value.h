@@ -3,6 +3,7 @@
 
 #include "qtnetcoreqml_global.h"
 #include "net_qml_meta.h"
+#include "net_type_info.h"
 
 class GoValue : public QObject
 {
@@ -10,9 +11,9 @@ class GoValue : public QObject
 
 public:
     GoAddr *addr;
-    GoTypeInfo *typeInfo;
+    NetTypeInfo *typeInfo;
 
-    GoValue(GoAddr *addr, GoTypeInfo *typeInfo, QObject *parent);
+    GoValue(GoAddr *addr, NetTypeInfo *typeInfo, QObject *parent);
     virtual ~GoValue();
 
     void activate(int propIndex);

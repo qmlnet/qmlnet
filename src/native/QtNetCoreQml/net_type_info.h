@@ -1,20 +1,24 @@
 #ifndef NET_TYPE_INFO_H
 #define NET_TYPE_INFO_H
 
-#include <string>
-#include <QDebug>
+#include <qglobal.h>
+
+class NetTypeInfo {
+public:
+    NetTypeInfo();
+    ~NetTypeInfo();
+};
 
 class NetTypeInfoCallbacks {
 public:
     virtual ~NetTypeInfoCallbacks() { }
     virtual bool isValidType(char* typeName) {
-        qDebug() << "sdfsdfsfd";
+        Q_UNUSED(typeName);
         return false;
     }
 };
 
-class NetTypeInfoManager
-{
+class NetTypeInfoManager {
 public:
     NetTypeInfoManager();
     static void setCallbacks(NetTypeInfoCallbacks* callbacks);

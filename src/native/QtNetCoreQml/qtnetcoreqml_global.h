@@ -10,6 +10,6 @@
 #endif
 
 #define GoAddr int
-#define GoTypeInfo int
 #define GoTypeSpec_ int
+
 #endif // QTNETCOREQML_GLOBAL_H

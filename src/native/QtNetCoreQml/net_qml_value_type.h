@@ -3,6 +3,7 @@
 
 #include "qtnetcoreqml_global.h"
 #include "qobject.h"
+#include "net_type_info.h"
 
 template <int N>
 class GoValueType : public GoValue
@@ -12,7 +13,7 @@ public:
     GoValueType()
         : GoValue(NULL, typeInfo, 0) {};
 
-    static void init(GoTypeInfo *info, GoTypeSpec_ *spec)
+    static void init(NetTypeInfo *info, GoTypeSpec_ *spec)
     {
         typeInfo = info;
         typeSpec = spec;
@@ -20,7 +21,7 @@ public:
     };
 
     static GoTypeSpec_ *typeSpec;
-    static GoTypeInfo *typeInfo;
+    static NetTypeInfo *typeInfo;
     static QMetaObject staticMetaObject;
 };
 
