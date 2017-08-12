@@ -6,12 +6,12 @@
 #include "net_type_info.h"
 
 template <int N>
-class GoValueType : public GoValue
+class NetValueType : public NetValue
 {
 public:
 
-    GoValueType()
-        : GoValue(NULL, typeInfo, 0) {};
+    NetValueType()
+        : NetValue(NULL, typeInfo, 0) {};
 
     static void init(NetTypeInfo *info)
     {

@@ -7,16 +7,16 @@
 #include "net_qml_value.h"
 #include "net_qml_meta.h"
 
-#define DEFINE_GOVALUETYPE(N) \
-    template<> QMetaObject GoValueType<N>::staticMetaObject = QMetaObject(); \
-    template<> NetTypeInfo *GoValueType<N>::typeInfo = 0;
+#define DEFINE_NETVALUETYPE(N) \
+    template<> QMetaObject NetValueType<N>::staticMetaObject = QMetaObject(); \
+    template<> NetTypeInfo *NetValueType<N>::typeInfo = 0;
 
-DEFINE_GOVALUETYPE(1)
+DEFINE_NETVALUETYPE(1)
 
 int registerNetType(std::string netType, std::string uri, int versionMajor, int versionMinor, std::string qmlName)
 {
     if(!NetTypeInfoManager::isValidType((char*)netType.c_str()))
         return -1;
 
-    return qmlRegisterType<GoValueType<1>>(uri.c_str(), versionMajor, versionMinor, qmlName.c_str());
+    return qmlRegisterType<NetValueType<1>>(uri.c_str(), versionMajor, versionMinor, qmlName.c_str());
 }

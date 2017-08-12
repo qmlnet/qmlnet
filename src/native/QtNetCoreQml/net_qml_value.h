@@ -5,7 +5,7 @@
 #include "net_qml_meta.h"
 #include "net_type_info.h"
 
-class GoValue : public QObject
+class NetValue : public QObject
 {
     Q_OBJECT
 
@@ -13,8 +13,8 @@ public:
     NetAddr *addr;
     NetTypeInfo *typeInfo;
 
-    GoValue(NetAddr *addr, NetTypeInfo *typeInfo, QObject *parent);
-    virtual ~GoValue();
+    NetValue(NetAddr *addr, NetTypeInfo *typeInfo, QObject *parent);
+    virtual ~NetValue();
 
     void activate(int propIndex);
 
