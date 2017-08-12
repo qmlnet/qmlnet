@@ -5,7 +5,7 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
     return NULL;
 }
 
-GoValueMetaObject::GoValueMetaObject(QObject *value, GoAddr *addr, NetTypeInfo *typeInfo)
+GoValueMetaObject::GoValueMetaObject(QObject *value, NetAddr *addr, NetTypeInfo *typeInfo)
     : value(value), addr(addr), typeInfo(typeInfo)
 {
     //d->parent = static_cast<QAbstractDynamicMetaObject *>(priv->metaObject);

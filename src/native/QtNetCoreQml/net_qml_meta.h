@@ -10,7 +10,7 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo);
 class GoValueMetaObject : public QAbstractDynamicMetaObject
 {
 public:
-    GoValueMetaObject(QObject* value, GoAddr *addr, NetTypeInfo *typeInfo);
+    GoValueMetaObject(QObject* value, NetAddr *addr, NetTypeInfo *typeInfo);
 
     void activatePropIndex(int propIndex);
 
@@ -19,7 +19,7 @@ protected:
 
 private:
     QObject *value;
-    GoAddr *addr;
+    NetAddr *addr;
     NetTypeInfo *typeInfo;
 };
 

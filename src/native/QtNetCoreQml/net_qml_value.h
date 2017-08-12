@@ -10,10 +10,10 @@ class GoValue : public QObject
     Q_OBJECT
 
 public:
-    GoAddr *addr;
+    NetAddr *addr;
     NetTypeInfo *typeInfo;
 
-    GoValue(GoAddr *addr, NetTypeInfo *typeInfo, QObject *parent);
+    GoValue(NetAddr *addr, NetTypeInfo *typeInfo, QObject *parent);
     virtual ~GoValue();
 
     void activate(int propIndex);
