@@ -1056,6 +1056,108 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfo(void * jarg1) {
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetMethodInfo(void * jarg1, char * jarg2) {
+  void * jresult ;
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  std::string arg2 ;
+  NetMethodInfo *result = 0 ;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  result = (NetMethodInfo *)new NetMethodInfo(arg1,arg2);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetMethodInfo_GetMethodName(void * jarg1) {
+  char * jresult ;
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  std::string result;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  result = (arg1)->GetMethodName();
+  jresult = SWIG_csharp_string_callback((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetMethodInfo_SetReturnType(void * jarg1, void * jarg2) {
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  NetTypeInfo *arg2 = (NetTypeInfo *) 0 ;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  arg2 = (NetTypeInfo *)jarg2; 
+  (arg1)->SetReturnType(arg2);
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetMethodInfo_GetReturnType(void * jarg1) {
+  void * jresult ;
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  NetTypeInfo *result = 0 ;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  result = (NetTypeInfo *)(arg1)->GetReturnType();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetMethodInfo_AddParameter(void * jarg1, char * jarg2, void * jarg3) {
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  std::string arg2 ;
+  NetTypeInfo *arg3 = (NetTypeInfo *) 0 ;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  (&arg2)->assign(jarg2); 
+  arg3 = (NetTypeInfo *)jarg3; 
+  (arg1)->AddParameter(arg2,arg3);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_NetMethodInfo_GetParameterCount(void * jarg1) {
+  int jresult ;
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  int result;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  result = (int)(arg1)->GetParameterCount();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetMethodInfo_GetParameterInfo(void * jarg1, int jarg2, void * jarg3, void * jarg4) {
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  int arg2 ;
+  std::string *arg3 = (std::string *) 0 ;
+  NetTypeInfo **arg4 = (NetTypeInfo **) 0 ;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (std::string *)jarg3; 
+  arg4 = (NetTypeInfo **)jarg4; 
+  (arg1)->GetParameterInfo(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetMethodInfo(void * jarg1) {
+  NetMethodInfo *arg1 = (NetMethodInfo *) 0 ;
+  
+  arg1 = (NetMethodInfo *)jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfoCallbacks(void * jarg1) {
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   
@@ -1151,15 +1253,27 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfoManager_isValidType(char *
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_GetTypeInfo(void * jarg1, char * jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_GetTypeInfo(char * jarg1) {
   void * jresult ;
-  NetTypeInfoManager *arg1 = (NetTypeInfoManager *) 0 ;
-  char *arg2 = (char *) 0 ;
+  char *arg1 = (char *) 0 ;
   NetTypeInfo *result = 0 ;
   
-  arg1 = (NetTypeInfoManager *)jarg1; 
+  arg1 = (char *)jarg1; 
+  result = (NetTypeInfo *)NetTypeInfoManager::GetTypeInfo(arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_NewMethodInfo(void * jarg1, char * jarg2) {
+  void * jresult ;
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  char *arg2 = (char *) 0 ;
+  NetMethodInfo *result = 0 ;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
   arg2 = (char *)jarg2; 
-  result = (NetTypeInfo *)(arg1)->GetTypeInfo(arg2);
+  result = (NetMethodInfo *)NetTypeInfoManager::NewMethodInfo(arg1,arg2);
   jresult = (void *)result; 
   return jresult;
 }

@@ -11,6 +11,17 @@ public:
     std::string GetTypeName();
 };
 
+class NetMethodInfo {
+public:
+    NetMethodInfo(NetTypeInfo *parentTypeInfo, std::string methodName);
+    std::string GetMethodName();
+    void SetReturnType(NetTypeInfo *typeInfo);
+    NetTypeInfo* GetReturnType();
+    void AddParameter(std::string parameterName, NetTypeInfo *typeInfo);
+    int GetParameterCount();
+    void GetParameterInfo(int index, std::string *parameterName, NetTypeInfo **typeInfo);
+};
+
 class NetTypeInfoCallbacks {
 public:
     virtual ~NetTypeInfoCallbacks() { }
@@ -23,5 +34,6 @@ class NetTypeInfoManager
 public:
     static void setCallbacks(NetTypeInfoCallbacks* callbacks);
     static bool isValidType(char* typeName);
-    NetTypeInfo* GetTypeInfo(char* typeName);
+    static NetTypeInfo* GetTypeInfo(char* typeName);
+    static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName);
 };

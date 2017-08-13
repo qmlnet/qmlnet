@@ -9,6 +9,11 @@ namespace Qt.NetCore.Sandbox
         {
             
         }
+
+        public int TestMethodwithInt()
+        {
+            return 0;
+        }
     }
 
     class Program
