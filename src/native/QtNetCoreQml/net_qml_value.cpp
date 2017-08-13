@@ -3,7 +3,7 @@
 NetValue::NetValue(NetInstance *instance, NetTypeInfo *typeInfo, QObject *parent)
     : instance(instance), typeInfo(typeInfo)
 {
-    valueMeta = new GoValueMetaObject(this, addr, typeInfo);
+    valueMeta = new GoValueMetaObject(this, instance, typeInfo);
     setParent(parent);
 }
 
