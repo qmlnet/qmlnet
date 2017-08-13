@@ -7,7 +7,6 @@ namespace Qt.NetCore.Sandbox
     {
         public void TestMethod()
         {
-            
         }
 
         public int TestMethodwithInt()
@@ -16,10 +15,24 @@ namespace Qt.NetCore.Sandbox
         }
     }
 
+    class Test
+    {
+        public string TT { get; set; }
+    }
+
     class Program
     {
         static int Main(string[] args)
         {
+            var tt = new Test {TT = "sdfsd"};
+
+            var handle = GCHandle.Alloc(tt);
+
+            var ptr = GCHandle.ToIntPtr(handle);
+            
+
+
+
             var path = System.Environment.GetEnvironmentVariable("PATH");
             path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
             System.Environment.SetEnvironmentVariable("PATH", path);

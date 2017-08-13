@@ -18,14 +18,17 @@ public:
     virtual ~SwigDirector_NetTypeInfoCallbacks();
     virtual bool isValidType(char *typeName);
     virtual void BuildTypeInfo(NetTypeInfo *typeInfo);
+    virtual void CreateInstance(char *typeName, NetInstance *instance);
 
     typedef unsigned int (SWIGSTDCALL* SWIG_Callback0_t)(char *);
     typedef void (SWIGSTDCALL* SWIG_Callback1_t)(void *);
-    void swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackBuildTypeInfo);
+    typedef void (SWIGSTDCALL* SWIG_Callback2_t)(char *, void *);
+    void swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackBuildTypeInfo, SWIG_Callback2_t callbackCreateInstance);
 
 private:
     SWIG_Callback0_t swig_callbackisValidType;
     SWIG_Callback1_t swig_callbackBuildTypeInfo;
+    SWIG_Callback2_t swig_callbackCreateInstance;
     void swig_init_callbacks();
 };
 

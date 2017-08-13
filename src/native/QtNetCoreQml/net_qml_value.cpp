@@ -1,7 +1,7 @@
 #include "net_qml_value.h"
 
-NetValue::NetValue(NetAddr *addr, NetTypeInfo *typeInfo, QObject *parent)
-    : addr(addr), typeInfo(typeInfo)
+NetValue::NetValue(NetInstance *instance, NetTypeInfo *typeInfo, QObject *parent)
+    : instance(instance), typeInfo(typeInfo)
 {
     valueMeta = new GoValueMetaObject(this, addr, typeInfo);
     setParent(parent);

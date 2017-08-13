@@ -62,6 +62,24 @@ std::string NetTypeInfo::GetTypeName()
     return typeName;
 }
 
+void NetTypeInfo::AddMethod(NetMethodInfo* methodInfo)
+{
+    methods.append(methodInfo);
+}
+
+int NetTypeInfo::GetMethodCount()
+{
+    return methods.length();
+}
+
+NetMethodInfo* NetTypeInfo::GetMethod(int index)
+{
+    if(index < 0) return NULL;
+    if(index >= methods.length()) return NULL;
+
+    return methods.at(index);
+}
+
 NetTypeInfoManager::NetTypeInfoManager()
 {
 }
@@ -96,4 +114,11 @@ NetTypeInfo* NetTypeInfoManager::GetTypeInfo(char* typeName)
 NetMethodInfo* NetTypeInfoManager::NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName)
 {
     return new NetMethodInfo(parentTypeInfo, std::string(methodName));
+}
+
+NetInstance* NetTypeInfoManager::CreateInstance(NetTypeInfo* typeInfo)
+{
+    NetInstance* instance = new NetInstance();
+    NetTypeInfoManager::callbacks->CreateInstance((char*)typeInfo->GetTypeName().c_str(), instance);
+    return instance;
 }

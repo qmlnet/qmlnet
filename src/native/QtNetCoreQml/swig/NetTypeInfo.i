@@ -9,6 +9,9 @@ class NetTypeInfo {
 public:
     NetTypeInfo(std::string typeName);
     std::string GetTypeName();
+    void AddMethod(NetMethodInfo* methodInfo);
+    int GetMethodCount();
+    NetMethodInfo* GetMethod(int index);
 };
 
 class NetMethodInfo {
@@ -27,6 +30,7 @@ public:
     virtual ~NetTypeInfoCallbacks() { }
 	virtual bool isValidType(char* typeName);
     virtual void BuildTypeInfo(NetTypeInfo* typeInfo);
+    virtual void CreateInstance(char* typeName, NetInstance* instance);
 };
 
 class NetTypeInfoManager

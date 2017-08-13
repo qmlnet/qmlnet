@@ -9,6 +9,4 @@
 #  define QTNETCOREQMLSHARED_EXPORT Q_DECL_IMPORT
 #endif
 
-#define NetAddr int
-
 #endif // QTNETCOREQML_GLOBAL_H

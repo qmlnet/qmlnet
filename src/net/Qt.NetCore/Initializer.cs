@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,7 +45,16 @@ namespace Qt.NetCore
                     {
                         methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType.FullName + ", " + parameter.ParameterType.Assembly.FullName));
                     }
+
+                    typeInfo.AddMethod(methodInfo);
                 }
+            }
+
+            public override void CreateInstance(string typeName, NetInstance instance)
+            {
+                var o = Activator.CreateInstance(Type.GetType(typeName));
+                var handle = GCHandle.Alloc(o);
+                instance.SetValue(new SWIGTYPE_p_void(GCHandle.ToIntPtr(handle), true));
             }
         }
 

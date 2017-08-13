@@ -10,10 +10,10 @@ class NetValue : public QObject
     Q_OBJECT
 
 public:
-    NetAddr *addr;
+    NetInstance *instance;
     NetTypeInfo *typeInfo;
 
-    NetValue(NetAddr *addr, NetTypeInfo *typeInfo, QObject *parent);
+    NetValue(NetInstance *instance, NetTypeInfo *typeInfo, QObject *parent);
     virtual ~NetValue();
 
     void activate(int propIndex);

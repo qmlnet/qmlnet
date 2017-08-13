@@ -9,8 +9,14 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 
     QMetaObjectBuilder mob;
     mob.setSuperClass(&QObject::staticMetaObject);
-    mob.setClassName("test");
+    mob.setClassName("TestQmlImport");
     mob.setFlags(QMetaObjectBuilder::DynamicMetaObject);
+
+    for(int index = 0; index <= typeInfo->GetMethodCount() - 1; index++)
+    {
+        NetMethodInfo* methodInfo = typeInfo->GetMethod(index);
+        mob.addMethod(methodInfo->GetMethodName().c_str());
+    }
 
     QMetaObject *mo = mob.toMetaObject();
 
@@ -18,8 +24,8 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
     return mo;
 }
 
-GoValueMetaObject::GoValueMetaObject(QObject *value, NetAddr *addr, NetTypeInfo *typeInfo)
-    : value(value), addr(addr), typeInfo(typeInfo)
+GoValueMetaObject::GoValueMetaObject(QObject *value, NetInstance *instance, NetTypeInfo *typeInfo)
+    : value(value), instance(instance), typeInfo(typeInfo)
 {
     //d->parent = static_cast<QAbstractDynamicMetaObject *>(priv->metaObject);
     *static_cast<QMetaObject *>(this) = *metaObjectFor(typeInfo);
