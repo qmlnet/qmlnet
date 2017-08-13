@@ -18,6 +18,12 @@ namespace Qt.NetCore
                 var type = Type.GetType(typeName);
                 return type != null;
             }
+
+            public override void BuildTypeInfo(NetTypeInfo typeInfo)
+            {
+                Console.WriteLine("Building info...");
+                Console.WriteLine(typeInfo.GetTypeName());
+            }
         }
 
         public static void Initialize()

@@ -533,12 +533,26 @@ bool SwigDirector_NetTypeInfoCallbacks::isValidType(char *typeName) {
   return c_result;
 }
 
-void SwigDirector_NetTypeInfoCallbacks::swig_connect_director(SWIG_Callback0_t callbackisValidType) {
+void SwigDirector_NetTypeInfoCallbacks::BuildTypeInfo(NetTypeInfo *typeInfo) {
+  void * jtypeInfo = 0 ;
+  
+  if (!swig_callbackBuildTypeInfo) {
+    NetTypeInfoCallbacks::BuildTypeInfo(typeInfo);
+    return;
+  } else {
+    jtypeInfo = (void *) typeInfo; 
+    swig_callbackBuildTypeInfo(jtypeInfo);
+  }
+}
+
+void SwigDirector_NetTypeInfoCallbacks::swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackBuildTypeInfo) {
   swig_callbackisValidType = callbackisValidType;
+  swig_callbackBuildTypeInfo = callbackBuildTypeInfo;
 }
 
 void SwigDirector_NetTypeInfoCallbacks::swig_init_callbacks() {
   swig_callbackisValidType = 0;
+  swig_callbackBuildTypeInfo = 0;
 }
 
 
@@ -1006,6 +1020,42 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_StringVector(void * jarg1) {
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTypeInfo(char * jarg1) {
+  void * jresult ;
+  std::string arg1 ;
+  NetTypeInfo *result = 0 ;
+  
+  if (!jarg1) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg1)->assign(jarg1); 
+  result = (NetTypeInfo *)new NetTypeInfo(arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetTypeInfo_GetTypeName(void * jarg1) {
+  char * jresult ;
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  std::string result;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  result = (arg1)->GetTypeName();
+  jresult = SWIG_csharp_string_callback((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfo(void * jarg1) {
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  delete arg1;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfoCallbacks(void * jarg1) {
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   
@@ -1042,6 +1092,26 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfoCallbacks_isValidTypeSwigE
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_BuildTypeInfo(void * jarg1, void * jarg2) {
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
+  NetTypeInfo *arg2 = (NetTypeInfo *) 0 ;
+  
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  arg2 = (NetTypeInfo *)jarg2; 
+  (arg1)->BuildTypeInfo(arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_BuildTypeInfoSwigExplicitNetTypeInfoCallbacks(void * jarg1, void * jarg2) {
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
+  NetTypeInfo *arg2 = (NetTypeInfo *) 0 ;
+  
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  arg2 = (NetTypeInfo *)jarg2; 
+  (arg1)->NetTypeInfoCallbacks::BuildTypeInfo(arg2);
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTypeInfoCallbacks() {
   void * jresult ;
   NetTypeInfoCallbacks *result = 0 ;
@@ -1052,11 +1122,11 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTypeInfoCallbacks() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_director_connect(void *objarg, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback0_t callback0) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_director_connect(void *objarg, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback0_t callback0, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback1_t callback1) {
   NetTypeInfoCallbacks *obj = (NetTypeInfoCallbacks *)objarg;
   SwigDirector_NetTypeInfoCallbacks *director = dynamic_cast<SwigDirector_NetTypeInfoCallbacks *>(obj);
   if (director) {
-    director->swig_connect_director(callback0);
+    director->swig_connect_director(callback0, callback1);
   }
 }
 
@@ -1077,6 +1147,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfoManager_isValidType(char *
   arg1 = (char *)jarg1; 
   result = (bool)NetTypeInfoManager::isValidType(arg1);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_GetTypeInfo(void * jarg1, char * jarg2) {
+  void * jresult ;
+  NetTypeInfoManager *arg1 = (NetTypeInfoManager *) 0 ;
+  char *arg2 = (char *) 0 ;
+  NetTypeInfo *result = 0 ;
+  
+  arg1 = (NetTypeInfoManager *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (NetTypeInfo *)(arg1)->GetTypeInfo(arg2);
+  jresult = (void *)result; 
   return jresult;
 }
 
