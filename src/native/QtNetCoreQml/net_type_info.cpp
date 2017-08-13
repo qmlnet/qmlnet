@@ -4,7 +4,8 @@
 NetTypeInfoCallbacks* NetTypeInfoManager::callbacks = NULL;
 QMap<QString, NetTypeInfo*> NetTypeInfoManager::types;
 
-NetTypeInfo::NetTypeInfo(std::string typeName)
+NetTypeInfo::NetTypeInfo(std::string typeName) :
+    metaObject(NULL)
 {
     this->typeName = typeName;
 }

@@ -26,6 +26,11 @@ ApplicationWindow {
     }
 
 	TestQmlImport {
+		Component.onCompleted: {
+			console.log("Test")
+			testt.TestMethod()
+		}
+		id: testt
 	}
 
     footer: TabBar {

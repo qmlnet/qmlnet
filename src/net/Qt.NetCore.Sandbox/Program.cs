@@ -34,7 +34,7 @@ namespace Qt.NetCore.Sandbox
                 {
                     using (var engine = new QQmlApplicationEngine())
                     {
-                        while (true)
+                        //while (true)
                         {
                             Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
                             GC.Collect(GC.MaxGeneration);

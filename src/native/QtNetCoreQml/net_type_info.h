@@ -7,6 +7,7 @@
 
 class NetTypeInfo;
 class NetMethodInfo;
+class QMetaObject;
 
 struct NetTypeInfoParameter
 {
@@ -20,6 +21,7 @@ public:
     ~NetTypeInfo();
     std::string GetTypeName();
     void AddMethod(NetMethodInfo* methodInfo);
+    QMetaObject* metaObject;
 private:
     std::string typeName;
 };

@@ -1,8 +1,21 @@
 #include "net_qml_meta.h"
+#include <private/qmetaobjectbuilder_p.h>
 
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 {
-    return NULL;
+    if (typeInfo->metaObject) {
+            return reinterpret_cast<QMetaObject *>(typeInfo->metaObject);
+    }
+
+    QMetaObjectBuilder mob;
+    mob.setSuperClass(&QObject::staticMetaObject);
+    mob.setClassName("test");
+    mob.setFlags(QMetaObjectBuilder::DynamicMetaObject);
+
+    QMetaObject *mo = mob.toMetaObject();
+
+    typeInfo->metaObject = mo;
+    return mo;
 }
 
 GoValueMetaObject::GoValueMetaObject(QObject *value, NetAddr *addr, NetTypeInfo *typeInfo)

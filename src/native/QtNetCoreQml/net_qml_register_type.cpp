@@ -20,6 +20,7 @@ int registerNetType(std::string netType, std::string uri, int versionMajor, int 
 
     NetTypeInfo* typeInfo = NetTypeInfoManager::GetTypeInfo((char*)netType.c_str());
 
-    return -1;
-    //return qmlRegisterType<NetValueType<1>>(uri.c_str(), versionMajor, versionMinor, qmlName.c_str());
+    NetValueType<1>::init(typeInfo);
+
+    return qmlRegisterType<NetValueType<1>>(uri.c_str(), versionMajor, versionMinor, qmlName.c_str());
 }
