@@ -56,6 +56,13 @@ NetPropertyInfo* NetTypeInfoManager::NewPropertyInfo(NetTypeInfo* parentTypeInfo
 NetInstance* NetTypeInfoManager::CreateInstance(NetTypeInfo* typeInfo)
 {
     NetInstance* instance = new NetInstance(NetTypeInfoManager::callbacks->GetNetInterType((char*)typeInfo->GetTypeName().c_str()));
-    NetTypeInfoManager::callbacks->CreateInstance((char*)typeInfo->GetTypeName().c_str(), instance);
+    NetTypeInfoManager::callbacks->CreateInstance(typeInfo, instance);
     return instance;
+}
+
+NetInstance* NetTypeInfoManager::ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target)
+{
+    NetInstance* result = new NetInstance(propertyInfo->GetReturnType()->GetInterType());
+    NetTypeInfoManager::callbacks->ReadProperty(propertyInfo, target, result);
+    return result;
 }

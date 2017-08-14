@@ -2,6 +2,7 @@
 
 NetInstance::NetInstance(NetInterTypeEnum interType) :
     interType(interType),
+    boolValue(false),
     value(0)
 {
 
@@ -10,6 +11,16 @@ NetInstance::NetInstance(NetInterTypeEnum interType) :
 NetInterTypeEnum NetInstance::GetInterType()
 {
     return interType;
+}
+
+void NetInstance::SetBool(bool value)
+{
+    boolValue = value;
+}
+
+bool NetInstance::GetBool()
+{
+    return boolValue;
 }
 
 void NetInstance::SetValue(void* value)

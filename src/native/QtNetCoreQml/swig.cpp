@@ -572,25 +572,42 @@ void SwigDirector_NetTypeInfoCallbacks::BuildTypeInfo(NetTypeInfo *typeInfo) {
   }
 }
 
-void SwigDirector_NetTypeInfoCallbacks::CreateInstance(char *typeName, NetInstance *instance) {
-  char * jtypeName = 0 ;
+void SwigDirector_NetTypeInfoCallbacks::CreateInstance(NetTypeInfo *typeInfo, NetInstance *instance) {
+  void * jtypeInfo = 0 ;
   void * jinstance = 0 ;
   
   if (!swig_callbackCreateInstance) {
-    NetTypeInfoCallbacks::CreateInstance(typeName,instance);
+    NetTypeInfoCallbacks::CreateInstance(typeInfo,instance);
     return;
   } else {
-    jtypeName = SWIG_csharp_string_callback((const char *)typeName); 
+    jtypeInfo = (void *) typeInfo; 
     jinstance = (void *) instance; 
-    swig_callbackCreateInstance(jtypeName, jinstance);
+    swig_callbackCreateInstance(jtypeInfo, jinstance);
   }
 }
 
-void SwigDirector_NetTypeInfoCallbacks::swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackGetNetInterType, SWIG_Callback2_t callbackBuildTypeInfo, SWIG_Callback3_t callbackCreateInstance) {
+void SwigDirector_NetTypeInfoCallbacks::ReadProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *result) {
+  void * jpropertyInfo = 0 ;
+  void * jtarget = 0 ;
+  void * jresult = 0 ;
+  
+  if (!swig_callbackReadProperty) {
+    NetTypeInfoCallbacks::ReadProperty(propertyInfo,target,result);
+    return;
+  } else {
+    jpropertyInfo = (void *) propertyInfo; 
+    jtarget = (void *) target; 
+    jresult = (void *) result; 
+    swig_callbackReadProperty(jpropertyInfo, jtarget, jresult);
+  }
+}
+
+void SwigDirector_NetTypeInfoCallbacks::swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackGetNetInterType, SWIG_Callback2_t callbackBuildTypeInfo, SWIG_Callback3_t callbackCreateInstance, SWIG_Callback4_t callbackReadProperty) {
   swig_callbackisValidType = callbackisValidType;
   swig_callbackGetNetInterType = callbackGetNetInterType;
   swig_callbackBuildTypeInfo = callbackBuildTypeInfo;
   swig_callbackCreateInstance = callbackCreateInstance;
+  swig_callbackReadProperty = callbackReadProperty;
 }
 
 void SwigDirector_NetTypeInfoCallbacks::swig_init_callbacks() {
@@ -598,6 +615,7 @@ void SwigDirector_NetTypeInfoCallbacks::swig_init_callbacks() {
   swig_callbackGetNetInterType = 0;
   swig_callbackBuildTypeInfo = 0;
   swig_callbackCreateInstance = 0;
+  swig_callbackReadProperty = 0;
 }
 
 
@@ -1089,6 +1107,28 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NetInstance_GetInterType(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetInstance_SetBool(void * jarg1, unsigned int jarg2) {
+  NetInstance *arg1 = (NetInstance *) 0 ;
+  bool arg2 ;
+  
+  arg1 = (NetInstance *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  (arg1)->SetBool(arg2);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInstance_GetBool(void * jarg1) {
+  unsigned int jresult ;
+  NetInstance *arg1 = (NetInstance *) 0 ;
+  bool result;
+  
+  arg1 = (NetInstance *)jarg1; 
+  result = (bool)(arg1)->GetBool();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_NetInstance_SetValue(void * jarg1, void * jarg2) {
   NetInstance *arg1 = (NetInstance *) 0 ;
   void *arg2 = (void *) 0 ;
@@ -1511,27 +1551,55 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_BuildTypeInfoSwigExplici
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_CreateInstance(void * jarg1, char * jarg2, void * jarg3) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_CreateInstance(void * jarg1, void * jarg2, void * jarg3) {
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
-  char *arg2 = (char *) 0 ;
+  NetTypeInfo *arg2 = (NetTypeInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
-  arg2 = (char *)jarg2; 
+  arg2 = (NetTypeInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
   (arg1)->CreateInstance(arg2,arg3);
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_CreateInstanceSwigExplicitNetTypeInfoCallbacks(void * jarg1, char * jarg2, void * jarg3) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_CreateInstanceSwigExplicitNetTypeInfoCallbacks(void * jarg1, void * jarg2, void * jarg3) {
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
-  char *arg2 = (char *) 0 ;
+  NetTypeInfo *arg2 = (NetTypeInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
-  arg2 = (char *)jarg2; 
+  arg2 = (NetTypeInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
   (arg1)->NetTypeInfoCallbacks::CreateInstance(arg2,arg3);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_ReadProperty(void * jarg1, void * jarg2, void * jarg3, void * jarg4) {
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
+  NetPropertyInfo *arg2 = (NetPropertyInfo *) 0 ;
+  NetInstance *arg3 = (NetInstance *) 0 ;
+  NetInstance *arg4 = (NetInstance *) 0 ;
+  
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  arg2 = (NetPropertyInfo *)jarg2; 
+  arg3 = (NetInstance *)jarg3; 
+  arg4 = (NetInstance *)jarg4; 
+  (arg1)->ReadProperty(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_ReadPropertySwigExplicitNetTypeInfoCallbacks(void * jarg1, void * jarg2, void * jarg3, void * jarg4) {
+  NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
+  NetPropertyInfo *arg2 = (NetPropertyInfo *) 0 ;
+  NetInstance *arg3 = (NetInstance *) 0 ;
+  NetInstance *arg4 = (NetInstance *) 0 ;
+  
+  arg1 = (NetTypeInfoCallbacks *)jarg1; 
+  arg2 = (NetPropertyInfo *)jarg2; 
+  arg3 = (NetInstance *)jarg3; 
+  arg4 = (NetInstance *)jarg4; 
+  (arg1)->NetTypeInfoCallbacks::ReadProperty(arg2,arg3,arg4);
 }
 
 
@@ -1545,11 +1613,11 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTypeInfoCallbacks() {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_director_connect(void *objarg, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback0_t callback0, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback1_t callback1, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback2_t callback2, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback3_t callback3) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_director_connect(void *objarg, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback0_t callback0, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback1_t callback1, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback2_t callback2, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback3_t callback3, SwigDirector_NetTypeInfoCallbacks::SWIG_Callback4_t callback4) {
   NetTypeInfoCallbacks *obj = (NetTypeInfoCallbacks *)objarg;
   SwigDirector_NetTypeInfoCallbacks *director = dynamic_cast<SwigDirector_NetTypeInfoCallbacks *>(obj);
   if (director) {
-    director->swig_connect_director(callback0, callback1, callback2, callback3);
+    director->swig_connect_director(callback0, callback1, callback2, callback3, callback4);
   }
 }
 
@@ -1645,6 +1713,20 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_CreateInstance(void * ja
   
   arg1 = (NetTypeInfo *)jarg1; 
   result = (NetInstance *)NetTypeInfoManager::CreateInstance(arg1);
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_ReadProperty(void * jarg1, void * jarg2) {
+  void * jresult ;
+  NetPropertyInfo *arg1 = (NetPropertyInfo *) 0 ;
+  NetInstance *arg2 = (NetInstance *) 0 ;
+  NetInstance *result = 0 ;
+  
+  arg1 = (NetPropertyInfo *)jarg1; 
+  arg2 = (NetInstance *)jarg2; 
+  result = (NetInstance *)NetTypeInfoManager::ReadProperty(arg1,arg2);
   jresult = (void *)result; 
   return jresult;
 }

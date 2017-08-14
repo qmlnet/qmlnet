@@ -11,7 +11,8 @@ public:
 	virtual bool isValidType(char* typeName);
     virtual NetInterTypeEnum GetNetInterType(char* typeName);
     virtual void BuildTypeInfo(NetTypeInfo* typeInfo);
-    virtual void CreateInstance(char* typeName, NetInstance* instance);
+    virtual void CreateInstance(NetTypeInfo* typeInfo, NetInstance* instance);
+    virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* result);
 };
 
 class NetTypeInfoManager
@@ -24,4 +25,5 @@ public:
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
+    static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
 };

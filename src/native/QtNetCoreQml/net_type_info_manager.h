@@ -23,9 +23,14 @@ public:
     virtual void BuildTypeInfo(NetTypeInfo* typeInfo) {
         Q_UNUSED(typeInfo);
     }
-    virtual void CreateInstance(char* typeName, NetInstance* instance) {
-        Q_UNUSED(typeName);
+    virtual void CreateInstance(NetTypeInfo* typeInfo, NetInstance* instance) {
+        Q_UNUSED(typeInfo);
         Q_UNUSED(instance);
+    }
+    virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* result) {
+        Q_UNUSED(propertyInfo);
+        Q_UNUSED(target);
+        Q_UNUSED(result);
     }
 };
 
@@ -39,6 +44,7 @@ public:
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
+    static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
 private:
     static NetTypeInfoCallbacks* callbacks;
     static QMap<QString, NetTypeInfo*> types;

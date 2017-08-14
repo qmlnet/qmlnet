@@ -2,6 +2,8 @@
 #include "net_type_info.h"
 #include "net_type_info_method.h"
 #include "net_type_info_property.h"
+#include "net_type_info_manager.h"
+#include "net_instance.h"
 #include <private/qmetaobjectbuilder_p.h>
 #include <QDebug>
 
@@ -40,7 +42,7 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
     for(int index = 0; index <= typeInfo->GetPropertyCount() - 1; index++)
     {
         NetPropertyInfo* propertyInfo = typeInfo->GetProperty(index);
-        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->GetPropertyName().c_str(), "QString", index);
+        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->GetPropertyName().c_str(), "bool", index);
         propb.setWritable(propertyInfo->CanWrite());
         propb.setReadable(propertyInfo->CanRead());
     }
@@ -62,9 +64,6 @@ GoValueMetaObject::GoValueMetaObject(QObject *value, NetInstance *instance, NetT
 
 int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 {
-    qDebug() << c;
-    qDebug() << idx;
-    qDebug() << a;
     switch(c) {
     case ReadProperty:
         {
@@ -73,8 +72,25 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 return value->qt_metacall(c, idx, a);
             }
 
-            QString *out = reinterpret_cast<QString *>(a[0]);
-            *out = QString("SDFSDF");
+            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - 1);
+
+            switch(propertyInfo->GetReturnType()->GetInterType())
+            {
+            case NetInterTypeEnum_Bool:
+                {
+                    bool *out = reinterpret_cast<bool *>(a[0]);
+                    NetInstance* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
+                    *out = result->GetBool();
+                    delete result;
+                }
+                break;
+            default:
+                qDebug() << "Unsupported inter type: " << propertyInfo->GetReturnType()->GetInterType();
+                break;
+            }
+
+//            QString *out = reinterpret_cast<QString *>(a[0]);
+//            *out = QString("SDFSDF");
 //            NetPropertyInfo* propertyInfo = this->typeInfo->GetProperty(idx);
 //            qDebug() << propertyInfo->GetPropertyName().c_str();
         }

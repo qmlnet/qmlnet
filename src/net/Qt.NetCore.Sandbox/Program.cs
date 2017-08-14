@@ -6,25 +6,15 @@ namespace Qt.NetCore.Sandbox
 {
     public class TestQmlImport
     {
-        private int _testProperty = 3;
-        
-        public void TestMethod()
+        public TestQmlImport()
         {
-            TestStringProperty = "ttt";
+            TestPropertyBool = true;
+            TestPropertyBool2 = false;
         }
 
-        public int TestMethodwithInt()
-        {
-            return 0;
-        }
+        public bool TestPropertyBool { get; set; }
 
-        public int TestProperty
-        {
-            get { return _testProperty; }
-            set { _testProperty = value; }
-        }
-
-        public string TestStringProperty { get; set; }
+        public bool TestPropertyBool2 { get; set; }
     }
 
     class Test

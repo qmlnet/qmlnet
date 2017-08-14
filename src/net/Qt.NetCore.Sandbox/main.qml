@@ -28,7 +28,8 @@ ApplicationWindow {
 	TestQmlImport {
 		Component.onCompleted: {
 			console.log("Test")
-			console.log(testt.TestStringProperty);
+			console.log(testt.TestPropertyBool);
+			console.log(testt.TestPropertyBool2);
 		}
 		id: testt
 	}
