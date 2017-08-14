@@ -3,7 +3,9 @@
 
 #include "qtnetcoreqml_global.h"
 #include <private/qobject_p.h>
-#include "net_type_info.h"
+
+class NetTypeInfo;
+class NetInstance;
 
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo);
 

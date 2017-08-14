@@ -3,9 +3,10 @@
 
 #include <QQmlApplicationEngine>
 
-#include "net_type_info.h"
-#include "net_qml_value.h"
-#include "net_qml_meta.h"
+//#include "net_type_info.h"
+//#include "net_type_info_manager.h"
+//#include "net_qml_value.h"
+//#include "net_qml_meta.h"
 
 #define DEFINE_NETVALUETYPE(N) \
     template<> QMetaObject NetValueType<N>::staticMetaObject = QMetaObject(); \

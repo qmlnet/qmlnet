@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,26 @@ namespace Qt.NetCore
                 return type != null;
             }
 
+            public override NetInterTypeEnum GetNetInterType(string typeName)
+            {
+                var type = Type.GetType(typeName);
+
+                if(type == typeof(bool))
+                    return NetInterTypeEnum.NetInterTypeEnum_Bool;
+                if(type == typeof(int))
+                    return NetInterTypeEnum.NetInterTypeEnum_Int;
+                if(type == typeof(double))
+                    return NetInterTypeEnum.NetInterTypeEnum_Double;
+                if(type == typeof(float))
+                    return NetInterTypeEnum.NetInterTypeEnum_Float;
+                if(type == typeof(string))
+                    return NetInterTypeEnum.NetInterTypeEnum_String;
+                if(type == typeof(DateTime))
+                    return NetInterTypeEnum.NetInterTypeEnum_Date;
+
+                return NetInterTypeEnum.NetInterTypeEnum_Object;
+            }
+
             public override void BuildTypeInfo(NetTypeInfo typeInfo)
             {
                 var type = Type.GetType(typeInfo.GetTypeName());
@@ -32,21 +53,32 @@ namespace Qt.NetCore
                 {
                     if(method.DeclaringType == typeof(Object)) continue;
 
-                    var methodInfo = NetTypeInfoManager.NewMethodInfo(typeInfo, method.Name);
-                    
+                    NetTypeInfo returnType = null;
+
                     if (method.ReturnParameter.ParameterType != typeof(void))
                     {
-                        methodInfo.SetReturnType(
-                            NetTypeInfoManager.GetTypeInfo(
+                        returnType = NetTypeInfoManager.GetTypeInfo(
                                 method.ReturnParameter.ParameterType.FullName + ", " +
-                                method.ReturnParameter.ParameterType.Assembly.FullName));
+                                method.ReturnParameter.ParameterType.Assembly.FullName);
                     }
+
+                    var methodInfo = NetTypeInfoManager.NewMethodInfo(typeInfo, method.Name, returnType);
+
                     foreach (var parameter in method.GetParameters())
                     {
                         methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType.FullName + ", " + parameter.ParameterType.Assembly.FullName));
                     }
 
                     typeInfo.AddMethod(methodInfo);
+                }
+
+                foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    typeInfo.AddProperty(NetTypeInfoManager.NewPropertyInfo(
+                        typeInfo, property.Name,
+                        NetTypeInfoManager.GetTypeInfo(property.PropertyType.FullName + ", " + property.PropertyType.Assembly.FullName),
+                        property.CanRead,
+                        property.CanWrite));
                 }
             }
 

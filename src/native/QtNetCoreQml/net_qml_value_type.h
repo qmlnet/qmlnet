@@ -3,7 +3,8 @@
 
 #include "qtnetcoreqml_global.h"
 #include "qobject.h"
-#include "net_type_info.h"
+#include "net_type_info_manager.h"
+#include "net_qml_value.h"
 
 template <int N>
 class NetValueType : public NetValue

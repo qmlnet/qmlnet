@@ -5,8 +5,12 @@
 
 %template(StringVector) std::vector< std::string >;
 
+%include "Global.i"
 %include "NetInstance.i"
 %include "NetTypeInfo.i"
+%include "NetTypeInfoMethod.i"
+%include "NetTypeInfoProperty.i"
+%include "NetTypeInfoManager.i"
 %include "QCoreApplication.i"
 %include "QGuiApplication.i"
 %include "QQmlApplicationEngine.i"

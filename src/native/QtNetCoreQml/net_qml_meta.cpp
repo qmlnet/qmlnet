@@ -1,5 +1,9 @@
 #include "net_qml_meta.h"
+#include "net_type_info.h"
+#include "net_type_info_method.h"
+#include "net_type_info_property.h"
 #include <private/qmetaobjectbuilder_p.h>
+#include <QDebug>
 
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 {
@@ -15,7 +19,30 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
     for(int index = 0; index <= typeInfo->GetMethodCount() - 1; index++)
     {
         NetMethodInfo* methodInfo = typeInfo->GetMethod(index);
-        mob.addMethod(methodInfo->GetMethodName().c_str());
+        NetTypeInfo* returnType = methodInfo->GetReturnType();
+        QString signature = QString::fromStdString(methodInfo->GetMethodName());
+        signature.append("(");
+        for(int parameterIndex = 0; parameterIndex <= methodInfo->GetParameterCount() - 1; parameterIndex++)
+        {
+            std::string parameterName;
+            NetTypeInfo* parameterType = NULL;
+            methodInfo->GetParameterInfo(0, &parameterName, &parameterType);
+            signature.append(parameterType->GetTypeName().c_str());
+        }
+        signature.append(")");
+        if(returnType) {
+            mob.addMethod(signature.toLocal8Bit().constData());
+        } else {
+            mob.addMethod(signature.toLocal8Bit().constData());
+        }
+    }
+
+    for(int index = 0; index <= typeInfo->GetPropertyCount() - 1; index++)
+    {
+        NetPropertyInfo* propertyInfo = typeInfo->GetProperty(index);
+        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->GetPropertyName().c_str(), "QString", index);
+        propb.setWritable(propertyInfo->CanWrite());
+        propb.setReadable(propertyInfo->CanRead());
     }
 
     QMetaObject *mo = mob.toMetaObject();
@@ -27,7 +54,6 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 GoValueMetaObject::GoValueMetaObject(QObject *value, NetInstance *instance, NetTypeInfo *typeInfo)
     : value(value), instance(instance), typeInfo(typeInfo)
 {
-    //d->parent = static_cast<QAbstractDynamicMetaObject *>(priv->metaObject);
     *static_cast<QMetaObject *>(this) = *metaObjectFor(typeInfo);
 
     QObjectPrivate *objPriv = QObjectPrivate::get(value);
@@ -36,6 +62,27 @@ GoValueMetaObject::GoValueMetaObject(QObject *value, NetInstance *instance, NetT
 
 int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 {
+    qDebug() << c;
+    qDebug() << idx;
+    qDebug() << a;
+    switch(c) {
+    case ReadProperty:
+        {
+            int propOffset = propertyOffset();
+            if (idx < propOffset) {
+                return value->qt_metacall(c, idx, a);
+            }
+
+            QString *out = reinterpret_cast<QString *>(a[0]);
+            *out = QString("SDFSDF");
+//            NetPropertyInfo* propertyInfo = this->typeInfo->GetProperty(idx);
+//            qDebug() << propertyInfo->GetPropertyName().c_str();
+        }
+        break;
+    default:
+        break; // Unhandled.
+    }
+
     return -1;
 }
 

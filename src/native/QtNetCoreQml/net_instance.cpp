@@ -1,9 +1,15 @@
 #include "net_instance.h"
 
-NetInstance::NetInstance() :
+NetInstance::NetInstance(NetInterTypeEnum interType) :
+    interType(interType),
     value(0)
 {
 
+}
+
+NetInterTypeEnum NetInstance::GetInterType()
+{
+    return interType;
 }
 
 void NetInstance::SetValue(void* value)

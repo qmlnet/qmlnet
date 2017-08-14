@@ -1,0 +1,48 @@
+#ifndef NET_TYPE_INFO_MANAGER_H
+#define NET_TYPE_INFO_MANAGER_H
+
+#include "qtnetcoreqml_global.h"
+#include <QMap>
+
+class NetTypeInfo;
+class NetInstance;
+class NetPropertyInfo;
+class NetMethodInfo;
+
+class NetTypeInfoCallbacks {
+public:
+    virtual ~NetTypeInfoCallbacks() { }
+    virtual bool isValidType(char* typeName) {
+        Q_UNUSED(typeName);
+        return false;
+    }
+    virtual NetInterTypeEnum GetNetInterType(char* typeName) {
+        Q_UNUSED(typeName);
+        return NetInterTypeEnum_Object;
+    }
+    virtual void BuildTypeInfo(NetTypeInfo* typeInfo) {
+        Q_UNUSED(typeInfo);
+    }
+    virtual void CreateInstance(char* typeName, NetInstance* instance) {
+        Q_UNUSED(typeName);
+        Q_UNUSED(instance);
+    }
+};
+
+class NetTypeInfoManager {
+public:
+    NetTypeInfoManager();
+    static void setCallbacks(NetTypeInfoCallbacks* callbacks);
+    static bool isValidType(char* typeName);
+    static NetInterTypeEnum GetNetInterType(char* typeName);
+    static NetTypeInfo* GetTypeInfo(char* typeName);
+    static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
+    static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
+    static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
+private:
+    static NetTypeInfoCallbacks* callbacks;
+    static QMap<QString, NetTypeInfo*> types;
+};
+
+
+#endif // NET_TYPE_INFO_MANAGER_H

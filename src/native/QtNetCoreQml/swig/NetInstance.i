@@ -5,7 +5,8 @@
 class NetInstance
 {
 public:
-    NetInstance();
+    NetInstance(NetInterTypeEnum interType);
+    NetInterTypeEnum GetInterType();
     void SetValue(void* value);
     void* GetValue();
 }; 

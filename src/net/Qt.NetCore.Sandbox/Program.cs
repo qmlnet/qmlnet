@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 
 namespace Qt.NetCore.Sandbox
 {
     public class TestQmlImport
     {
+        private int _testProperty = 3;
+        
         public void TestMethod()
         {
+            TestStringProperty = "ttt";
         }
 
         public int TestMethodwithInt()
         {
             return 0;
         }
+
+        public int TestProperty
+        {
+            get { return _testProperty; }
+            set { _testProperty = value; }
+        }
+
+        public string TestStringProperty { get; set; }
     }
 
     class Test
