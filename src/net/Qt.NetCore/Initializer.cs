@@ -116,6 +116,33 @@ namespace Qt.NetCore
                         throw new Exception("Unsupported");
                 }
             }
+
+            public override void WriteProperty(NetPropertyInfo propertyInfo, NetInstance target, NetInstance value)
+            {
+                var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
+                var handle = (GCHandle)handleRef.Handle;
+                var o = handle.Target;
+
+                var pInfo = o.GetType()
+                    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public);
+
+                switch (value.GetInterType())
+                {
+                    case NetInterTypeEnum.NetInterTypeEnum_Bool:
+                        pInfo.SetValue(o, value.GetBool());
+                        break;
+                    case NetInterTypeEnum.NetInterTypeEnum_Int:
+                    case NetInterTypeEnum.NetInterTypeEnum_Double:
+                    case NetInterTypeEnum.NetInterTypeEnum_Float:
+                    case NetInterTypeEnum.NetInterTypeEnum_String:
+                    case NetInterTypeEnum.NetInterTypeEnum_Date:
+                    case NetInterTypeEnum.NetInterTypeEnum_Object:
+                        throw new Exception("Unsupported");
+                        break;
+                    default:
+                        throw new Exception("Unsupported");
+                }
+            }
         }
 
         public static void Initialize()

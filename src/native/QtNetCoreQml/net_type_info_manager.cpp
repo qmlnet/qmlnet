@@ -66,3 +66,8 @@ NetInstance* NetTypeInfoManager::ReadProperty(NetPropertyInfo* propertyInfo, Net
     NetTypeInfoManager::callbacks->ReadProperty(propertyInfo, target, result);
     return result;
 }
+
+void NetTypeInfoManager::WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value)
+{
+    NetTypeInfoManager::callbacks->WriteProperty(propertyInfo, target, value);
+}

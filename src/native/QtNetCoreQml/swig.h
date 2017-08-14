@@ -21,13 +21,15 @@ public:
     virtual void BuildTypeInfo(NetTypeInfo *typeInfo);
     virtual void CreateInstance(NetTypeInfo *typeInfo, NetInstance *instance);
     virtual void ReadProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *result);
+    virtual void WriteProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *value);
 
     typedef unsigned int (SWIGSTDCALL* SWIG_Callback0_t)(char *);
     typedef int (SWIGSTDCALL* SWIG_Callback1_t)(char *);
     typedef void (SWIGSTDCALL* SWIG_Callback2_t)(void *);
     typedef void (SWIGSTDCALL* SWIG_Callback3_t)(void *, void *);
     typedef void (SWIGSTDCALL* SWIG_Callback4_t)(void *, void *, void *);
-    void swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackGetNetInterType, SWIG_Callback2_t callbackBuildTypeInfo, SWIG_Callback3_t callbackCreateInstance, SWIG_Callback4_t callbackReadProperty);
+    typedef void (SWIGSTDCALL* SWIG_Callback5_t)(void *, void *, void *);
+    void swig_connect_director(SWIG_Callback0_t callbackisValidType, SWIG_Callback1_t callbackGetNetInterType, SWIG_Callback2_t callbackBuildTypeInfo, SWIG_Callback3_t callbackCreateInstance, SWIG_Callback4_t callbackReadProperty, SWIG_Callback5_t callbackWriteProperty);
 
 private:
     SWIG_Callback0_t swig_callbackisValidType;
@@ -35,6 +37,7 @@ private:
     SWIG_Callback2_t swig_callbackBuildTypeInfo;
     SWIG_Callback3_t swig_callbackCreateInstance;
     SWIG_Callback4_t swig_callbackReadProperty;
+    SWIG_Callback5_t swig_callbackWriteProperty;
     void swig_init_callbacks();
 };
 

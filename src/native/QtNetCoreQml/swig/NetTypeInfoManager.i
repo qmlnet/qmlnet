@@ -13,6 +13,7 @@ public:
     virtual void BuildTypeInfo(NetTypeInfo* typeInfo);
     virtual void CreateInstance(NetTypeInfo* typeInfo, NetInstance* instance);
     virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* result);
+    virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
 };
 
 class NetTypeInfoManager

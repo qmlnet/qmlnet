@@ -88,11 +88,32 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 qDebug() << "Unsupported inter type: " << propertyInfo->GetReturnType()->GetInterType();
                 break;
             }
+        }
+        break;
+    case WriteProperty:
+        {
+            int propOffset = propertyOffset();
+            if (idx < propOffset) {
+                return value->qt_metacall(c, idx, a);
+            }
 
-//            QString *out = reinterpret_cast<QString *>(a[0]);
-//            *out = QString("SDFSDF");
-//            NetPropertyInfo* propertyInfo = this->typeInfo->GetProperty(idx);
-//            qDebug() << propertyInfo->GetPropertyName().c_str();
+            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - 1);
+
+            switch(propertyInfo->GetReturnType()->GetInterType())
+            {
+            case NetInterTypeEnum_Bool:
+                {
+                    bool *out = reinterpret_cast<bool *>(a[0]);
+                    NetInstance* newValue = new NetInstance(NetInterTypeEnum_Bool);
+                    newValue->SetBool(*out);
+                    NetTypeInfoManager::WriteProperty(propertyInfo, instance, newValue);
+                    delete newValue;
+                }
+                break;
+            default:
+                qDebug() << "Unsupported inter type: " << propertyInfo->GetReturnType()->GetInterType();
+                break;
+            }
         }
         break;
     default:

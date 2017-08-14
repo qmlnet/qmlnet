@@ -30,6 +30,8 @@ ApplicationWindow {
 			console.log("Test")
 			console.log(testt.TestPropertyBool);
 			console.log(testt.TestPropertyBool2);
+			testt.TestPropertyBool = true;
+			testt.TestPropertyBool2 = true;
 		}
 		id: testt
 	}

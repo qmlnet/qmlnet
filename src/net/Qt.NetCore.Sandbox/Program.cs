@@ -6,15 +6,26 @@ namespace Qt.NetCore.Sandbox
 {
     public class TestQmlImport
     {
+        private bool _testPropertyBool;
+        private bool _testPropertyBool2;
+
         public TestQmlImport()
         {
             TestPropertyBool = true;
             TestPropertyBool2 = false;
         }
 
-        public bool TestPropertyBool { get; set; }
+        public bool TestPropertyBool
+        {
+            get { return _testPropertyBool; }
+            set { _testPropertyBool = value; }
+        }
 
-        public bool TestPropertyBool2 { get; set; }
+        public bool TestPropertyBool2
+        {
+            get { return _testPropertyBool2; }
+            set { _testPropertyBool2 = value; }
+        }
     }
 
     class Test

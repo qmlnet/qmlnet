@@ -32,6 +32,11 @@ public:
         Q_UNUSED(target);
         Q_UNUSED(result);
     }
+    virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value) {
+        Q_UNUSED(propertyInfo);
+        Q_UNUSED(target);
+        Q_UNUSED(value);
+    }
 };
 
 class NetTypeInfoManager {
@@ -45,6 +50,7 @@ public:
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
     static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
+    static void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
 private:
     static NetTypeInfoCallbacks* callbacks;
     static QMap<QString, NetTypeInfo*> types;
