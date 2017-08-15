@@ -35,6 +35,11 @@ void packValue(NetInstance* instance, void* value) {
         instance->SetBool(*in);
         break;
     }
+    case NetInterTypeEnum_Int: {
+        int *in = reinterpret_cast<int *>(value);
+        instance->SetInt(*in);
+        break;
+    }
     default:
         qDebug() << "Unsupported intertype: " << instance->GetInterType();
         break;
@@ -46,6 +51,11 @@ void unpackValue(NetInstance* instance, void* value) {
     case NetInterTypeEnum_Bool: {
         bool *out = reinterpret_cast<bool *>(value);
         *out = instance->GetBool();
+        break;
+    }
+    case NetInterTypeEnum_Int: {
+        int* out = reinterpret_cast<int *>(value);
+        *out = instance->GetInt();
         break;
     }
     default:

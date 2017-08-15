@@ -23,6 +23,16 @@ bool NetInstance::GetBool()
     return boolValue;
 }
 
+void NetInstance::SetInt(int value)
+{
+    intValue = value;
+}
+
+int NetInstance::GetInt()
+{
+    return intValue;
+}
+
 void NetInstance::SetValue(void* value)
 {
     this->value = value;

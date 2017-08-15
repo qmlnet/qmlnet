@@ -393,6 +393,15 @@ public class NetInstance : global::System.IDisposable {
     return ret;
   }
 
+  public void SetInt(int value) {
+    QtNetCoreQmlPINVOKE.NetInstance_SetInt(swigCPtr, value);
+  }
+
+  public int GetInt() {
+    int ret = QtNetCoreQmlPINVOKE.NetInstance_GetInt(swigCPtr);
+    return ret;
+  }
+
   public void SetValue(SWIGTYPE_p_void value) {
     QtNetCoreQmlPINVOKE.NetInstance_SetValue(swigCPtr, SWIGTYPE_p_void.getCPtr(value));
   }
@@ -1608,6 +1617,12 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetInstance_GetBool")]
   public static extern bool NetInstance_GetBool(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetInstance_SetInt")]
+  public static extern void NetInstance_SetInt(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetInstance_GetInt")]
+  public static extern int NetInstance_GetInt(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetInstance_SetValue")]
   public static extern void NetInstance_SetValue(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);

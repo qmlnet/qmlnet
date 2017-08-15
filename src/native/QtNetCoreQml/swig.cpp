@@ -1283,6 +1283,28 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInstance_GetBool(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetInstance_SetInt(void * jarg1, int jarg2) {
+  NetInstance *arg1 = (NetInstance *) 0 ;
+  int arg2 ;
+  
+  arg1 = (NetInstance *)jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->SetInt(arg2);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_NetInstance_GetInt(void * jarg1) {
+  int jresult ;
+  NetInstance *arg1 = (NetInstance *) 0 ;
+  int result;
+  
+  arg1 = (NetInstance *)jarg1; 
+  result = (int)(arg1)->GetInt();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_NetInstance_SetValue(void * jarg1, void * jarg2) {
   NetInstance *arg1 = (NetInstance *) 0 ;
   void *arg2 = (void *) 0 ;

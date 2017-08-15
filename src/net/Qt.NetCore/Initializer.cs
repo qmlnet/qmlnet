@@ -26,17 +26,17 @@ namespace Qt.NetCore
             {
                 var type = Type.GetType(typeName);
 
-                if(type == typeof(bool))
+                if (type == typeof(bool))
                     return NetInterTypeEnum.NetInterTypeEnum_Bool;
-                if(type == typeof(int))
+                if (type == typeof(int))
                     return NetInterTypeEnum.NetInterTypeEnum_Int;
-                if(type == typeof(double))
+                if (type == typeof(double))
                     return NetInterTypeEnum.NetInterTypeEnum_Double;
-                if(type == typeof(float))
+                if (type == typeof(float))
                     return NetInterTypeEnum.NetInterTypeEnum_Float;
-                if(type == typeof(string))
+                if (type == typeof(string))
                     return NetInterTypeEnum.NetInterTypeEnum_String;
-                if(type == typeof(DateTime))
+                if (type == typeof(DateTime))
                     return NetInterTypeEnum.NetInterTypeEnum_Date;
 
                 return NetInterTypeEnum.NetInterTypeEnum_Object;
@@ -51,7 +51,7 @@ namespace Qt.NetCore
 
                 foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if(method.DeclaringType == typeof(Object)) continue;
+                    if (method.DeclaringType == typeof(Object)) continue;
 
                     NetTypeInfo returnType = null;
 
@@ -105,13 +105,14 @@ namespace Qt.NetCore
                         result.SetBool((bool)value);
                         break;
                     case NetInterTypeEnum.NetInterTypeEnum_Int:
+                        result.SetInt((int)value);
+                        break;
                     case NetInterTypeEnum.NetInterTypeEnum_Double:
                     case NetInterTypeEnum.NetInterTypeEnum_Float:
                     case NetInterTypeEnum.NetInterTypeEnum_String:
                     case NetInterTypeEnum.NetInterTypeEnum_Date:
                     case NetInterTypeEnum.NetInterTypeEnum_Object:
                         throw new Exception("Unsupported");
-                        break;
                     default:
                         throw new Exception("Unsupported");
                 }
@@ -132,6 +133,8 @@ namespace Qt.NetCore
                         pInfo.SetValue(o, value.GetBool());
                         break;
                     case NetInterTypeEnum.NetInterTypeEnum_Int:
+                        pInfo.SetValue(0, value.GetInt());
+                        break;
                     case NetInterTypeEnum.NetInterTypeEnum_Double:
                     case NetInterTypeEnum.NetInterTypeEnum_Float:
                     case NetInterTypeEnum.NetInterTypeEnum_String:
@@ -162,6 +165,8 @@ namespace Qt.NetCore
                                 methodParameters.Add(parameterInstance.GetBool());
                                 break;
                             case NetInterTypeEnum.NetInterTypeEnum_Int:
+                                methodParameters.Add(parameterInstance.GetInt());
+                                break;
                             case NetInterTypeEnum.NetInterTypeEnum_Double:
                             case NetInterTypeEnum.NetInterTypeEnum_Float:
                             case NetInterTypeEnum.NetInterTypeEnum_String:
@@ -183,7 +188,11 @@ namespace Qt.NetCore
                     var rType = r.GetType();
                     if (rType == typeof(bool))
                     {
-                        result.SetBool((bool) r);
+                        result.SetBool((bool)r);
+                    }
+                    else if (rType == typeof(int))
+                    {
+                        result.SetInt((int)r);
                     }
                     else
                     {
