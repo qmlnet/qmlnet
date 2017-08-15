@@ -71,3 +71,14 @@ void NetTypeInfoManager::WriteProperty(NetPropertyInfo* propertyInfo, NetInstanc
 {
     NetTypeInfoManager::callbacks->WriteProperty(propertyInfo, target, value);
 }
+
+NetInstance* NetTypeInfoManager::InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters)
+{
+    NetTypeInfo* returnType = methodInfo->GetReturnType();
+    NetInstance* result = NULL;
+    if(returnType) {
+        result = new NetInstance(returnType->GetInterType());
+    }
+    NetTypeInfoManager::callbacks->InvokeMethod(methodInfo, target, parameters, result);
+    return result;
+}

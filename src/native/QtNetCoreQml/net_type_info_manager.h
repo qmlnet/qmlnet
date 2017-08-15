@@ -2,6 +2,7 @@
 #define NET_TYPE_INFO_MANAGER_H
 
 #include "qtnetcoreqml_global.h"
+#include <vector>
 #include <QMap>
 
 class NetTypeInfo;
@@ -37,6 +38,12 @@ public:
         Q_UNUSED(target);
         Q_UNUSED(value);
     }
+    virtual void InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters, NetInstance* result) {
+        Q_UNUSED(methodInfo);
+        Q_UNUSED(target);
+        Q_UNUSED(parameters);
+        Q_UNUSED(result);
+    }
 };
 
 class NetTypeInfoManager {
@@ -51,6 +58,7 @@ public:
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
     static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
     static void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
+    static NetInstance* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters);
 private:
     static NetTypeInfoCallbacks* callbacks;
     static QMap<QString, NetTypeInfo*> types;

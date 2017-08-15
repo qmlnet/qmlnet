@@ -5,7 +5,7 @@ NetMethodInfo::NetMethodInfo(NetTypeInfo* parentTypeInfo,
                              NetTypeInfo *returnType) :
     parentTypeInfo(parentTypeInfo),
     methodName(methodName),
-    returnType(NULL)
+    returnType(returnType)
 {
 
 }

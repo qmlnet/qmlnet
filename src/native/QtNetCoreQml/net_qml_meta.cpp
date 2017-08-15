@@ -7,6 +7,27 @@
 #include <private/qmetaobjectbuilder_p.h>
 #include <QDebug>
 
+const char* cppTypeNameFromInterType(NetInterTypeEnum interType) {
+    switch(interType) {
+    case NetInterTypeEnum_Bool:
+        return "bool";
+    case NetInterTypeEnum_Int:
+        return "int";
+    case NetInterTypeEnum_Double:
+        return "double";
+    case NetInterTypeEnum_Float:
+        return "float";
+    case NetInterTypeEnum_String:
+        return "QString";
+    case NetInterTypeEnum_Date:
+        return "QDate";
+    case NetInterTypeEnum_Object:
+        return "QObject";
+    }
+    qDebug() << "Unsupported intertype: " << interType;
+    return NULL;
+}
+
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 {
     if (typeInfo->metaObject) {
@@ -23,17 +44,25 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
         NetMethodInfo* methodInfo = typeInfo->GetMethod(index);
         NetTypeInfo* returnType = methodInfo->GetReturnType();
         QString signature = QString::fromStdString(methodInfo->GetMethodName());
+
         signature.append("(");
+
         for(int parameterIndex = 0; parameterIndex <= methodInfo->GetParameterCount() - 1; parameterIndex++)
         {
+            if(parameterIndex > 0) {
+                signature.append(", ");
+            }
+
             std::string parameterName;
             NetTypeInfo* parameterType = NULL;
             methodInfo->GetParameterInfo(0, &parameterName, &parameterType);
-            signature.append(parameterType->GetTypeName().c_str());
+            signature.append(cppTypeNameFromInterType(parameterType->GetInterType()));
         }
+
         signature.append(")");
+
         if(returnType) {
-            mob.addMethod(signature.toLocal8Bit().constData());
+            mob.addMethod(signature.toLocal8Bit().constData(), cppTypeNameFromInterType(returnType->GetInterType()));
         } else {
             mob.addMethod(signature.toLocal8Bit().constData());
         }
@@ -67,12 +96,12 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
     switch(c) {
     case ReadProperty:
         {
-            int propOffset = propertyOffset();
-            if (idx < propOffset) {
+            int offset = propertyOffset();
+            if (idx < offset) {
                 return value->qt_metacall(c, idx, a);
             }
 
-            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - 1);
+            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
 
             switch(propertyInfo->GetReturnType()->GetInterType())
             {
@@ -92,12 +121,12 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         break;
     case WriteProperty:
         {
-            int propOffset = propertyOffset();
-            if (idx < propOffset) {
+            int offset = propertyOffset();
+            if (idx < offset) {
                 return value->qt_metacall(c, idx, a);
             }
 
-            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - 1);
+            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
 
             switch(propertyInfo->GetReturnType()->GetInterType())
             {
@@ -113,6 +142,34 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             default:
                 qDebug() << "Unsupported inter type: " << propertyInfo->GetReturnType()->GetInterType();
                 break;
+            }
+        }
+        break;
+    case  InvokeMetaMethod:
+        {
+            int offset = methodOffset();
+            if (idx < offset) {
+                return value->qt_metacall(c, idx, a);
+            }
+
+            NetMethodInfo* methodInfo = typeInfo->GetMethod(idx - offset);
+
+            std::vector<NetInstance*> parameters;
+            NetInstance* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
+
+            if(result) {
+                switch(result->GetInterType()) {
+                case NetInterTypeEnum_Bool:
+                {
+                    bool *out = reinterpret_cast<bool *>(a[0]);
+                    *out = result->GetBool();
+                    delete result;
+                    break;
+                }
+                default:
+                    qDebug() << "Unsupported inter type: " << result->GetInterType();
+                    break;
+                }
             }
         }
         break;

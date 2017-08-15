@@ -4,6 +4,7 @@
 %}
 
 %feature("director") NetTypeInfoCallbacks;
+%template(NetInstanceVector) std::vector< NetInstance* >;
 
 class NetTypeInfoCallbacks {
 public:
@@ -14,6 +15,7 @@ public:
     virtual void CreateInstance(NetTypeInfo* typeInfo, NetInstance* instance);
     virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* result);
     virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
+    virtual void InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters, NetInstance* result);
 };
 
 class NetTypeInfoManager
@@ -27,4 +29,5 @@ public:
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
     static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
+    static NetInstance* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters);
 };

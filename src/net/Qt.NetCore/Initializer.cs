@@ -138,9 +138,32 @@ namespace Qt.NetCore
                     case NetInterTypeEnum.NetInterTypeEnum_Date:
                     case NetInterTypeEnum.NetInterTypeEnum_Object:
                         throw new Exception("Unsupported");
-                        break;
                     default:
                         throw new Exception("Unsupported");
+                }
+            }
+
+            public override void InvokeMethod(NetMethodInfo methodInfo, NetInstance target, NetInstanceVector parameters, NetInstance result)
+            {
+                var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
+                var handle = (GCHandle)handleRef.Handle;
+                var o = handle.Target;
+
+                var r = o.GetType()
+                    .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
+                    .Invoke(o, new object[0]);
+
+                if (r != null)
+                {
+                    var rType = r.GetType();
+                    if (rType == typeof(bool))
+                    {
+                        result.SetBool((bool) r);
+                    }
+                    else
+                    {
+                        throw new Exception("Unsupported");
+                    }
                 }
             }
         }

@@ -26,6 +26,16 @@ namespace Qt.NetCore.Sandbox
             get { return _testPropertyBool2; }
             set { _testPropertyBool2 = value; }
         }
+
+        public void TestMethod()
+        {
+            
+        }
+
+        public bool TestMethodReturnBool()
+        {
+            return false;
+        }
     }
 
     class Test
