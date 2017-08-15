@@ -28,6 +28,32 @@ const char* cppTypeNameFromInterType(NetInterTypeEnum interType) {
     return NULL;
 }
 
+void packValue(NetInstance* instance, void* value) {
+    switch(instance->GetInterType()) {
+    case NetInterTypeEnum_Bool: {
+        bool *in = reinterpret_cast<bool *>(value);
+        instance->SetBool(*in);
+        break;
+    }
+    default:
+        qDebug() << "Unsupported intertype: " << instance->GetInterType();
+        break;
+    }
+}
+
+void unpackValue(NetInstance* instance, void* value) {
+    switch(instance->GetInterType()) {
+    case NetInterTypeEnum_Bool: {
+        bool *out = reinterpret_cast<bool *>(value);
+        *out = instance->GetBool();
+        break;
+    }
+    default:
+        qDebug() << "Unsupported intertype: " << instance->GetInterType();
+        break;
+    }
+}
+
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 {
     if (typeInfo->metaObject) {
@@ -71,7 +97,9 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
     for(int index = 0; index <= typeInfo->GetPropertyCount() - 1; index++)
     {
         NetPropertyInfo* propertyInfo = typeInfo->GetProperty(index);
-        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->GetPropertyName().c_str(), "bool", index);
+        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->GetPropertyName().c_str(),
+            cppTypeNameFromInterType(propertyInfo->GetReturnType()->GetInterType()),
+            index);
         propb.setWritable(propertyInfo->CanWrite());
         propb.setReadable(propertyInfo->CanRead());
     }
@@ -103,20 +131,9 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
             NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
 
-            switch(propertyInfo->GetReturnType()->GetInterType())
-            {
-            case NetInterTypeEnum_Bool:
-                {
-                    bool *out = reinterpret_cast<bool *>(a[0]);
-                    NetInstance* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
-                    *out = result->GetBool();
-                    delete result;
-                }
-                break;
-            default:
-                qDebug() << "Unsupported inter type: " << propertyInfo->GetReturnType()->GetInterType();
-                break;
-            }
+            NetInstance* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
+
+            unpackValue(result, a[0]);
         }
         break;
     case WriteProperty:
@@ -128,21 +145,12 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
             NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
 
-            switch(propertyInfo->GetReturnType()->GetInterType())
-            {
-            case NetInterTypeEnum_Bool:
-                {
-                    bool *out = reinterpret_cast<bool *>(a[0]);
-                    NetInstance* newValue = new NetInstance(NetInterTypeEnum_Bool);
-                    newValue->SetBool(*out);
-                    NetTypeInfoManager::WriteProperty(propertyInfo, instance, newValue);
-                    delete newValue;
-                }
-                break;
-            default:
-                qDebug() << "Unsupported inter type: " << propertyInfo->GetReturnType()->GetInterType();
-                break;
-            }
+            NetInstance* newValue = new NetInstance(propertyInfo->GetReturnType()->GetInterType());
+            packValue(newValue, a[0]);
+
+            NetTypeInfoManager::WriteProperty(propertyInfo, instance, newValue);
+
+            delete newValue;
         }
         break;
     case  InvokeMetaMethod:
@@ -155,21 +163,22 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             NetMethodInfo* methodInfo = typeInfo->GetMethod(idx - offset);
 
             std::vector<NetInstance*> parameters;
+
+            for(int index = 0; index <= methodInfo->GetParameterCount() - 1; index++)
+            {
+                NetTypeInfo* typeInfo = NULL;
+                methodInfo->GetParameterInfo(index, NULL, &typeInfo);
+
+                NetInstance* instance = new NetInstance(typeInfo->GetInterType());
+                packValue(instance, a[index + 1]);
+
+                parameters.insert(parameters.end(), instance);
+            }
+
             NetInstance* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
 
             if(result) {
-                switch(result->GetInterType()) {
-                case NetInterTypeEnum_Bool:
-                {
-                    bool *out = reinterpret_cast<bool *>(a[0]);
-                    *out = result->GetBool();
-                    delete result;
-                    break;
-                }
-                default:
-                    qDebug() << "Unsupported inter type: " << result->GetInterType();
-                    break;
-                }
+                unpackValue(result, a[0]);
             }
         }
         break;

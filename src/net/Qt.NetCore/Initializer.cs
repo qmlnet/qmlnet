@@ -143,15 +143,40 @@ namespace Qt.NetCore
                 }
             }
 
-            public override void InvokeMethod(NetMethodInfo methodInfo, NetInstance target, NetInstanceVector parameters, NetInstance result)
+            public override void InvokeMethod(NetMethodInfo @methodInfo, NetInstance @target, NetInstanceVector parameters, NetInstance @result)
             {
                 var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
                 var handle = (GCHandle)handleRef.Handle;
                 var o = handle.Target;
 
+                List<object> methodParameters = null;
+
+                if (parameters.Count > 0)
+                {
+                    methodParameters = new List<object>();
+                    foreach (var parameterInstance in parameters)
+                    {
+                        switch (parameterInstance.GetInterType())
+                        {
+                            case NetInterTypeEnum.NetInterTypeEnum_Bool:
+                                methodParameters.Add(parameterInstance.GetBool());
+                                break;
+                            case NetInterTypeEnum.NetInterTypeEnum_Int:
+                            case NetInterTypeEnum.NetInterTypeEnum_Double:
+                            case NetInterTypeEnum.NetInterTypeEnum_Float:
+                            case NetInterTypeEnum.NetInterTypeEnum_String:
+                            case NetInterTypeEnum.NetInterTypeEnum_Date:
+                            case NetInterTypeEnum.NetInterTypeEnum_Object:
+                                throw new Exception("Unsupported");
+                            default:
+                                throw new Exception("Unsupported");
+                        }
+                    }
+                }
+
                 var r = o.GetType()
                     .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
-                    .Invoke(o, new object[0]);
+                    .Invoke(o, methodParameters?.ToArray());
 
                 if (r != null)
                 {

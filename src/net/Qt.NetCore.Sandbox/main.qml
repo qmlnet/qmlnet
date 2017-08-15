@@ -28,7 +28,8 @@ ApplicationWindow {
 	TestQmlImport {
 		Component.onCompleted: {
 			console.log("Test")
-			console.log(testt.TestMethodReturnBool())
+			console.log(testt.TestMethodReturnBoolParamBool(true))
+			console.log(testt.TestMethodReturnBoolParamBool(false))
 		}
 		id: testt
 	}

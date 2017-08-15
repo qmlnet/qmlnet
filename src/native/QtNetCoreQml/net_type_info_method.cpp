@@ -35,6 +35,8 @@ void NetMethodInfo::GetParameterInfo(int index, std::string *parameterName, NetT
     if(index < 0) return;
     if(index >= parameters.length()) return;
 
-    *parameterName = parameters.at(0).name;
-    *typeInfo = parameters.at(0).typeInfo;
+    if(parameterName)
+        *parameterName = parameters.at(0).name;
+    if(typeInfo)
+        *typeInfo = parameters.at(0).typeInfo;
 }

@@ -36,6 +36,11 @@ namespace Qt.NetCore.Sandbox
         {
             return false;
         }
+
+        public bool TestMethodReturnBoolParamBool(bool param)
+        {
+            return param;
+        }
     }
 
     class Test
