@@ -10,24 +10,20 @@ class NetTypeInfoCallbacks {
 public:
     virtual ~NetTypeInfoCallbacks() { }
 	virtual bool isValidType(char* typeName);
-    virtual NetInterTypeEnum GetNetInterType(char* typeName);
     virtual void BuildTypeInfo(NetTypeInfo* typeInfo);
-    virtual void CreateInstance(NetTypeInfo* typeInfo, NetInstance* instance);
+    virtual void CreateInstance(NetTypeInfo* typeInfo, NetGCHandle** instance);
     virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* result);
     virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
     virtual void InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters, NetInstance* result);
+    virtual void ReleaseGCHandle(NetGCHandle* gcHandle);
 };
 
 class NetTypeInfoManager
 {
 public:
     static void setCallbacks(NetTypeInfoCallbacks* callbacks);
-    static bool isValidType(char* typeName);
-    static NetInterTypeEnum GetNetInterType(char* typeName);
     static NetTypeInfo* GetTypeInfo(char* typeName);
+    static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
-    static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
-    static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
-    static NetInstance* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters);
 };

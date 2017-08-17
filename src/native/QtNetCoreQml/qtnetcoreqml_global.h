@@ -3,14 +3,16 @@
 
 #include <QtCore/qglobal.h>
 
-enum NetInterTypeEnum {
-    NetInterTypeEnum_Bool,
-    NetInterTypeEnum_Int,
-    NetInterTypeEnum_Double,
-    NetInterTypeEnum_Float,
-    NetInterTypeEnum_String,
-    NetInterTypeEnum_Date,
-    NetInterTypeEnum_Object
+enum NetVariantTypeEnum {
+    NetVariantTypeEnum_Invalid,
+    NetVariantTypeEnum_Bool,
+    NetVariantTypeEnum_Int,
+    NetVariantTypeEnum_Double,
+    NetVariantTypeEnum_String,
+    NetVariantTypeEnum_Date,
+    NetVariantTypeEnum_Object
 };
+
+#define NetGCHandle void
 
 #endif // QTNETCOREQML_GLOBAL_H

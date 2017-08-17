@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
+using System.Threading;
 
 namespace Qt.NetCore.Sandbox
 {
@@ -11,8 +13,14 @@ namespace Qt.NetCore.Sandbox
 
         public TestQmlImport()
         {
+            Console.WriteLine("Ctor");
             TestPropertyBool = true;
             TestPropertyBool2 = false;
+        }
+
+        ~TestQmlImport()
+        {
+            Console.WriteLine("~Ctor");
         }
 
         public bool TestPropertyBool
@@ -42,51 +50,52 @@ namespace Qt.NetCore.Sandbox
             return param;
         }
     }
-
-    class Test
-    {
-        public string TT { get; set; }
-    }
-
+    
     class Program
     {
         static int Main(string[] args)
         {
-            var tt = new Test {TT = "sdfsd"};
-
-            var handle = GCHandle.Alloc(tt);
-
-            var ptr = GCHandle.ToIntPtr(handle);
-            
-
-
-
             var path = System.Environment.GetEnvironmentVariable("PATH");
             path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
             System.Environment.SetEnvironmentVariable("PATH", path);
          
             Initializer.Initialize();
 
-            QCoreApplication.setAttribute(ApplicationAttribute.AA_EnableHighDpiScaling);
-            
-            using (var r = new StringVector(0))
-            {
-                using (var app = new QGuiApplication(r))
-                {
-                    using (var engine = new QQmlApplicationEngine())
-                    {
-                        //while (true)
-                        {
-                            Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
-                            GC.Collect(GC.MaxGeneration);
-                        }
-                        //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+            var typeInfo = NetTypeInfoManager.GetTypeInfo(typeof(TestQmlImport).FullName + ", " +
+                                           typeof(TestQmlImport).Assembly.FullName);
 
-                        engine.loadFile("main.qml");
-                        return app.exec();
-                    }
-                }
+            var netVariant = new NetVariant();
+            Console.WriteLine(netVariant.GetVariantType());
+            netVariant.SetNetInstance(NetTypeInfoManager.CreateInstance(typeInfo));
+            Console.WriteLine(netVariant.GetVariantType());
+            netVariant.SetInt(0);
+            //netVariant.Dispose();
+
+            while (true)
+            {
+                GC.Collect(GC.MaxGeneration);
             }
+
+            return 0;
+
+            //using (var r = new StringVector(0))
+            //{
+            //    using (var app = new QGuiApplication(r))
+            //    {
+            //        using (var engine = new QQmlApplicationEngine())
+            //        {
+            //            //while (true)
+            //            {
+            //                Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
+            //                GC.Collect(GC.MaxGeneration);
+            //            }
+            //            //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+
+            //            engine.loadFile("main.qml");
+            //            return app.exec();
+            //        }
+            //    }
+            //}
         }
     }
 }

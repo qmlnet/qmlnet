@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import test 1.1
+import test.io 1.0
 
 ApplicationWindow {
     visible: true
@@ -25,11 +26,16 @@ ApplicationWindow {
         }
     }
 
-	TestQmlImport {
+	TestObject {
 		Component.onCompleted: {
-			console.log("Test")
-			console.log(testt.TestMethodReturnIntParamInt(3))
-			console.log(testt.TestMethodReturnIntParamInt(5))
+			{
+				console.log("Test")
+				var newo = testt.GetAnotherNewObject()
+				newo.DoSomething(newo)
+				console.log("Calling destroy")
+				newo.destroy()
+				console.log("Called destroy")
+			}
 		}
 		id: testt
 	}

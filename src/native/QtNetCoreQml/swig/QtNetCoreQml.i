@@ -5,8 +5,10 @@
 
 %template(StringVector) std::vector< std::string >;
 
+%include "void.i"
 %include "Global.i"
 %include "NetInstance.i"
+%include "NetVariant.i"
 %include "NetTypeInfo.i"
 %include "NetTypeInfoMethod.i"
 %include "NetTypeInfoProperty.i"

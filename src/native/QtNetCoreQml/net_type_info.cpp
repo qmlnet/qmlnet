@@ -1,9 +1,8 @@
 #include "net_type_info.h"
 #include <QDebug>
 
-NetTypeInfo::NetTypeInfo(std::string typeName, NetInterTypeEnum interType) :
+NetTypeInfo::NetTypeInfo(std::string typeName) :
     typeName(typeName),
-    interType(interType),
     metaObject(NULL)
 {
 
@@ -21,11 +20,6 @@ NetTypeInfo::~NetTypeInfo()
 std::string NetTypeInfo::GetTypeName()
 {
     return typeName;
-}
-
-NetInterTypeEnum NetTypeInfo::GetInterType()
-{
-    return interType;
 }
 
 void NetTypeInfo::AddMethod(NetMethodInfo* methodInfo)

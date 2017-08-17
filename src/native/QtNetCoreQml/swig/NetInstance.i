@@ -5,12 +5,7 @@
 class NetInstance
 {
 public:
-    NetInstance(NetInterTypeEnum interType);
-    NetInterTypeEnum GetInterType();
-    void SetBool(bool value);
-    bool GetBool();
-    void SetInt(int value);
-    int GetInt();
-    void SetValue(void* value);
-    void* GetValue();
-}; 
+    NetInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo);
+    NetGCHandle* GetGCHandle();
+    NetTypeInfo* GetTypeInfo();
+};

@@ -5,10 +5,9 @@
 
 class NetTypeInfo {
 public:
-    NetTypeInfo(std::string typeName, NetInterTypeEnum interType);
+    NetTypeInfo(std::string typeName);
     ~NetTypeInfo();
     std::string GetTypeName();
-    NetInterTypeEnum GetInterType();
     void AddMethod(NetMethodInfo* methodInfo);
     int GetMethodCount();
     NetMethodInfo* GetMethod(int index);

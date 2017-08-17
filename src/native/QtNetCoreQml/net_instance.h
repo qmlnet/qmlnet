@@ -2,23 +2,19 @@
 #define NET_INSTANCE_H
 
 #include "qtnetcoreqml_global.h"
+#include <QVariant>
+#include "net_type_info.h"
 
 class NetInstance
 {
 public:
-    NetInstance(NetInterTypeEnum interType);
-    NetInterTypeEnum GetInterType();
-    void SetBool(bool value);
-    bool GetBool();
-    void SetInt(int value);
-    int GetInt();
-    void SetValue(void* value);
-    void* GetValue();
+    NetInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo);
+    ~NetInstance();
+    NetGCHandle* GetGCHandle();
+    NetTypeInfo* GetTypeInfo();
 private:
-    NetInterTypeEnum interType;
-    bool boolValue;
-    int intValue;
-    void* value;
+    NetGCHandle* gcHandle;
+    NetTypeInfo* typeInfo;
 };
 
 #endif // NET_INSTANCE_H

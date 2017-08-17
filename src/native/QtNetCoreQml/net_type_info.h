@@ -11,10 +11,9 @@ class NetPropertyInfo;
 
 class NetTypeInfo {
 public:
-    NetTypeInfo(std::string typeName, NetInterTypeEnum interType);
+    NetTypeInfo(std::string typeName);
     ~NetTypeInfo();
     std::string GetTypeName();
-    NetInterTypeEnum GetInterType();
     void AddMethod(NetMethodInfo* methodInfo);
     int GetMethodCount();
     NetMethodInfo* GetMethod(int index);
@@ -26,7 +25,6 @@ private:
     std::string typeName;
     QList<NetMethodInfo*> methods;
     QList<NetPropertyInfo*> properties;
-    NetInterTypeEnum interType;
 };
 
 

@@ -1,44 +1,26 @@
 #include "net_instance.h"
+#include "net_type_info_manager.h"
 
-NetInstance::NetInstance(NetInterTypeEnum interType) :
-    interType(interType),
-    boolValue(false),
-    value(0)
+NetInstance::NetInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo) :
+    gcHandle(gcHandle),
+    typeInfo(typeInfo)
 {
 
 }
 
-NetInterTypeEnum NetInstance::GetInterType()
+NetInstance::~NetInstance()
 {
-    return interType;
+    NetTypeInfoManager::ReleaseGCHandle(gcHandle);
+    gcHandle = NULL;
+    typeInfo = NULL;
 }
 
-void NetInstance::SetBool(bool value)
+NetGCHandle* NetInstance::GetGCHandle()
 {
-    boolValue = value;
+    return gcHandle;
 }
 
-bool NetInstance::GetBool()
+NetTypeInfo* NetInstance::GetTypeInfo()
 {
-    return boolValue;
-}
-
-void NetInstance::SetInt(int value)
-{
-    intValue = value;
-}
-
-int NetInstance::GetInt()
-{
-    return intValue;
-}
-
-void NetInstance::SetValue(void* value)
-{
-    this->value = value;
-}
-
-void* NetInstance::GetValue()
-{
-    return value;
+    return typeInfo;
 }

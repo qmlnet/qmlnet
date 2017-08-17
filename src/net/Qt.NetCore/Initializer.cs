@@ -21,27 +21,7 @@ namespace Qt.NetCore
                 var type = Type.GetType(typeName);
                 return type != null;
             }
-
-            public override NetInterTypeEnum GetNetInterType(string typeName)
-            {
-                var type = Type.GetType(typeName);
-
-                if (type == typeof(bool))
-                    return NetInterTypeEnum.NetInterTypeEnum_Bool;
-                if (type == typeof(int))
-                    return NetInterTypeEnum.NetInterTypeEnum_Int;
-                if (type == typeof(double))
-                    return NetInterTypeEnum.NetInterTypeEnum_Double;
-                if (type == typeof(float))
-                    return NetInterTypeEnum.NetInterTypeEnum_Float;
-                if (type == typeof(string))
-                    return NetInterTypeEnum.NetInterTypeEnum_String;
-                if (type == typeof(DateTime))
-                    return NetInterTypeEnum.NetInterTypeEnum_Date;
-
-                return NetInterTypeEnum.NetInterTypeEnum_Object;
-            }
-
+            
             public override void BuildTypeInfo(NetTypeInfo typeInfo)
             {
                 var type = Type.GetType(typeInfo.GetTypeName());
@@ -82,123 +62,131 @@ namespace Qt.NetCore
                 }
             }
 
-            public override void CreateInstance(NetTypeInfo typeInfo, NetInstance instance)
+            public override void CreateInstance(NetTypeInfo typeInfo, ref IntPtr instance)
             {
                 var o = Activator.CreateInstance(Type.GetType(typeInfo.GetTypeName()));
                 var handle = GCHandle.Alloc(o);
-                instance.SetValue(new SWIGTYPE_p_void(GCHandle.ToIntPtr(handle), true));
+                instance = GCHandle.ToIntPtr(handle);
             }
+            
 
             public override void ReadProperty(NetPropertyInfo propertyInfo, NetInstance target, NetInstance result)
             {
-                var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
-                var handle = (GCHandle)handleRef.Handle;
-                var o = handle.Target;
+                //var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
+                //var handle = (GCHandle)handleRef.Handle;
+                //var o = handle.Target;
 
-                var value = o.GetType()
-                    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public)
-                    .GetValue(o);
+                //var value = o.GetType()
+                //    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public)
+                //    .GetValue(o);
 
-                switch (result.GetInterType())
-                {
-                    case NetInterTypeEnum.NetInterTypeEnum_Bool:
-                        result.SetBool((bool)value);
-                        break;
-                    case NetInterTypeEnum.NetInterTypeEnum_Int:
-                        result.SetInt((int)value);
-                        break;
-                    case NetInterTypeEnum.NetInterTypeEnum_Double:
-                    case NetInterTypeEnum.NetInterTypeEnum_Float:
-                    case NetInterTypeEnum.NetInterTypeEnum_String:
-                    case NetInterTypeEnum.NetInterTypeEnum_Date:
-                    case NetInterTypeEnum.NetInterTypeEnum_Object:
-                        throw new Exception("Unsupported");
-                    default:
-                        throw new Exception("Unsupported");
-                }
+                //switch (result.GetInterType())
+                //{
+                //    case NetInterTypeEnum.NetInterTypeEnum_Bool:
+                //        result.SetBool((bool)value);
+                //        break;
+                //    case NetInterTypeEnum.NetInterTypeEnum_Int:
+                //        result.SetInt((int)value);
+                //        break;
+                //    case NetInterTypeEnum.NetInterTypeEnum_Double:
+                //    case NetInterTypeEnum.NetInterTypeEnum_Float:
+                //    case NetInterTypeEnum.NetInterTypeEnum_String:
+                //    case NetInterTypeEnum.NetInterTypeEnum_Date:
+                //    case NetInterTypeEnum.NetInterTypeEnum_Object:
+                //        throw new Exception("Unsupported");
+                //    default:
+                //        throw new Exception("Unsupported");
+                //}
             }
 
             public override void WriteProperty(NetPropertyInfo propertyInfo, NetInstance target, NetInstance value)
             {
-                var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
-                var handle = (GCHandle)handleRef.Handle;
-                var o = handle.Target;
+                //var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
+                //var handle = (GCHandle)handleRef.Handle;
+                //var o = handle.Target;
 
-                var pInfo = o.GetType()
-                    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public);
+                //var pInfo = o.GetType()
+                //    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public);
 
-                switch (value.GetInterType())
-                {
-                    case NetInterTypeEnum.NetInterTypeEnum_Bool:
-                        pInfo.SetValue(o, value.GetBool());
-                        break;
-                    case NetInterTypeEnum.NetInterTypeEnum_Int:
-                        pInfo.SetValue(0, value.GetInt());
-                        break;
-                    case NetInterTypeEnum.NetInterTypeEnum_Double:
-                    case NetInterTypeEnum.NetInterTypeEnum_Float:
-                    case NetInterTypeEnum.NetInterTypeEnum_String:
-                    case NetInterTypeEnum.NetInterTypeEnum_Date:
-                    case NetInterTypeEnum.NetInterTypeEnum_Object:
-                        throw new Exception("Unsupported");
-                    default:
-                        throw new Exception("Unsupported");
-                }
+                //switch (value.GetInterType())
+                //{
+                //    case NetInterTypeEnum.NetInterTypeEnum_Bool:
+                //        pInfo.SetValue(o, value.GetBool());
+                //        break;
+                //    case NetInterTypeEnum.NetInterTypeEnum_Int:
+                //        pInfo.SetValue(0, value.GetInt());
+                //        break;
+                //    case NetInterTypeEnum.NetInterTypeEnum_Double:
+                //    case NetInterTypeEnum.NetInterTypeEnum_Float:
+                //    case NetInterTypeEnum.NetInterTypeEnum_String:
+                //    case NetInterTypeEnum.NetInterTypeEnum_Date:
+                //    case NetInterTypeEnum.NetInterTypeEnum_Object:
+                //        throw new Exception("Unsupported");
+                //    default:
+                //        throw new Exception("Unsupported");
+                //}
             }
 
             public override void InvokeMethod(NetMethodInfo @methodInfo, NetInstance @target, NetInstanceVector parameters, NetInstance @result)
             {
-                var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
-                var handle = (GCHandle)handleRef.Handle;
-                var o = handle.Target;
+                //var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
+                //var handle = (GCHandle)handleRef.Handle;
+                //var o = handle.Target;
 
-                List<object> methodParameters = null;
+                //List<object> methodParameters = null;
 
-                if (parameters.Count > 0)
-                {
-                    methodParameters = new List<object>();
-                    foreach (var parameterInstance in parameters)
-                    {
-                        switch (parameterInstance.GetInterType())
-                        {
-                            case NetInterTypeEnum.NetInterTypeEnum_Bool:
-                                methodParameters.Add(parameterInstance.GetBool());
-                                break;
-                            case NetInterTypeEnum.NetInterTypeEnum_Int:
-                                methodParameters.Add(parameterInstance.GetInt());
-                                break;
-                            case NetInterTypeEnum.NetInterTypeEnum_Double:
-                            case NetInterTypeEnum.NetInterTypeEnum_Float:
-                            case NetInterTypeEnum.NetInterTypeEnum_String:
-                            case NetInterTypeEnum.NetInterTypeEnum_Date:
-                            case NetInterTypeEnum.NetInterTypeEnum_Object:
-                                throw new Exception("Unsupported");
-                            default:
-                                throw new Exception("Unsupported");
-                        }
-                    }
-                }
+                //if (parameters.Count > 0)
+                //{
+                //    methodParameters = new List<object>();
+                //    foreach (var parameterInstance in parameters)
+                //    {
+                //        switch (parameterInstance.GetInterType())
+                //        {
+                //            case NetInterTypeEnum.NetInterTypeEnum_Bool:
+                //                methodParameters.Add(parameterInstance.GetBool());
+                //                break;
+                //            case NetInterTypeEnum.NetInterTypeEnum_Int:
+                //                methodParameters.Add(parameterInstance.GetInt());
+                //                break;
+                //            case NetInterTypeEnum.NetInterTypeEnum_Double:
+                //            case NetInterTypeEnum.NetInterTypeEnum_Float:
+                //            case NetInterTypeEnum.NetInterTypeEnum_String:
+                //            case NetInterTypeEnum.NetInterTypeEnum_Date:
+                //            case NetInterTypeEnum.NetInterTypeEnum_Object:
+                //                throw new Exception("Unsupported");
+                //            default:
+                //                throw new Exception("Unsupported");
+                //        }
+                //    }
+                //}
 
-                var r = o.GetType()
-                    .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
-                    .Invoke(o, methodParameters?.ToArray());
+                //var r = o.GetType()
+                //    .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
+                //    .Invoke(o, methodParameters?.ToArray());
 
-                if (r != null)
-                {
-                    var rType = r.GetType();
-                    if (rType == typeof(bool))
-                    {
-                        result.SetBool((bool)r);
-                    }
-                    else if (rType == typeof(int))
-                    {
-                        result.SetInt((int)r);
-                    }
-                    else
-                    {
-                        throw new Exception("Unsupported");
-                    }
-                }
+                //if (r != null)
+                //{
+                //    var rType = r.GetType();
+                //    if (rType == typeof(bool))
+                //    {
+                //        result.SetBool((bool)r);
+                //    }
+                //    else if (rType == typeof(int))
+                //    {
+                //        result.SetInt((int)r);
+                //    }
+                //    else
+                //    {
+                //        var gcHandle = GCHandle.Alloc(o);
+                //        result.SetValue(new SWIGTYPE_p_void(GCHandle.ToIntPtr(handle), true));
+                //    }
+                //}
+            }
+
+            public override void ReleaseGCHandle(IntPtr gcHandle)
+            {
+                var handle = (GCHandle)gcHandle;
+                handle.Free();
             }
         }
 

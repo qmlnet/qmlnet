@@ -17,14 +17,10 @@ public:
         Q_UNUSED(typeName);
         return false;
     }
-    virtual NetInterTypeEnum GetNetInterType(char* typeName) {
-        Q_UNUSED(typeName);
-        return NetInterTypeEnum_Object;
-    }
     virtual void BuildTypeInfo(NetTypeInfo* typeInfo) {
         Q_UNUSED(typeInfo);
     }
-    virtual void CreateInstance(NetTypeInfo* typeInfo, NetInstance* instance) {
+    virtual void CreateInstance(NetTypeInfo* typeInfo, NetGCHandle** instance) {
         Q_UNUSED(typeInfo);
         Q_UNUSED(instance);
     }
@@ -44,6 +40,9 @@ public:
         Q_UNUSED(parameters);
         Q_UNUSED(result);
     }
+    virtual void ReleaseGCHandle(NetGCHandle* gcHandle) {
+        Q_UNUSED(gcHandle);
+    }
 };
 
 class NetTypeInfoManager {
@@ -51,7 +50,6 @@ public:
     NetTypeInfoManager();
     static void setCallbacks(NetTypeInfoCallbacks* callbacks);
     static bool isValidType(char* typeName);
-    static NetInterTypeEnum GetNetInterType(char* typeName);
     static NetTypeInfo* GetTypeInfo(char* typeName);
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
@@ -59,6 +57,7 @@ public:
     static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
     static void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
     static NetInstance* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters);
+    static void ReleaseGCHandle(NetGCHandle* gcHandle);
 private:
     static NetTypeInfoCallbacks* callbacks;
     static QMap<QString, NetTypeInfo*> types;

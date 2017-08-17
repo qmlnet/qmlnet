@@ -21,11 +21,6 @@ bool NetTypeInfoManager::isValidType(char* typeName)
     return NetTypeInfoManager::callbacks->isValidType(typeName);
 }
 
-NetInterTypeEnum NetTypeInfoManager::GetNetInterType(char* typeName)
-{
-    return NetTypeInfoManager::callbacks->GetNetInterType(typeName);
-}
-
 NetTypeInfo* NetTypeInfoManager::GetTypeInfo(char* typeName)
 {
     QString key(typeName);
@@ -35,7 +30,7 @@ NetTypeInfo* NetTypeInfoManager::GetTypeInfo(char* typeName)
 
     std::string t(key.toLocal8Bit().constData());
 
-    NetTypeInfo* typeInfo = new NetTypeInfo(t, NetTypeInfoManager::GetNetInterType(typeName));
+    NetTypeInfo* typeInfo = new NetTypeInfo(t);
     NetTypeInfoManager::types.insert(NetTypeInfoManager::types.end(), key, typeInfo);
 
     NetTypeInfoManager::callbacks->BuildTypeInfo(typeInfo);
@@ -55,16 +50,18 @@ NetPropertyInfo* NetTypeInfoManager::NewPropertyInfo(NetTypeInfo* parentTypeInfo
 
 NetInstance* NetTypeInfoManager::CreateInstance(NetTypeInfo* typeInfo)
 {
-    NetInstance* instance = new NetInstance(NetTypeInfoManager::callbacks->GetNetInterType((char*)typeInfo->GetTypeName().c_str()));
-    NetTypeInfoManager::callbacks->CreateInstance(typeInfo, instance);
-    return instance;
+    NetGCHandle* handle = 0;
+    NetTypeInfoManager::callbacks->CreateInstance(typeInfo, &handle);
+    return new NetInstance(handle, typeInfo);
 }
 
 NetInstance* NetTypeInfoManager::ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target)
 {
-    NetInstance* result = new NetInstance(propertyInfo->GetReturnType()->GetInterType());
-    NetTypeInfoManager::callbacks->ReadProperty(propertyInfo, target, result);
-    return result;
+    // TODO:
+    //NetInstance* result = new NetInstance(propertyInfo->GetReturnType()->GetInterType());
+    //NetTypeInfoManager::callbacks->ReadProperty(propertyInfo, target, result);
+    //return result;
+    return NULL;
 }
 
 void NetTypeInfoManager::WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value)
@@ -74,11 +71,18 @@ void NetTypeInfoManager::WriteProperty(NetPropertyInfo* propertyInfo, NetInstanc
 
 NetInstance* NetTypeInfoManager::InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters)
 {
-    NetTypeInfo* returnType = methodInfo->GetReturnType();
-    NetInstance* result = NULL;
-    if(returnType) {
-        result = new NetInstance(returnType->GetInterType());
-    }
-    NetTypeInfoManager::callbacks->InvokeMethod(methodInfo, target, parameters, result);
-    return result;
+    // TODO:
+//    NetTypeInfo* returnType = methodInfo->GetReturnType();
+//    NetInstance* result = NULL;
+//    if(returnType) {
+//        result = new NetInstance(returnType->GetInterType());
+//    }
+//    NetTypeInfoManager::callbacks->InvokeMethod(methodInfo, target, parameters, result);
+//    return result;
+    return NULL;
+}
+
+void NetTypeInfoManager::ReleaseGCHandle(NetGCHandle* gcHandle)
+{
+    NetTypeInfoManager::callbacks->ReleaseGCHandle(gcHandle);
 }
