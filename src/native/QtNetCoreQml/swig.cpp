@@ -503,65 +503,65 @@ SWIGINTERN bool std_vector_Sl_std_string_Sg__Remove(std::vector< std::string > *
 
 #include "net_type_info_manager.h"
 
-SWIGINTERN std::vector< NetInstance * > *new_std_vector_Sl_NetInstance_Sm__Sg___SWIG_2(int capacity){
-        std::vector< NetInstance * >* pv = 0;
+SWIGINTERN std::vector< NetVariant * > *new_std_vector_Sl_NetVariant_Sm__Sg___SWIG_2(int capacity){
+        std::vector< NetVariant * >* pv = 0;
         if (capacity >= 0) {
-          pv = new std::vector< NetInstance * >();
+          pv = new std::vector< NetVariant * >();
           pv->reserve(capacity);
        } else {
           throw std::out_of_range("capacity");
        }
        return pv;
       }
-SWIGINTERN NetInstance *std_vector_Sl_NetInstance_Sm__Sg__getitemcopy(std::vector< NetInstance * > *self,int index){
+SWIGINTERN NetVariant *std_vector_Sl_NetVariant_Sm__Sg__getitemcopy(std::vector< NetVariant * > *self,int index){
         if (index>=0 && index<(int)self->size())
           return (*self)[index];
         else
           throw std::out_of_range("index");
       }
-SWIGINTERN NetInstance *const &std_vector_Sl_NetInstance_Sm__Sg__getitem(std::vector< NetInstance * > *self,int index){
+SWIGINTERN NetVariant *const &std_vector_Sl_NetVariant_Sm__Sg__getitem(std::vector< NetVariant * > *self,int index){
         if (index>=0 && index<(int)self->size())
           return (*self)[index];
         else
           throw std::out_of_range("index");
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__setitem(std::vector< NetInstance * > *self,int index,NetInstance *const &val){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__setitem(std::vector< NetVariant * > *self,int index,NetVariant *const &val){
         if (index>=0 && index<(int)self->size())
           (*self)[index] = val;
         else
           throw std::out_of_range("index");
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__AddRange(std::vector< NetInstance * > *self,std::vector< NetInstance * > const &values){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__AddRange(std::vector< NetVariant * > *self,std::vector< NetVariant * > const &values){
         self->insert(self->end(), values.begin(), values.end());
       }
-SWIGINTERN std::vector< NetInstance * > *std_vector_Sl_NetInstance_Sm__Sg__GetRange(std::vector< NetInstance * > *self,int index,int count){
+SWIGINTERN std::vector< NetVariant * > *std_vector_Sl_NetVariant_Sm__Sg__GetRange(std::vector< NetVariant * > *self,int index,int count){
         if (index < 0)
           throw std::out_of_range("index");
         if (count < 0)
           throw std::out_of_range("count");
         if (index >= (int)self->size()+1 || index+count > (int)self->size())
           throw std::invalid_argument("invalid range");
-        return new std::vector< NetInstance * >(self->begin()+index, self->begin()+index+count);
+        return new std::vector< NetVariant * >(self->begin()+index, self->begin()+index+count);
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__Insert(std::vector< NetInstance * > *self,int index,NetInstance *const &x){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__Insert(std::vector< NetVariant * > *self,int index,NetVariant *const &x){
         if (index>=0 && index<(int)self->size()+1)
           self->insert(self->begin()+index, x);
         else
           throw std::out_of_range("index");
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__InsertRange(std::vector< NetInstance * > *self,int index,std::vector< NetInstance * > const &values){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__InsertRange(std::vector< NetVariant * > *self,int index,std::vector< NetVariant * > const &values){
         if (index>=0 && index<(int)self->size()+1)
           self->insert(self->begin()+index, values.begin(), values.end());
         else
           throw std::out_of_range("index");
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__RemoveAt(std::vector< NetInstance * > *self,int index){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__RemoveAt(std::vector< NetVariant * > *self,int index){
         if (index>=0 && index<(int)self->size())
           self->erase(self->begin() + index);
         else
           throw std::out_of_range("index");
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__RemoveRange(std::vector< NetInstance * > *self,int index,int count){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__RemoveRange(std::vector< NetVariant * > *self,int index,int count){
         if (index < 0)
           throw std::out_of_range("index");
         if (count < 0)
@@ -570,15 +570,15 @@ SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__RemoveRange(std::vector< NetIn
           throw std::invalid_argument("invalid range");
         self->erase(self->begin()+index, self->begin()+index+count);
       }
-SWIGINTERN std::vector< NetInstance * > *std_vector_Sl_NetInstance_Sm__Sg__Repeat(NetInstance *const &value,int count){
+SWIGINTERN std::vector< NetVariant * > *std_vector_Sl_NetVariant_Sm__Sg__Repeat(NetVariant *const &value,int count){
         if (count < 0)
           throw std::out_of_range("count");
-        return new std::vector< NetInstance * >(count, value);
+        return new std::vector< NetVariant * >(count, value);
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__Reverse__SWIG_0(std::vector< NetInstance * > *self){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__Reverse__SWIG_0(std::vector< NetVariant * > *self){
         std::reverse(self->begin(), self->end());
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__Reverse__SWIG_1(std::vector< NetInstance * > *self,int index,int count){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__Reverse__SWIG_1(std::vector< NetVariant * > *self,int index,int count){
         if (index < 0)
           throw std::out_of_range("index");
         if (count < 0)
@@ -587,32 +587,32 @@ SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__Reverse__SWIG_1(std::vector< N
           throw std::invalid_argument("invalid range");
         std::reverse(self->begin()+index, self->begin()+index+count);
       }
-SWIGINTERN void std_vector_Sl_NetInstance_Sm__Sg__SetRange(std::vector< NetInstance * > *self,int index,std::vector< NetInstance * > const &values){
+SWIGINTERN void std_vector_Sl_NetVariant_Sm__Sg__SetRange(std::vector< NetVariant * > *self,int index,std::vector< NetVariant * > const &values){
         if (index < 0)
           throw std::out_of_range("index");
         if (index+values.size() > self->size())
           throw std::out_of_range("index");
         std::copy(values.begin(), values.end(), self->begin()+index);
       }
-SWIGINTERN bool std_vector_Sl_NetInstance_Sm__Sg__Contains(std::vector< NetInstance * > *self,NetInstance *const &value){
+SWIGINTERN bool std_vector_Sl_NetVariant_Sm__Sg__Contains(std::vector< NetVariant * > *self,NetVariant *const &value){
         return std::find(self->begin(), self->end(), value) != self->end();
       }
-SWIGINTERN int std_vector_Sl_NetInstance_Sm__Sg__IndexOf(std::vector< NetInstance * > *self,NetInstance *const &value){
+SWIGINTERN int std_vector_Sl_NetVariant_Sm__Sg__IndexOf(std::vector< NetVariant * > *self,NetVariant *const &value){
         int index = -1;
-        std::vector< NetInstance * >::iterator it = std::find(self->begin(), self->end(), value);
+        std::vector< NetVariant * >::iterator it = std::find(self->begin(), self->end(), value);
         if (it != self->end())
           index = (int)(it - self->begin());
         return index;
       }
-SWIGINTERN int std_vector_Sl_NetInstance_Sm__Sg__LastIndexOf(std::vector< NetInstance * > *self,NetInstance *const &value){
+SWIGINTERN int std_vector_Sl_NetVariant_Sm__Sg__LastIndexOf(std::vector< NetVariant * > *self,NetVariant *const &value){
         int index = -1;
-        std::vector< NetInstance * >::reverse_iterator rit = std::find(self->rbegin(), self->rend(), value);
+        std::vector< NetVariant * >::reverse_iterator rit = std::find(self->rbegin(), self->rend(), value);
         if (rit != self->rend())
           index = (int)(self->rend() - 1 - rit);
         return index;
       }
-SWIGINTERN bool std_vector_Sl_NetInstance_Sm__Sg__Remove(std::vector< NetInstance * > *self,NetInstance *const &value){
-        std::vector< NetInstance * >::iterator it = std::find(self->begin(), self->end(), value);
+SWIGINTERN bool std_vector_Sl_NetVariant_Sm__Sg__Remove(std::vector< NetVariant * > *self,NetVariant *const &value){
+        std::vector< NetVariant * >::iterator it = std::find(self->begin(), self->end(), value);
         if (it != self->end()) {
           self->erase(it);
 	  return true;
@@ -690,7 +690,7 @@ void SwigDirector_NetTypeInfoCallbacks::CreateInstance(NetTypeInfo *typeInfo, Ne
   }
 }
 
-void SwigDirector_NetTypeInfoCallbacks::ReadProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *result) {
+void SwigDirector_NetTypeInfoCallbacks::ReadProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetVariant *result) {
   void * jpropertyInfo = 0 ;
   void * jtarget = 0 ;
   void * jresult = 0 ;
@@ -706,7 +706,7 @@ void SwigDirector_NetTypeInfoCallbacks::ReadProperty(NetPropertyInfo *propertyIn
   }
 }
 
-void SwigDirector_NetTypeInfoCallbacks::WriteProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *value) {
+void SwigDirector_NetTypeInfoCallbacks::WriteProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetVariant *value) {
   void * jpropertyInfo = 0 ;
   void * jtarget = 0 ;
   void * jvalue = 0 ;
@@ -722,7 +722,7 @@ void SwigDirector_NetTypeInfoCallbacks::WriteProperty(NetPropertyInfo *propertyI
   }
 }
 
-void SwigDirector_NetTypeInfoCallbacks::InvokeMethod(NetMethodInfo *methodInfo, NetInstance *target, std::vector< NetInstance * > parameters, NetInstance *result) {
+void SwigDirector_NetTypeInfoCallbacks::InvokeMethod(NetMethodInfo *methodInfo, NetInstance *target, std::vector< NetVariant * > parameters, NetVariant *result) {
   void * jmethodInfo = 0 ;
   void * jtarget = 0 ;
   void * jparameters  ;
@@ -1371,6 +1371,14 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NetVariant_GetInt(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_Clear(void * jarg1) {
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  
+  arg1 = (NetVariant *)jarg1; 
+  (arg1)->Clear();
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetVariant(void * jarg1) {
   NetVariant *arg1 = (NetVariant *) 0 ;
   
@@ -1673,94 +1681,94 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetPropertyInfo(void * jarg1) {
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Clear(void * jarg1) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_Clear(void * jarg1) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   (arg1)->clear();
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Add(void * jarg1, void * jarg2) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  NetInstance **arg2 = 0 ;
-  NetInstance *temp2 = 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_Add(void * jarg1, void * jarg2) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  NetVariant **arg2 = 0 ;
+  NetVariant *temp2 = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  temp2 = (NetInstance *)jarg2;
-  arg2 = (NetInstance **)&temp2; 
-  (arg1)->push_back((NetInstance *const &)*arg2);
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  temp2 = (NetVariant *)jarg2;
+  arg2 = (NetVariant **)&temp2; 
+  (arg1)->push_back((NetVariant *const &)*arg2);
 }
 
 
-SWIGEXPORT unsigned long SWIGSTDCALL CSharp_NetInstanceVector_size(void * jarg1) {
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_NetVariantVector_size(void * jarg1) {
   unsigned long jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  std::vector< NetInstance * >::size_type result;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  std::vector< NetVariant * >::size_type result;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  result = ((std::vector< NetInstance * > const *)arg1)->size();
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  result = ((std::vector< NetVariant * > const *)arg1)->size();
   jresult = (unsigned long)result; 
   return jresult;
 }
 
 
-SWIGEXPORT unsigned long SWIGSTDCALL CSharp_NetInstanceVector_capacity(void * jarg1) {
+SWIGEXPORT unsigned long SWIGSTDCALL CSharp_NetVariantVector_capacity(void * jarg1) {
   unsigned long jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  std::vector< NetInstance * >::size_type result;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  std::vector< NetVariant * >::size_type result;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  result = ((std::vector< NetInstance * > const *)arg1)->capacity();
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  result = ((std::vector< NetVariant * > const *)arg1)->capacity();
   jresult = (unsigned long)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_reserve(void * jarg1, unsigned long jarg2) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  std::vector< NetInstance * >::size_type arg2 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_reserve(void * jarg1, unsigned long jarg2) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  std::vector< NetVariant * >::size_type arg2 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  arg2 = (std::vector< NetInstance * >::size_type)jarg2; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  arg2 = (std::vector< NetVariant * >::size_type)jarg2; 
   (arg1)->reserve(arg2);
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInstanceVector__SWIG_0() {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetVariantVector__SWIG_0() {
   void * jresult ;
-  std::vector< NetInstance * > *result = 0 ;
+  std::vector< NetVariant * > *result = 0 ;
   
-  result = (std::vector< NetInstance * > *)new std::vector< NetInstance * >();
+  result = (std::vector< NetVariant * > *)new std::vector< NetVariant * >();
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInstanceVector__SWIG_1(void * jarg1) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetVariantVector__SWIG_1(void * jarg1) {
   void * jresult ;
-  std::vector< NetInstance * > *arg1 = 0 ;
-  std::vector< NetInstance * > *result = 0 ;
+  std::vector< NetVariant * > *arg1 = 0 ;
+  std::vector< NetVariant * > *result = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1;
+  arg1 = (std::vector< NetVariant * > *)jarg1;
   if (!arg1) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetInstance * > const & type is null", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetVariant * > const & type is null", 0);
     return 0;
   } 
-  result = (std::vector< NetInstance * > *)new std::vector< NetInstance * >((std::vector< NetInstance * > const &)*arg1);
+  result = (std::vector< NetVariant * > *)new std::vector< NetVariant * >((std::vector< NetVariant * > const &)*arg1);
   jresult = (void *)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInstanceVector__SWIG_2(int jarg1) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetVariantVector__SWIG_2(int jarg1) {
   void * jresult ;
   int arg1 ;
-  std::vector< NetInstance * > *result = 0 ;
+  std::vector< NetVariant * > *result = 0 ;
   
   arg1 = (int)jarg1; 
   try {
-    result = (std::vector< NetInstance * > *)new_std_vector_Sl_NetInstance_Sm__Sg___SWIG_2(arg1);
+    result = (std::vector< NetVariant * > *)new_std_vector_Sl_NetVariant_Sm__Sg___SWIG_2(arg1);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1772,16 +1780,16 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetInstanceVector__SWIG_2(int jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_getitemcopy(void * jarg1, int jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariantVector_getitemcopy(void * jarg1, int jarg2) {
   void * jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
-  NetInstance *result = 0 ;
+  NetVariant *result = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
   try {
-    result = (NetInstance *)std_vector_Sl_NetInstance_Sm__Sg__getitemcopy(arg1,arg2);
+    result = (NetVariant *)std_vector_Sl_NetVariant_Sm__Sg__getitemcopy(arg1,arg2);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1793,16 +1801,16 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_getitemcopy(void * jarg1,
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_getitem(void * jarg1, int jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariantVector_getitem(void * jarg1, int jarg2) {
   void * jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
-  NetInstance **result = 0 ;
+  NetVariant **result = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
   try {
-    result = (NetInstance **) &std_vector_Sl_NetInstance_Sm__Sg__getitem(arg1,arg2);
+    result = (NetVariant **) &std_vector_Sl_NetVariant_Sm__Sg__getitem(arg1,arg2);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1814,18 +1822,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_getitem(void * jarg1, int
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_setitem(void * jarg1, int jarg2, void * jarg3) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_setitem(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
-  NetInstance **arg3 = 0 ;
-  NetInstance *temp3 = 0 ;
+  NetVariant **arg3 = 0 ;
+  NetVariant *temp3 = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
-  temp3 = (NetInstance *)jarg3;
-  arg3 = (NetInstance **)&temp3; 
+  temp3 = (NetVariant *)jarg3;
+  arg3 = (NetVariant **)&temp3; 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__setitem(arg1,arg2,(NetInstance *const &)*arg3);
+    std_vector_Sl_NetVariant_Sm__Sg__setitem(arg1,arg2,(NetVariant *const &)*arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1835,32 +1843,32 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_setitem(void * jarg1, int j
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_AddRange(void * jarg1, void * jarg2) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  std::vector< NetInstance * > *arg2 = 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_AddRange(void * jarg1, void * jarg2) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  std::vector< NetVariant * > *arg2 = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  arg2 = (std::vector< NetInstance * > *)jarg2;
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  arg2 = (std::vector< NetVariant * > *)jarg2;
   if (!arg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetInstance * > const & type is null", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetVariant * > const & type is null", 0);
     return ;
   } 
-  std_vector_Sl_NetInstance_Sm__Sg__AddRange(arg1,(std::vector< NetInstance * > const &)*arg2);
+  std_vector_Sl_NetVariant_Sm__Sg__AddRange(arg1,(std::vector< NetVariant * > const &)*arg2);
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_GetRange(void * jarg1, int jarg2, int jarg3) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariantVector_GetRange(void * jarg1, int jarg2, int jarg3) {
   void * jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
   int arg3 ;
-  std::vector< NetInstance * > *result = 0 ;
+  std::vector< NetVariant * > *result = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   try {
-    result = (std::vector< NetInstance * > *)std_vector_Sl_NetInstance_Sm__Sg__GetRange(arg1,arg2,arg3);
+    result = (std::vector< NetVariant * > *)std_vector_Sl_NetVariant_Sm__Sg__GetRange(arg1,arg2,arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1876,18 +1884,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_GetRange(void * jarg1, in
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Insert(void * jarg1, int jarg2, void * jarg3) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_Insert(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
-  NetInstance **arg3 = 0 ;
-  NetInstance *temp3 = 0 ;
+  NetVariant **arg3 = 0 ;
+  NetVariant *temp3 = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
-  temp3 = (NetInstance *)jarg3;
-  arg3 = (NetInstance **)&temp3; 
+  temp3 = (NetVariant *)jarg3;
+  arg3 = (NetVariant **)&temp3; 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__Insert(arg1,arg2,(NetInstance *const &)*arg3);
+    std_vector_Sl_NetVariant_Sm__Sg__Insert(arg1,arg2,(NetVariant *const &)*arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1897,20 +1905,20 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Insert(void * jarg1, int ja
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_InsertRange(void * jarg1, int jarg2, void * jarg3) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_InsertRange(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
-  std::vector< NetInstance * > *arg3 = 0 ;
+  std::vector< NetVariant * > *arg3 = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
-  arg3 = (std::vector< NetInstance * > *)jarg3;
+  arg3 = (std::vector< NetVariant * > *)jarg3;
   if (!arg3) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetInstance * > const & type is null", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetVariant * > const & type is null", 0);
     return ;
   } 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__InsertRange(arg1,arg2,(std::vector< NetInstance * > const &)*arg3);
+    std_vector_Sl_NetVariant_Sm__Sg__InsertRange(arg1,arg2,(std::vector< NetVariant * > const &)*arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1920,14 +1928,14 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_InsertRange(void * jarg1, i
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_RemoveAt(void * jarg1, int jarg2) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_RemoveAt(void * jarg1, int jarg2) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__RemoveAt(arg1,arg2);
+    std_vector_Sl_NetVariant_Sm__Sg__RemoveAt(arg1,arg2);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1937,16 +1945,16 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_RemoveAt(void * jarg1, int 
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_RemoveRange(void * jarg1, int jarg2, int jarg3) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_RemoveRange(void * jarg1, int jarg2, int jarg3) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
   int arg3 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__RemoveRange(arg1,arg2,arg3);
+    std_vector_Sl_NetVariant_Sm__Sg__RemoveRange(arg1,arg2,arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1960,18 +1968,18 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_RemoveRange(void * jarg1, i
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_Repeat(void * jarg1, int jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariantVector_Repeat(void * jarg1, int jarg2) {
   void * jresult ;
-  NetInstance **arg1 = 0 ;
+  NetVariant **arg1 = 0 ;
   int arg2 ;
-  NetInstance *temp1 = 0 ;
-  std::vector< NetInstance * > *result = 0 ;
+  NetVariant *temp1 = 0 ;
+  std::vector< NetVariant * > *result = 0 ;
   
-  temp1 = (NetInstance *)jarg1;
-  arg1 = (NetInstance **)&temp1; 
+  temp1 = (NetVariant *)jarg1;
+  arg1 = (NetVariant **)&temp1; 
   arg2 = (int)jarg2; 
   try {
-    result = (std::vector< NetInstance * > *)std_vector_Sl_NetInstance_Sm__Sg__Repeat((NetInstance *const &)*arg1,arg2);
+    result = (std::vector< NetVariant * > *)std_vector_Sl_NetVariant_Sm__Sg__Repeat((NetVariant *const &)*arg1,arg2);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -1983,24 +1991,24 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetInstanceVector_Repeat(void * jarg1, int 
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Reverse__SWIG_0(void * jarg1) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_Reverse__SWIG_0(void * jarg1) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  std_vector_Sl_NetInstance_Sm__Sg__Reverse__SWIG_0(arg1);
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  std_vector_Sl_NetVariant_Sm__Sg__Reverse__SWIG_0(arg1);
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Reverse__SWIG_1(void * jarg1, int jarg2, int jarg3) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_Reverse__SWIG_1(void * jarg1, int jarg2, int jarg3) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
   int arg3 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__Reverse__SWIG_1(arg1,arg2,arg3);
+    std_vector_Sl_NetVariant_Sm__Sg__Reverse__SWIG_1(arg1,arg2,arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -2014,20 +2022,20 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_Reverse__SWIG_1(void * jarg
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_SetRange(void * jarg1, int jarg2, void * jarg3) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariantVector_SetRange(void * jarg1, int jarg2, void * jarg3) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   int arg2 ;
-  std::vector< NetInstance * > *arg3 = 0 ;
+  std::vector< NetVariant * > *arg3 = 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   arg2 = (int)jarg2; 
-  arg3 = (std::vector< NetInstance * > *)jarg3;
+  arg3 = (std::vector< NetVariant * > *)jarg3;
   if (!arg3) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetInstance * > const & type is null", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< NetVariant * > const & type is null", 0);
     return ;
   } 
   try {
-    std_vector_Sl_NetInstance_Sm__Sg__SetRange(arg1,arg2,(std::vector< NetInstance * > const &)*arg3);
+    std_vector_Sl_NetVariant_Sm__Sg__SetRange(arg1,arg2,(std::vector< NetVariant * > const &)*arg3);
   }
   catch(std::out_of_range &_e) {
     SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, 0, (&_e)->what());
@@ -2037,74 +2045,74 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetInstanceVector_SetRange(void * jarg1, int 
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInstanceVector_Contains(void * jarg1, void * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetVariantVector_Contains(void * jarg1, void * jarg2) {
   unsigned int jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  NetInstance **arg2 = 0 ;
-  NetInstance *temp2 = 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  NetVariant **arg2 = 0 ;
+  NetVariant *temp2 = 0 ;
   bool result;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  temp2 = (NetInstance *)jarg2;
-  arg2 = (NetInstance **)&temp2; 
-  result = (bool)std_vector_Sl_NetInstance_Sm__Sg__Contains(arg1,(NetInstance *const &)*arg2);
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  temp2 = (NetVariant *)jarg2;
+  arg2 = (NetVariant **)&temp2; 
+  result = (bool)std_vector_Sl_NetVariant_Sm__Sg__Contains(arg1,(NetVariant *const &)*arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_NetInstanceVector_IndexOf(void * jarg1, void * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_NetVariantVector_IndexOf(void * jarg1, void * jarg2) {
   int jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  NetInstance **arg2 = 0 ;
-  NetInstance *temp2 = 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  NetVariant **arg2 = 0 ;
+  NetVariant *temp2 = 0 ;
   int result;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  temp2 = (NetInstance *)jarg2;
-  arg2 = (NetInstance **)&temp2; 
-  result = (int)std_vector_Sl_NetInstance_Sm__Sg__IndexOf(arg1,(NetInstance *const &)*arg2);
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  temp2 = (NetVariant *)jarg2;
+  arg2 = (NetVariant **)&temp2; 
+  result = (int)std_vector_Sl_NetVariant_Sm__Sg__IndexOf(arg1,(NetVariant *const &)*arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_NetInstanceVector_LastIndexOf(void * jarg1, void * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_NetVariantVector_LastIndexOf(void * jarg1, void * jarg2) {
   int jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  NetInstance **arg2 = 0 ;
-  NetInstance *temp2 = 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  NetVariant **arg2 = 0 ;
+  NetVariant *temp2 = 0 ;
   int result;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  temp2 = (NetInstance *)jarg2;
-  arg2 = (NetInstance **)&temp2; 
-  result = (int)std_vector_Sl_NetInstance_Sm__Sg__LastIndexOf(arg1,(NetInstance *const &)*arg2);
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  temp2 = (NetVariant *)jarg2;
+  arg2 = (NetVariant **)&temp2; 
+  result = (int)std_vector_Sl_NetVariant_Sm__Sg__LastIndexOf(arg1,(NetVariant *const &)*arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetInstanceVector_Remove(void * jarg1, void * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetVariantVector_Remove(void * jarg1, void * jarg2) {
   unsigned int jresult ;
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
-  NetInstance **arg2 = 0 ;
-  NetInstance *temp2 = 0 ;
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
+  NetVariant **arg2 = 0 ;
+  NetVariant *temp2 = 0 ;
   bool result;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
-  temp2 = (NetInstance *)jarg2;
-  arg2 = (NetInstance **)&temp2; 
-  result = (bool)std_vector_Sl_NetInstance_Sm__Sg__Remove(arg1,(NetInstance *const &)*arg2);
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
+  temp2 = (NetVariant *)jarg2;
+  arg2 = (NetVariant **)&temp2; 
+  result = (bool)std_vector_Sl_NetVariant_Sm__Sg__Remove(arg1,(NetVariant *const &)*arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetInstanceVector(void * jarg1) {
-  std::vector< NetInstance * > *arg1 = (std::vector< NetInstance * > *) 0 ;
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetVariantVector(void * jarg1) {
+  std::vector< NetVariant * > *arg1 = (std::vector< NetVariant * > *) 0 ;
   
-  arg1 = (std::vector< NetInstance * > *)jarg1; 
+  arg1 = (std::vector< NetVariant * > *)jarg1; 
   delete arg1;
 }
 
@@ -2193,12 +2201,12 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_ReadProperty(void * jarg
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   NetPropertyInfo *arg2 = (NetPropertyInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
-  NetInstance *arg4 = (NetInstance *) 0 ;
+  NetVariant *arg4 = (NetVariant *) 0 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
   arg2 = (NetPropertyInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
-  arg4 = (NetInstance *)jarg4; 
+  arg4 = (NetVariant *)jarg4; 
   (arg1)->ReadProperty(arg2,arg3,arg4);
 }
 
@@ -2207,12 +2215,12 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_ReadPropertySwigExplicit
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   NetPropertyInfo *arg2 = (NetPropertyInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
-  NetInstance *arg4 = (NetInstance *) 0 ;
+  NetVariant *arg4 = (NetVariant *) 0 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
   arg2 = (NetPropertyInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
-  arg4 = (NetInstance *)jarg4; 
+  arg4 = (NetVariant *)jarg4; 
   (arg1)->NetTypeInfoCallbacks::ReadProperty(arg2,arg3,arg4);
 }
 
@@ -2221,12 +2229,12 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_WriteProperty(void * jar
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   NetPropertyInfo *arg2 = (NetPropertyInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
-  NetInstance *arg4 = (NetInstance *) 0 ;
+  NetVariant *arg4 = (NetVariant *) 0 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
   arg2 = (NetPropertyInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
-  arg4 = (NetInstance *)jarg4; 
+  arg4 = (NetVariant *)jarg4; 
   (arg1)->WriteProperty(arg2,arg3,arg4);
 }
 
@@ -2235,12 +2243,12 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_WritePropertySwigExplici
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   NetPropertyInfo *arg2 = (NetPropertyInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
-  NetInstance *arg4 = (NetInstance *) 0 ;
+  NetVariant *arg4 = (NetVariant *) 0 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
   arg2 = (NetPropertyInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
-  arg4 = (NetInstance *)jarg4; 
+  arg4 = (NetVariant *)jarg4; 
   (arg1)->NetTypeInfoCallbacks::WriteProperty(arg2,arg3,arg4);
 }
 
@@ -2249,20 +2257,20 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_InvokeMethod(void * jarg
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   NetMethodInfo *arg2 = (NetMethodInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
-  std::vector< NetInstance * > arg4 ;
-  NetInstance *arg5 = (NetInstance *) 0 ;
-  std::vector< NetInstance * > *argp4 ;
+  std::vector< NetVariant * > arg4 ;
+  NetVariant *arg5 = (NetVariant *) 0 ;
+  std::vector< NetVariant * > *argp4 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
   arg2 = (NetMethodInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
-  argp4 = (std::vector< NetInstance * > *)jarg4; 
+  argp4 = (std::vector< NetVariant * > *)jarg4; 
   if (!argp4) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetInstance * >", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetVariant * >", 0);
     return ;
   }
   arg4 = *argp4; 
-  arg5 = (NetInstance *)jarg5; 
+  arg5 = (NetVariant *)jarg5; 
   (arg1)->InvokeMethod(arg2,arg3,arg4,arg5);
 }
 
@@ -2271,20 +2279,20 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfoCallbacks_InvokeMethodSwigExplicit
   NetTypeInfoCallbacks *arg1 = (NetTypeInfoCallbacks *) 0 ;
   NetMethodInfo *arg2 = (NetMethodInfo *) 0 ;
   NetInstance *arg3 = (NetInstance *) 0 ;
-  std::vector< NetInstance * > arg4 ;
-  NetInstance *arg5 = (NetInstance *) 0 ;
-  std::vector< NetInstance * > *argp4 ;
+  std::vector< NetVariant * > arg4 ;
+  NetVariant *arg5 = (NetVariant *) 0 ;
+  std::vector< NetVariant * > *argp4 ;
   
   arg1 = (NetTypeInfoCallbacks *)jarg1; 
   arg2 = (NetMethodInfo *)jarg2; 
   arg3 = (NetInstance *)jarg3; 
-  argp4 = (std::vector< NetInstance * > *)jarg4; 
+  argp4 = (std::vector< NetVariant * > *)jarg4; 
   if (!argp4) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetInstance * >", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetVariant * >", 0);
     return ;
   }
   arg4 = *argp4; 
-  arg5 = (NetInstance *)jarg5; 
+  arg5 = (NetVariant *)jarg5; 
   (arg1)->NetTypeInfoCallbacks::InvokeMethod(arg2,arg3,arg4,arg5);
 }
 

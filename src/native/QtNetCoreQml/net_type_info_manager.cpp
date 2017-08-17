@@ -3,6 +3,7 @@
 #include "net_type_info_method.h"
 #include "net_type_info_property.h"
 #include "net_instance.h"
+#include "net_variant.h"
 
 NetTypeInfoCallbacks* NetTypeInfoManager::callbacks = NULL;
 QMap<QString, NetTypeInfo*> NetTypeInfoManager::types;
@@ -55,31 +56,27 @@ NetInstance* NetTypeInfoManager::CreateInstance(NetTypeInfo* typeInfo)
     return new NetInstance(handle, typeInfo);
 }
 
-NetInstance* NetTypeInfoManager::ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target)
+NetVariant* NetTypeInfoManager::ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target)
 {
-    // TODO:
-    //NetInstance* result = new NetInstance(propertyInfo->GetReturnType()->GetInterType());
-    //NetTypeInfoManager::callbacks->ReadProperty(propertyInfo, target, result);
-    //return result;
-    return NULL;
+    NetVariant* result = new NetVariant();
+    NetTypeInfoManager::callbacks->ReadProperty(propertyInfo, target, result);
+    return result;
 }
 
-void NetTypeInfoManager::WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value)
+void NetTypeInfoManager::WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetVariant* value)
 {
     NetTypeInfoManager::callbacks->WriteProperty(propertyInfo, target, value);
 }
 
-NetInstance* NetTypeInfoManager::InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters)
+NetVariant* NetTypeInfoManager::InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetVariant*> parameters)
 {
-    // TODO:
-//    NetTypeInfo* returnType = methodInfo->GetReturnType();
-//    NetInstance* result = NULL;
-//    if(returnType) {
-//        result = new NetInstance(returnType->GetInterType());
-//    }
-//    NetTypeInfoManager::callbacks->InvokeMethod(methodInfo, target, parameters, result);
-//    return result;
-    return NULL;
+    NetTypeInfo* returnType = methodInfo->GetReturnType();
+    NetVariant* result = NULL;
+    if(returnType) {
+        result = new NetVariant();
+    }
+    NetTypeInfoManager::callbacks->InvokeMethod(methodInfo, target, parameters, result);
+    return result;
 }
 
 void NetTypeInfoManager::ReleaseGCHandle(NetGCHandle* gcHandle)

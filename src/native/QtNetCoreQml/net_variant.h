@@ -16,6 +16,7 @@ public:
     bool GetBool();
     void SetInt(int value);
     int GetInt();
+    void Clear();
 private:
     void ClearNetInstance();
     QVariant variant;

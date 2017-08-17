@@ -89,6 +89,12 @@ int NetVariant::GetInt()
     return 0;
 }
 
+void NetVariant::Clear()
+{
+    ClearNetInstance();
+    variant.clear();
+}
+
 void NetVariant::ClearNetInstance()
 {
     if(variant.canConvert<NetInstanceContainer>())

@@ -64,38 +64,38 @@ namespace Qt.NetCore.Sandbox
             var typeInfo = NetTypeInfoManager.GetTypeInfo(typeof(TestQmlImport).FullName + ", " +
                                            typeof(TestQmlImport).Assembly.FullName);
 
-            var netVariant = new NetVariant();
-            Console.WriteLine(netVariant.GetVariantType());
-            netVariant.SetNetInstance(NetTypeInfoManager.CreateInstance(typeInfo));
-            Console.WriteLine(netVariant.GetVariantType());
-            netVariant.SetInt(0);
-            //netVariant.Dispose();
+            //var netVariant = new NetVariant();
+            //Console.WriteLine(netVariant.GetVariantType());
+            //netVariant.SetNetInstance(NetTypeInfoManager.CreateInstance(typeInfo));
+            //Console.WriteLine(netVariant.GetVariantType());
+            //netVariant.SetInt(0);
+            ////netVariant.Dispose();
 
-            while (true)
-            {
-                GC.Collect(GC.MaxGeneration);
-            }
-
-            return 0;
-
-            //using (var r = new StringVector(0))
+            //while (true)
             //{
-            //    using (var app = new QGuiApplication(r))
-            //    {
-            //        using (var engine = new QQmlApplicationEngine())
-            //        {
-            //            //while (true)
-            //            {
-            //                Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
-            //                GC.Collect(GC.MaxGeneration);
-            //            }
-            //            //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
-
-            //            engine.loadFile("main.qml");
-            //            return app.exec();
-            //        }
-            //    }
+            //    GC.Collect(GC.MaxGeneration);
             //}
+
+            //return 0;
+
+            using (var r = new StringVector(0))
+            {
+                using (var app = new QGuiApplication(r))
+                {
+                    using (var engine = new QQmlApplicationEngine())
+                    {
+                        //while (true)
+                        {
+                            Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
+                            GC.Collect(GC.MaxGeneration);
+                        }
+                        //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
+
+                        engine.loadFile("main.qml");
+                        return app.exec();
+                    }
+                }
+            }
         }
     }
 }

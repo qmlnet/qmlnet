@@ -7,6 +7,7 @@
 
 class NetTypeInfo;
 class NetInstance;
+class NetVariant;
 class NetPropertyInfo;
 class NetMethodInfo;
 
@@ -24,17 +25,17 @@ public:
         Q_UNUSED(typeInfo);
         Q_UNUSED(instance);
     }
-    virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* result) {
+    virtual void ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetVariant* result) {
         Q_UNUSED(propertyInfo);
         Q_UNUSED(target);
         Q_UNUSED(result);
     }
-    virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value) {
+    virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetVariant* value) {
         Q_UNUSED(propertyInfo);
         Q_UNUSED(target);
         Q_UNUSED(value);
     }
-    virtual void InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters, NetInstance* result) {
+    virtual void InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetVariant*> parameters, NetVariant* result) {
         Q_UNUSED(methodInfo);
         Q_UNUSED(target);
         Q_UNUSED(parameters);
@@ -54,9 +55,9 @@ public:
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
-    static NetInstance* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
-    static void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetInstance* value);
-    static NetInstance* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetInstance*> parameters);
+    static NetVariant* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
+    static void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetVariant* value);
+    static NetVariant* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetVariant*> parameters);
     static void ReleaseGCHandle(NetGCHandle* gcHandle);
 private:
     static NetTypeInfoCallbacks* callbacks;

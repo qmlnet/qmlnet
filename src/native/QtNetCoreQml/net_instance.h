@@ -12,6 +12,7 @@ public:
     ~NetInstance();
     NetGCHandle* GetGCHandle();
     NetTypeInfo* GetTypeInfo();
+    NetInstance* Clone();
 private:
     NetGCHandle* gcHandle;
     NetTypeInfo* typeInfo;

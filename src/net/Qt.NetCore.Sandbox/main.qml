@@ -26,15 +26,12 @@ ApplicationWindow {
         }
     }
 
-	TestObject {
+	TestQmlImport {
 		Component.onCompleted: {
 			{
 				console.log("Test")
-				var newo = testt.GetAnotherNewObject()
-				newo.DoSomething(newo)
-				console.log("Calling destroy")
-				newo.destroy()
-				console.log("Called destroy")
+				console.log(testt.TestPropertyBool)
+				console.log(testt.TestPropertyBool2)
 			}
 		}
 		id: testt

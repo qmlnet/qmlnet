@@ -68,125 +68,113 @@ namespace Qt.NetCore
                 var handle = GCHandle.Alloc(o);
                 instance = GCHandle.ToIntPtr(handle);
             }
+
+            public override void ReadProperty(NetPropertyInfo propertyInfo, NetInstance target, NetVariant result)
+            {
+                var handle = (GCHandle)target.GetGCHandle();
+                var o = handle.Target;
+
+                var value = o.GetType()
+                    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public)
+                    .GetValue(o);
+                
+                PackValue(ref value, result);
+            }
+
+            public override void WriteProperty(NetPropertyInfo propertyInfo, NetInstance target, NetVariant value)
+            {
+                base.WriteProperty(propertyInfo, target, value);
+                
+                var handle = (GCHandle)target.GetGCHandle();
+                var o = handle.Target;
+
+                var pInfo = o.GetType()
+                    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public);
+
+                object newValue = null;
+                Unpackvalue(ref newValue, value);
+                
+                pInfo.SetValue(o, newValue);
+            }
             
 
-            public override void ReadProperty(NetPropertyInfo propertyInfo, NetInstance target, NetInstance result)
+            public override void InvokeMethod(NetMethodInfo methodInfo, NetInstance target, NetVariantVector parameters,
+                NetVariant result)
             {
-                //var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
-                //var handle = (GCHandle)handleRef.Handle;
-                //var o = handle.Target;
+                var handle = (GCHandle)target.GetGCHandle();
+                var o = handle.Target;
 
-                //var value = o.GetType()
-                //    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public)
-                //    .GetValue(o);
+                List<object> methodParameters = null;
 
-                //switch (result.GetInterType())
-                //{
-                //    case NetInterTypeEnum.NetInterTypeEnum_Bool:
-                //        result.SetBool((bool)value);
-                //        break;
-                //    case NetInterTypeEnum.NetInterTypeEnum_Int:
-                //        result.SetInt((int)value);
-                //        break;
-                //    case NetInterTypeEnum.NetInterTypeEnum_Double:
-                //    case NetInterTypeEnum.NetInterTypeEnum_Float:
-                //    case NetInterTypeEnum.NetInterTypeEnum_String:
-                //    case NetInterTypeEnum.NetInterTypeEnum_Date:
-                //    case NetInterTypeEnum.NetInterTypeEnum_Object:
-                //        throw new Exception("Unsupported");
-                //    default:
-                //        throw new Exception("Unsupported");
-                //}
+                if (parameters.Count > 0)
+                {
+                    methodParameters = new List<object>();
+                    foreach (var parameterInstance in parameters)
+                    {
+                        object v = null;
+                        Unpackvalue(ref v, parameterInstance);
+                        methodParameters.Add(methodParameters);
+                    }
+                }
+
+                var r = o.GetType()
+                    .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
+                    .Invoke(o, methodParameters?.ToArray());
+
+                PackValue(ref r, result);
             }
-
-            public override void WriteProperty(NetPropertyInfo propertyInfo, NetInstance target, NetInstance value)
-            {
-                //var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
-                //var handle = (GCHandle)handleRef.Handle;
-                //var o = handle.Target;
-
-                //var pInfo = o.GetType()
-                //    .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public);
-
-                //switch (value.GetInterType())
-                //{
-                //    case NetInterTypeEnum.NetInterTypeEnum_Bool:
-                //        pInfo.SetValue(o, value.GetBool());
-                //        break;
-                //    case NetInterTypeEnum.NetInterTypeEnum_Int:
-                //        pInfo.SetValue(0, value.GetInt());
-                //        break;
-                //    case NetInterTypeEnum.NetInterTypeEnum_Double:
-                //    case NetInterTypeEnum.NetInterTypeEnum_Float:
-                //    case NetInterTypeEnum.NetInterTypeEnum_String:
-                //    case NetInterTypeEnum.NetInterTypeEnum_Date:
-                //    case NetInterTypeEnum.NetInterTypeEnum_Object:
-                //        throw new Exception("Unsupported");
-                //    default:
-                //        throw new Exception("Unsupported");
-                //}
-            }
-
-            public override void InvokeMethod(NetMethodInfo @methodInfo, NetInstance @target, NetInstanceVector parameters, NetInstance @result)
-            {
-                //var handleRef = SWIGTYPE_p_void.getCPtr(target.GetValue());
-                //var handle = (GCHandle)handleRef.Handle;
-                //var o = handle.Target;
-
-                //List<object> methodParameters = null;
-
-                //if (parameters.Count > 0)
-                //{
-                //    methodParameters = new List<object>();
-                //    foreach (var parameterInstance in parameters)
-                //    {
-                //        switch (parameterInstance.GetInterType())
-                //        {
-                //            case NetInterTypeEnum.NetInterTypeEnum_Bool:
-                //                methodParameters.Add(parameterInstance.GetBool());
-                //                break;
-                //            case NetInterTypeEnum.NetInterTypeEnum_Int:
-                //                methodParameters.Add(parameterInstance.GetInt());
-                //                break;
-                //            case NetInterTypeEnum.NetInterTypeEnum_Double:
-                //            case NetInterTypeEnum.NetInterTypeEnum_Float:
-                //            case NetInterTypeEnum.NetInterTypeEnum_String:
-                //            case NetInterTypeEnum.NetInterTypeEnum_Date:
-                //            case NetInterTypeEnum.NetInterTypeEnum_Object:
-                //                throw new Exception("Unsupported");
-                //            default:
-                //                throw new Exception("Unsupported");
-                //        }
-                //    }
-                //}
-
-                //var r = o.GetType()
-                //    .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
-                //    .Invoke(o, methodParameters?.ToArray());
-
-                //if (r != null)
-                //{
-                //    var rType = r.GetType();
-                //    if (rType == typeof(bool))
-                //    {
-                //        result.SetBool((bool)r);
-                //    }
-                //    else if (rType == typeof(int))
-                //    {
-                //        result.SetInt((int)r);
-                //    }
-                //    else
-                //    {
-                //        var gcHandle = GCHandle.Alloc(o);
-                //        result.SetValue(new SWIGTYPE_p_void(GCHandle.ToIntPtr(handle), true));
-                //    }
-                //}
-            }
-
+            
             public override void ReleaseGCHandle(IntPtr gcHandle)
             {
                 var handle = (GCHandle)gcHandle;
                 handle.Free();
+            }
+
+            private void PackValue(ref object source, NetVariant destination)
+            {
+                if (source == null)
+                {
+                    destination.Clear();
+                }
+                else
+                {
+                    var type = source.GetType();
+                    if (type == typeof(bool))
+                        destination.SetBool((bool)source);
+                    else if (type == typeof(int))
+                        destination.SetInt((int)source);
+                    else
+                    {;
+                        throw new Exception("Unsupported type");
+                    }
+                }
+            }
+
+            private void Unpackvalue(ref object destination, NetVariant source)
+            {
+                switch (source.GetVariantType())
+                {
+                    case NetVariantTypeEnum.NetVariantTypeEnum_Invalid:
+                        destination = null;
+                        break;
+                    case NetVariantTypeEnum.NetVariantTypeEnum_Bool:
+                        destination = source.GetBool();
+                        break;
+                    case NetVariantTypeEnum.NetVariantTypeEnum_Int:
+                        destination = source.GetInt();
+                        break;
+                    case NetVariantTypeEnum.NetVariantTypeEnum_Double:
+                    case NetVariantTypeEnum.NetVariantTypeEnum_String:
+                    case NetVariantTypeEnum.NetVariantTypeEnum_Date:
+                        break;
+                    case NetVariantTypeEnum.NetVariantTypeEnum_Object:
+                        var netInstance = source.GetNetInstance();
+                        var gcHandle = (GCHandle) netInstance.GetGCHandle();
+                        destination = gcHandle.Target;
+                        break;
+                    default:
+                        throw new Exception("Unsupported variant type.");
+                }
             }
         }
 

@@ -4,43 +4,48 @@
 #include "net_type_info_property.h"
 #include "net_type_info_manager.h"
 #include "net_instance.h"
+#include "net_variant.h"
 #include <private/qmetaobjectbuilder_p.h>
 #include <QDebug>
 
-void packValue(NetInstance* instance, void* value) {
-//    switch(instance->GetInterType()) {
-//    case NetInterTypeEnum_Bool: {
-//        bool *in = reinterpret_cast<bool *>(value);
-//        instance->SetBool(*in);
-//        break;
-//    }
-//    case NetInterTypeEnum_Int: {
-//        int *in = reinterpret_cast<int *>(value);
-//        instance->SetInt(*in);
-//        break;
-//    }
-//    default:
-//        qDebug() << "Unsupported intertype: " << instance->GetInterType();
-//        break;
-//    }
+void packValue(NetVariant* source, void* destination) {
+    QVariant *casted = reinterpret_cast<QVariant *>(destination);
+    switch(source->GetVariantType()) {
+    case NetVariantTypeEnum_Invalid:
+        casted->clear();
+        break;
+    case NetVariantTypeEnum_Bool:
+        casted->setValue(source->GetBool());
+        break;
+    case NetVariantTypeEnum_Int:
+        casted->setValue(source->GetInt());
+    case NetVariantTypeEnum_Double:
+        break;
+    case NetVariantTypeEnum_String:
+        break;
+    case NetVariantTypeEnum_Date:
+        break;
+    case NetVariantTypeEnum_Object:
+        break;
+    default:
+        qDebug() << "Unsupported variant type: " << source->GetVariantType();
+        break;
+    }
 }
 
-void unpackValue(NetInstance* instance, void* value) {
-//    switch(instance->GetInterType()) {
-//    case NetInterTypeEnum_Bool: {
-//        bool *out = reinterpret_cast<bool *>(value);
-//        *out = instance->GetBool();
-//        break;
-//    }
-//    case NetInterTypeEnum_Int: {
-//        int* out = reinterpret_cast<int *>(value);
-//        *out = instance->GetInt();
-//        break;
-//    }
-//    default:
-//        qDebug() << "Unsupported intertype: " << instance->GetInterType();
-//        break;
-//    }
+void unpackValue(NetVariant* destination, void* source) {
+    QVariant *casted = reinterpret_cast<QVariant *>(source);
+    switch(casted->type()) {
+    case QVariant::Invalid:
+        destination->Clear();
+        break;
+    case QVariant::Bool:
+        destination->SetBool(casted->value<bool>());
+        break;
+    default:
+        qDebug() << "Unsupported variant type: " << casted->type();
+        break;
+    }
 }
 
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
@@ -71,13 +76,13 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
             std::string parameterName;
             NetTypeInfo* parameterType = NULL;
             methodInfo->GetParameterInfo(0, &parameterName, &parameterType);
-            //signature.append(cppTypeNameFromInterType(parameterType->GetInterType()));
+            signature.append("QVariant*");
         }
 
         signature.append(")");
 
         if(returnType) {
-            //mob.addMethod(signature.toLocal8Bit().constData(), cppTypeNameFromInterType(returnType->GetInterType()));
+            mob.addMethod(signature.toLocal8Bit().constData(), "QVariant*");
         } else {
             mob.addMethod(signature.toLocal8Bit().constData());
         }
@@ -120,9 +125,9 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
             NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
 
-            NetInstance* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
+            NetVariant* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
 
-            unpackValue(result, a[0]);
+            packValue(result, a[0]);
 
             delete result;
         }
@@ -136,12 +141,12 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
             NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
 
-            //NetInstance* newValue = new NetInstance(propertyInfo->GetReturnType()->GetInterType());
-            //packValue(newValue, a[0]);
+            NetVariant* newValue = new NetVariant();
+            unpackValue(newValue, a[0]);
 
-            //NetTypeInfoManager::WriteProperty(propertyInfo, instance, newValue);
+            NetTypeInfoManager::WriteProperty(propertyInfo, instance, newValue);
 
-            //delete newValue;
+            delete newValue;
         }
         break;
     case  InvokeMetaMethod:
@@ -153,20 +158,19 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
             NetMethodInfo* methodInfo = typeInfo->GetMethod(idx - offset);
 
-            std::vector<NetInstance*> parameters;
+            std::vector<NetVariant*> parameters;
 
             for(int index = 0; index <= methodInfo->GetParameterCount() - 1; index++)
             {
                 NetTypeInfo* typeInfo = NULL;
                 methodInfo->GetParameterInfo(index, NULL, &typeInfo);
 
-                //NetInstance* instance = new NetInstance(typeInfo->GetInterType());
-                //packValue(instance, a[index + 1]);
-
-                //parameters.insert(parameters.end(), instance);
+                NetVariant* netVariant = new NetVariant();
+                packValue(netVariant, a[index + 1]);
+                parameters.insert(parameters.end(), netVariant);
             }
 
-            NetInstance* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
+            NetVariant* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
 
             if(result) {
                 unpackValue(result, a[0]);

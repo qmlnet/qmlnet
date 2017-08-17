@@ -19,9 +19,9 @@ public:
     virtual bool isValidType(char *typeName);
     virtual void BuildTypeInfo(NetTypeInfo *typeInfo);
     virtual void CreateInstance(NetTypeInfo *typeInfo, NetGCHandle **instance);
-    virtual void ReadProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *result);
-    virtual void WriteProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetInstance *value);
-    virtual void InvokeMethod(NetMethodInfo *methodInfo, NetInstance *target, std::vector< NetInstance * > parameters, NetInstance *result);
+    virtual void ReadProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetVariant *result);
+    virtual void WriteProperty(NetPropertyInfo *propertyInfo, NetInstance *target, NetVariant *value);
+    virtual void InvokeMethod(NetMethodInfo *methodInfo, NetInstance *target, std::vector< NetVariant * > parameters, NetVariant *result);
     virtual void ReleaseGCHandle(NetGCHandle *gcHandle);
 
     typedef unsigned int (SWIGSTDCALL* SWIG_Callback0_t)(char *);
