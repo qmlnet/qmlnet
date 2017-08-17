@@ -12,7 +12,7 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo);
 class GoValueMetaObject : public QAbstractDynamicMetaObject
 {
 public:
-    GoValueMetaObject(QObject* value, NetInstance *instance, NetTypeInfo *typeInfo);
+    GoValueMetaObject(QObject* value, NetInstance *instance);
 
     void activatePropIndex(int propIndex);
 
@@ -22,7 +22,6 @@ protected:
 private:
     QObject *value;
     NetInstance *instance;
-    NetTypeInfo *typeInfo;
 };
 
 #endif // NET_QML_META_H

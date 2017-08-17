@@ -1,11 +1,11 @@
 #include "net_qml_value.h"
 #include "net_type_info_manager.h"
-#include "net_instance.h"
 
-NetValue::NetValue(NetInstance *instance, NetTypeInfo *typeInfo, QObject *parent)
-    : instance(instance), typeInfo(typeInfo)
+NetValue::NetValue(NetInstance *instance, QObject *parent)
+    : instance(instance)
 {
-    valueMeta = new GoValueMetaObject(this, instance, typeInfo);
+
+    valueMeta = new GoValueMetaObject(this, instance);
     setParent(parent);
 }
 

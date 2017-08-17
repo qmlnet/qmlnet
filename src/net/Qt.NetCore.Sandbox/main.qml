@@ -26,16 +26,22 @@ ApplicationWindow {
         }
     }
 
-	TestQmlImport {
-		Component.onCompleted: {
-			{
-				console.log("Test")
+	Item {
+		Timer {
+			interval: 500; running: true; repeat: true
+			onTriggered: {
+				console.log("testtt")
 				var testo = testt.TestObject()
 				console.log(testo);
-				console.log(testo.Test())
-				testo.destroy()
+				testo.Test()
+				//testo.destroy()
 			}
 		}
+
+		Text { id: time }
+	}
+
+	TestQmlImport {
 		id: testt
 	}
 

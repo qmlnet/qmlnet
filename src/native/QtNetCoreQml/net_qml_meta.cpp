@@ -30,7 +30,7 @@ void packValue(NetVariant* source, void* destination) {
     case NetVariantTypeEnum_Object:
     {
         NetInstance* newInstance = source->GetNetInstance()->Clone();
-        NetValue* netValue = new NetValue(newInstance, newInstance->GetTypeInfo(), NULL);
+        NetValue* netValue = new NetValue(newInstance, NULL);
         QQmlEngine::setObjectOwnership(netValue, QQmlEngine::JavaScriptOwnership);
         casted->setValue(netValue);
         break;
@@ -117,10 +117,10 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
     return mo;
 }
 
-GoValueMetaObject::GoValueMetaObject(QObject *value, NetInstance *instance, NetTypeInfo *typeInfo)
-    : value(value), instance(instance), typeInfo(typeInfo)
+GoValueMetaObject::GoValueMetaObject(QObject *value, NetInstance *instance)
+    : value(value), instance(instance)
 {
-    *static_cast<QMetaObject *>(this) = *metaObjectFor(typeInfo);
+    *static_cast<QMetaObject *>(this) = *metaObjectFor(instance->GetTypeInfo());
 
     QObjectPrivate *objPriv = QObjectPrivate::get(value);
     objPriv->metaObject = this;
@@ -136,7 +136,7 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 return value->qt_metacall(c, idx, a);
             }
 
-            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
+            NetPropertyInfo* propertyInfo = instance->GetTypeInfo()->GetProperty(idx - offset);
 
             NetVariant* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
 
@@ -152,7 +152,7 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 return value->qt_metacall(c, idx, a);
             }
 
-            NetPropertyInfo* propertyInfo = typeInfo->GetProperty(idx - offset);
+            NetPropertyInfo* propertyInfo = instance->GetTypeInfo()->GetProperty(idx - offset);
 
             NetVariant* newValue = new NetVariant();
             unpackValue(newValue, a[0]);
@@ -169,7 +169,7 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 return value->qt_metacall(c, idx, a);
             }
 
-            NetMethodInfo* methodInfo = typeInfo->GetMethod(idx - offset);
+            NetMethodInfo* methodInfo = instance->GetTypeInfo()->GetMethod(idx - offset);
 
             std::vector<NetVariant*> parameters;
 

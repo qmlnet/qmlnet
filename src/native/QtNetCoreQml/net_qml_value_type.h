@@ -6,13 +6,15 @@
 #include "net_type_info_manager.h"
 #include "net_qml_value.h"
 
+#include <QVariantList>
+
 template <int N>
 class NetValueType : public NetValue
 {
 public:
 
     NetValueType()
-        : NetValue(NetTypeInfoManager::CreateInstance(typeInfo), typeInfo, 0) {};
+        : NetValue(NetTypeInfoManager::CreateInstance(typeInfo), 0) {};
 
     static void init(NetTypeInfo *info)
     {

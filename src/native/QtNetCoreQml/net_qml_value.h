@@ -4,6 +4,7 @@
 #include "qtnetcoreqml_global.h"
 #include "net_qml_meta.h"
 #include "net_type_info.h"
+#include "net_instance.h"
 
 class NetValue : public QObject
 {
@@ -11,9 +12,8 @@ class NetValue : public QObject
 
 public:
     NetInstance *instance;
-    NetTypeInfo *typeInfo;
 
-    NetValue(NetInstance *instance, NetTypeInfo *typeInfo, QObject *parent);
+    NetValue(NetInstance *instance, QObject *parent);
     virtual ~NetValue();
 
     void activate(int propIndex);
