@@ -44,6 +44,10 @@ public:
     virtual void ReleaseGCHandle(NetGCHandle* gcHandle) {
         Q_UNUSED(gcHandle);
     }
+    virtual void CopyGCHandle(NetGCHandle* gcHandle, NetGCHandle** gcHandleCopy) {
+        Q_UNUSED(gcHandle);
+        Q_UNUSED(gcHandleCopy);
+    }
 };
 
 class NetTypeInfoManager {
@@ -55,10 +59,12 @@ public:
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
+    static NetInstance* WrapCreatedInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo);
     static NetVariant* ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target);
     static void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetVariant* value);
     static NetVariant* InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetVariant*> parameters);
     static void ReleaseGCHandle(NetGCHandle* gcHandle);
+    static NetGCHandle* CopyGCHandle(NetGCHandle* gcHandle);
 private:
     static NetTypeInfoCallbacks* callbacks;
     static QMap<QString, NetTypeInfo*> types;

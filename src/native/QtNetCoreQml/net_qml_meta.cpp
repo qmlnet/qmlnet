@@ -7,6 +7,8 @@
 #include "net_variant.h"
 #include <private/qmetaobjectbuilder_p.h>
 #include <QDebug>
+#include "net_qml_value.h"
+#include <QQmlEngine>
 
 void packValue(NetVariant* source, void* destination) {
     QVariant *casted = reinterpret_cast<QVariant *>(destination);
@@ -26,7 +28,13 @@ void packValue(NetVariant* source, void* destination) {
     case NetVariantTypeEnum_Date:
         break;
     case NetVariantTypeEnum_Object:
+    {
+        NetInstance* newInstance = source->GetNetInstance()->Clone();
+        NetValue* netValue = new NetValue(newInstance, newInstance->GetTypeInfo(), NULL);
+        QQmlEngine::setObjectOwnership(netValue, QQmlEngine::JavaScriptOwnership);
+        casted->setValue(netValue);
         break;
+    }
     default:
         qDebug() << "Unsupported variant type: " << source->GetVariantType();
         break;
@@ -35,6 +43,8 @@ void packValue(NetVariant* source, void* destination) {
 
 void unpackValue(NetVariant* destination, void* source) {
     QVariant *casted = reinterpret_cast<QVariant *>(source);
+    QVariant::Type type = casted->type();
+    qDebug() << type;
     switch(casted->type()) {
     case QVariant::Invalid:
         destination->Clear();

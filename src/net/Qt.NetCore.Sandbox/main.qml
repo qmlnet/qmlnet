@@ -30,10 +30,10 @@ ApplicationWindow {
 		Component.onCompleted: {
 			{
 				console.log("Test")
-				console.log(testt.TestPropertyBool)
-				console.log(testt.TestPropertyBool2)
-				console.log(testt.TestMethodReturnInt())
-				console.log(testt.TestMethodReturnIntParamInt(234234))
+				var testo = testt.TestObject()
+				console.log(testo);
+				console.log(testo.Test())
+				testo.destroy()
 			}
 		}
 		id: testt

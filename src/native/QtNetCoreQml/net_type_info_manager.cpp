@@ -56,6 +56,11 @@ NetInstance* NetTypeInfoManager::CreateInstance(NetTypeInfo* typeInfo)
     return new NetInstance(handle, typeInfo);
 }
 
+NetInstance* NetTypeInfoManager::WrapCreatedInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo)
+{
+    return new NetInstance(gcHandle, typeInfo);
+}
+
 NetVariant* NetTypeInfoManager::ReadProperty(NetPropertyInfo* propertyInfo, NetInstance* target)
 {
     NetVariant* result = new NetVariant();
@@ -82,4 +87,11 @@ NetVariant* NetTypeInfoManager::InvokeMethod(NetMethodInfo* methodInfo, NetInsta
 void NetTypeInfoManager::ReleaseGCHandle(NetGCHandle* gcHandle)
 {
     NetTypeInfoManager::callbacks->ReleaseGCHandle(gcHandle);
+}
+
+NetGCHandle* NetTypeInfoManager::CopyGCHandle(NetGCHandle* gcHandle)
+{
+    NetGCHandle* result = NULL;
+    NetTypeInfoManager::callbacks->CopyGCHandle(gcHandle, &result);
+    return result;
 }

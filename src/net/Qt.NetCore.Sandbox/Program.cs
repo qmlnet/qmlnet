@@ -3,9 +3,29 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Qt.NetCore.Sandbox
 {
+
+    public class AnotherType
+    {
+        public AnotherType()
+        {
+            Console.WriteLine("Ctor2");
+        }
+
+        ~AnotherType()
+        {
+            Console.WriteLine("~Ctor2");
+        }
+
+        public void Test()
+        {
+            
+        }
+    }
+
     public class TestQmlImport
     {
         private bool _testPropertyBool;
@@ -49,6 +69,11 @@ namespace Qt.NetCore.Sandbox
         {
             return param;
         }
+
+        public AnotherType TestObject()
+        {
+            return new AnotherType();
+        }
     }
     
     class Program
@@ -77,6 +102,15 @@ namespace Qt.NetCore.Sandbox
             //}
 
             //return 0;
+
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    GC.Collect(GC.MaxGeneration);
+                }
+            });
 
             using (var r = new StringVector(0))
             {

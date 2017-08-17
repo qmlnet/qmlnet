@@ -64,6 +64,7 @@ namespace Qt.NetCore
 
             public override void CreateInstance(NetTypeInfo typeInfo, ref IntPtr instance)
             {
+                Console.WriteLine("Create");
                 var o = Activator.CreateInstance(Type.GetType(typeInfo.GetTypeName()));
                 var handle = GCHandle.Alloc(o);
                 instance = GCHandle.ToIntPtr(handle);
@@ -134,8 +135,17 @@ namespace Qt.NetCore
             
             public override void ReleaseGCHandle(IntPtr gcHandle)
             {
+                Console.WriteLine("Release");
                 var handle = (GCHandle)gcHandle;
                 handle.Free();
+            }
+
+            public override void CopyGCHandle(IntPtr gcHandle, ref IntPtr gcHandleCopy)
+            {
+                Console.WriteLine("Copy");
+                var handle = (GCHandle)gcHandle;
+                var duplicatedHandle = GCHandle.Alloc(handle.Target);
+                gcHandleCopy = GCHandle.ToIntPtr(duplicatedHandle);
             }
 
             private void PackValue(ref object source, NetVariant destination)
@@ -152,8 +162,10 @@ namespace Qt.NetCore
                     else if (type == typeof(int))
                         destination.SetInt((int)source);
                     else
-                    {;
-                        throw new Exception("Unsupported type");
+                    {
+                        destination.SetNetInstance(NetTypeInfoManager.WrapCreatedInstance(
+                            GCHandle.ToIntPtr(GCHandle.Alloc(source)),
+                            NetTypeInfoManager.GetTypeInfo(type.FullName + ", " + type.Assembly.FullName)));
                     }
                 }
             }

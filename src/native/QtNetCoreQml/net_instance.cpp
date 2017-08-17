@@ -24,3 +24,8 @@ NetTypeInfo* NetInstance::GetTypeInfo()
 {
     return typeInfo;
 }
+
+NetInstance* NetInstance::Clone()
+{
+    return new NetInstance(NetTypeInfoManager::CopyGCHandle(gcHandle), typeInfo);
+}

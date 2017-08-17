@@ -16,6 +16,7 @@ public:
     virtual void WriteProperty(NetPropertyInfo* propertyInfo, NetInstance* target, NetVariant* value);
     virtual void InvokeMethod(NetMethodInfo* methodInfo, NetInstance* target, std::vector<NetVariant*> parameters, NetVariant* result);
     virtual void ReleaseGCHandle(NetGCHandle* gcHandle);
+    virtual void CopyGCHandle(NetGCHandle* gcHandle, NetGCHandle** gcHandleCopy);
 };
 
 class NetTypeInfoManager
@@ -24,6 +25,7 @@ public:
     static void setCallbacks(NetTypeInfoCallbacks* callbacks);
     static NetTypeInfo* GetTypeInfo(char* typeName);
     static NetInstance* CreateInstance(NetTypeInfo* typeInfo);
+    static NetInstance* WrapCreatedInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo);
     static NetMethodInfo* NewMethodInfo(NetTypeInfo* parentTypeInfo, char* methodName, NetTypeInfo* returnType);
     static NetPropertyInfo* NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite);
 };

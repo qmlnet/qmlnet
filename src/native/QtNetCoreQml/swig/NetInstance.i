@@ -8,4 +8,5 @@ public:
     NetInstance(NetGCHandle* gcHandle, NetTypeInfo* typeInfo);
     NetGCHandle* GetGCHandle();
     NetTypeInfo* GetTypeInfo();
+    NetInstance* Clone();
 };
