@@ -40,9 +40,9 @@ namespace Qt.NetCore.Sandbox
             
         }
 
-        public bool TestMethodReturnInt()
+        public int TestMethodReturnInt()
         {
-            return false;
+            return 15;
         }
 
         public int TestMethodReturnIntParamInt(int param)

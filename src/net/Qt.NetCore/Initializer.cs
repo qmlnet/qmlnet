@@ -113,7 +113,7 @@ namespace Qt.NetCore
                     {
                         object v = null;
                         Unpackvalue(ref v, parameterInstance);
-                        methodParameters.Add(methodParameters);
+                        methodParameters.Add(v);
                     }
                 }
 
@@ -121,7 +121,15 @@ namespace Qt.NetCore
                     .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
                     .Invoke(o, methodParameters?.ToArray());
 
-                PackValue(ref r, result);
+                if (result == null)
+                {
+                    // this method doesn't have return type
+
+                }
+                else
+                {
+                    PackValue(ref r, result);
+                }
             }
             
             public override void ReleaseGCHandle(IntPtr gcHandle)

@@ -42,6 +42,9 @@ void unpackValue(NetVariant* destination, void* source) {
     case QVariant::Bool:
         destination->SetBool(casted->value<bool>());
         break;
+    case QVariant::Int:
+        destination->SetInt(casted->value<int>());
+        break;
     default:
         qDebug() << "Unsupported variant type: " << casted->type();
         break;
@@ -76,13 +79,13 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
             std::string parameterName;
             NetTypeInfo* parameterType = NULL;
             methodInfo->GetParameterInfo(0, &parameterName, &parameterType);
-            signature.append("QVariant*");
+            signature.append("QVariant");
         }
 
         signature.append(")");
 
         if(returnType) {
-            mob.addMethod(signature.toLocal8Bit().constData(), "QVariant*");
+            mob.addMethod(signature.toLocal8Bit().constData(), "QVariant");
         } else {
             mob.addMethod(signature.toLocal8Bit().constData());
         }
@@ -166,14 +169,14 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 methodInfo->GetParameterInfo(index, NULL, &typeInfo);
 
                 NetVariant* netVariant = new NetVariant();
-                packValue(netVariant, a[index + 1]);
+                unpackValue(netVariant, a[index + 1]);
                 parameters.insert(parameters.end(), netVariant);
             }
 
             NetVariant* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
 
             if(result) {
-                unpackValue(result, a[0]);
+                packValue(result, a[0]);
             }
 
             delete result;
