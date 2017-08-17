@@ -1,6 +1,6 @@
 #include "net_qml_register_type.h"
 #include "net_qml_value_type.h"
-
+#include "qtestobject.h"
 #include <QQmlApplicationEngine>
 
 //#include "net_type_info.h"
@@ -16,6 +16,9 @@ DEFINE_NETVALUETYPE(1)
 
 int registerNetType(std::string netType, std::string uri, int versionMajor, int versionMinor, std::string qmlName)
 {
+    qmlRegisterType<QTestObject>("test.io", 1, 0, "TestObject");
+    //qmlRegisterType<QAnotherTestObject>("test.io", 1, 0, "AnotherTestObject");
+
     if(!NetTypeInfoManager::isValidType((char*)netType.c_str()))
         return -1;
 

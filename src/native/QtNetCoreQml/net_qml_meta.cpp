@@ -144,6 +144,8 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             NetInstance* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
 
             unpackValue(result, a[0]);
+
+            delete result;
         }
         break;
     case WriteProperty:
@@ -190,6 +192,8 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             if(result) {
                 unpackValue(result, a[0]);
             }
+
+            delete result;
         }
         break;
     default:

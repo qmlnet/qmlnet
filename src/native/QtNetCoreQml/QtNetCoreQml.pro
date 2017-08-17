@@ -22,7 +22,8 @@ SOURCES += qguiapplication_helpers.cpp \
     net_instance.cpp \
     net_type_info_method.cpp \
     net_type_info_property.cpp \
-    net_type_info_manager.cpp
+    net_type_info_manager.cpp \
+    qtestobject.cpp
 
 HEADERS += qtnetcoreqml_global.h \
     qguiapplication_helpers.h \
@@ -35,7 +36,8 @@ HEADERS += qtnetcoreqml_global.h \
     net_instance.h \
     net_type_info_method.h \
     net_type_info_property.h \
-    net_type_info_manager.h
+    net_type_info_manager.h \
+    qtestobject.h
 
 unix {
     target.path = /usr/lib
