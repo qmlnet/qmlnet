@@ -3,6 +3,7 @@
 
 #include "qtnetcoreqml_global.h"
 #include <private/qobject_p.h>
+#include <QDebug>
 
 class NetTypeInfo;
 class NetInstance;
@@ -13,8 +14,6 @@ class GoValueMetaObject : public QAbstractDynamicMetaObject
 {
 public:
     GoValueMetaObject(QObject* value, NetInstance *instance);
-
-    void activatePropIndex(int propIndex);
 
 protected:
     int metaCall(QMetaObject::Call c, int id, void **a);

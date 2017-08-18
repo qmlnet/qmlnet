@@ -14,8 +14,3 @@ NetValue::~NetValue()
     delete instance;
     instance = NULL;
 }
-
-void NetValue::activate(int propIndex)
-{
-    valueMeta->activatePropIndex(propIndex);
-}

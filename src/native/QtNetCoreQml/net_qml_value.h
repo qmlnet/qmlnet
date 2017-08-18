@@ -16,8 +16,6 @@ public:
     NetValue(NetInstance *instance, QObject *parent);
     virtual ~NetValue();
 
-    void activate(int propIndex);
-
 private:
     GoValueMetaObject *valueMeta;
 };

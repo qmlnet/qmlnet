@@ -28,13 +28,12 @@ ApplicationWindow {
 
 	Item {
 		Timer {
-			interval: 500; running: true; repeat: true
+			interval: 5; running: true; repeat: true
 			onTriggered: {
 				console.log("testtt")
-				var testo = testt.TestObject()
-				console.log(testo);
-				testo.Test()
-				//testo.destroy()
+				var o = testt.TestObject()
+				o.Test()
+				o.destroy()
 			}
 		}
 

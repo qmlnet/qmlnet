@@ -53,7 +53,6 @@ void NetVariant::SetNetInstance(NetInstance* netInstance)
 
 NetInstance* NetVariant::GetNetInstance()
 {
-    qDebug() << variant.value<NetInstanceContainer>().netInstance->GetTypeInfo()->GetTypeName().c_str();
     return variant.value<NetInstanceContainer>().netInstance;
 }
 

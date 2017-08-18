@@ -43,8 +43,6 @@ void packValue(NetVariant* source, void* destination) {
 
 void unpackValue(NetVariant* destination, void* source) {
     QVariant *casted = reinterpret_cast<QVariant *>(source);
-    QVariant::Type type = casted->type();
-    qDebug() << type;
     switch(casted->type()) {
     case QVariant::Invalid:
         destination->Clear();
@@ -197,12 +195,4 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
     }
 
     return -1;
-}
-
-void GoValueMetaObject::activatePropIndex(int propIndex)
-{
-    // Properties are added first, so the first fieldLen methods are in
-    // fact the signals of the respective properties.
-    int relativeIndex = propIndex - propertyOffset();
-    activate(value, methodOffset() + relativeIndex, 0);
 }
