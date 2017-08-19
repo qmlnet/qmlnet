@@ -22,9 +22,13 @@ QTestObject::~QTestObject()
 
 QTestObject* QTestObject::GetNewObject()
 {
-    QTestObject* o = new QTestObject(NULL);
-    QQmlEngine::setObjectOwnership(o, QQmlEngine::JavaScriptOwnership);
-    return o;
+    QTestObject* t = new QTestObject(NULL);
+    return t;
+    //QQmlEngine::setObjectOwnership(t, QQmlEngine::JavaScriptOwnership);
+    //return QVariant::fromValue(t);
+    //QTestObject* o = new QTestObject(NULL);
+    //QQmlEngine::setObjectOwnership(o, QQmlEngine::JavaScriptOwnership);
+    //return o;
     //QQmlEngine::setObjectOwnership() with QQmlEngine::CppOwnership specified.
 }
 

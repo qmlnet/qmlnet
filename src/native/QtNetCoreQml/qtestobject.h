@@ -26,6 +26,7 @@ signals:
 public slots:
 private:
     int test;
+    char asdf[1024 * 4 * 4 *4];
 };
 
 class QAnotherTestObject : public QObject

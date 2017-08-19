@@ -22,7 +22,6 @@ namespace Qt.NetCore.Sandbox
 
         public void Test()
         {
-            
         }
     }
 
@@ -30,6 +29,7 @@ namespace Qt.NetCore.Sandbox
     {
         private bool _testPropertyBool;
         private bool _testPropertyBool2;
+        private string _testPropertyString = "$sdfsdfsdfsfsdfsdf€sdf£sfsdf";
 
         public TestQmlImport()
         {
@@ -53,6 +53,12 @@ namespace Qt.NetCore.Sandbox
         {
             get { return _testPropertyBool2; }
             set { _testPropertyBool2 = value; }
+        }
+
+        public string TestPropertyString
+        {
+            get { return _testPropertyString; }
+            set { _testPropertyString = value; }
         }
 
         public void TestMethod()
@@ -86,15 +92,18 @@ namespace Qt.NetCore.Sandbox
          
             Initializer.Initialize();
 
-            var typeInfo = NetTypeInfoManager.GetTypeInfo(typeof(TestQmlImport).FullName + ", " +
-                                           typeof(TestQmlImport).Assembly.FullName);
+            //var typeInfo = NetTypeInfoManager.GetTypeInfo(typeof(TestQmlImport).FullName + ", " +
+            //                               typeof(TestQmlImport).Assembly.FullName);
 
-            //var netVariant = new NetVariant();
-            //Console.WriteLine(netVariant.GetVariantType());
+            var netVariant = new NetVariant();
+            netVariant.SetString("$sdfsdfsdfsfsdfsdf€sdf£sfsdf");
+            Console.WriteLine(netVariant.GetString());
+            var werwer = netVariant.GetString();
+            Console.WriteLine(netVariant.GetVariantType());
             //netVariant.SetNetInstance(NetTypeInfoManager.CreateInstance(typeInfo));
-            //Console.WriteLine(netVariant.GetVariantType());
-            //netVariant.SetInt(0);
-            ////netVariant.Dispose();
+            Console.WriteLine(netVariant.GetVariantType());
+            netVariant.SetInt(0);
+            //netVariant.Dispose();
 
             //while (true)
             //{

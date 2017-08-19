@@ -158,6 +158,8 @@ namespace Qt.NetCore
                         destination.SetBool((bool)source);
                     else if (type == typeof(int))
                         destination.SetInt((int)source);
+                    else if(type == typeof(string))
+                        destination.SetString((string)source);
                     else
                     {
                         destination.SetNetInstance(NetTypeInfoManager.WrapCreatedInstance(
@@ -181,7 +183,10 @@ namespace Qt.NetCore
                         destination = source.GetInt();
                         break;
                     case NetVariantTypeEnum.NetVariantTypeEnum_Double:
+                        break;
                     case NetVariantTypeEnum.NetVariantTypeEnum_String:
+                        destination = source.GetString();
+                        break;
                     case NetVariantTypeEnum.NetVariantTypeEnum_Date:
                         break;
                     case NetVariantTypeEnum.NetVariantTypeEnum_Object:

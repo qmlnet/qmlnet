@@ -10,48 +10,25 @@ ApplicationWindow {
     height: 480
     title: qsTr("Hello World")
 
-    SwipeView {
-        id: swipeView
-        anchors.fill: parent
-        currentIndex: tabBar.currentIndex
-
-        Page1 {
-        }
-
-        Page {
-            Label {
-                text: qsTr("Second page")
-                anchors.centerIn: parent
-            }
-        }
-    }
-
 	Item {
 		Timer {
 			interval: 5; running: true; repeat: true
 			onTriggered: {
 				console.log("testtt")
-				var o = testt.TestObject()
-				o.Test()
-				o.destroy()
+				//console.log("Val = " + testt.TestPropertyString);
+				textt.text = testt.TestPropertyString
+				testt.TestPropertyString = testt.TestPropertyString;
+				//console.log("Val = " + testt.TestPropertyString);
+				gc()
 			}
 		}
+	}
 
-		Text { id: time }
+	Text {
+		id: textt
 	}
 
 	TestQmlImport {
 		id: testt
 	}
-
-    footer: TabBar {
-        id: tabBar
-        currentIndex: swipeView.currentIndex
-        TabButton {
-            text: qsTr("First")
-        }
-        TabButton {
-            text: qsTr("Second")
-        }
-    }
 }

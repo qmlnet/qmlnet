@@ -24,6 +24,7 @@ void packValue(NetVariant* source, void* destination) {
     case NetVariantTypeEnum_Double:
         break;
     case NetVariantTypeEnum_String:
+        casted->setValue(source->GetString());
         break;
     case NetVariantTypeEnum_Date:
         break;
@@ -53,6 +54,12 @@ void unpackValue(NetVariant* destination, void* source) {
     case QVariant::Int:
         destination->SetInt(casted->value<int>());
         break;
+    case QVariant::String:
+    {
+        QString stringValue = casted->toString();
+        destination->SetString(stringValue);
+        break;
+    }
     default:
         qDebug() << "Unsupported variant type: " << casted->type();
         break;

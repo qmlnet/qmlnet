@@ -6,7 +6,9 @@
 %template(StringVector) std::vector< std::string >;
 
 %include "void.i"
+%include "wchar.i"
 %include "Global.i"
+%include "QString.i"
 %include "NetInstance.i"
 %include "NetVariant.i"
 %include "NetTypeInfo.i"

@@ -88,6 +88,22 @@ int NetVariant::GetInt()
     return 0;
 }
 
+void NetVariant::SetString(QString& value)
+{
+    ClearNetInstance();
+    variant.setValue(value);
+}
+
+QString NetVariant::GetString()
+{
+    if(variant.type() != QVariant::String) {
+        qDebug() << "Variant is not a string";
+        return "";
+    }
+
+    return variant.toString();
+}
+
 void NetVariant::Clear()
 {
     ClearNetInstance();

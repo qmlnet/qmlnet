@@ -467,6 +467,15 @@ public class NetVariant : global::System.IDisposable {
     return ret;
   }
 
+  public void SetString(string value) {
+    QtNetCoreQmlPINVOKE.NetVariant_SetString(swigCPtr, value);
+  }
+
+  public string GetString() {
+    string ret = QtNetCoreQmlPINVOKE.NetVariant_GetString(swigCPtr);
+    return ret;
+  }
+
   public void Clear() {
     QtNetCoreQmlPINVOKE.NetVariant_Clear(swigCPtr);
   }
@@ -1655,6 +1664,26 @@ class QtNetCoreQmlPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_StringVector")]
   public static extern void delete_StringVector(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  protected class SWIGWStringHelper {
+
+    public delegate string SWIGWStringDelegate(global::System.IntPtr message);
+    static SWIGWStringDelegate wstringDelegate = new SWIGWStringDelegate(CreateWString);
+
+    [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="SWIGRegisterWStringCallback_QtNetCoreQml")]
+    public static extern void SWIGRegisterWStringCallback_QtNetCoreQml(SWIGWStringDelegate wstringDelegate);
+
+    static string CreateWString([global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]global::System.IntPtr cString) {
+      return global::System.Runtime.InteropServices.Marshal.PtrToStringUni(cString);
+    }
+
+    static SWIGWStringHelper() {
+      SWIGRegisterWStringCallback_QtNetCoreQml(wstringDelegate);
+    }
+  }
+
+  static protected SWIGWStringHelper swigWStringHelper = new SWIGWStringHelper();
+
+
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetInstance")]
   public static extern global::System.IntPtr new_NetInstance(System.IntPtr jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
@@ -1693,6 +1722,12 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetInt")]
   public static extern int NetVariant_GetInt(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetString")]
+  public static extern void NetVariant_SetString(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetString")]
+  public static extern string NetVariant_GetString(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_Clear")]
   public static extern void NetVariant_Clear(global::System.Runtime.InteropServices.HandleRef jarg1);

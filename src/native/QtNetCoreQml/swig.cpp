@@ -297,6 +297,19 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_QtNetCoreQml(SWIG_CSharpS
 
 #define SWIG_contract_assert(nullreturn, expr, msg) if (!(expr)) {SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, msg, ""); return nullreturn; } else
 
+
+/* Callback for returning strings to C# without leaking memory */
+typedef void * (SWIGSTDCALL* SWIG_CSharpWStringHelperCallback)(const wchar_t *);
+static SWIG_CSharpWStringHelperCallback SWIG_csharp_wstring_callback = NULL;
+
+
+#ifdef __cplusplus
+extern "C"
+#endif
+SWIGEXPORT void SWIGSTDCALL SWIGRegisterWStringCallback_QtNetCoreQml(SWIG_CSharpWStringHelperCallback callback) {
+  SWIG_csharp_wstring_callback = callback;
+}
+
 /* -----------------------------------------------------------------------------
  * director_common.swg
  *
@@ -1395,6 +1408,39 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NetVariant_GetInt(void * jarg1) {
   arg1 = (NetVariant *)jarg1; 
   result = (int)(arg1)->GetInt();
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetString(void * jarg1, wchar_t * jarg2) {
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  QString *arg2 = 0 ;
+  QString temp2 ;
+  
+  arg1 = (NetVariant *)jarg1; 
+  
+  temp2 = QString::fromWCharArray(jarg2);
+  arg2 = &temp2;
+  
+  (arg1)->SetString(*arg2);
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariant_GetString(void * jarg1) {
+  void * jresult ;
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  QString temp ;
+  QString result;
+  
+  arg1 = (NetVariant *)jarg1; 
+  result = (arg1)->GetString();
+  
+  wchar_t* result_array = new wchar_t[(&result)->length() + 1];
+  (&result)->toWCharArray(result_array);
+  result_array[(&result)->length()] = 0;
+  jresult = SWIG_csharp_wstring_callback(result_array);
+  delete[] result_array;
+  
   return jresult;
 }
 

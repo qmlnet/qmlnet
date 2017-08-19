@@ -16,6 +16,8 @@ public:
     bool GetBool();
     void SetInt(int value);
     int GetInt();
+    void SetString(QString& value);
+    QString GetString();
     void Clear();
 private:
     void ClearNetInstance();
