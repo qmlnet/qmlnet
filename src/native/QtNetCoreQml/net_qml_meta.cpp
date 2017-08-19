@@ -57,7 +57,7 @@ void unpackValue(NetVariant* destination, void* source) {
     case QVariant::String:
     {
         QString stringValue = casted->toString();
-        destination->SetString(stringValue);
+        destination->SetString(&stringValue);
         break;
     }
     default:

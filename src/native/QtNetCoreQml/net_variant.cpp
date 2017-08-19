@@ -88,10 +88,14 @@ int NetVariant::GetInt()
     return 0;
 }
 
-void NetVariant::SetString(QString& value)
+void NetVariant::SetString(QString* value)
 {
     ClearNetInstance();
-    variant.setValue(value);
+    if(value) {
+        variant.setValue(*value);
+    } else {
+        variant.clear();
+    }
 }
 
 QString NetVariant::GetString()

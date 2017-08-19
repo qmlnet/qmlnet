@@ -80,6 +80,12 @@ namespace Qt.NetCore.Sandbox
         {
             return new AnotherType();
         }
+
+        public string TestMethodString(string param)
+        {
+            return null;
+            return param;
+        }
     }
     
     class Program
@@ -96,14 +102,11 @@ namespace Qt.NetCore.Sandbox
             //                               typeof(TestQmlImport).Assembly.FullName);
 
             var netVariant = new NetVariant();
-            netVariant.SetString("$sdfsdfsdfsfsdfsdf€sdf£sfsdf");
-            Console.WriteLine(netVariant.GetString());
-            var werwer = netVariant.GetString();
+            netVariant.SetString("");
             Console.WriteLine(netVariant.GetVariantType());
-            //netVariant.SetNetInstance(NetTypeInfoManager.CreateInstance(typeInfo));
+            netVariant.SetString(null);
             Console.WriteLine(netVariant.GetVariantType());
-            netVariant.SetInt(0);
-            //netVariant.Dispose();
+            
 
             //while (true)
             //{

@@ -1414,15 +1414,17 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NetVariant_GetInt(void * jarg1) {
 
 SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetString(void * jarg1, wchar_t * jarg2) {
   NetVariant *arg1 = (NetVariant *) 0 ;
-  QString *arg2 = 0 ;
+  QString *arg2 = (QString *) 0 ;
   QString temp2 ;
   
   arg1 = (NetVariant *)jarg1; 
   
-  temp2 = QString::fromWCharArray(jarg2);
-  arg2 = &temp2;
+  if(jarg2) {
+    temp2 = QString::fromWCharArray(jarg2);
+    arg2 = &temp2;
+  }
   
-  (arg1)->SetString(*arg2);
+  (arg1)->SetString(arg2);
 }
 
 

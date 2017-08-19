@@ -14,12 +14,7 @@ ApplicationWindow {
 		Timer {
 			interval: 5; running: true; repeat: true
 			onTriggered: {
-				console.log("testtt")
-				//console.log("Val = " + testt.TestPropertyString);
-				textt.text = testt.TestPropertyString
-				testt.TestPropertyString = testt.TestPropertyString;
-				//console.log("Val = " + testt.TestPropertyString);
-				gc()
+				console.log(testt.TestMethodString("Sdfsdf"))
 			}
 		}
 	}

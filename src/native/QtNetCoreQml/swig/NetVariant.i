@@ -13,7 +13,7 @@ public:
     bool GetBool();
     void SetInt(int value);
     int GetInt();
-    void SetString(QString& value);
+    void SetString(QString* value);
     QString GetString();
     void Clear();
 }; 
