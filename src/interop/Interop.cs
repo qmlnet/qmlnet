@@ -1393,7 +1393,7 @@ public class QGuiApplication : global::System.IDisposable {
 }
 namespace Qt.NetCore {
 
-public class QQmlApplicationEngine : global::System.IDisposable {
+public partial class QQmlApplicationEngine : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 

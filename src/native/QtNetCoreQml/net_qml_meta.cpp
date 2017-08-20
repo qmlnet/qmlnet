@@ -22,6 +22,7 @@ void packValue(NetVariant* source, void* destination) {
         break;
     case NetVariantTypeEnum_Int:
         casted->setValue(source->GetInt());
+        break;
     case NetVariantTypeEnum_Double:
         casted->setValue(source->GetDouble());
         break;
@@ -106,6 +107,7 @@ void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefT
         break;
     case QVariant::Double:
         destination->SetDouble(casted->value<double>());
+        break;
     case QVariant::Int:
         destination->SetDouble(casted->value<int>());
         break;

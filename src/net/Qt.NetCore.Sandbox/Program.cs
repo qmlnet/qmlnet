@@ -39,7 +39,7 @@ namespace Qt.NetCore.Sandbox
 
         public DateTime TestMethod(DateTime value)
         {
-            return value;
+            return DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
         }
     }
     
@@ -76,13 +76,7 @@ namespace Qt.NetCore.Sandbox
                 {
                     using (var engine = new QQmlApplicationEngine())
                     {
-                        //while (true)
-                        {
-                            Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName + ", " + typeof(TestQmlImport).Assembly.FullName, "test", 1, 1, "TestQmlImport"));
-                            GC.Collect(GC.MaxGeneration);
-                        }
-                        //Console.WriteLine(QtNetCoreQml.registerNetType(typeof(TestQmlImport).FullName, "test", 1, 1, "TestQmlImport"));
-
+                        QQmlApplicationEngine.RegisterType<TestQmlImport>("test", 1, 1);
                         engine.loadFile("main.qml");
                         return app.exec();
                     }
