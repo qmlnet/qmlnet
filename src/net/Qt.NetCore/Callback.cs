@@ -19,9 +19,21 @@ namespace Qt.NetCore
         public override void BuildTypeInfo(NetTypeInfo typeInfo)
         {
             var type = Type.GetType(typeInfo.GetTypeName());
+            
+            if(type == typeof(bool))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Bool);
+            else if (type == typeof(int))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Int);
+            else if(type == typeof(double))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Double);
+            else if(type == typeof(string))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_String);
+            else if(type == typeof(DateTime))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Date);
 
             if (type.Namespace == "System")
                 return; // built in type!
+
 
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -150,6 +162,8 @@ namespace Qt.NetCore
                 var type = source.GetType();
                 if (type == typeof(bool))
                     destination.SetBool((bool)source);
+                else if(type == typeof(double))
+                    destination.SetDouble((double)source);
                 else if (type == typeof(int))
                     destination.SetInt((int)source);
                 else if (type == typeof(string))
@@ -177,6 +191,7 @@ namespace Qt.NetCore
                     destination = source.GetInt();
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_Double:
+                    destination = source.GetDouble();
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_String:
                     destination = source.GetString();

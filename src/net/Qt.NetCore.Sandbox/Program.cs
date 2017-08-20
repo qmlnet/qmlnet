@@ -27,15 +27,9 @@ namespace Qt.NetCore.Sandbox
 
     public class TestQmlImport
     {
-        private bool _testPropertyBool;
-        private bool _testPropertyBool2;
-        private string _testPropertyString = "$sdfsdfsdfsfsdfsdf€sdf£sfsdf";
-
         public TestQmlImport()
         {
             Console.WriteLine("Ctor");
-            TestPropertyBool = true;
-            TestPropertyBool2 = false;
         }
 
         ~TestQmlImport()
@@ -43,47 +37,9 @@ namespace Qt.NetCore.Sandbox
             Console.WriteLine("~Ctor");
         }
 
-        public bool TestPropertyBool
+        public double TestMethod(double parameter)
         {
-            get { return _testPropertyBool; }
-            set { _testPropertyBool = value; }
-        }
-
-        public bool TestPropertyBool2
-        {
-            get { return _testPropertyBool2; }
-            set { _testPropertyBool2 = value; }
-        }
-
-        public string TestPropertyString
-        {
-            get { return _testPropertyString; }
-            set { _testPropertyString = value; }
-        }
-
-        public void TestMethod()
-        {
-            
-        }
-
-        public int TestMethodReturnInt()
-        {
-            return 15;
-        }
-
-        public int TestMethodReturnIntParamInt(int param)
-        {
-            return param;
-        }
-
-        public AnotherType TestObject()
-        {
-            return new AnotherType();
-        }
-
-        public string TestMethodString(string param)
-        {
-            return null;
+            return Double.MinValue;
         }
     }
     

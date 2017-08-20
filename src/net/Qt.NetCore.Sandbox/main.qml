@@ -14,7 +14,9 @@ ApplicationWindow {
 		Timer {
 			interval: 5; running: true; repeat: true
 			onTriggered: {
-				console.log(testt.TestMethodString("Sdfsdf"))
+				var newValue = testt.TestMethod("234")
+				console.log("Value is: " + newValue);
+				testt.TestMethod(newValue)
 			}
 		}
 	}

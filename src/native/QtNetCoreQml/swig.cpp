@@ -1412,6 +1412,28 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NetVariant_GetInt(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetDouble(void * jarg1, double jarg2) {
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  double arg2 ;
+  
+  arg1 = (NetVariant *)jarg1; 
+  arg2 = (double)jarg2; 
+  (arg1)->SetDouble(arg2);
+}
+
+
+SWIGEXPORT double SWIGSTDCALL CSharp_NetVariant_GetDouble(void * jarg1) {
+  double jresult ;
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  double result;
+  
+  arg1 = (NetVariant *)jarg1; 
+  result = (double)(arg1)->GetDouble();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetString(void * jarg1, wchar_t * jarg2) {
   NetVariant *arg1 = (NetVariant *) 0 ;
   QString *arg2 = (QString *) 0 ;
@@ -1484,6 +1506,28 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTypeInfo(void * jarg1) {
   
   arg1 = (NetTypeInfo *)jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_NetTypeInfo_GetPrefVariantType(void * jarg1) {
+  int jresult ;
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  NetVariantTypeEnum result;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  result = (NetVariantTypeEnum)(arg1)->GetPrefVariantType();
+  jresult = (int)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfo_SetPrefVariantType(void * jarg1, int jarg2) {
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  NetVariantTypeEnum arg2 ;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  arg2 = (NetVariantTypeEnum)jarg2; 
+  (arg1)->SetPrefVariantType(arg2);
 }
 
 

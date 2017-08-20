@@ -467,6 +467,15 @@ public class NetVariant : global::System.IDisposable {
     return ret;
   }
 
+  public void SetDouble(double value) {
+    QtNetCoreQmlPINVOKE.NetVariant_SetDouble(swigCPtr, value);
+  }
+
+  public double GetDouble() {
+    double ret = QtNetCoreQmlPINVOKE.NetVariant_GetDouble(swigCPtr);
+    return ret;
+  }
+
   public void SetString(string value) {
     QtNetCoreQmlPINVOKE.NetVariant_SetString(swigCPtr, value);
   }
@@ -517,6 +526,15 @@ public class NetTypeInfo : global::System.IDisposable {
 
   public NetTypeInfo(string typeName) : this(QtNetCoreQmlPINVOKE.new_NetTypeInfo(typeName), true) {
     if (QtNetCoreQmlPINVOKE.SWIGPendingException.Pending) throw QtNetCoreQmlPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public NetVariantTypeEnum GetPrefVariantType() {
+    NetVariantTypeEnum ret = (NetVariantTypeEnum)QtNetCoreQmlPINVOKE.NetTypeInfo_GetPrefVariantType(swigCPtr);
+    return ret;
+  }
+
+  public void SetPrefVariantType(NetVariantTypeEnum value) {
+    QtNetCoreQmlPINVOKE.NetTypeInfo_SetPrefVariantType(swigCPtr, (int)value);
   }
 
   public string GetTypeName() {
@@ -1735,6 +1753,12 @@ class QtNetCoreQmlPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetInt")]
   public static extern int NetVariant_GetInt(global::System.Runtime.InteropServices.HandleRef jarg1);
 
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetDouble")]
+  public static extern void NetVariant_SetDouble(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetDouble")]
+  public static extern double NetVariant_GetDouble(global::System.Runtime.InteropServices.HandleRef jarg1);
+
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetString")]
   public static extern void NetVariant_SetString(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2);
 
@@ -1752,6 +1776,12 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetTypeInfo")]
   public static extern void delete_NetTypeInfo(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_GetPrefVariantType")]
+  public static extern int NetTypeInfo_GetPrefVariantType(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_SetPrefVariantType")]
+  public static extern void NetTypeInfo_SetPrefVariantType(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_GetTypeName")]
   public static extern string NetTypeInfo_GetTypeName(global::System.Runtime.InteropServices.HandleRef jarg1);

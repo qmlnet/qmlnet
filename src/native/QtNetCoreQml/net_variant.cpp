@@ -88,6 +88,24 @@ int NetVariant::GetInt()
     return 0;
 }
 
+void NetVariant::SetDouble(double value)
+{
+    ClearNetInstance();
+    variant.setValue(value);
+}
+
+double NetVariant::GetDouble()
+{
+    bool ok = false;
+    double result = variant.toDouble(&ok);
+
+    if(!ok) {
+        qDebug() << "Couldn't convert variant to double";
+    }
+
+    return result;
+}
+
 void NetVariant::SetString(QString* value)
 {
     ClearNetInstance();

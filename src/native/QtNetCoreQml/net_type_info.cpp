@@ -2,6 +2,7 @@
 #include <QDebug>
 
 NetTypeInfo::NetTypeInfo(std::string typeName) :
+    prefVariantType(NetVariantTypeEnum_Invalid),
     typeName(typeName),
     metaObject(NULL)
 {
@@ -13,9 +14,15 @@ NetTypeInfo::~NetTypeInfo()
 
 }
 
+NetVariantTypeEnum NetTypeInfo::GetPrefVariantType()
+{
+    return prefVariantType;
+}
 
-
-
+void NetTypeInfo::SetPrefVariantType(NetVariantTypeEnum value)
+{
+    prefVariantType = value;
+}
 
 std::string NetTypeInfo::GetTypeName()
 {
