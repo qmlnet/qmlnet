@@ -1,5 +1,7 @@
 %module(directors="1") QtNetCoreQml
 
+%include "Initialization.i"
+
 %include "std_vector.i"
 %include "std_string_custom.i"
 

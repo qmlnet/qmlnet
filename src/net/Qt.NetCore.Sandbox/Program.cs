@@ -84,7 +84,6 @@ namespace Qt.NetCore.Sandbox
         public string TestMethodString(string param)
         {
             return null;
-            return param;
         }
     }
     
@@ -95,11 +94,6 @@ namespace Qt.NetCore.Sandbox
             var path = System.Environment.GetEnvironmentVariable("PATH");
             path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
             System.Environment.SetEnvironmentVariable("PATH", path);
-         
-            Initializer.Initialize();
-
-            //var typeInfo = NetTypeInfoManager.GetTypeInfo(typeof(TestQmlImport).FullName + ", " +
-            //                               typeof(TestQmlImport).Assembly.FullName);
 
             var netVariant = new NetVariant();
             netVariant.SetString("");
@@ -107,14 +101,6 @@ namespace Qt.NetCore.Sandbox
             netVariant.SetString(null);
             Console.WriteLine(netVariant.GetVariantType());
             
-
-            //while (true)
-            //{
-            //    GC.Collect(GC.MaxGeneration);
-            //}
-
-            //return 0;
-
             Task.Factory.StartNew(() =>
             {
                 while (true)

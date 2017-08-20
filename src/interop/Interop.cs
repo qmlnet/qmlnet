@@ -1586,6 +1586,18 @@ class QtNetCoreQmlPINVOKE {
   }
 
 
+    protected class QmlCallbackHelper {
+        static Callback _callback;
+
+        static QmlCallbackHelper() {
+            _callback = new Callback();
+            NetTypeInfoManager.setCallbacks(_callback);
+        }
+    }
+
+    static protected QmlCallbackHelper qmlCallbackHelper = new QmlCallbackHelper();
+
+
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_StringVector_Clear")]
   public static extern void StringVector_Clear(global::System.Runtime.InteropServices.HandleRef jarg1);
 
