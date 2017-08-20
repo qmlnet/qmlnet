@@ -14,7 +14,7 @@ ApplicationWindow {
 		Timer {
 			interval: 5; running: true; repeat: true
 			onTriggered: {
-				var newValue = testt.TestMethod("234")
+				var newValue = testt.TestMethod("2017-08-20T01:18:25.2592555-04:00")
 				console.log("Value is: " + newValue);
 				testt.TestMethod(newValue)
 			}

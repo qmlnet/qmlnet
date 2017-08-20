@@ -9,6 +9,7 @@
 #include <QDebug>
 #include "net_qml_value.h"
 #include <QQmlEngine>
+#include <QDateTime>
 
 void packValue(NetVariant* source, void* destination) {
     QVariant *casted = reinterpret_cast<QVariant *>(destination);
@@ -27,7 +28,8 @@ void packValue(NetVariant* source, void* destination) {
     case NetVariantTypeEnum_String:
         casted->setValue(source->GetString());
         break;
-    case NetVariantTypeEnum_Date:
+    case NetVariantTypeEnum_DateTime:
+        casted->setValue(source->GetDateTime());
         break;
     case NetVariantTypeEnum_Object:
     {
@@ -75,8 +77,22 @@ void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefT
     }
     case NetVariantTypeEnum_String:
     {
-        QString result = casted->toString();
-        destination->SetString(&result);
+        QString stringResult = casted->toString();
+        destination->SetString(&stringResult);
+        return;
+    }
+    case NetVariantTypeEnum_DateTime:
+    {
+        QDateTime dateTimeResult = casted->toDateTime();
+        if(!dateTimeResult.isValid()) {
+            qDebug() << "Invalid date time";
+            break;
+        }
+        if(dateTimeResult.isNull()) {
+            destination->Clear();
+            break;
+        }
+        destination->SetDateTime(dateTimeResult);
         return;
     }
     }
@@ -97,6 +113,12 @@ void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefT
     {
         QString stringValue = casted->toString();
         destination->SetString(&stringValue);
+        break;
+    }
+    case QVariant::DateTime:
+    {
+        QDateTime dateTimeValue = casted->toDateTime();
+        destination->SetDateTime(dateTimeValue);
         break;
     }
     default:

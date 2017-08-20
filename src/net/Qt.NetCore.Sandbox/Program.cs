@@ -37,9 +37,9 @@ namespace Qt.NetCore.Sandbox
             Console.WriteLine("~Ctor");
         }
 
-        public double TestMethod(double parameter)
+        public DateTime TestMethod(DateTime value)
         {
-            return Double.MinValue;
+            return value;
         }
     }
     
@@ -52,11 +52,15 @@ namespace Qt.NetCore.Sandbox
             System.Environment.SetEnvironmentVariable("PATH", path);
 
             var netVariant = new NetVariant();
-            netVariant.SetString("");
             Console.WriteLine(netVariant.GetVariantType());
-            netVariant.SetString(null);
+            netVariant.SetDateTime(DateTime.Now);
             Console.WriteLine(netVariant.GetVariantType());
-            
+            var date = netVariant.GetDateTime();
+            Console.WriteLine(date);
+            netVariant.SetDateTime(null);
+            date = netVariant.GetDateTime();
+            //Console.WriteLine(netVariant.GetVariantType());
+
             Task.Factory.StartNew(() =>
             {
                 while (true)

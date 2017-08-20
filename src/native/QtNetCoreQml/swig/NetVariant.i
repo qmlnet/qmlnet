@@ -17,5 +17,7 @@ public:
     double GetDouble();
     void SetString(QString* value);
     QString GetString();
+    void SetDateTime(QDateTime& value);
+    QDateTime GetDateTime();
     void Clear();
 }; 

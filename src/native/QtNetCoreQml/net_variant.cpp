@@ -1,5 +1,6 @@
 #include "net_variant.h"
 #include "net_type_info_manager.h"
+#include <QDateTime>
 #include <QDebug>
 
 struct NetInstanceContainer
@@ -32,8 +33,8 @@ NetVariantTypeEnum NetVariant::GetVariantType()
         return NetVariantTypeEnum_Double;
     case QVariant::String:
         return NetVariantTypeEnum_String;
-    case QVariant::Date:
-        return NetVariantTypeEnum_Date;
+    case QVariant::DateTime:
+        return NetVariantTypeEnum_DateTime;
     case QVariant::UserType:
         if(strcmp(variant.typeName(), "NetInstanceContainer") == 0)
             return NetVariantTypeEnum_Object;
@@ -124,6 +125,21 @@ QString NetVariant::GetString()
     }
 
     return variant.toString();
+}
+
+void NetVariant::SetDateTime(QDateTime& value)
+{
+    ClearNetInstance();
+    if(value.isNull()) {
+        variant.clear();
+    } else {
+        variant.setValue(value);
+    }
+}
+
+QDateTime NetVariant::GetDateTime()
+{
+    return variant.toDateTime();
 }
 
 void NetVariant::Clear()

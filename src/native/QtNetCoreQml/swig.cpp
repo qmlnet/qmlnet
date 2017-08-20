@@ -372,6 +372,9 @@ namespace Swig {
 }
 
 
+#include <QDebug>
+
+
 #include <stdexcept>
 
 
@@ -1464,6 +1467,46 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariant_GetString(void * jarg1) {
   result_array[(&result)->length()] = 0;
   jresult = SWIG_csharp_wstring_callback(result_array);
   delete[] result_array;
+  
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetDateTime(void * jarg1, char * jarg2) {
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  QDateTime *arg2 = 0 ;
+  QDateTime temp2 ;
+  
+  arg1 = (NetVariant *)jarg1; 
+  
+  if(jarg2) {
+    QString arg2_s = QString::fromLocal8Bit(jarg2);
+    temp2 = QDateTime::fromString(arg2_s, Qt::ISODate);
+  }
+  arg2 = &temp2;
+  
+  (arg1)->SetDateTime(*arg2);
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetVariant_GetDateTime(void * jarg1) {
+  char * jresult ;
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  QDateTime result;
+  
+  arg1 = (NetVariant *)jarg1; 
+  result = (arg1)->GetDateTime();
+  
+  if((&result)->isNull()) {
+    jresult = NULL;
+  } else if(!(&result)->isValid()) {
+    qDebug() << "Invalid date time";
+    jresult = NULL;
+  } else {
+    QString result_string = (&result)->toString(Qt::ISODate);
+    QByteArray result_ba = result_string.toLatin1();
+    jresult = SWIG_csharp_string_callback(result_ba.data());
+  }
   
   return jresult;
 }

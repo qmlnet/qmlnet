@@ -29,7 +29,7 @@ namespace Qt.NetCore
             else if(type == typeof(string))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_String);
             else if(type == typeof(DateTime))
-                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Date);
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_DateTime);
 
             if (type.Namespace == "System")
                 return; // built in type!
@@ -168,6 +168,8 @@ namespace Qt.NetCore
                     destination.SetInt((int)source);
                 else if (type == typeof(string))
                     destination.SetString((string)source);
+                else if(type == typeof(DateTime))
+                    destination.SetDateTime((DateTime)source);
                 else
                 {
                     destination.SetNetInstance(NetTypeInfoManager.WrapCreatedInstance(
@@ -196,7 +198,8 @@ namespace Qt.NetCore
                 case NetVariantTypeEnum.NetVariantTypeEnum_String:
                     destination = source.GetString();
                     break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_Date:
+                case NetVariantTypeEnum.NetVariantTypeEnum_DateTime:
+                    destination = source.GetDateTime();
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_Object:
                     var netInstance = source.GetNetInstance();

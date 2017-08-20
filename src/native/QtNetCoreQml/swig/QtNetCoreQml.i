@@ -1,5 +1,7 @@
 %module(directors="1") QtNetCoreQml
-
+%{
+#include <QDebug>
+%}
 %include "Initialization.i"
 
 %include "std_vector.i"
@@ -11,6 +13,7 @@
 %include "wchar.i"
 %include "Global.i"
 %include "QString.i"
+%include "QDateTime.i"
 %include "NetInstance.i"
 %include "NetVariant.i"
 %include "NetTypeInfo.i"

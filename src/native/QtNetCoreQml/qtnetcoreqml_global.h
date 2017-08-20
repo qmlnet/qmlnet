@@ -9,7 +9,7 @@ enum NetVariantTypeEnum {
     NetVariantTypeEnum_Int,
     NetVariantTypeEnum_Double,
     NetVariantTypeEnum_String,
-    NetVariantTypeEnum_Date,
+    NetVariantTypeEnum_DateTime,
     NetVariantTypeEnum_Object
 };
 

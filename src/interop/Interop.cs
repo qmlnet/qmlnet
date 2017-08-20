@@ -339,7 +339,7 @@ public enum NetVariantTypeEnum {
   NetVariantTypeEnum_Int,
   NetVariantTypeEnum_Double,
   NetVariantTypeEnum_String,
-  NetVariantTypeEnum_Date,
+  NetVariantTypeEnum_DateTime,
   NetVariantTypeEnum_Object
 }
 
@@ -484,6 +484,16 @@ public class NetVariant : global::System.IDisposable {
     string ret = QtNetCoreQmlPINVOKE.NetVariant_GetString(swigCPtr);
     return ret;
   }
+
+  public void SetDateTime(System.DateTime? value) {
+    QtNetCoreQmlPINVOKE.NetVariant_SetDateTime(swigCPtr, value.HasValue ? value.Value.ToString("o") : null);
+  }
+
+  public System.DateTime? GetDateTime() {
+    string ret = QtNetCoreQmlPINVOKE.NetVariant_GetDateTime(swigCPtr);
+    if(ret == null) return null;
+    return System.DateTime.Parse(ret, null, System.Globalization.DateTimeStyles.RoundtripKind);
+}
 
   public void Clear() {
     QtNetCoreQmlPINVOKE.NetVariant_Clear(swigCPtr);
@@ -1764,6 +1774,12 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetString")]
   public static extern string NetVariant_GetString(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetDateTime")]
+  public static extern void NetVariant_SetDateTime(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetDateTime")]
+  public static extern string NetVariant_GetDateTime(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_Clear")]
   public static extern void NetVariant_Clear(global::System.Runtime.InteropServices.HandleRef jarg1);
