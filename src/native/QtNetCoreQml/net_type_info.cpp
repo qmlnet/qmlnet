@@ -1,9 +1,9 @@
 #include "net_type_info.h"
 #include <QDebug>
 
-NetTypeInfo::NetTypeInfo(std::string typeName) :
+NetTypeInfo::NetTypeInfo(std::string fullTypeName) :
     prefVariantType(NetVariantTypeEnum_Invalid),
-    typeName(typeName),
+    fullTypeName(fullTypeName),
     metaObject(NULL)
 {
 
@@ -24,9 +24,19 @@ void NetTypeInfo::SetPrefVariantType(NetVariantTypeEnum value)
     prefVariantType = value;
 }
 
-std::string NetTypeInfo::GetTypeName()
+std::string NetTypeInfo::GetFullTypeName()
 {
-    return typeName;
+    return fullTypeName;
+}
+
+void NetTypeInfo::SetClassName(std::string className)
+{
+    this->className = className;
+}
+
+std::string NetTypeInfo::GetClassName()
+{
+    return className;
 }
 
 void NetTypeInfo::AddMethod(NetMethodInfo* methodInfo)

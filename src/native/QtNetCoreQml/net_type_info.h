@@ -11,11 +11,13 @@ class NetPropertyInfo;
 
 class NetTypeInfo {
 public:
-    NetTypeInfo(std::string typeName);
+    NetTypeInfo(std::string fullTypeName);
     ~NetTypeInfo();
     NetVariantTypeEnum GetPrefVariantType();
     void SetPrefVariantType(NetVariantTypeEnum value);
-    std::string GetTypeName();
+    std::string GetFullTypeName();
+    void SetClassName(std::string className);
+    std::string GetClassName();
     void AddMethod(NetMethodInfo* methodInfo);
     int GetMethodCount();
     NetMethodInfo* GetMethod(int index);
@@ -25,7 +27,8 @@ public:
     QMetaObject* metaObject;
 private:
     NetVariantTypeEnum prefVariantType;
-    std::string typeName;
+    std::string fullTypeName;
+    std::string className;
     QList<NetMethodInfo*> methods;
     QList<NetPropertyInfo*> properties;
 };

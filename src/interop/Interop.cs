@@ -534,7 +534,7 @@ public class NetTypeInfo : global::System.IDisposable {
     }
   }
 
-  public NetTypeInfo(string typeName) : this(QtNetCoreQmlPINVOKE.new_NetTypeInfo(typeName), true) {
+  public NetTypeInfo(string fullTypeName) : this(QtNetCoreQmlPINVOKE.new_NetTypeInfo(fullTypeName), true) {
     if (QtNetCoreQmlPINVOKE.SWIGPendingException.Pending) throw QtNetCoreQmlPINVOKE.SWIGPendingException.Retrieve();
   }
 
@@ -547,8 +547,18 @@ public class NetTypeInfo : global::System.IDisposable {
     QtNetCoreQmlPINVOKE.NetTypeInfo_SetPrefVariantType(swigCPtr, (int)value);
   }
 
-  public string GetTypeName() {
-    string ret = QtNetCoreQmlPINVOKE.NetTypeInfo_GetTypeName(swigCPtr);
+  public string GetFullTypeName() {
+    string ret = QtNetCoreQmlPINVOKE.NetTypeInfo_GetFullTypeName(swigCPtr);
+    return ret;
+  }
+
+  public void SetClassName(string className) {
+    QtNetCoreQmlPINVOKE.NetTypeInfo_SetClassName(swigCPtr, className);
+    if (QtNetCoreQmlPINVOKE.SWIGPendingException.Pending) throw QtNetCoreQmlPINVOKE.SWIGPendingException.Retrieve();
+  }
+
+  public string GetClassName() {
+    string ret = QtNetCoreQmlPINVOKE.NetTypeInfo_GetClassName(swigCPtr);
     return ret;
   }
 
@@ -1799,8 +1809,14 @@ class QtNetCoreQmlPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_SetPrefVariantType")]
   public static extern void NetTypeInfo_SetPrefVariantType(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_GetTypeName")]
-  public static extern string NetTypeInfo_GetTypeName(global::System.Runtime.InteropServices.HandleRef jarg1);
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_GetFullTypeName")]
+  public static extern string NetTypeInfo_GetFullTypeName(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_SetClassName")]
+  public static extern void NetTypeInfo_SetClassName(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_GetClassName")]
+  public static extern string NetTypeInfo_GetClassName(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTypeInfo_AddMethod")]
   public static extern void NetTypeInfo_AddMethod(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);

@@ -1574,13 +1574,39 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfo_SetPrefVariantType(void * jarg1, 
 }
 
 
-SWIGEXPORT char * SWIGSTDCALL CSharp_NetTypeInfo_GetTypeName(void * jarg1) {
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetTypeInfo_GetFullTypeName(void * jarg1) {
   char * jresult ;
   NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
   std::string result;
   
   arg1 = (NetTypeInfo *)jarg1; 
-  result = (arg1)->GetTypeName();
+  result = (arg1)->GetFullTypeName();
+  jresult = SWIG_csharp_string_callback((&result)->c_str()); 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfo_SetClassName(void * jarg1, char * jarg2) {
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  std::string arg2 ;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  (&arg2)->assign(jarg2); 
+  (arg1)->SetClassName(arg2);
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetTypeInfo_GetClassName(void * jarg1) {
+  char * jresult ;
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  std::string result;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  result = (arg1)->GetClassName();
   jresult = SWIG_csharp_string_callback((&result)->c_str()); 
   return jresult;
 }

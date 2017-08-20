@@ -18,8 +18,10 @@ namespace Qt.NetCore
 
         public override void BuildTypeInfo(NetTypeInfo typeInfo)
         {
-            var type = Type.GetType(typeInfo.GetTypeName());
+            var type = Type.GetType(typeInfo.GetFullTypeName());
             
+            typeInfo.SetClassName(type.Name);
+
             if(type == typeof(bool))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Bool);
             else if (type == typeof(int))
@@ -70,7 +72,7 @@ namespace Qt.NetCore
 
         public override void CreateInstance(NetTypeInfo typeInfo, ref IntPtr instance)
         {
-            var o = Activator.CreateInstance(Type.GetType(typeInfo.GetTypeName()));
+            var o = Activator.CreateInstance(Type.GetType(typeInfo.GetFullTypeName()));
             var handle = GCHandle.Alloc(o);
             instance = GCHandle.ToIntPtr(handle);
         }

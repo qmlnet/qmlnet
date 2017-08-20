@@ -5,11 +5,13 @@
 
 class NetTypeInfo {
 public:
-    NetTypeInfo(std::string typeName);
+    NetTypeInfo(std::string fullTypeName);
     ~NetTypeInfo();
     NetVariantTypeEnum GetPrefVariantType();
     void SetPrefVariantType(NetVariantTypeEnum value);
-    std::string GetTypeName();
+    std::string GetFullTypeName();
+    void SetClassName(std::string className);
+    std::string GetClassName();
     void AddMethod(NetMethodInfo* methodInfo);
     int GetMethodCount();
     NetMethodInfo* GetMethod(int index);

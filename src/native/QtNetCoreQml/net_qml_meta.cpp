@@ -137,7 +137,7 @@ QMetaObject *metaObjectFor(NetTypeInfo *typeInfo)
 
     QMetaObjectBuilder mob;
     mob.setSuperClass(&QObject::staticMetaObject);
-    mob.setClassName("TestQmlImport");
+    mob.setClassName(typeInfo->GetClassName().c_str());
     mob.setFlags(QMetaObjectBuilder::DynamicMetaObject);
 
     for(int index = 0; index <= typeInfo->GetMethodCount() - 1; index++)
