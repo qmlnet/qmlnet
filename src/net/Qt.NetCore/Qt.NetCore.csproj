@@ -44,6 +44,7 @@
       <Link>Interop.cs</Link>
     </Compile>
     <Compile Include="Callback.cs" />
+    <Compile Include="NetTypeInfoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QQmlApplicationEngine.cs" />
   </ItemGroup>

@@ -14,10 +14,13 @@ ApplicationWindow {
 		Timer {
 			interval: 5; running: true; repeat: true
 			onTriggered: {
-				var newValue = testt.TestMethod("2017-08-20T01:18:25.2592555-04:00")
-				console.log("Value is: " + newValue);
-				newValue = testt.TestMethod(newValue)
-				console.log("Value is: " + newValue)
+				var newJsonObject = {
+					sv: "sdfsd",
+					sdf: function() {
+						console.log('test')
+					}
+				}
+				testt.TestMethod(newJsonObject)
 			}
 		}
 	}

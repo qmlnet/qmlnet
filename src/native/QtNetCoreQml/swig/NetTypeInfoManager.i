@@ -3,6 +3,7 @@
 #include "net_type_info_manager.h"
 %}
 
+%typemap(csclassmodifiers) NetTypeInfoManager "public partial class"
 %feature("director") NetTypeInfoCallbacks;
 %template(NetVariantVector) std::vector< NetVariant* >;
 

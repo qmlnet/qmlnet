@@ -37,9 +37,9 @@ namespace Qt.NetCore.Sandbox
             Console.WriteLine("~Ctor");
         }
 
-        public DateTime TestMethod(DateTime value)
+        public void TestMethod()
         {
-            return DateTime.SpecifyKind(value, DateTimeKind.Unspecified);
+
         }
     }
     
@@ -50,16 +50,6 @@ namespace Qt.NetCore.Sandbox
             var path = System.Environment.GetEnvironmentVariable("PATH");
             path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
             System.Environment.SetEnvironmentVariable("PATH", path);
-
-            var netVariant = new NetVariant();
-            Console.WriteLine(netVariant.GetVariantType());
-            netVariant.SetDateTime(DateTime.Now);
-            Console.WriteLine(netVariant.GetVariantType());
-            var date = netVariant.GetDateTime();
-            Console.WriteLine(date);
-            netVariant.SetDateTime(null);
-            date = netVariant.GetDateTime();
-            //Console.WriteLine(netVariant.GetVariantType());
 
             Task.Factory.StartNew(() =>
             {
@@ -77,11 +67,29 @@ namespace Qt.NetCore.Sandbox
                     using (var engine = new QQmlApplicationEngine())
                     {
                         QQmlApplicationEngine.RegisterType<TestQmlImport>("test", 1, 1);
-                        engine.loadFile("main.qml");
-                        return app.exec();
+
+                        var method = NetTypeInfoManager.GetTypeInfo<TestQmlImport>().GetMethod(0);
+                        Console.WriteLine(method.GetMethodName());
+                        
+                        NetTestHelper.RunMethod(engine,
+                            @"
+                                import QtQuick 2.0
+                                import test 1.1
+
+                                TestQmlImport {
+                                }
+                            ",
+                            method,
+                            null,
+                            null);
+                        
+                        //engine.loadFile("main.qml");
+                        //return app.exec();
                     }
                 }
             }
+
+            return 0;
         }
     }
 }

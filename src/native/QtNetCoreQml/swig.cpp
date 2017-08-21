@@ -649,6 +649,9 @@ SWIGINTERN bool std_vector_Sl_NetVariant_Sm__Sg__Remove(std::vector< NetVariant 
 #include "net_qml_register_type.h"
 
 
+#include "net_test_helper.h"
+
+
 
 /* ---------------------------------------------------
  * C++ director class methods
@@ -2790,6 +2793,44 @@ SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(char * jarg1, char * jarg2, in
   result = (int)registerNetType(arg1,arg2,arg3,arg4,arg5);
   jresult = result; 
   return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunMethod(void * jarg1, wchar_t * jarg2, void * jarg3, void * jarg4, void * jarg5) {
+  QQmlApplicationEngine *arg1 = (QQmlApplicationEngine *) 0 ;
+  QString *arg2 = 0 ;
+  NetMethodInfo *arg3 = (NetMethodInfo *) 0 ;
+  NetVariant *arg4 = (NetVariant *) 0 ;
+  NetVariant *arg5 = (NetVariant *) 0 ;
+  QString temp2 ;
+  
+  arg1 = (QQmlApplicationEngine *)jarg1; 
+  
+  temp2 = QString::fromWCharArray(jarg2);
+  arg2 = &temp2;
+  
+  arg3 = (NetMethodInfo *)jarg3; 
+  arg4 = (NetVariant *)jarg4; 
+  arg5 = (NetVariant *)jarg5; 
+  NetTestHelper::RunMethod(arg1,*arg2,arg3,arg4,arg5);
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetTestHelper() {
+  void * jresult ;
+  NetTestHelper *result = 0 ;
+  
+  result = (NetTestHelper *)new NetTestHelper();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetTestHelper(void * jarg1) {
+  NetTestHelper *arg1 = (NetTestHelper *) 0 ;
+  
+  arg1 = (NetTestHelper *)jarg1; 
+  delete arg1;
 }
 
 

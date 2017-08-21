@@ -1204,7 +1204,7 @@ public class NetTypeInfoCallbacks : global::System.IDisposable {
 }
 namespace Qt.NetCore {
 
-public class NetTypeInfoManager : global::System.IDisposable {
+public partial class NetTypeInfoManager : global::System.IDisposable {
   private global::System.Runtime.InteropServices.HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
@@ -1439,6 +1439,48 @@ public partial class QQmlApplicationEngine : global::System.IDisposable {
   }
 
   public QQmlApplicationEngine() : this(QtNetCoreQmlPINVOKE.new_QQmlApplicationEngine(), true) {
+  }
+
+}
+
+}
+namespace Qt.NetCore {
+
+public class NetTestHelper : global::System.IDisposable {
+  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
+  protected bool swigCMemOwn;
+
+  internal NetTestHelper(global::System.IntPtr cPtr, bool cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
+  }
+
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(NetTestHelper obj) {
+    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  ~NetTestHelper() {
+    Dispose();
+  }
+
+  public virtual void Dispose() {
+    lock(this) {
+      if (swigCPtr.Handle != global::System.IntPtr.Zero) {
+        if (swigCMemOwn) {
+          swigCMemOwn = false;
+          QtNetCoreQmlPINVOKE.delete_NetTestHelper(swigCPtr);
+        }
+        swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
+      }
+      global::System.GC.SuppressFinalize(this);
+    }
+  }
+
+  public static void RunMethod(QQmlApplicationEngine qmlApplicationEngine, string qml, NetMethodInfo methodInfo, NetVariant parameter, NetVariant result) {
+    QtNetCoreQmlPINVOKE.NetTestHelper_RunMethod(QQmlApplicationEngine.getCPtr(qmlApplicationEngine), qml, NetMethodInfo.getCPtr(methodInfo), NetVariant.getCPtr(parameter), NetVariant.getCPtr(result));
+  }
+
+  public NetTestHelper() : this(QtNetCoreQmlPINVOKE.new_NetTestHelper(), true) {
   }
 
 }
@@ -2069,6 +2111,15 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_registerNetType")]
   public static extern int registerNetType(string jarg1, string jarg2, int jarg3, int jarg4, string jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestHelper_RunMethod")]
+  public static extern void NetTestHelper_RunMethod(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetTestHelper")]
+  public static extern global::System.IntPtr new_NetTestHelper();
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetTestHelper")]
+  public static extern void delete_NetTestHelper(global::System.Runtime.InteropServices.HandleRef jarg1);
 }
 
 }

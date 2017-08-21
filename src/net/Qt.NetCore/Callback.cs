@@ -45,16 +45,14 @@ namespace Qt.NetCore
 
                 if (method.ReturnParameter.ParameterType != typeof(void))
                 {
-                    returnType = NetTypeInfoManager.GetTypeInfo(
-                        method.ReturnParameter.ParameterType.FullName + ", " +
-                        method.ReturnParameter.ParameterType.Assembly.FullName);
+                    returnType = NetTypeInfoManager.GetTypeInfo(method.ReturnParameter.ParameterType);
                 }
 
                 var methodInfo = NetTypeInfoManager.NewMethodInfo(typeInfo, method.Name, returnType);
 
                 foreach (var parameter in method.GetParameters())
                 {
-                    methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType.FullName + ", " + parameter.ParameterType.Assembly.FullName));
+                    methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType));
                 }
 
                 typeInfo.AddMethod(methodInfo);
@@ -64,7 +62,7 @@ namespace Qt.NetCore
             {
                 typeInfo.AddProperty(NetTypeInfoManager.NewPropertyInfo(
                     typeInfo, property.Name,
-                    NetTypeInfoManager.GetTypeInfo(property.PropertyType.FullName + ", " + property.PropertyType.Assembly.FullName),
+                    NetTypeInfoManager.GetTypeInfo(property.PropertyType),
                     property.CanRead,
                     property.CanWrite));
             }
@@ -176,7 +174,7 @@ namespace Qt.NetCore
                 {
                     destination.SetNetInstance(NetTypeInfoManager.WrapCreatedInstance(
                         GCHandle.ToIntPtr(GCHandle.Alloc(source)),
-                        NetTypeInfoManager.GetTypeInfo(type.FullName + ", " + type.Assembly.FullName)));
+                        NetTypeInfoManager.GetTypeInfo(type)));
                 }
             }
         }

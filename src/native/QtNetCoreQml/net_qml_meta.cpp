@@ -11,33 +11,32 @@
 #include <QQmlEngine>
 #include <QDateTime>
 
-void packValue(NetVariant* source, void* destination) {
-    QVariant *casted = reinterpret_cast<QVariant *>(destination);
+void metaPackValue(NetVariant* source, QVariant* destination) {
     switch(source->GetVariantType()) {
     case NetVariantTypeEnum_Invalid:
-        casted->clear();
+        destination->clear();
         break;
     case NetVariantTypeEnum_Bool:
-        casted->setValue(source->GetBool());
+        destination->setValue(source->GetBool());
         break;
     case NetVariantTypeEnum_Int:
-        casted->setValue(source->GetInt());
+        destination->setValue(source->GetInt());
         break;
     case NetVariantTypeEnum_Double:
-        casted->setValue(source->GetDouble());
+        destination->setValue(source->GetDouble());
         break;
     case NetVariantTypeEnum_String:
-        casted->setValue(source->GetString());
+        destination->setValue(source->GetString());
         break;
     case NetVariantTypeEnum_DateTime:
-        casted->setValue(source->GetDateTime());
+        destination->setValue(source->GetDateTime());
         break;
     case NetVariantTypeEnum_Object:
     {
         NetInstance* newInstance = source->GetNetInstance()->Clone();
         NetValue* netValue = new NetValue(newInstance, NULL);
         QQmlEngine::setObjectOwnership(netValue, QQmlEngine::JavaScriptOwnership);
-        casted->setValue(netValue);
+        destination->setValue(netValue);
         break;
     }
     default:
@@ -46,22 +45,21 @@ void packValue(NetVariant* source, void* destination) {
     }
 }
 
-void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefType) {
-    QVariant *casted = reinterpret_cast<QVariant *>(source);
+void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEnum prefType) {
     bool ok = false;
 
-    if(casted->isNull()) {
+    if(source->isNull()) {
         destination->Clear();
         return;
     }
 
     switch(prefType) {
     case NetVariantTypeEnum_Bool:
-        destination->SetBool(casted->toBool());
+        destination->SetBool(source->toBool());
         return;
     case NetVariantTypeEnum_Int:
     {
-        int result = casted->toInt(&ok);
+        int result = source->toInt(&ok);
         if(ok) {
             destination->SetInt(result);
             return;
@@ -70,7 +68,7 @@ void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefT
     }
     case NetVariantTypeEnum_Double:
     {
-        double result = casted->toDouble(&ok);
+        double result = source->toDouble(&ok);
         if(ok) {
             destination->SetDouble(result);
             return;
@@ -78,13 +76,13 @@ void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefT
     }
     case NetVariantTypeEnum_String:
     {
-        QString stringResult = casted->toString();
+        QString stringResult = source->toString();
         destination->SetString(&stringResult);
         return;
     }
     case NetVariantTypeEnum_DateTime:
     {
-        QDateTime dateTimeResult = casted->toDateTime();
+        QDateTime dateTimeResult = source->toDateTime();
         if(!dateTimeResult.isValid()) {
             qDebug() << "Invalid date time";
             break;
@@ -98,33 +96,41 @@ void unpackValue(NetVariant* destination, void* source, NetVariantTypeEnum prefT
     }
     }
 
-    switch(casted->type()) {
+    switch(source->type()) {
     case QVariant::Invalid:
         destination->Clear();
         break;
     case QVariant::Bool:
-        destination->SetBool(casted->value<bool>());
+        destination->SetBool(source->value<bool>());
         break;
     case QVariant::Double:
-        destination->SetDouble(casted->value<double>());
+        destination->SetDouble(source->value<double>());
         break;
     case QVariant::Int:
-        destination->SetDouble(casted->value<int>());
+        destination->SetDouble(source->value<int>());
         break;
     case QVariant::String:
     {
-        QString stringValue = casted->toString();
+        QString stringValue = source->toString();
         destination->SetString(&stringValue);
         break;
     }
     case QVariant::DateTime:
     {
-        QDateTime dateTimeValue = casted->toDateTime();
+        QDateTime dateTimeValue = source->toDateTime();
         destination->SetDateTime(dateTimeValue);
         break;
     }
     default:
-        qDebug() << "Unsupported variant type: " << casted->type();
+
+        if(source->userType() == qMetaTypeId<QJSValue>()) {
+            // TODO: Either serialize this type to a string, to be deserialized in .NET, or
+            // pass raw value to .NET to be dynamically invoked (using dynamic).
+            // See qtdeclarative\src\plugins\qmltooling\qmldbg_debugger\qqmlenginedebugservice.cpp:184
+            // for serialization methods.
+        }
+
+        qDebug() << "Unsupported variant type: " << source->type();
         break;
     }
 }
@@ -208,7 +214,7 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
         NetVariant* result = NetTypeInfoManager::ReadProperty(propertyInfo, instance);
 
-        packValue(result, a[0]);
+        metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
 
         delete result;
     }
@@ -223,7 +229,7 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         NetPropertyInfo* propertyInfo = instance->GetTypeInfo()->GetProperty(idx - offset);
 
         NetVariant* newValue = new NetVariant();
-        unpackValue(newValue, a[0], propertyInfo->GetReturnType()->GetPrefVariantType());
+        metaUnpackValue(newValue, reinterpret_cast<QVariant*>(a[0]), propertyInfo->GetReturnType()->GetPrefVariantType());
 
         NetTypeInfoManager::WriteProperty(propertyInfo, instance, newValue);
 
@@ -247,14 +253,14 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             methodInfo->GetParameterInfo(index, NULL, &typeInfo);
 
             NetVariant* netVariant = new NetVariant();
-            unpackValue(netVariant, a[index + 1], typeInfo->GetPrefVariantType());
+            metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), typeInfo->GetPrefVariantType());
             parameters.insert(parameters.end(), netVariant);
         }
 
         NetVariant* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
 
         if(result) {
-            packValue(result, a[0]);
+            metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
         }
 
         delete result;

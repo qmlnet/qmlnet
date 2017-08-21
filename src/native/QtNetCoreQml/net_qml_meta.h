@@ -7,6 +7,10 @@
 
 class NetTypeInfo;
 class NetInstance;
+class NetVariant;
+
+void metaPackValue(NetVariant* source, QVariant* destination);
+void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEnum prefType);
 
 QMetaObject *metaObjectFor(NetTypeInfo *typeInfo);
 
