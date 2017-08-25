@@ -2,7 +2,6 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import test 1.1
-import test.io 1.0
 
 ApplicationWindow {
     visible: true
@@ -14,13 +13,9 @@ ApplicationWindow {
 		Timer {
 			interval: 5; running: true; repeat: true
 			onTriggered: {
-				var newJsonObject = {
-					sv: "sdfsd",
-					sdf: function() {
-						console.log('test')
-					}
-				}
-				testt.TestMethod(newJsonObject)
+				var par = test.Create()
+				test.TestMethod(par)
+				gc()
 			}
 		}
 	}
@@ -30,6 +25,6 @@ ApplicationWindow {
 	}
 
 	TestQmlImport {
-		id: testt
+		id: test
 	}
 }

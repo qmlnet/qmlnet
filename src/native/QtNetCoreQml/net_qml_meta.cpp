@@ -272,6 +272,11 @@ int GoValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
         NetVariant* result = NetTypeInfoManager::InvokeMethod(methodInfo, instance, parameters);
 
+        for(int x = 0; x < parameters.size(); x++) {
+            NetVariant* variant = parameters.at(x);
+            delete variant;
+        }
+
         if(result) {
             metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
         }
