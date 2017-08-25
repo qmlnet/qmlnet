@@ -94,6 +94,19 @@ void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEn
         destination->SetDateTime(dateTimeResult);
         return;
     }
+    case NetVariantTypeEnum_Object:
+    {
+        if (source->type() == QMetaType::QObjectStar) {
+
+            QObject* value = source->value<QObject*>();
+            NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
+            if(netValue) {
+                destination->SetNetInstance(netValue->GetNetInstance()->Clone());
+                return;
+            }
+        }
+        break;
+    }
     }
 
     switch(source->type()) {

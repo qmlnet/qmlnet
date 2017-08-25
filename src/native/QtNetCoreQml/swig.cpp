@@ -2796,12 +2796,9 @@ SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(char * jarg1, char * jarg2, in
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunMethod(void * jarg1, wchar_t * jarg2, void * jarg3, void * jarg4, void * jarg5) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunQml(void * jarg1, wchar_t * jarg2) {
   QQmlApplicationEngine *arg1 = (QQmlApplicationEngine *) 0 ;
   QString *arg2 = 0 ;
-  NetMethodInfo *arg3 = (NetMethodInfo *) 0 ;
-  NetVariant *arg4 = (NetVariant *) 0 ;
-  NetVariant *arg5 = (NetVariant *) 0 ;
   QString temp2 ;
   
   arg1 = (QQmlApplicationEngine *)jarg1; 
@@ -2809,10 +2806,31 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunMethod(void * jarg1, wchar_t
   temp2 = QString::fromWCharArray(jarg2);
   arg2 = &temp2;
   
-  arg3 = (NetMethodInfo *)jarg3; 
+  NetTestHelper::RunQml(arg1,*arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunQmlMethod(void * jarg1, wchar_t * jarg2, wchar_t * jarg3, void * jarg4, void * jarg5) {
+  QQmlApplicationEngine *arg1 = (QQmlApplicationEngine *) 0 ;
+  QString *arg2 = 0 ;
+  QString *arg3 = 0 ;
+  NetVariant *arg4 = (NetVariant *) 0 ;
+  NetVariant *arg5 = (NetVariant *) 0 ;
+  QString temp2 ;
+  QString temp3 ;
+  
+  arg1 = (QQmlApplicationEngine *)jarg1; 
+  
+  temp2 = QString::fromWCharArray(jarg2);
+  arg2 = &temp2;
+  
+  
+  temp3 = QString::fromWCharArray(jarg3);
+  arg3 = &temp3;
+  
   arg4 = (NetVariant *)jarg4; 
   arg5 = (NetVariant *)jarg5; 
-  NetTestHelper::RunMethod(arg1,*arg2,arg3,arg4,arg5);
+  NetTestHelper::RunQmlMethod(arg1,*arg2,*arg3,arg4,arg5);
 }
 
 

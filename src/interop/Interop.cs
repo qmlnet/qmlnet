@@ -1476,8 +1476,12 @@ public class NetTestHelper : global::System.IDisposable {
     }
   }
 
-  public static void RunMethod(QQmlApplicationEngine qmlApplicationEngine, string qml, NetMethodInfo methodInfo, NetVariant parameter, NetVariant result) {
-    QtNetCoreQmlPINVOKE.NetTestHelper_RunMethod(QQmlApplicationEngine.getCPtr(qmlApplicationEngine), qml, NetMethodInfo.getCPtr(methodInfo), NetVariant.getCPtr(parameter), NetVariant.getCPtr(result));
+  public static void RunQml(QQmlApplicationEngine qmlApplicationEngine, string qml) {
+    QtNetCoreQmlPINVOKE.NetTestHelper_RunQml(QQmlApplicationEngine.getCPtr(qmlApplicationEngine), qml);
+  }
+
+  public static void RunQmlMethod(QQmlApplicationEngine qmlApplicationEngine, string qml, string methodName, NetVariant parameter, NetVariant result) {
+    QtNetCoreQmlPINVOKE.NetTestHelper_RunQmlMethod(QQmlApplicationEngine.getCPtr(qmlApplicationEngine), qml, methodName, NetVariant.getCPtr(parameter), NetVariant.getCPtr(result));
   }
 
   public NetTestHelper() : this(QtNetCoreQmlPINVOKE.new_NetTestHelper(), true) {
@@ -2112,8 +2116,11 @@ class QtNetCoreQmlPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_registerNetType")]
   public static extern int registerNetType(string jarg1, string jarg2, int jarg3, int jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestHelper_RunMethod")]
-  public static extern void NetTestHelper_RunMethod(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestHelper_RunQml")]
+  public static extern void NetTestHelper_RunQml(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestHelper_RunQmlMethod")]
+  public static extern void NetTestHelper_RunQmlMethod(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetTestHelper")]
   public static extern global::System.IntPtr new_NetTestHelper();

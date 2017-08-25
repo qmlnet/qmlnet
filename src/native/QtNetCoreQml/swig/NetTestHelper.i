@@ -4,5 +4,6 @@
 class NetTestHelper
 {
 public:
-    static void RunMethod(QQmlApplicationEngine* qmlApplicationEngine, QString& qml, NetMethodInfo* methodInfo, NetVariant* parameter, NetVariant* result);
+    static void RunQml(QQmlApplicationEngine* qmlApplicationEngine, QString& qml);
+    static void RunQmlMethod(QQmlApplicationEngine* qmlApplicationEngine, QString& qml, QString& methodName, NetVariant* parameter, NetVariant* result);
 };

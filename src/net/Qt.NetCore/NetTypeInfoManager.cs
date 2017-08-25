@@ -8,6 +8,8 @@ namespace Qt.NetCore
 {
     public partial class NetTypeInfoManager
     {
+        public static ITypeCreator TypeCreator { get; set; }
+
         public static NetTypeInfo GetTypeInfo<T>()
         {
             return GetTypeInfo(typeof(T));

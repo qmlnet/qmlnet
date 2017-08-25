@@ -14,3 +14,9 @@ NetValue::~NetValue()
     delete instance;
     instance = NULL;
 }
+
+
+NetInstance* NetValue::GetNetInstance()
+{
+    return instance;
+}

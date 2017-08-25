@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.Eventing.Reader;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Qt.NetCore
 {
@@ -30,8 +28,10 @@ namespace Qt.NetCore
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Double);
             else if(type == typeof(string))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_String);
-            else if(type == typeof(DateTime))
+            else if (type == typeof(DateTime))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_DateTime);
+            else
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Object);
 
             if (type.Namespace == "System")
                 return; // built in type!
@@ -70,8 +70,11 @@ namespace Qt.NetCore
 
         public override void CreateInstance(NetTypeInfo typeInfo, ref IntPtr instance)
         {
-            var o = Activator.CreateInstance(Type.GetType(typeInfo.GetFullTypeName()));
-            var handle = GCHandle.Alloc(o);
+            var type = Type.GetType(typeInfo.GetFullTypeName());
+
+            var typeCreator = NetTypeInfoManager.TypeCreator;
+            
+            var handle = GCHandle.Alloc(typeCreator != null ? typeCreator.Create(type) : Activator.CreateInstance(type));
             instance = GCHandle.ToIntPtr(handle);
         }
 
@@ -174,7 +177,7 @@ namespace Qt.NetCore
                 {
                     destination.SetNetInstance(NetTypeInfoManager.WrapCreatedInstance(
                         GCHandle.ToIntPtr(GCHandle.Alloc(source)),
-                        NetTypeInfoManager.GetTypeInfo(type)));
+                        NetTypeInfoManager.GetTypeInfo(GetUnproxiedType(type))));
                 }
             }
         }
@@ -209,6 +212,14 @@ namespace Qt.NetCore
                 default:
                     throw new Exception("Unsupported variant type.");
             }
+        }
+
+        private Type GetUnproxiedType(Type type)
+        {
+            if (type.Namespace == "Castle.Proxies")
+                return type.BaseType;
+
+            return type;
         }
     }
 }

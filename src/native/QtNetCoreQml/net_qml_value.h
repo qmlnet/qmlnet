@@ -6,17 +6,23 @@
 #include "net_type_info.h"
 #include "net_instance.h"
 
-class NetValue : public QObject
+struct NetValueInterface
+{
+    virtual NetInstance* GetNetInstance() = 0;
+};
+
+Q_DECLARE_INTERFACE(NetValueInterface, "netcoreqml.NetValueInterface")
+
+class NetValue : public QObject, NetValueInterface
 {
     Q_OBJECT
-
+    Q_INTERFACES(NetValueInterface)
 public:
-    NetInstance *instance;
-
     NetValue(NetInstance *instance, QObject *parent);
     virtual ~NetValue();
-
+    NetInstance* GetNetInstance();
 private:
+    NetInstance *instance;
     GoValueMetaObject *valueMeta;
 };
 
