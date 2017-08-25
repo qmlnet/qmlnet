@@ -57,8 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.UI.cs" />
-    <None Include="Program.Tests.cs" />
+    <None Include="Program.UI.cs" />
+    <Compile Include="Program.Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

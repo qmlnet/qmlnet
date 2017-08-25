@@ -29,6 +29,8 @@ NetVariantTypeEnum NetVariant::GetVariantType()
         return NetVariantTypeEnum_Bool;
     case QVariant::Int:
         return NetVariantTypeEnum_Int;
+    case QVariant::UInt:
+        return NetVariantTypeEnum_UInt;
     case QVariant::Double:
         return NetVariantTypeEnum_Double;
     case QVariant::String:
@@ -87,6 +89,24 @@ int NetVariant::GetInt()
     qDebug() << "Can't convert value to int";
 
     return 0;
+}
+
+void NetVariant::SetUInt(unsigned int value)
+{
+    ClearNetInstance();
+    variant.setValue(value);
+}
+
+unsigned int NetVariant::GetUInt()
+{
+    bool ok = false;
+    unsigned int result = variant.toUInt(&ok);
+
+    if(!ok) {
+        qDebug() << "Couldn't convert variant to unsigned int";
+    }
+
+    return result;
 }
 
 void NetVariant::SetDouble(double value)

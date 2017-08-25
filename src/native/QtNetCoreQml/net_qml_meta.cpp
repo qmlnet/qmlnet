@@ -22,6 +22,9 @@ void metaPackValue(NetVariant* source, QVariant* destination) {
     case NetVariantTypeEnum_Int:
         destination->setValue(source->GetInt());
         break;
+    case NetVariantTypeEnum_UInt:
+        destination->setValue(source->GetUInt());
+        break;
     case NetVariantTypeEnum_Double:
         destination->setValue(source->GetDouble());
         break;
@@ -62,6 +65,15 @@ void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEn
         int result = source->toInt(&ok);
         if(ok) {
             destination->SetInt(result);
+            return;
+        }
+        break;
+    }
+    case NetVariantTypeEnum_UInt:
+    {
+        unsigned int result = source->toUInt(&ok);
+        if(ok) {
+            destination->SetUInt(result);
             return;
         }
         break;
@@ -116,11 +128,14 @@ void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEn
     case QVariant::Bool:
         destination->SetBool(source->value<bool>());
         break;
+    case QVariant::Int:
+        destination->SetInt(source->value<int>());
+        break;
+    case QVariant::UInt:
+        destination->SetUInt(source->value<unsigned int>());
+        break;
     case QVariant::Double:
         destination->SetDouble(source->value<double>());
-        break;
-    case QVariant::Int:
-        destination->SetDouble(source->value<int>());
         break;
     case QVariant::String:
     {

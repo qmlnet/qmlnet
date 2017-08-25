@@ -24,6 +24,8 @@ namespace Qt.NetCore
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Bool);
             else if (type == typeof(int))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Int);
+            else if (type == typeof(uint))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_UInt);
             else if(type == typeof(double))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Double);
             else if(type == typeof(string))
@@ -169,6 +171,8 @@ namespace Qt.NetCore
                     destination.SetDouble((double)source);
                 else if (type == typeof(int))
                     destination.SetInt((int)source);
+                else if(type == typeof(uint))
+                    destination.SetUInt((uint)source);
                 else if (type == typeof(string))
                     destination.SetString((string)source);
                 else if(type == typeof(DateTime))
@@ -194,6 +198,9 @@ namespace Qt.NetCore
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_Int:
                     destination = source.GetInt();
+                    break;
+                case NetVariantTypeEnum.NetVariantTypeEnum_UInt:
+                    destination = source.GetUInt();
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_Double:
                     destination = source.GetDouble();

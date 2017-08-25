@@ -16,6 +16,8 @@ public:
     bool GetBool();
     void SetInt(int value);
     int GetInt();
+    void SetUInt(unsigned int value);
+    unsigned int GetUInt();
     void SetDouble(double value);
     double GetDouble();
     void SetString(QString* value);

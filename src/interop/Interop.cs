@@ -337,6 +337,7 @@ public enum NetVariantTypeEnum {
   NetVariantTypeEnum_Invalid,
   NetVariantTypeEnum_Bool,
   NetVariantTypeEnum_Int,
+  NetVariantTypeEnum_UInt,
   NetVariantTypeEnum_Double,
   NetVariantTypeEnum_String,
   NetVariantTypeEnum_DateTime,
@@ -464,6 +465,15 @@ public class NetVariant : global::System.IDisposable {
 
   public int GetInt() {
     int ret = QtNetCoreQmlPINVOKE.NetVariant_GetInt(swigCPtr);
+    return ret;
+  }
+
+  public void SetUInt(uint value) {
+    QtNetCoreQmlPINVOKE.NetVariant_SetUInt(swigCPtr, value);
+  }
+
+  public uint GetUInt() {
+    uint ret = QtNetCoreQmlPINVOKE.NetVariant_GetUInt(swigCPtr);
     return ret;
   }
 
@@ -1818,6 +1828,12 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetInt")]
   public static extern int NetVariant_GetInt(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetUInt")]
+  public static extern void NetVariant_SetUInt(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetUInt")]
+  public static extern uint NetVariant_GetUInt(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetDouble")]
   public static extern void NetVariant_SetDouble(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);

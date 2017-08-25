@@ -31,8 +31,12 @@ namespace Qt.NetCore.Sandbox
                 //runner.Start(typeof(Tests.StringTests).FullName);
                 //Finished.WaitOne();
 
+                //Finished.Reset();
+                //runner.Start(typeof(Tests.ObjectTests).FullName);
+                //Finished.WaitOne();
+
                 Finished.Reset();
-                runner.Start(typeof(Tests.ObjectTests).FullName);
+                runner.Start(typeof(Tests.UIntTests).FullName);
                 Finished.WaitOne();
 
                 Finished.Dispose();

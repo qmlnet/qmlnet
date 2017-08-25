@@ -1418,6 +1418,28 @@ SWIGEXPORT int SWIGSTDCALL CSharp_NetVariant_GetInt(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetUInt(void * jarg1, unsigned int jarg2) {
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  unsigned int arg2 ;
+  
+  arg1 = (NetVariant *)jarg1; 
+  arg2 = (unsigned int)jarg2; 
+  (arg1)->SetUInt(arg2);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetVariant_GetUInt(void * jarg1) {
+  unsigned int jresult ;
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  unsigned int result;
+  
+  arg1 = (NetVariant *)jarg1; 
+  result = (unsigned int)(arg1)->GetUInt();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetDouble(void * jarg1, double jarg2) {
   NetVariant *arg1 = (NetVariant *) 0 ;
   double arg2 ;

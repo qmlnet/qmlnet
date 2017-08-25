@@ -2,6 +2,7 @@ enum NetVariantTypeEnum {
     NetVariantTypeEnum_Invalid,
     NetVariantTypeEnum_Bool,
     NetVariantTypeEnum_Int,
+    NetVariantTypeEnum_UInt,
     NetVariantTypeEnum_Double,
     NetVariantTypeEnum_String,
     NetVariantTypeEnum_DateTime,
