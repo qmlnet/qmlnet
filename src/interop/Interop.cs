@@ -502,7 +502,9 @@ public class NetVariant : global::System.IDisposable {
   public System.DateTime? GetDateTime() {
     string ret = QtNetCoreQmlPINVOKE.NetVariant_GetDateTime(swigCPtr);
     if(ret == null) return null;
-    return System.DateTime.Parse(ret, null, System.Globalization.DateTimeStyles.RoundtripKind);
+    var parsed = System.DateTime.Parse(ret, null, System.Globalization.DateTimeStyles.RoundtripKind);
+    if (parsed.Kind == System.DateTimeKind.Utc) return parsed;
+    return System.DateTime.SpecifyKind(parsed, System.DateTimeKind.Local);
 }
 
   public void Clear() {

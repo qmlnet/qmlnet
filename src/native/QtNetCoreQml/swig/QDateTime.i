@@ -28,5 +28,7 @@
 %typemap(csout) QDateTime {
     string ret = $imcall;
     if(ret == null) return null;
-    return System.DateTime.Parse(ret, null, System.Globalization.DateTimeStyles.RoundtripKind);
+    var parsed = System.DateTime.Parse(ret, null, System.Globalization.DateTimeStyles.RoundtripKind);
+    if (parsed.Kind == System.DateTimeKind.Utc) return parsed;
+    return System.DateTime.SpecifyKind(parsed, System.DateTimeKind.Local);
 }

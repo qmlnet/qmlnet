@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTests.cs" />
+    <Compile Include="DateTimeTests.cs" />
     <Compile Include="DoubleTests.cs" />
     <Compile Include="IntTests.cs" />
     <Compile Include="ObjectTests.cs" />
