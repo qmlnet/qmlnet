@@ -27,6 +27,8 @@ NetVariantTypeEnum NetVariant::GetVariantType()
         return NetVariantTypeEnum_Invalid;
     case QVariant::Bool:
         return NetVariantTypeEnum_Bool;
+    case QVariant::Char:
+        return NetVariantTypeEnum_Char;
     case QVariant::Int:
         return NetVariantTypeEnum_Int;
     case QVariant::UInt:
@@ -73,6 +75,17 @@ bool NetVariant::GetBool()
     qDebug() << "Can't convert value to bool";
 
     return false;
+}
+
+void NetVariant::SetChar(QChar value)
+{
+    ClearNetInstance();
+    variant.setValue(value);
+}
+
+QChar NetVariant::GetChar()
+{
+    return variant.toChar();
 }
 
 void NetVariant::SetInt(int value)

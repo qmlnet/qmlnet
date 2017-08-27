@@ -22,6 +22,8 @@ namespace Qt.NetCore
 
             if(type == typeof(bool))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Bool);
+            else if(type == typeof(char))
+                typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Char);
             else if (type == typeof(int))
                 typeInfo.SetPrefVariantType(NetVariantTypeEnum.NetVariantTypeEnum_Int);
             else if (type == typeof(uint))
@@ -167,6 +169,8 @@ namespace Qt.NetCore
                 var type = source.GetType();
                 if (type == typeof(bool))
                     destination.SetBool((bool)source);
+                else if(type == typeof(char))
+                    destination.SetChar((char)source);
                 else if(type == typeof(double))
                     destination.SetDouble((double)source);
                 else if (type == typeof(int))
@@ -195,6 +199,9 @@ namespace Qt.NetCore
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_Bool:
                     destination = source.GetBool();
+                    break;
+                case NetVariantTypeEnum.NetVariantTypeEnum_Char:
+                    destination = source.GetChar();
                     break;
                 case NetVariantTypeEnum.NetVariantTypeEnum_Int:
                     destination = source.GetInt();

@@ -1396,6 +1396,32 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetVariant_GetBool(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetChar(void * jarg1, int jarg2) {
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  QChar arg2 ;
+  
+  arg1 = (NetVariant *)jarg1; 
+  
+  arg2 = jarg2;
+  
+  (arg1)->SetChar(arg2);
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_NetVariant_GetChar(void * jarg1) {
+  int jresult ;
+  NetVariant *arg1 = (NetVariant *) 0 ;
+  QChar result;
+  
+  arg1 = (NetVariant *)jarg1; 
+  result = (arg1)->GetChar();
+  
+  jresult = (&result)->unicode();
+  
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetInt(void * jarg1, int jarg2) {
   NetVariant *arg1 = (NetVariant *) 0 ;
   int arg2 ;

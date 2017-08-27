@@ -13,6 +13,7 @@
 %include "wchar.i"
 %include "Global.i"
 %include "QString.i"
+%include "QChar.i"
 %include "QDateTime.i"
 %include "NetInstance.i"
 %include "NetVariant.i"

@@ -6,6 +6,7 @@
 enum NetVariantTypeEnum {
     NetVariantTypeEnum_Invalid,
     NetVariantTypeEnum_Bool,
+    NetVariantTypeEnum_Char,
     NetVariantTypeEnum_Int,
     NetVariantTypeEnum_UInt,
     NetVariantTypeEnum_Double,

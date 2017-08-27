@@ -19,6 +19,9 @@ void metaPackValue(NetVariant* source, QVariant* destination) {
     case NetVariantTypeEnum_Bool:
         destination->setValue(source->GetBool());
         break;
+    case NetVariantTypeEnum_Char:
+        destination->setValue(source->GetChar());
+        break;
     case NetVariantTypeEnum_Int:
         destination->setValue(source->GetInt());
         break;
@@ -60,6 +63,21 @@ void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEn
     case NetVariantTypeEnum_Bool:
         destination->SetBool(source->toBool());
         return;
+    case NetVariantTypeEnum_Char: {
+        QString v = source->toString();
+        if(v.isNull() || v.isEmpty()) {
+            qDebug() << "Can't set empty string to char, setting to null.";
+            destination->SetChar(QChar::Null);
+        } else {
+            if(v.length() == 1) {
+                destination->SetChar(v.at(0));
+            } else {
+                qDebug() << "Can't set string to char that has more than one character.";
+                destination->SetChar(QChar::Null);
+            }
+        }
+        return;
+    }
     case NetVariantTypeEnum_Int:
     {
         int result = source->toInt(&ok);
@@ -127,6 +145,9 @@ void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEn
         break;
     case QVariant::Bool:
         destination->SetBool(source->value<bool>());
+        break;
+    case QVariant::Char:
+        destination->SetChar(source->toChar());
         break;
     case QVariant::Int:
         destination->SetInt(source->value<int>());

@@ -336,6 +336,7 @@ namespace Qt.NetCore {
 public enum NetVariantTypeEnum {
   NetVariantTypeEnum_Invalid,
   NetVariantTypeEnum_Bool,
+  NetVariantTypeEnum_Char,
   NetVariantTypeEnum_Int,
   NetVariantTypeEnum_UInt,
   NetVariantTypeEnum_Double,
@@ -458,6 +459,14 @@ public class NetVariant : global::System.IDisposable {
     bool ret = QtNetCoreQmlPINVOKE.NetVariant_GetBool(swigCPtr);
     return ret;
   }
+
+  public void SetChar(char value) {
+    QtNetCoreQmlPINVOKE.NetVariant_SetChar(swigCPtr, (int)value);
+  }
+
+  public char GetChar() {
+    return (char)QtNetCoreQmlPINVOKE.NetVariant_GetChar(swigCPtr);
+}
 
   public void SetInt(int value) {
     QtNetCoreQmlPINVOKE.NetVariant_SetInt(swigCPtr, value);
@@ -1824,6 +1833,12 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetBool")]
   public static extern bool NetVariant_GetBool(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetChar")]
+  public static extern void NetVariant_SetChar(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_GetChar")]
+  public static extern int NetVariant_GetChar(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetVariant_SetInt")]
   public static extern void NetVariant_SetInt(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);

@@ -14,6 +14,8 @@ public:
     NetInstance* GetNetInstance();
     void SetBool(bool value);
     bool GetBool();
+    void SetChar(QChar value);
+    QChar GetChar();
     void SetInt(int value);
     int GetInt();
     void SetUInt(unsigned int value);
