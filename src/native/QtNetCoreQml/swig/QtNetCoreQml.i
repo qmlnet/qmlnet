@@ -26,3 +26,4 @@
 %include "QQmlApplicationEngine.i"
 %include "QQmlRegisterType.i"
 %include "NetTestHelper.i"
+%include "NetTestStringInterop.i"

@@ -1513,6 +1513,75 @@ public class NetTestHelper : global::System.IDisposable {
 }
 namespace Qt.NetCore {
 
+public class NetTestStringInterop : global::System.IDisposable {
+  private global::System.Runtime.InteropServices.HandleRef swigCPtr;
+  protected bool swigCMemOwn;
+
+  internal NetTestStringInterop(global::System.IntPtr cPtr, bool cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
+    swigCPtr = new global::System.Runtime.InteropServices.HandleRef(this, cPtr);
+  }
+
+  internal static global::System.Runtime.InteropServices.HandleRef getCPtr(NetTestStringInterop obj) {
+    return (obj == null) ? new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero) : obj.swigCPtr;
+  }
+
+  ~NetTestStringInterop() {
+    Dispose();
+  }
+
+  public virtual void Dispose() {
+    lock(this) {
+      if (swigCPtr.Handle != global::System.IntPtr.Zero) {
+        if (swigCMemOwn) {
+          swigCMemOwn = false;
+          QtNetCoreQmlPINVOKE.delete_NetTestStringInterop(swigCPtr);
+        }
+        swigCPtr = new global::System.Runtime.InteropServices.HandleRef(null, global::System.IntPtr.Zero);
+      }
+      global::System.GC.SuppressFinalize(this);
+    }
+  }
+
+  public NetTestStringInterop() : this(QtNetCoreQmlPINVOKE.new_NetTestStringInterop(), true) {
+  }
+
+  public void SetStringValue(string value) {
+    QtNetCoreQmlPINVOKE.NetTestStringInterop_SetStringValue(swigCPtr, value);
+  }
+
+  public string GetStringValue() {
+    string ret = QtNetCoreQmlPINVOKE.NetTestStringInterop_GetStringValue(swigCPtr);
+    return ret;
+  }
+
+  public void SetStringReference(string value) {
+    QtNetCoreQmlPINVOKE.NetTestStringInterop_SetStringReference(swigCPtr, value);
+  }
+
+  public string GetStringReference() {
+    string ret = QtNetCoreQmlPINVOKE.NetTestStringInterop_GetStringReference(swigCPtr);
+    return ret;
+  }
+
+  public void SetStringPointer(string value) {
+    QtNetCoreQmlPINVOKE.NetTestStringInterop_SetStringPointer(swigCPtr, value);
+  }
+
+  public string GetStringPointer() {
+    string ret = QtNetCoreQmlPINVOKE.NetTestStringInterop_GetStringPointer(swigCPtr);
+    return ret;
+  }
+
+  public void PrintString() {
+    QtNetCoreQmlPINVOKE.NetTestStringInterop_PrintString(swigCPtr);
+  }
+
+}
+
+}
+namespace Qt.NetCore {
+
 class QtNetCoreQmlPINVOKE {
 
   protected class SWIGExceptionHelper {
@@ -2160,6 +2229,33 @@ class QtNetCoreQmlPINVOKE {
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetTestHelper")]
   public static extern void delete_NetTestHelper(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_new_NetTestStringInterop")]
+  public static extern global::System.IntPtr new_NetTestStringInterop();
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_SetStringValue")]
+  public static extern void NetTestStringInterop_SetStringValue(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_GetStringValue")]
+  public static extern string NetTestStringInterop_GetStringValue(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_SetStringReference")]
+  public static extern void NetTestStringInterop_SetStringReference(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_GetStringReference")]
+  public static extern string NetTestStringInterop_GetStringReference(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_SetStringPointer")]
+  public static extern void NetTestStringInterop_SetStringPointer(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg2);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_GetStringPointer")]
+  public static extern string NetTestStringInterop_GetStringPointer(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestStringInterop_PrintString")]
+  public static extern void NetTestStringInterop_PrintString(global::System.Runtime.InteropServices.HandleRef jarg1);
+
+  [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_delete_NetTestStringInterop")]
+  public static extern void delete_NetTestStringInterop(global::System.Runtime.InteropServices.HandleRef jarg1);
 }
 
 }

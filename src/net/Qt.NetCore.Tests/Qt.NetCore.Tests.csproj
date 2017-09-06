@@ -71,6 +71,7 @@
     <Compile Include="StringTests.cs" />
     <Compile Include="MockTypeCreator.cs" />
     <Compile Include="UIntTests.cs" />
+    <Compile Include="Interop\StringInteropTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qt.NetCore\Qt.NetCore.csproj">
@@ -80,6 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interop\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
