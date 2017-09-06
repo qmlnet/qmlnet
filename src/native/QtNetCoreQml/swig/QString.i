@@ -1,10 +1,12 @@
-%typemap(ctype) QString& "wchar_t *"
+%typemap(ctype) QString& "char *"
 %typemap(imtype,
-    inattributes="[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]")
+    inattributes="[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]")
     QString& "string"
 %typemap(cstype) QString& "string"
 %typemap(in) QString& (QString temp) %{
-    temp = QString::fromWCharArray($input);
+    if($input) {
+        temp = $input;
+    }
     $1 = &temp;
 %}
 %typemap(csin) QString& "$csinput"
@@ -27,14 +29,14 @@
     delete[] $1_array;
 %}
 
-%typemap(ctype) QString* "wchar_t *"
+%typemap(ctype) QString* "char *"
 %typemap(imtype,
-    inattributes="[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPWStr)]")
+    inattributes="[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]")
     QString* "string"
 %typemap(cstype) QString* "string"
 %typemap(in) QString* (QString temp) %{
     if($input) {
-        temp = QString::fromWCharArray($input);
+        temp = $input;
         $1 = &temp;
     }
 %}
