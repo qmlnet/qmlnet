@@ -2216,7 +2216,7 @@ class QtNetCoreQmlPINVOKE {
   public static extern void delete_QQmlApplicationEngine(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_registerNetType")]
-  public static extern int registerNetType(string jarg1, string jarg2, int jarg3, int jarg4, string jarg5);
+  public static extern int registerNetType([System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg2, int jarg3, int jarg4, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("QtNetCoreQml", EntryPoint="CSharp_NetTestHelper_RunQml")]
   public static extern void NetTestHelper_RunQml(global::System.Runtime.InteropServices.HandleRef jarg1, [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.LPTStr)]string jarg2);
@@ -2264,7 +2264,6 @@ namespace Qt.NetCore {
 public class QtNetCoreQml {
   public static int registerNetType(string netType, string uri, int versionMajor, int versionMinor, string qmlName) {
     int ret = QtNetCoreQmlPINVOKE.registerNetType(netType, uri, versionMajor, versionMinor, qmlName);
-    if (QtNetCoreQmlPINVOKE.SWIGPendingException.Pending) throw QtNetCoreQmlPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
 

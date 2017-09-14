@@ -14,14 +14,14 @@
 
 DEFINE_NETVALUETYPE(1)
 
-int registerNetType(std::string netType, std::string uri, int versionMajor, int versionMinor, std::string qmlName)
+int registerNetType(QString &netType, QString &uri, int versionMajor, int versionMinor, QString& qmlName)
 {
-    if(!NetTypeInfoManager::isValidType((char*)netType.c_str()))
+    if(!NetTypeInfoManager::isValidType(netType.toUtf8().data()))
         return -1;
 
-    NetTypeInfo* typeInfo = NetTypeInfoManager::GetTypeInfo((char*)netType.c_str());
+    NetTypeInfo* typeInfo = NetTypeInfoManager::GetTypeInfo(netType.toUtf8().data());
 
     NetValueType<1>::init(typeInfo);
 
-    return qmlRegisterType<NetValueType<1>>(uri.c_str(), versionMajor, versionMinor, qmlName.c_str());
+    return qmlRegisterType<NetValueType<1>>(uri.toUtf8().data(), versionMajor, versionMinor, qmlName.toUtf8().data());
 }

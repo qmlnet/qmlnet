@@ -2814,33 +2814,39 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_QQmlApplicationEngine(void * jarg1) {
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(char * jarg1, char * jarg2, int jarg3, int jarg4, char * jarg5) {
+SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(char* jarg1, char* jarg2, int jarg3, int jarg4, char* jarg5) {
   int jresult ;
-  std::string arg1 ;
-  std::string arg2 ;
+  QString *arg1 = 0 ;
+  QString *arg2 = 0 ;
   int arg3 ;
   int arg4 ;
-  std::string arg5 ;
+  QString *arg5 = 0 ;
+  QString temp1 ;
+  QString temp2 ;
+  QString temp5 ;
   int result;
   
-  if (!jarg1) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
-    return 0;
+  
+  if(jarg1) {
+    temp1 = jarg1;
   }
-  (&arg1)->assign(jarg1); 
-  if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
-    return 0;
+  arg1 = &temp1;
+  
+  
+  if(jarg2) {
+    temp2 = jarg2;
   }
-  (&arg2)->assign(jarg2); 
+  arg2 = &temp2;
+  
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
-  if (!jarg5) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
-    return 0;
+  
+  if(jarg5) {
+    temp5 = jarg5;
   }
-  (&arg5)->assign(jarg5); 
-  result = (int)registerNetType(arg1,arg2,arg3,arg4,arg5);
+  arg5 = &temp5;
+  
+  result = (int)registerNetType(*arg1,*arg2,arg3,arg4,*arg5);
   jresult = result; 
   return jresult;
 }
