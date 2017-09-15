@@ -90,5 +90,27 @@ namespace Qt.NetCore.Tests
             Mock.VerifyGet(x => x.Property, Times.Once);
             Mock.VerifySet(x => x.Property = "test value", Times.Once);
         }
+
+        [Fact]
+        public void Can_read_write_value_unicode()
+        {
+            Mock.Setup(x => x.Property).Returns("test Ώ value");
+
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+
+                    StringTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.Property = test.Property
+                        }
+                    }
+                ");
+
+            Mock.VerifyGet(x => x.Property, Times.Once);
+            Mock.VerifySet(x => x.Property = "test Ώ value", Times.Once);
+        }
     }
 }
