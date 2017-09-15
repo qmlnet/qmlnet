@@ -22,12 +22,7 @@ namespace Qt.NetCore.Tests
         public BaseTests()
         {
             Monitor.Enter(LockObject);
-
-            // temp
-            var path = Environment.GetEnvironmentVariable("PATH");
-            path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
-            Environment.SetEnvironmentVariable("PATH", path);
-
+            
             _applicationArgs = new StringVector();
             _coreApplication = new QGuiApplication(_applicationArgs);
 

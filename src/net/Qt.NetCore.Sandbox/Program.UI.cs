@@ -50,10 +50,6 @@ namespace Qt.NetCore.Sandbox
 
         static int Main()
         {
-            var path = System.Environment.GetEnvironmentVariable("PATH");
-            path += ";" + @"D:\Git\Github\pauldotknopf\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug\debug";
-            System.Environment.SetEnvironmentVariable("PATH", path);
-
             Task.Factory.StartNew(() =>
             {
                 while (true)
