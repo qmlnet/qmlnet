@@ -103,3 +103,8 @@ ApplicationWindow {
 ```
 
 ## Things left to do
+
+- [ ] .NET Task Scheduler/Dispatcher - Support dispatching delegates from C# to Qt's UI thread.
+- [ ] ```async``` and ```await``` support.
+- [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in QML. This will allow QML to bind to .NET properties.
+- [ ] .NET Events to signals
