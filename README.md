@@ -115,6 +115,16 @@ ApplicationWindow {
 }
 ```
 
+## Building
+
+Setting up an environment is simple, but takes many steps.
+
+1. Install Qt and Qt Creator.
+2. Build ```src\native\QtNetCoreQml\QtNetCoreQml.pro```.
+3. Add the build output (eg, ```D:\Git\net-core-qml\src\native\build-QtNetCoreQml-Desktop_Qt_5_9_1_MSVC2017_64bit-Debug```) to your ```PATH```.
+4. Add your Qt bin dir (eg, ```D:\Qt\5.9.1\msvc2017_64\bin```) to your ```PATH```.
+5. Open ```devenv.exe``` with ```PATH``` set correctly.
+
 ## Things left to do
 
 - [ ] .NET Task Scheduler/Dispatcher - Support dispatching delegates from C# to Qt's UI thread.
