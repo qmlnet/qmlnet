@@ -51,7 +51,7 @@ public class QmlType
 
 ## Register your new type with QML.
 
-```
+```c#
 using (var app = new QGuiApplication(r))
 {
     using (var engine = new QQmlApplicationEngine())
