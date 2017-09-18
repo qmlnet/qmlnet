@@ -4,6 +4,17 @@ This is a work-in-progress to bridge .NET to Qml in a seamless way.
 
 To see what is currently working, check out the [unit tests](https://github.com/pauldotknopf/net-core-qml/tree/master/src/net/Qt.NetCore.Tests). Checkout the outstanding items that need to be done [here](#things-left-to-do).
 
+The intended platforms to support include:
+
+* Runtimes:
+  * .NET Framework Full
+  * .NET Core
+  * Mono
+* Operating systems
+  * Linux
+  * OSX
+  * Windows
+
 # The idea
 
 **Define a .NET type (POCO)**
@@ -110,3 +121,4 @@ ApplicationWindow {
 - [ ] ```async``` and ```await``` support.
 - [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in QML. This will allow QML to bind to .NET properties.
 - [ ] .NET Events to signals
+- [ ] CI server for unit tests and deliverables
