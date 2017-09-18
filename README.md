@@ -2,6 +2,8 @@
 
 This is a work-in-progress to bridge .NET to Qml in a seamless way.
 
+To see what is currently working, check out the [unit tests](https://github.com/pauldotknopf/net-core-qml/tree/master/src/net/Qt.NetCore.Tests). Checkout the outstanding items that need to be done [here](#things-left-to-do).
+
 # The idea
 
 **Define a .NET type (POCO)**
