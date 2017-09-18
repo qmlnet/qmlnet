@@ -4,7 +4,7 @@ This is a work-in-progress to bridge .NET to Qml in a seamless way.
 
 # The idea
 
-## Define a .NET type (POCO)
+**Define a .NET type (POCO)**
 
 ```c#
 public class QmlType
@@ -49,7 +49,7 @@ public class QmlType
 }
 ```
 
-## Register your new type with QML.
+**Register your new type with QML.**
 
 ```c#
 using (var app = new QGuiApplication(r))
@@ -64,7 +64,7 @@ using (var app = new QGuiApplication(r))
 }
 ```
 
-## Using the .NET type in QML
+**Using the .NET type in QML**
 
 ```js
 import QtQuick 2.7
@@ -101,3 +101,5 @@ ApplicationWindow {
     }
 }
 ```
+
+## Things left to do
