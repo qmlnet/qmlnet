@@ -131,4 +131,5 @@ Setting up an environment is simple, but takes many steps.
 - [ ] ```async``` and ```await``` support.
 - [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in Qml. This will allow Qml to bind to .NET properties.
 - [ ] .NET Events to signals
+- [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
 - [ ] CI server for unit tests and deliverables
