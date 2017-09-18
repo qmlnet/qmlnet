@@ -23,7 +23,7 @@ The intended platforms to support include:
 public class QmlType
 {
     /// <summary>
-    /// Properties are exposed to QML.
+    /// Properties are exposed to Qml.
     /// </summary>
     public string StringProperty { get; set; }
 
@@ -34,7 +34,7 @@ public class QmlType
 
     /// <summary>
     /// Methods can return .NET types.
-    /// The returned type can be invoked from QML (properties/methods/events/etc).
+    /// The returned type can be invoked from Qml (properties/methods/events/etc).
     /// </summary>
     /// <returns></returns>
     public QmlType CreateNetObject()
@@ -43,7 +43,7 @@ public class QmlType
     }
 
     /// <summary>
-    /// QML can pass .NET types to .NET methods.
+    /// Qml can pass .NET types to .NET methods.
     /// </summary>
     /// <param name="parameter"></param>
     public void TestMethod(QmlType parameter)
@@ -51,7 +51,7 @@ public class QmlType
     }
 
     /// <summary>
-    /// QML can also pass QML/C++ objects that can be invoked from .NET
+    /// Qml can also pass Qml/C++ objects that can be invoked from .NET
     /// </summary>
     /// <param name="qObject"></param>
     public void TestMethodWithQObject(dynamic qObject)
@@ -62,14 +62,14 @@ public class QmlType
 }
 ```
 
-**Register your new type with QML.**
+**Register your new type with Qml.**
 
 ```c#
 using (var app = new QGuiApplication(r))
 {
     using (var engine = new QQmlApplicationEngine())
     {
-        // Register our new type to be used in QML
+        // Register our new type to be used in Qml
         QQmlApplicationEngine.RegisterType<QmlType>("test", 1, 1);
         engine.loadFile("main.qml");
         return app.exec();
@@ -77,7 +77,7 @@ using (var app = new QGuiApplication(r))
 }
 ```
 
-**Using the .NET type in QML**
+**Using the .NET type in Qml**
 
 ```js
 import QtQuick 2.7
@@ -102,7 +102,7 @@ ApplicationWindow {
           // We can read/set properties
           console.log(test.StringProperty)
           test.StringProperty = "New value!"
-          // We can return .NET types (even ones not registered with QML).
+          // We can return .NET types (even ones not registered with Qml).
           var netObject = test.CreateNetObject();
           // All properties/methods/signals can be invoked on "netObject"
           // We can also pass the .NET object back to .NET
@@ -119,6 +119,6 @@ ApplicationWindow {
 
 - [ ] .NET Task Scheduler/Dispatcher - Support dispatching delegates from C# to Qt's UI thread.
 - [ ] ```async``` and ```await``` support.
-- [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in QML. This will allow QML to bind to .NET properties.
+- [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in Qml. This will allow Qml to bind to .NET properties.
 - [ ] .NET Events to signals
 - [ ] CI server for unit tests and deliverables
