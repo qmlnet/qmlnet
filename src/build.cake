@@ -1,5 +1,5 @@
-#addin "Cake.Docker"
-#addin "nuget:?package=Cake.Watch"
+#addin "nuget:?package=Cake.Docker&version=0.7.7"
+#addin "nuget:?package=Cake.Watch&version=0.1.11"
 
 var target = Argument("target", "Default");
 
