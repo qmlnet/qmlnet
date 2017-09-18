@@ -57,7 +57,7 @@ using (var app = new QGuiApplication(r))
     using (var engine = new QQmlApplicationEngine())
     {
         // Register our new type to be used in QML
-        QQmlApplicationEngine.RegisterType<TestQmlImport>("test", 1, 1);
+        QQmlApplicationEngine.RegisterType<QmlType>("test", 1, 1);
         engine.loadFile("main.qml");
         return app.exec();
     }
