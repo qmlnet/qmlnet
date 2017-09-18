@@ -22,7 +22,11 @@ namespace Qt.NetCore.Tests
         public BaseTests()
         {
             Monitor.Enter(LockObject);
-            
+
+#if DEBUG
+            Helpers.LoadDebugVariables();
+#endif
+
             _applicationArgs = new StringVector();
             _coreApplication = new QGuiApplication(_applicationArgs);
 

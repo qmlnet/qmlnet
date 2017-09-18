@@ -45,11 +45,6 @@ HEADERS += qtnetcoreqml_global.h \
     net_test_helper.h \
     net_test_string_interop.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
-
 DISTFILES += \
     swig/QtNetCoreQml.i \
     swig/NetInvoker.i \
@@ -58,3 +53,10 @@ DISTFILES += \
     swig/QGuiApplication.i \
     swig/QQmlApplicationEngine.i \
     swig/QQmlRegisterType.i
+
+DEBUG_VARIABLES_TXT = "bin-dir: $$[QT_INSTALL_LIBEXECS]"
+DEBUG_VARIABLES_TXT += "build-dir: $$OUT_PWD/debug"
+
+!write_file("$$PWD/../../net/Qt.NetCore/debug-variables.txt", DEBUG_VARIABLES_TXT) {
+  error("Couldn't create debug-variables.txt")
+}

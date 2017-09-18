@@ -50,6 +50,10 @@ namespace Qt.NetCore.Sandbox
 
         static int Main()
         {
+#if DEBUG
+            Helpers.LoadDebugVariables();
+#endif
+
             Task.Factory.StartNew(() =>
             {
                 while (true)
