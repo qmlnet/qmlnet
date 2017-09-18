@@ -85,7 +85,7 @@ ApplicationWindow {
           test.CustomEvent.connect(testHandler)
           // And invoke them. This will also trigger any event
           // handlers assigned in .NET.
-          test.CustomEvent()
+          test.CustomEvent("Event message")
           // We can read/set properties
           console.log(test.StringProperty)
           test.StringProperty = "New value!"
