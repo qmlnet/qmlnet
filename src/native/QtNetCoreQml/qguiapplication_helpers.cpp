@@ -27,5 +27,5 @@ QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
 
 void QQmlApplicationEngine_loadFile(QQmlApplicationEngine* instance, std::string filePath)
 {
-    instance->load(QString::fromUtf8("main.qml"));
+    instance->load(QString::fromStdString(filePath));
 }
