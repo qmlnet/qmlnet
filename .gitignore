@@ -1,2 +1,7 @@
 tmp
 src/tools
+src/netCore/Qt.NetCore/obj/
+src/netCore/Qt.NetCore/bin/
+src/netCore/Qt.NetCore.Sandbox/obj/
+src/netCore/Qt.NetCore.Sandbox/bin/
+src/netCore/.vs/

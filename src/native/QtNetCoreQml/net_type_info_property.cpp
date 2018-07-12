@@ -4,12 +4,14 @@ NetPropertyInfo::NetPropertyInfo(NetTypeInfo* parentTypeInfo,
         std::string propertyName,
         NetTypeInfo* returnType,
         bool canRead,
-        bool canWrite) :
+        bool canWrite,
+        std::string notifySignalName) :
     parentTypeInfo(parentTypeInfo),
     propertyName(propertyName),
     returnType(returnType),
     canRead(canRead),
-    canWrite(canWrite)
+    canWrite(canWrite),
+    notifySignalName(notifySignalName)
 {
 
 }
@@ -37,4 +39,9 @@ bool NetPropertyInfo::CanRead()
 bool NetPropertyInfo::CanWrite()
 {
     return canWrite;
+}
+
+std::string NetPropertyInfo::GetNotifySignalName()
+{
+    return notifySignalName;
 }

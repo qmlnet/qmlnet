@@ -25,5 +25,6 @@
 %include "QGuiApplication.i"
 %include "QQmlApplicationEngine.i"
 %include "QQmlRegisterType.i"
+%include "QQmlActivateSignal.i"
 %include "NetTestHelper.i"
 %include "NetTestStringInterop.i"

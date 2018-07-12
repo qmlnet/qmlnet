@@ -1,8 +1,13 @@
 %insert(runtime) %{
-#ifdef _WIN32
+#if defined(Q_OS_WIN)
 typedef wchar_t TCHAR;
+#define _WCHAR_MODE
+#elif defined(Q_OS_LINUX)
+typedef char16_t TCHAR;
+#define _UTF16_MODE
 #else
 typedef char TCHAR;
+#define _CHAR_MODE
 #endif
 %}
 
@@ -54,16 +59,24 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterQStringCallback_$module(SWIG_CSharpQStri
 %typemap(cstype) QString& "string"
 %typemap(in) QString& (QString temp) %{
     if($input) {
-        temp = QString::fromWCharArray((wchar_t*)$input);
+        #if defined(_WCHAR_MODE)
+        temp = QString::fromWCharArray((TCHAR*)$input);
+        #elif defined(_UTF16_MODE)
+        temp = QString::fromUtf16((TCHAR*)$input);
+        #else
+        temp = QString::fromUtf8((TCHAR*)$input);
+        #endif
     }
     $1 = &temp;
 %}
 %typemap(out) QString& %{
     if(!$1->isNull()) {
-        #ifdef _WIN32
+        #if defined(_WCHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdWString().c_str());
-        #else
-        $result = (TCHAR*)SWIG_csharp_qtring_callback($1->toUtf8().data());
+        #elif defined(_UTF16_MODE)
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdU16String().c_str());
+        #elif defined(_CHAR_MODE)
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toUtf8().data());
         #endif
     } else {
         $result = NULL;
@@ -88,15 +101,23 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterQStringCallback_$module(SWIG_CSharpQStri
 %typemap(cstype) QString "string"
 %typemap(in) QString (QString temp) %{
     if($input) {
-        $1 = QString::fromWCharArray((wchar_t*)$input);
+        #if defined(_WCHAR_MODE)
+        $1 = QString::fromWCharArray((TCHAR*)$input);
+        #elif defined(_UTF16_MODE)
+        $1 = QString::fromUtf16((TCHAR*)$input);
+        #else
+        $1 = QString::fromUtf8((TCHAR*)$input);
+        #endif
     }
 %}
 %typemap(out) QString %{
     if(!$1.isNull()) {
-        #ifdef _WIN32
+        #if defined(_WCHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1.toStdWString().c_str());
-        #else
-        $result = (TCHAR*)SWIG_csharp_qtring_callback($1.toUtf8().data());
+        #elif defined(_UTF16_MODE)
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1.toStdU16String().c_str());
+        #elif defined(_CHAR_MODE)
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1.toUtf8().data());
         #endif
     } else {
         $result = NULL;
@@ -121,15 +142,23 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterQStringCallback_$module(SWIG_CSharpQStri
 %typemap(cstype) QString* "string"
 %typemap(in) QString* (QString temp) %{
     if($input) {
-        temp = QString::fromWCharArray((wchar_t*)$input);
+        #if defined(_WCHAR_MODE)
+        temp = QString::fromWCharArray((TCHAR*)$input);
+        #elif defined(_UTF16_MODE)
+        temp = QString::fromUtf16((TCHAR*)$input);
+        #else
+        temp = QString::fromUtf8((TCHAR*)$input);
+        #endif
     }
     $1 = &temp;
 %}
 %typemap(out) QString* %{
     if(!$1->isNull()) {
-        #ifdef _WIN32
+        #if defined(_WCHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdWString().c_str());
-        #else
+        #elif defined(_UTF16_MODE)
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdU16String().c_str());
+        #elif defined(_CHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toUtf8().data());
         #endif
     } else {

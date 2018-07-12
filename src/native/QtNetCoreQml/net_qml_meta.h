@@ -25,6 +25,7 @@ protected:
 private:
     QObject *value;
     NetInstance *instance;
+    int signalCount;
 };
 
 #endif // NET_QML_META_H

@@ -9,10 +9,12 @@ public:
                     std::string propertyName,
                     NetTypeInfo* returnType,
                     bool canRead,
-                    bool canWrite);
+                    bool canWrite,
+                    std::string notifySignalName);
     NetTypeInfo* GetParentType();
     std::string GetPropertyName();
     NetTypeInfo* GetReturnType();
     bool CanRead();
     bool CanWrite();
+    std::string GetNotifySignalName();
 };

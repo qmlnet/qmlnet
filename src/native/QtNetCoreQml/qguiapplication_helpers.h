@@ -8,10 +8,20 @@
 #include <string>
 #include <QDateTime>
 
+class GuiThreadContextTriggerCallback {
+public:
+    virtual ~GuiThreadContextTriggerCallback() { }
+    virtual void onGuiThreadContextTrigger() {}
+};
+
 extern "C" {
 QGuiApplication* new_QGuiApplication(std::vector<std::string> argv);
 
 void QQmlApplicationEngine_loadFile(QQmlApplicationEngine* instance, std::string filePath);
+
+void QGuiApplication_setGuiThreadContextTriggerCallback(QGuiApplication* instance, GuiThreadContextTriggerCallback* callback);
+void QGuiApplication_requestGuiThreadContextTrigger(QGuiApplication* instance);
+
 
 }
 #endif // QGUIAPPLICATION_HELPERS_H

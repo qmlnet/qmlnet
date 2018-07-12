@@ -1,0 +1,2 @@
+bin-dir: C:/Qt/5.10.0/msvc2017_64/bin
+build-dir: C:/Users/micha/Resilio/Desk/Dev/DotNet/OpenSource/Net-Core-Qml/src/native/build-QtNetCoreQml-Desktop_Qt_5_10_0_MSVC2017_64bit-Debug/debug

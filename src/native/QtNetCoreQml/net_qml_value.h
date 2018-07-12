@@ -21,6 +21,7 @@ public:
     NetValue(NetInstance *instance, QObject *parent);
     virtual ~NetValue();
     NetInstance* GetNetInstance();
+    void ActivateSignal(std::string signalName, std::vector<NetVariant*> args);
 private:
     NetInstance *instance;
     GoValueMetaObject *valueMeta;

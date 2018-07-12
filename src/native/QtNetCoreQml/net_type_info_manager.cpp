@@ -44,9 +44,9 @@ NetMethodInfo* NetTypeInfoManager::NewMethodInfo(NetTypeInfo* parentTypeInfo, ch
     return new NetMethodInfo(parentTypeInfo, std::string(methodName), returnType);
 }
 
-NetPropertyInfo* NetTypeInfoManager::NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite)
+NetPropertyInfo* NetTypeInfoManager::NewPropertyInfo(NetTypeInfo* parentTypeInfo, std::string propertyName, NetTypeInfo* returnType, bool canRead, bool canWrite, std::string notifySignalName)
 {
-    return new NetPropertyInfo(parentTypeInfo, propertyName, returnType, canRead, canWrite);
+    return new NetPropertyInfo(parentTypeInfo, propertyName, returnType, canRead, canWrite, notifySignalName);
 }
 
 NetInstance* NetTypeInfoManager::CreateInstance(NetTypeInfo* typeInfo)

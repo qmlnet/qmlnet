@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Win-x64-Debug;Win-x64-Release;Linux-x64-Debug;Linux-x64-Release;Linux-arm-Debug;Linux-arm-Release</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\interop\Interop.cs" Link="Interop.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="debug-variables.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Choose>
+    <When Condition=" '$(Configuration)'=='Win-x64-Debug'">
+      <ItemGroup>
+        <None Include="..\..\native\win-x64\debug\QtNetCoreQml.dll" Link="QtNetCoreQml.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='Win-x64-Release'">
+      <ItemGroup>
+        <None Include="..\..\native\win-x64\release\QtNetCoreQml.dll" Link="QtNetCoreQml.dll">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='Linux-x64-Debug'">
+      <ItemGroup>
+        <None Include="..\..\native\linux-x64\debug\libQtNetCoreQml.so.1.0.0" Link="libQtNetCoreQml.so">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='Linux-x64-Release'">
+      <ItemGroup>
+        <None Include="..\..\native\linux-x64\release\libQtNetCoreQml.so.1.0.0" Link="libQtNetCoreQml.so">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='Linux-arm-Debug'">
+      <ItemGroup>
+        <None Include="..\..\native\linux-arm\debug\libQtNetCoreQml.so.1.0.0" Link="libQtNetCoreQml.so">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='Linux-arm-Release'">
+      <ItemGroup>
+        <None Include="..\..\native\linux-arm\release\libQtNetCoreQml.so.1.0.0" Link="libQtNetCoreQml.so">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+</Project>

@@ -311,10 +311,15 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterWStringCallback_QtNetCoreQml(SWIG_CSharp
 }
 
 
-#ifdef _WIN32
+#if defined(Q_OS_WIN)
 typedef wchar_t TCHAR;
+#define _WCHAR_MODE
+#elif defined(Q_OS_LINUX)
+typedef char16_t TCHAR;
+#define _UTF16_MODE
 #else
 typedef char TCHAR;
+#define _CHAR_MODE
 #endif
 
 
@@ -669,6 +674,9 @@ SWIGINTERN bool std_vector_Sl_NetVariant_Sm__Sg__Remove(std::vector< NetVariant 
 #include "net_qml_register_type.h"
 
 
+#include "net_qml_activate_signal.h"
+
+
 #include "net_test_helper.h"
 
 
@@ -828,6 +836,32 @@ void SwigDirector_NetTypeInfoCallbacks::swig_init_callbacks() {
   swig_callbackInvokeMethod = 0;
   swig_callbackReleaseGCHandle = 0;
   swig_callbackCopyGCHandle = 0;
+}
+
+SwigDirector_GuiThreadContextTriggerCallback::SwigDirector_GuiThreadContextTriggerCallback() : GuiThreadContextTriggerCallback(), Swig::Director() {
+  swig_init_callbacks();
+}
+
+SwigDirector_GuiThreadContextTriggerCallback::~SwigDirector_GuiThreadContextTriggerCallback() {
+  
+}
+
+
+void SwigDirector_GuiThreadContextTriggerCallback::onGuiThreadContextTrigger() {
+  if (!swig_callbackonGuiThreadContextTrigger) {
+    GuiThreadContextTriggerCallback::onGuiThreadContextTrigger();
+    return;
+  } else {
+    swig_callbackonGuiThreadContextTrigger();
+  }
+}
+
+void SwigDirector_GuiThreadContextTriggerCallback::swig_connect_director(SWIG_Callback0_t callbackonGuiThreadContextTrigger) {
+  swig_callbackonGuiThreadContextTrigger = callbackonGuiThreadContextTrigger;
+}
+
+void SwigDirector_GuiThreadContextTriggerCallback::swig_init_callbacks() {
+  swig_callbackonGuiThreadContextTrigger = 0;
 }
 
 
@@ -1519,7 +1553,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetVariant_SetString(void * jarg1, void * jar
   arg1 = (NetVariant *)jarg1; 
   
   if(jarg2) {
-    temp2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    temp2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    temp2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    temp2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   arg2 = &temp2;
   
@@ -1536,10 +1576,12 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariant_GetString(void * jarg1) {
   result = (arg1)->GetString();
   
   if(!(&result)->isNull()) {
-#ifdef _WIN32
+#if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdWString().c_str());
-#else
-    jresult = (TCHAR*)SWIG_csharp_qtring_callback((&result)->toUtf8().data());
+#elif defined(_UTF16_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdU16String().c_str());
+#elif defined(_CHAR_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toUtf8().data());
 #endif
   } else {
     jresult = NULL;
@@ -1761,6 +1803,58 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfo_GetProperty(void * jarg1, int j
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_NetTypeInfo_ActivateSignal(void * jarg1, void * jarg2, char * jarg3, void * jarg4) {
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  NetGCHandle *arg2 = (NetGCHandle *) 0 ;
+  std::string arg3 ;
+  std::vector< NetVariant * > arg4 ;
+  std::vector< NetVariant * > *argp4 ;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  arg2 = jarg2; 
+  if (!jarg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  (&arg3)->assign(jarg3); 
+  argp4 = (std::vector< NetVariant * > *)jarg4; 
+  if (!argp4) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetVariant * >", 0);
+    return ;
+  }
+  arg4 = *argp4; 
+  (arg1)->ActivateSignal(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetTypeInfo_TryActivateSignal(void * jarg1, void * jarg2, char * jarg3, void * jarg4) {
+  unsigned int jresult ;
+  NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
+  NetGCHandle *arg2 = (NetGCHandle *) 0 ;
+  std::string arg3 ;
+  std::vector< NetVariant * > arg4 ;
+  std::vector< NetVariant * > *argp4 ;
+  bool result;
+  
+  arg1 = (NetTypeInfo *)jarg1; 
+  arg2 = jarg2; 
+  if (!jarg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg3)->assign(jarg3); 
+  argp4 = (std::vector< NetVariant * > *)jarg4; 
+  if (!argp4) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetVariant * >", 0);
+    return 0;
+  }
+  arg4 = *argp4; 
+  result = (bool)(arg1)->TryActivateSignal(arg2,arg3,arg4);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetMethodInfo(void * jarg1, char * jarg2, void * jarg3) {
   void * jresult ;
   NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
@@ -1855,13 +1949,14 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_NetMethodInfo(void * jarg1) {
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetPropertyInfo(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4, unsigned int jarg5) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetPropertyInfo(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4, unsigned int jarg5, char * jarg6) {
   void * jresult ;
   NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
   std::string arg2 ;
   NetTypeInfo *arg3 = (NetTypeInfo *) 0 ;
   bool arg4 ;
   bool arg5 ;
+  std::string arg6 ;
   NetPropertyInfo *result = 0 ;
   
   arg1 = (NetTypeInfo *)jarg1; 
@@ -1873,7 +1968,12 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetPropertyInfo(void * jarg1, char * ja
   arg3 = (NetTypeInfo *)jarg3; 
   arg4 = jarg4 ? true : false; 
   arg5 = jarg5 ? true : false; 
-  result = (NetPropertyInfo *)new NetPropertyInfo(arg1,arg2,arg3,arg4,arg5);
+  if (!jarg6) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg6)->assign(jarg6); 
+  result = (NetPropertyInfo *)new NetPropertyInfo(arg1,arg2,arg3,arg4,arg5,arg6);
   jresult = (void *)result; 
   return jresult;
 }
@@ -1935,6 +2035,18 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_NetPropertyInfo_CanWrite(void * jarg1
   arg1 = (NetPropertyInfo *)jarg1; 
   result = (bool)(arg1)->CanWrite();
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetPropertyInfo_GetNotifySignalName(void * jarg1) {
+  char * jresult ;
+  NetPropertyInfo *arg1 = (NetPropertyInfo *) 0 ;
+  std::string result;
+  
+  arg1 = (NetPropertyInfo *)jarg1; 
+  result = (arg1)->GetNotifySignalName();
+  jresult = SWIG_csharp_string_callback((&result)->c_str()); 
   return jresult;
 }
 
@@ -2688,13 +2800,14 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_NewMethodInfo(void * jar
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_NewPropertyInfo(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4, unsigned int jarg5) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_NewPropertyInfo(void * jarg1, char * jarg2, void * jarg3, unsigned int jarg4, unsigned int jarg5, char * jarg6) {
   void * jresult ;
   NetTypeInfo *arg1 = (NetTypeInfo *) 0 ;
   std::string arg2 ;
   NetTypeInfo *arg3 = (NetTypeInfo *) 0 ;
   bool arg4 ;
   bool arg5 ;
+  std::string arg6 ;
   NetPropertyInfo *result = 0 ;
   
   arg1 = (NetTypeInfo *)jarg1; 
@@ -2706,7 +2819,12 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTypeInfoManager_NewPropertyInfo(void * j
   arg3 = (NetTypeInfo *)jarg3; 
   arg4 = jarg4 ? true : false; 
   arg5 = jarg5 ? true : false; 
-  result = (NetPropertyInfo *)NetTypeInfoManager::NewPropertyInfo(arg1,arg2,arg3,arg4,arg5);
+  if (!jarg6) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg6)->assign(jarg6); 
+  result = (NetPropertyInfo *)NetTypeInfoManager::NewPropertyInfo(arg1,arg2,arg3,arg4,arg5,arg6);
   jresult = (void *)result; 
   return jresult;
 }
@@ -2768,6 +2886,49 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_QCoreApplication(void * jarg1) {
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_GuiThreadContextTriggerCallback(void * jarg1) {
+  GuiThreadContextTriggerCallback *arg1 = (GuiThreadContextTriggerCallback *) 0 ;
+  
+  arg1 = (GuiThreadContextTriggerCallback *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GuiThreadContextTriggerCallback_onGuiThreadContextTrigger(void * jarg1) {
+  GuiThreadContextTriggerCallback *arg1 = (GuiThreadContextTriggerCallback *) 0 ;
+  
+  arg1 = (GuiThreadContextTriggerCallback *)jarg1; 
+  (arg1)->onGuiThreadContextTrigger();
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GuiThreadContextTriggerCallback_onGuiThreadContextTriggerSwigExplicitGuiThreadContextTriggerCallback(void * jarg1) {
+  GuiThreadContextTriggerCallback *arg1 = (GuiThreadContextTriggerCallback *) 0 ;
+  
+  arg1 = (GuiThreadContextTriggerCallback *)jarg1; 
+  (arg1)->GuiThreadContextTriggerCallback::onGuiThreadContextTrigger();
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_GuiThreadContextTriggerCallback() {
+  void * jresult ;
+  GuiThreadContextTriggerCallback *result = 0 ;
+  
+  result = (GuiThreadContextTriggerCallback *)new SwigDirector_GuiThreadContextTriggerCallback();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_GuiThreadContextTriggerCallback_director_connect(void *objarg, SwigDirector_GuiThreadContextTriggerCallback::SWIG_Callback0_t callback0) {
+  GuiThreadContextTriggerCallback *obj = (GuiThreadContextTriggerCallback *)objarg;
+  SwigDirector_GuiThreadContextTriggerCallback *director = dynamic_cast<SwigDirector_GuiThreadContextTriggerCallback *>(obj);
+  if (director) {
+    director->swig_connect_director(callback0);
+  }
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_QGuiApplication(void * jarg1) {
   void * jresult ;
   std::vector< std::string > arg1 ;
@@ -2783,6 +2944,24 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_new_QGuiApplication(void * jarg1) {
   result = (QGuiApplication *)new_QGuiApplication(arg1);
   jresult = (void *)result; 
   return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_QGuiApplication_setGuiThreadContextTriggerCallback(void * jarg1, void * jarg2) {
+  QGuiApplication *arg1 = (QGuiApplication *) 0 ;
+  GuiThreadContextTriggerCallback *arg2 = (GuiThreadContextTriggerCallback *) 0 ;
+  
+  arg1 = (QGuiApplication *)jarg1; 
+  arg2 = (GuiThreadContextTriggerCallback *)jarg2; 
+  QGuiApplication_setGuiThreadContextTriggerCallback(arg1,arg2);
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_QGuiApplication_requestGuiThreadContextTrigger(void * jarg1) {
+  QGuiApplication *arg1 = (QGuiApplication *) 0 ;
+  
+  arg1 = (QGuiApplication *)jarg1; 
+  QGuiApplication_requestGuiThreadContextTrigger(arg1);
 }
 
 
@@ -2852,13 +3031,25 @@ SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(void * jarg1, void * jarg2, in
   
   
   if(jarg1) {
-    temp1 = QString::fromWCharArray((wchar_t*)jarg1);
+#if defined(_WCHAR_MODE)
+    temp1 = QString::fromWCharArray((TCHAR*)jarg1);
+#elif defined(_UTF16_MODE)
+    temp1 = QString::fromUtf16((TCHAR*)jarg1);
+#else
+    temp1 = QString::fromUtf8((TCHAR*)jarg1);
+#endif
   }
   arg1 = &temp1;
   
   
   if(jarg2) {
-    temp2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    temp2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    temp2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    temp2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   arg2 = &temp2;
   
@@ -2866,11 +3057,77 @@ SWIGEXPORT int SWIGSTDCALL CSharp_registerNetType(void * jarg1, void * jarg2, in
   arg4 = (int)jarg4; 
   
   if(jarg5) {
-    temp5 = QString::fromWCharArray((wchar_t*)jarg5);
+#if defined(_WCHAR_MODE)
+    temp5 = QString::fromWCharArray((TCHAR*)jarg5);
+#elif defined(_UTF16_MODE)
+    temp5 = QString::fromUtf16((TCHAR*)jarg5);
+#else
+    temp5 = QString::fromUtf8((TCHAR*)jarg5);
+#endif
   }
   arg5 = &temp5;
   
   result = (int)registerNetType(*arg1,*arg2,arg3,arg4,*arg5);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_activateSignal(void * jarg1, char * jarg2, char * jarg3, void * jarg4) {
+  NetGCHandle *arg1 = (NetGCHandle *) 0 ;
+  std::string arg2 ;
+  std::string arg3 ;
+  std::vector< NetVariant * > arg4 ;
+  std::vector< NetVariant * > *argp4 ;
+  
+  arg1 = jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  (&arg2)->assign(jarg2); 
+  if (!jarg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return ;
+  }
+  (&arg3)->assign(jarg3); 
+  argp4 = (std::vector< NetVariant * > *)jarg4; 
+  if (!argp4) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetVariant * >", 0);
+    return ;
+  }
+  arg4 = *argp4; 
+  activateSignal(arg1,arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_tryActivateSignal(void * jarg1, char * jarg2, char * jarg3, void * jarg4) {
+  unsigned int jresult ;
+  NetGCHandle *arg1 = (NetGCHandle *) 0 ;
+  std::string arg2 ;
+  std::string arg3 ;
+  std::vector< NetVariant * > arg4 ;
+  std::vector< NetVariant * > *argp4 ;
+  bool result;
+  
+  arg1 = jarg1; 
+  if (!jarg2) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg2)->assign(jarg2); 
+  if (!jarg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
+    return 0;
+  }
+  (&arg3)->assign(jarg3); 
+  argp4 = (std::vector< NetVariant * > *)jarg4; 
+  if (!argp4) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< NetVariant * >", 0);
+    return 0;
+  }
+  arg4 = *argp4; 
+  result = (bool)tryActivateSignal(arg1,arg2,arg3,arg4);
   jresult = result; 
   return jresult;
 }
@@ -2884,7 +3141,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunQml(void * jarg1, void * jar
   arg1 = (QQmlApplicationEngine *)jarg1; 
   
   if(jarg2) {
-    temp2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    temp2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    temp2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    temp2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   arg2 = &temp2;
   
@@ -2904,13 +3167,25 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTestHelper_RunQmlMethod(void * jarg1, void
   arg1 = (QQmlApplicationEngine *)jarg1; 
   
   if(jarg2) {
-    temp2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    temp2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    temp2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    temp2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   arg2 = &temp2;
   
   
   if(jarg3) {
-    temp3 = QString::fromWCharArray((wchar_t*)jarg3);
+#if defined(_WCHAR_MODE)
+    temp3 = QString::fromWCharArray((TCHAR*)jarg3);
+#elif defined(_UTF16_MODE)
+    temp3 = QString::fromUtf16((TCHAR*)jarg3);
+#else
+    temp3 = QString::fromUtf8((TCHAR*)jarg3);
+#endif
   }
   arg3 = &temp3;
   
@@ -2956,7 +3231,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTestStringInterop_SetStringValue(void * ja
   arg1 = (NetTestStringInterop *)jarg1; 
   
   if(jarg2) {
-    arg2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    arg2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    arg2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    arg2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   
   (arg1)->SetStringValue(arg2);
@@ -2972,10 +3253,12 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTestStringInterop_GetStringValue(void * 
   result = (arg1)->GetStringValue();
   
   if(!(&result)->isNull()) {
-#ifdef _WIN32
+#if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdWString().c_str());
-#else
-    jresult = (TCHAR*)SWIG_csharp_qtring_callback((&result)->toUtf8().data());
+#elif defined(_UTF16_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdU16String().c_str());
+#elif defined(_CHAR_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toUtf8().data());
 #endif
   } else {
     jresult = NULL;
@@ -2993,7 +3276,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTestStringInterop_SetStringReference(void 
   arg1 = (NetTestStringInterop *)jarg1; 
   
   if(jarg2) {
-    temp2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    temp2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    temp2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    temp2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   arg2 = &temp2;
   
@@ -3010,10 +3299,12 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTestStringInterop_GetStringReference(voi
   result = (QString *) &(arg1)->GetStringReference();
   
   if(!result->isNull()) {
-#ifdef _WIN32
+#if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdWString().c_str());
-#else
-    jresult = (TCHAR*)SWIG_csharp_qtring_callback(result->toUtf8().data());
+#elif defined(_UTF16_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdU16String().c_str());
+#elif defined(_CHAR_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toUtf8().data());
 #endif
   } else {
     jresult = NULL;
@@ -3031,7 +3322,13 @@ SWIGEXPORT void SWIGSTDCALL CSharp_NetTestStringInterop_SetStringPointer(void * 
   arg1 = (NetTestStringInterop *)jarg1; 
   
   if(jarg2) {
-    temp2 = QString::fromWCharArray((wchar_t*)jarg2);
+#if defined(_WCHAR_MODE)
+    temp2 = QString::fromWCharArray((TCHAR*)jarg2);
+#elif defined(_UTF16_MODE)
+    temp2 = QString::fromUtf16((TCHAR*)jarg2);
+#else
+    temp2 = QString::fromUtf8((TCHAR*)jarg2);
+#endif
   }
   arg2 = &temp2;
   
@@ -3048,9 +3345,11 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTestStringInterop_GetStringPointer(void 
   result = (QString *)(arg1)->GetStringPointer();
   
   if(!result->isNull()) {
-#ifdef _WIN32
+#if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdWString().c_str());
-#else
+#elif defined(_UTF16_MODE)
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdU16String().c_str());
+#elif defined(_CHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toUtf8().data());
 #endif
   } else {

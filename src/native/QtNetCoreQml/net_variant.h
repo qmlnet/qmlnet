@@ -27,6 +27,8 @@ public:
     void SetDateTime(QDateTime& value);
     QDateTime GetDateTime();
     void Clear();
+
+    QVariant AsQVariant();
 private:
     void ClearNetInstance();
     QVariant variant;

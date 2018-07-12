@@ -181,6 +181,11 @@ void NetVariant::Clear()
     variant.clear();
 }
 
+QVariant NetVariant::AsQVariant()
+{
+    return variant;
+}
+
 void NetVariant::ClearNetInstance()
 {
     if(variant.canConvert<NetInstanceContainer>())

@@ -12,15 +12,23 @@ QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
     if(*var == 0)
         return new QGuiApplication(*var, NULL);
 
-    std::vector<const char*> newArgs;
+    std::vector<const char*>* newArgs = new std::vector<const char*>();
     for(int x = 0; x < argv.size(); x++)
     {
-        newArgs.push_back(argv.at(x).c_str());
+        newArgs->push_back(argv.at(x).c_str());
     }
 
-    auto app = new QGuiApplication(*var, (char**)&newArgs[0]);
+    qDebug() << "args before:";
+    for(unsigned int i=0; i<newArgs->size(); i++) {
+        qDebug() << "[" << i << "]=" << newArgs->at(i);
+    }
 
-    app->exec();
+    auto app = new QGuiApplication(*var, (char**)&(newArgs->at(0)));
+
+    qDebug() << "args after:";
+    for(unsigned int i=0; i<newArgs->size(); i++) {
+        qDebug() << "[" << i << "]=" << newArgs->at(i);
+    }
 
     return app;
 }
@@ -28,4 +36,20 @@ QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
 void QQmlApplicationEngine_loadFile(QQmlApplicationEngine* instance, std::string filePath)
 {
     instance->load(QString::fromStdString(filePath));
+}
+
+GuiThreadContextTriggerCallback* s_guiThreadContextTriggerCallback = nullptr;
+
+void QGuiApplication_setGuiThreadContextTriggerCallback(QGuiApplication*, GuiThreadContextTriggerCallback* callback) {
+    s_guiThreadContextTriggerCallback = callback;
+}
+
+void QGuiApplication_requestGuiThreadContextTrigger(QGuiApplication* instance) {
+    QMetaObject::invokeMethod(instance, []()
+    {
+        auto localCallback = s_guiThreadContextTriggerCallback;
+        if(localCallback != nullptr) {
+            localCallback->onGuiThreadContextTrigger();
+        }
+    });
 }

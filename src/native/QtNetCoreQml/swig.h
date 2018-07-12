@@ -47,5 +47,20 @@ private:
     void swig_init_callbacks();
 };
 
+class SwigDirector_GuiThreadContextTriggerCallback : public GuiThreadContextTriggerCallback, public Swig::Director {
+
+public:
+    SwigDirector_GuiThreadContextTriggerCallback();
+    virtual ~SwigDirector_GuiThreadContextTriggerCallback();
+    virtual void onGuiThreadContextTrigger();
+
+    typedef void (SWIGSTDCALL* SWIG_Callback0_t)();
+    void swig_connect_director(SWIG_Callback0_t callbackonGuiThreadContextTrigger);
+
+private:
+    SWIG_Callback0_t swig_callbackonGuiThreadContextTrigger;
+    void swig_init_callbacks();
+};
+
 
 #endif
