@@ -124,11 +124,6 @@ namespace Qt.NetCore.Sandbox
 
         static int Main()
         {
-            if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                Helpers.LoadDebugVariables();
-            }
-
             using (var r = new StringVector(0))
             {
                 using (var app = new QGuiApplication(r))

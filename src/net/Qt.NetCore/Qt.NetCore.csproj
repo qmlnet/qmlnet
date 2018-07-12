@@ -5,9 +5,4 @@
   <ItemGroup>
     <Compile Include="..\..\interop\Interop.cs" Link="Interop.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="debug-variables.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
