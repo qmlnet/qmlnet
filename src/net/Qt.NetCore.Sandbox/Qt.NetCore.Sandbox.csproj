@@ -1,15 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Configurations>Win-x64-Debug;Win-x64-Release;Linux-x64-Debug;Linux-x64-Release;Linux-arm-Debug;Linux-arm-Release</Configurations>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Qt.NetCore\Qt.NetCore.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="main.qml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -21,5 +17,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

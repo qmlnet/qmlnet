@@ -128,16 +128,6 @@ namespace Qt.NetCore.Sandbox
             {
                 Helpers.LoadDebugVariables();
             }
-            //Task.Factory.StartNew(() =>
-            //{
-            //    while (true)
-            //    {
-            //        Thread.Sleep(10);
-            //        GC.Collect(GC.MaxGeneration);
-            //    }
-            //// ReSharper disable FunctionNeverReturns
-            //});
-            //// ReSharper restore FunctionNeverReturns
 
             using (var r = new StringVector(0))
             {
