@@ -318,8 +318,8 @@ typedef wchar_t TCHAR;
 typedef char16_t TCHAR;
 #define _UTF16_MODE
 #else
-typedef char TCHAR;
-#define _CHAR_MODE
+typedef char16_t TCHAR;
+#define _UTF16_MODE
 #endif
 
 
