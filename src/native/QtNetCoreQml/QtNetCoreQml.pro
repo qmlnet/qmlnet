@@ -55,10 +55,3 @@ DISTFILES += \
     swig/QGuiApplication.i \
     swig/QQmlApplicationEngine.i \
     swig/QQmlRegisterType.i
-
-DEBUG_VARIABLES_TXT = "bin-dir: $$[QT_INSTALL_LIBEXECS]"
-DEBUG_VARIABLES_TXT += "build-dir: $$[OUT_PWD]/$$[CONFIG]"
-
-#!write_file("$$[OUT_PWD]/$$[CONFIG]/debug-variables.txt", DEBUG_VARIABLES_TXT) {
-#  error("Couldn't create debug-variables.txt")
-#}

@@ -1,13 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Qt.NetCore
 {
     internal class Callback : NetTypeInfoCallbacks
     {
+        public static Callback Instance
+        {
+            get;
+            private set;
+        }
+
+        public Callback()
+        {
+            Instance = this;
+        }
+
+        private IUiContext _UiContext = null;
+
+        public void SetUiContext(IUiContext uiContext)
+        {
+            _UiContext = uiContext;
+        }
+
         public override bool isValidType(string typeName)
         {
             var type = Type.GetType(typeName);
@@ -45,9 +66,16 @@ namespace Qt.NetCore
             {
                 if (method.DeclaringType == typeof(Object)) continue;
 
+                //ignore system stuff like event methods
+                if (method.IsSpecialName) continue;
+
                 NetTypeInfo returnType = null;
 
-                if (method.ReturnParameter.ParameterType != typeof(void))
+                if(typeof(Task).IsAssignableFrom(method.ReturnParameter.ParameterType))
+                {
+                    //.NET methods that return a Task don't reflect their return value into Qt
+                }
+                else if (method.ReturnParameter.ParameterType != typeof(void))
                 {
                     returnType = NetTypeInfoManager.GetTypeInfo(method.ReturnParameter.ParameterType);
                 }
@@ -56,19 +84,33 @@ namespace Qt.NetCore
 
                 foreach (var parameter in method.GetParameters())
                 {
-                    methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType));
+                    if (parameter.Name != null)
+                    {
+                        methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType));
+                    }
                 }
 
                 typeInfo.AddMethod(methodInfo);
             }
 
+            bool implementsINotifyPropertyChanged = typeof(INotifyPropertyChanged).IsAssignableFrom(type);
+
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
+                //ignore system stuff like events
+                if (property.IsSpecialName) continue;
+
+                string notifySignalName = "";
+                if (implementsINotifyPropertyChanged)
+                {
+                    notifySignalName = Utils.CalculatePropertyChangedSignalName(property.Name);
+                }
                 typeInfo.AddProperty(NetTypeInfoManager.NewPropertyInfo(
                     typeInfo, property.Name,
                     NetTypeInfoManager.GetTypeInfo(property.PropertyType),
                     property.CanRead,
-                    property.CanWrite));
+                    property.CanWrite,
+                    notifySignalName));
             }
         }
 
@@ -78,8 +120,11 @@ namespace Qt.NetCore
 
             var typeCreator = NetTypeInfoManager.TypeCreator;
             
-            var handle = GCHandle.Alloc(typeCreator != null ? typeCreator.Create(type) : Activator.CreateInstance(type));
+            object netInstance = typeCreator != null ? typeCreator.Create(type) : Activator.CreateInstance(type);
+            var handle = GCHandle.Alloc(netInstance);
             instance = GCHandle.ToIntPtr(handle);
+
+            Utils.TryAttachNotifyPropertyChanged(netInstance, handle);
         }
 
         public override void ReadProperty(NetPropertyInfo propertyInfo, NetInstance target, NetVariant result)
@@ -91,7 +136,7 @@ namespace Qt.NetCore
                 .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public)
                 .GetValue(o);
 
-            PackValue(ref value, result);
+            Utils.PackValue(value, result, true);
         }
 
         public override void WriteProperty(NetPropertyInfo propertyInfo, NetInstance target, NetVariant value)
@@ -105,135 +150,103 @@ namespace Qt.NetCore
                 .GetProperty(propertyInfo.GetPropertyName(), BindingFlags.Instance | BindingFlags.Public);
 
             object newValue = null;
-            Unpackvalue(ref newValue, value);
+            Utils.Unpackvalue(ref newValue, value);
 
             pInfo.SetValue(o, newValue);
         }
 
+        class QtSynchronizationContext : SynchronizationContext
+        {
+            private IUiContext _UiContext;
+
+            public QtSynchronizationContext(IUiContext uiContext)
+            {
+                _UiContext = uiContext;
+            }
+
+            public override void Post(SendOrPostCallback d, object state)
+            {
+                if (_UiContext != null)
+                {
+                    _UiContext.InvokeOnGuiThread(() => d.Invoke(state));
+                }
+                else
+                {
+                    base.Post(d, state);
+                }
+            }
+        }
+
+        class QtSynchronizationContextHandler : IDisposable
+        {
+            private SynchronizationContext _OriginalSynchronizationContext;
+            public QtSynchronizationContextHandler(IUiContext uiContext)
+            {
+                _OriginalSynchronizationContext = SynchronizationContext.Current;
+                SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(uiContext));
+            }
+
+            public void Dispose()
+            {
+                SynchronizationContext.SetSynchronizationContext(_OriginalSynchronizationContext);
+            }
+        }
 
         public override void InvokeMethod(NetMethodInfo methodInfo, NetInstance target, NetVariantVector parameters,
             NetVariant result)
         {
-            var handle = (GCHandle)target.GetGCHandle();
-            var o = handle.Target;
-
-            List<object> methodParameters = null;
-
-            if (parameters.Count > 0)
+            using (new QtSynchronizationContextHandler(_UiContext))
             {
-                methodParameters = new List<object>();
-                foreach (var parameterInstance in parameters)
+                var handle = (GCHandle)target.GetGCHandle();
+                var o = handle.Target;
+
+                List<object> methodParameters = null;
+
+                if (parameters.Count > 0)
                 {
-                    object v = null;
-                    Unpackvalue(ref v, parameterInstance);
-                    methodParameters.Add(v);
+                    methodParameters = new List<object>();
+                    foreach (var parameterInstance in parameters)
+                    {
+                        object v = null;
+                        Utils.Unpackvalue(ref v, parameterInstance);
+                        methodParameters.Add(v);
+                    }
                 }
-            }
 
-            var r = o.GetType()
-                .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public)
-                .Invoke(o, methodParameters?.ToArray());
-
-            if (result == null)
-            {
-                // this method doesn't have return type
-
-            }
-            else
-            {
-                PackValue(ref r, result);
+                if (string.Equals("ToString", methodInfo.GetMethodName()))
+                {
+                    var resultValue = o.ToString();
+                    Utils.PackValue(resultValue, result, true);
+                }
+                else
+                {
+                    var method = o.GetType()
+                        .GetMethod(methodInfo.GetMethodName(), BindingFlags.Instance | BindingFlags.Public);
+                    if (typeof(Task).IsAssignableFrom(method.ReturnType))
+                    {
+                        method.Invoke(o, methodParameters?.ToArray());
+                        //Task doesn't get returned
+                    }
+                    else
+                    {
+                        var resultValue = method.Invoke(o, methodParameters?.ToArray());
+                        Utils.PackValue(resultValue, result, true);
+                    }
+                }
             }
         }
 
         public override void ReleaseGCHandle(IntPtr gcHandle)
         {
-            var handle = (GCHandle)gcHandle;
+            var handle = GCHandle.FromIntPtr(gcHandle);
             handle.Free();
         }
 
         public override void CopyGCHandle(IntPtr gcHandle, ref IntPtr gcHandleCopy)
         {
-            var handle = (GCHandle)gcHandle;
+            var handle = GCHandle.FromIntPtr(gcHandle);
             var duplicatedHandle = GCHandle.Alloc(handle.Target);
             gcHandleCopy = GCHandle.ToIntPtr(duplicatedHandle);
-        }
-
-        private void PackValue(ref object source, NetVariant destination)
-        {
-            if (source == null)
-            {
-                destination.Clear();
-            }
-            else
-            {
-                var type = source.GetType();
-                if (type == typeof(bool))
-                    destination.SetBool((bool)source);
-                else if(type == typeof(char))
-                    destination.SetChar((char)source);
-                else if(type == typeof(double))
-                    destination.SetDouble((double)source);
-                else if (type == typeof(int))
-                    destination.SetInt((int)source);
-                else if(type == typeof(uint))
-                    destination.SetUInt((uint)source);
-                else if (type == typeof(string))
-                    destination.SetString((string)source);
-                else if(type == typeof(DateTime))
-                    destination.SetDateTime((DateTime)source);
-                else
-                {
-                    destination.SetNetInstance(NetTypeInfoManager.WrapCreatedInstance(
-                        GCHandle.ToIntPtr(GCHandle.Alloc(source)),
-                        NetTypeInfoManager.GetTypeInfo(GetUnproxiedType(type))));
-                }
-            }
-        }
-
-        private void Unpackvalue(ref object destination, NetVariant source)
-        {
-            switch (source.GetVariantType())
-            {
-                case NetVariantTypeEnum.NetVariantTypeEnum_Invalid:
-                    destination = null;
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_Bool:
-                    destination = source.GetBool();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_Char:
-                    destination = source.GetChar();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_Int:
-                    destination = source.GetInt();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_UInt:
-                    destination = source.GetUInt();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_Double:
-                    destination = source.GetDouble();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_String:
-                    destination = source.GetString();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_DateTime:
-                    destination = source.GetDateTime();
-                    break;
-                case NetVariantTypeEnum.NetVariantTypeEnum_Object:
-                    var netInstance = source.GetNetInstance();
-                    var gcHandle = (GCHandle)netInstance.GetGCHandle();
-                    destination = gcHandle.Target;
-                    break;
-                default:
-                    throw new Exception("Unsupported variant type.");
-            }
-        }
-
-        private Type GetUnproxiedType(Type type)
-        {
-            if (type.Namespace == "Castle.Proxies")
-                return type.BaseType;
-
-            return type;
         }
     }
 }
