@@ -20,6 +20,11 @@ namespace Build
                 CleanDirectory(ExpandPath("./output"));
             });
             
+            Add("test", () =>
+            {
+                RunShell($"dotnet test src/net/Qt.NetCore.Tests/ {commandBuildArgs}");
+            });
+
             Add("build", () =>
             {
                 RunShell($"dotnet build src/net/Qt.NetCore.sln {commandBuildArgs}");
