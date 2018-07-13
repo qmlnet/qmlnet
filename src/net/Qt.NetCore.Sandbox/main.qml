@@ -11,12 +11,26 @@ ApplicationWindow {
 
 	Item {
 		Timer {
-			interval: 5; running: true; repeat: true
+			interval: /*1000*/10; running: true; repeat: true
 			onTriggered: {
 				var par = test.Create()
 				test.TestMethod(par)
 				gc()
 			}
+		}
+	}
+
+	Page1 {
+		anchors.horizontalCenter: parent.horizontalCenter
+		button1.onClicked: {
+			test.OnPressedAsync(textField1.text);
+		}
+		button2.onClicked: {
+			test.OnPressedAsyncWithResult(textField1.text);
+		}
+		textFieldMessage.text: test.MessageToSend
+		buttonSendMessage.onClicked: {
+			test.SendMessage();
 		}
 	}
 
@@ -26,5 +40,9 @@ ApplicationWindow {
 
 	TestQmlImport {
 		id: test
+	}
+
+	Component.onCompleted: {
+		test.AnotherPropertyChanged.connect(function() { console.log("Another property changed!"); });
 	}
 }

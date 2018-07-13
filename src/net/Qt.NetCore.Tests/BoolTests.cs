@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using Xunit;
 
 namespace Qt.NetCore.Tests
@@ -32,7 +27,6 @@ namespace Qt.NetCore.Tests
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
@@ -51,7 +45,6 @@ namespace Qt.NetCore.Tests
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
@@ -72,7 +65,6 @@ namespace Qt.NetCore.Tests
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
@@ -94,7 +86,6 @@ namespace Qt.NetCore.Tests
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {

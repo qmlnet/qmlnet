@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Moq;
-using Xunit;
 
 namespace Qt.NetCore.Tests
 {
@@ -14,18 +10,14 @@ namespace Qt.NetCore.Tests
         readonly StringVector _applicationArgs;
         readonly QGuiApplication _coreApplication;
         // ReSharper disable InconsistentNaming
-        protected QQmlApplicationEngine qmlApplicationEngine;
+        protected readonly QQmlApplicationEngine qmlApplicationEngine;
         // ReSharper restore InconsistentNaming
         readonly List<Type> _registeredTypes = new List<Type>();
         static readonly object LockObject = new object();
 
-        public BaseTests()
+        protected BaseTests()
         {
             Monitor.Enter(LockObject);
-
-#if DEBUG
-            Helpers.LoadDebugVariables();
-#endif
 
             _applicationArgs = new StringVector();
             _coreApplication = new QGuiApplication(_applicationArgs);
@@ -52,7 +44,7 @@ namespace Qt.NetCore.Tests
 
     public abstract class BaseTests<T> : BaseTests where T:class
     {
-        protected Mock<T> Mock;
+        protected readonly Mock<T> Mock;
 
         protected BaseTests()
         {
