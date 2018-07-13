@@ -1,14 +1,9 @@
-using System;
 using System.Threading.Tasks;
-using Build.Buildary;
 using static Bullseye.Targets;
 using static Build.Buildary.Directory;
 using static Build.Buildary.Path;
 using static Build.Buildary.Shell;
 using static Build.Buildary.Runner;
-using static Build.Buildary.GitVersion;
-using static Build.Buildary.File;
-using static Build.Buildary.Log;
 
 namespace Build
 {
