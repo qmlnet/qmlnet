@@ -1,0 +1,8 @@
+sudo: required
+if: tag IS blank
+services:
+  - docker
+before_install:
+  - git fetch --unshallow || true
+script:
+  - ./build/travis.sh

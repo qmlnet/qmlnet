@@ -7,6 +7,7 @@
 QT       += gui qml core-private
 
 CONFIG += c++11
+CONFIG += plugin
 
 TARGET = QtNetCoreQml
 TEMPLATE = lib
@@ -55,3 +56,6 @@ DISTFILES += \
     swig/QGuiApplication.i \
     swig/QQmlApplicationEngine.i \
     swig/QQmlRegisterType.i
+
+target.path = $$(PREFIX)
+INSTALLS += target

@@ -15,10 +15,10 @@ namespace Qt.NetCore.Tests.Interop
                 Assert.Null(interop.GetStringReference());
 
                 interop.SetStringReference("");
-                Assert.Equal(interop.GetStringReference(), "");
+                Assert.Equal("", interop.GetStringReference());
 
                 interop.SetStringReference("TEΏST");
-                Assert.Equal(interop.GetStringReference(), "TEΏST");
+                Assert.Equal("TEΏST", interop.GetStringReference());
 
                 interop.SetStringReference(null);
                 Assert.Null(interop.GetStringReference());
@@ -36,10 +36,10 @@ namespace Qt.NetCore.Tests.Interop
                 Assert.Null(interop.GetStringValue());
 
                 interop.SetStringValue("");
-                Assert.Equal(interop.GetStringValue(), "");
+                Assert.Equal("", interop.GetStringValue());
 
                 interop.SetStringValue("TEΏST");
-                Assert.Equal(interop.GetStringValue(), "TEΏST");
+                Assert.Equal("TEΏST", interop.GetStringValue());
 
                 interop.SetStringValue(null);
                 Assert.Null(interop.GetStringValue());
@@ -57,10 +57,10 @@ namespace Qt.NetCore.Tests.Interop
                 Assert.Null(interop.GetStringPointer());
 
                 interop.SetStringPointer("");
-                Assert.Equal(interop.GetStringPointer(), "");
+                Assert.Equal("", interop.GetStringPointer());
 
                 interop.SetStringPointer("TEΏST");
-                Assert.Equal(interop.GetStringPointer(), "TEΏST");
+                Assert.Equal("TEΏST", interop.GetStringPointer());
 
                 interop.SetStringPointer(null);
                 Assert.Null(interop.GetStringPointer());

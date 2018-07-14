@@ -11,7 +11,7 @@ ApplicationWindow {
 
 	Item {
 		Timer {
-			interval: /*1000*/10; running: true; repeat: true
+			interval: 1000; running: true; repeat: true
 			onTriggered: {
 				var par = test.Create()
 				test.TestMethod(par)
