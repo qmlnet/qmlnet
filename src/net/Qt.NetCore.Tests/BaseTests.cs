@@ -19,10 +19,18 @@ namespace Qt.NetCore.Tests
         {
             Monitor.Enter(LockObject);
 
-            _applicationArgs = new StringVector();
-            _coreApplication = new QGuiApplication(_applicationArgs);
+            try
+            {
+                _applicationArgs = new StringVector();
+                _coreApplication = new QGuiApplication(_applicationArgs);
 
-            qmlApplicationEngine = new QQmlApplicationEngine();
+                qmlApplicationEngine = new QQmlApplicationEngine();
+            }
+            catch (Exception)
+            {
+                Monitor.Exit(LockObject);
+                throw;
+            }
         }
         
         public void RegisterType<T>()

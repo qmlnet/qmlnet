@@ -27,6 +27,9 @@ namespace Build
 
             Add("build", () =>
             {
+                // Build the native stuff
+                RunShell("./src/native/build.sh");
+                // Build the .NETs stuff
                 RunShell($"dotnet build src/net/Qt.NetCore.sln {commandBuildArgs}");
             });
             
@@ -46,8 +49,10 @@ namespace Build
             {
                 RunShell("docker build ./build/docker -f ./build/docker/Dockerfile.swig -t net-core-qml-swig");
             });
-            
+
             Add("default", DependsOn("clean", "build"));
+
+            Add("ci", DependsOn("build", "test"));
 
             return Run(options);
         }
