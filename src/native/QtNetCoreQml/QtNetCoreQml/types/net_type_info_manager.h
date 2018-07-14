@@ -7,13 +7,15 @@
 extern "C" {
 #endif
 
-typedef bool (*isTypeValid)();
+typedef bool (*isTypeValidCb)();
 
 struct NetTypeInfoManagerCallbacks {
-    isTypeValid isTypeValid;
+    isTypeValidCb isTypeValid;
 };
 
-void registerCallbacks();
+void registerCallbacks(NetTypeInfoManagerCallbacks* callbacks);
+
+bool isTypeValid();
 
 #ifdef __cplusplus
 }

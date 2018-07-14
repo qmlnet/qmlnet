@@ -10,27 +10,36 @@ namespace Qt.NetCore
         public IntPtr IsTypeValid;
     }
 
-    public interface ICallbacks
+    public interface ICallbacksIterop
     {
-        void registerCallbacks();
+        void registerCallbacks(ref Callbacks callbacks);
+
+        bool isTypeValid();
     }
 
+    public interface ICallbacks
+    {
+        bool IsTypeValid();
+    }
+    
     public class CallbacksImpl
     {
-        private IsTypeValidDelegate _isTypeValidDelegate;
+        readonly ICallbacks _callbacks;
+        IsTypeValidDelegate _isTypeValidDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate();
         
-        public CallbacksImpl()
+        public CallbacksImpl(ICallbacks callbacks)
         {
+            _callbacks = callbacks;
             _isTypeValidDelegate = IsTypeValid;
             GCHandle.Alloc(_isTypeValidDelegate);
         }
-        
-        public bool IsTypeValid()
+
+        private bool IsTypeValid()
         {
-            return true;
+            return _callbacks.IsTypeValid();
         }
 
         public Callbacks Callbacks()
