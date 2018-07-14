@@ -4,16 +4,19 @@ using AdvancedDLSupport;
 
 namespace Qt.NetCore
 {
-    public class NetTypeInfo
+    public class NetTypeInfo : BaseDisposable
     {
-        readonly IntPtr _handle;
-        
-        public NetTypeInfo(string netTypeInfo)
+        public NetTypeInfo(string fullTypeName)
+            :base(Interop.NetTypeInfo.Create(fullTypeName))
         {
-            _handle = Interop.NetTypeInfo.Create(netTypeInfo);
         }
 
-        public string FullTypeName => Interop.NetTypeInfo.GetFullTypeName(_handle);
+        public string FullTypeName => Interop.NetTypeInfo.GetFullTypeName(Handle);
+        
+        protected override void DisposeUnmanaged(IntPtr ptr)
+        {
+            Interop.NetTypeInfo.Destroy(ptr);
+        }
     }
 
     public interface INetTypeInfoInterop

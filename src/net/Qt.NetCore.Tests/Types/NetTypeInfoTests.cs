@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Xunit;
 
 namespace Qt.NetCore.Tests.Types
@@ -10,7 +9,6 @@ namespace Qt.NetCore.Tests.Types
         public void Can_create_type()
         {
             var typeInfo = new NetTypeInfo("fullTypeName");
-
             typeInfo.FullTypeName.Should().Be("fullTypeName");
         }
     }
