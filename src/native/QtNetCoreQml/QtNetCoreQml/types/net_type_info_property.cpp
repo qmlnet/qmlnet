@@ -1,4 +1,4 @@
-#include "net_type_info_property.h"
+#include <QtNetCoreQml/types/net_type_info_property.h>
 
 NetPropertyInfo::NetPropertyInfo(NetTypeInfo* parentTypeInfo,
         std::string propertyName,

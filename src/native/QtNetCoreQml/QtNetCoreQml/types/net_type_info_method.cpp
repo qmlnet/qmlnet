@@ -1,4 +1,4 @@
-#include "net_type_info_method.h"
+#include <QtNetCoreQml/types/net_type_info_method.h>
 
 NetMethodInfo::NetMethodInfo(NetTypeInfo* parentTypeInfo,
                              std::string methodName,
