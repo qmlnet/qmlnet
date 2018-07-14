@@ -2,7 +2,4 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\..\interop\Interop.cs" Link="Interop.cs" />
-  </ItemGroup>
 </Project>

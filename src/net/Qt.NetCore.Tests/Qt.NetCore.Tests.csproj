@@ -13,4 +13,28 @@
   <ItemGroup>
     <ProjectReference Include="..\Qt.NetCore\Qt.NetCore.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DateTimeTests.cs" />
+    <None Include="DateTimeTests.cs" />
+    <Compile Remove="CharTests.cs" />
+    <None Include="CharTests.cs" />
+    <Compile Remove="BoolTests.cs" />
+    <None Include="BoolTests.cs" />
+    <Compile Remove="DoubleTests.cs" />
+    <None Include="DoubleTests.cs" />
+    <Compile Remove="IntTests.cs" />
+    <None Include="IntTests.cs" />
+    <Compile Remove="MockTypeCreator.cs" />
+    <None Include="MockTypeCreator.cs" />
+    <Compile Remove="ObjectTests.cs" />
+    <None Include="ObjectTests.cs" />
+    <Compile Remove="StringTests.cs" />
+    <None Include="StringTests.cs" />
+    <Compile Remove="UIntTests.cs" />
+    <None Include="UIntTests.cs" />
+    <Compile Remove="BaseTests.cs" />
+    <None Include="BaseTests.cs" />
+    <Compile Remove="Interop\StringInteropTests.cs" />
+    <None Include="Interop\StringInteropTests.cs" />
+  </ItemGroup>
 </Project>
