@@ -20,29 +20,7 @@ ApplicationWindow {
 		}
 	}
 
-	Page1 {
-		anchors.horizontalCenter: parent.horizontalCenter
-		button1.onClicked: {
-			test.OnPressedAsync(textField1.text);
-		}
-		button2.onClicked: {
-			test.OnPressedAsyncWithResult(textField1.text);
-		}
-		textFieldMessage.text: test.MessageToSend
-		buttonSendMessage.onClicked: {
-			test.SendMessage();
-		}
-	}
-
-	Text {
-		id: textt
-	}
-
 	TestQmlImport {
 		id: test
-	}
-
-	Component.onCompleted: {
-		test.AnotherPropertyChanged.connect(function() { console.log("Another property changed!"); });
 	}
 }
