@@ -16,7 +16,6 @@ DEFINES += QTNETCOREQML_LIBRARY
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += qguiapplication_helpers.cpp \
-    swig.cpp \
     net_qml_register_type.cpp \
     net_qml_activate_signal.cpp \
     net_qml_meta.cpp \
@@ -33,7 +32,6 @@ SOURCES += qguiapplication_helpers.cpp \
 
 HEADERS += qtnetcoreqml_global.h \
     qguiapplication_helpers.h \
-    swig.h \
     net_qml_register_type.h \
     net_qml_meta.h \
     net_qml_value.h \
@@ -47,15 +45,6 @@ HEADERS += qtnetcoreqml_global.h \
     net_test_helper.h \
     net_test_string_interop.h \
     net_qml_activate_signal.h
-
-DISTFILES += \
-    swig/QtNetCoreQml.i \
-    swig/NetInvoker.i \
-    swig/NetTypeInfo.i \
-    swig/QCoreApplication.i \
-    swig/QGuiApplication.i \
-    swig/QQmlApplicationEngine.i \
-    swig/QQmlRegisterType.i
 
 target.path = $$(PREFIX)
 INSTALLS += target
