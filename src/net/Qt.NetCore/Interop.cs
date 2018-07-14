@@ -17,7 +17,7 @@ namespace Qt.NetCore
         {
             var callbacksImpl = new CallbacksImpl(callbacks);
             var callbacksRef = callbacksImpl.Callbacks();
-            Callbacks.registerCallbacks(ref callbacksRef);
+            Callbacks.RegisterCallbacks(ref callbacksRef);
         }
     }
 }

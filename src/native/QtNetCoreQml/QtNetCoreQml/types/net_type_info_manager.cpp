@@ -3,10 +3,10 @@
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
 
-void registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
+void type_info_manager_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
     sharedCallbacks = *callbacks;
 }
 
-bool isTypeValid() {
-    sharedCallbacks.isTypeValid();
+bool type_info_manager_isTypeValid(LPSTR typeName) {
+    return sharedCallbacks.isTypeValid(typeName);
 }

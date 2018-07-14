@@ -1,4 +1,5 @@
 ﻿using AdvancedDLSupport;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -10,12 +11,12 @@ namespace Qt.NetCore.Tests.Types
         public void Can_register_callbacks()
         {
             var callbacks = new Mock<ICallbacks>();
-            callbacks.Setup(x => x.IsTypeValid());
+            callbacks.Setup(x => x.IsTypeValid("test-type")).Returns(true);
             
             Interop.RegisterCallbacks(callbacks.Object);
-            Interop.Callbacks.isTypeValid();
+            Interop.Callbacks.IsTypeValid("test-type").Should().BeTrue();
             
-            callbacks.Verify(x => x.IsTypeValid(), Times.Once);
+            callbacks.Verify(x => x.IsTypeValid("test-type"), Times.Once);
         }
     }
 }

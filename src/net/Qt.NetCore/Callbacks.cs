@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using AdvancedDLSupport;
 
 namespace Qt.NetCore
 {
@@ -12,14 +13,16 @@ namespace Qt.NetCore
 
     public interface ICallbacksIterop
     {
-        void registerCallbacks(ref Callbacks callbacks);
+        [NativeSymbol(Entrypoint = "type_info_manager_registerCallbacks")]
+        void RegisterCallbacks(ref Callbacks callbacks);
 
-        bool isTypeValid();
+        [NativeSymbol(Entrypoint = "type_info_manager_isTypeValid")]
+        bool IsTypeValid([MarshalAs(UnmanagedType.LPStr)]string typeName);
     }
 
     public interface ICallbacks
     {
-        bool IsTypeValid();
+        bool IsTypeValid(string typeName);
     }
     
     public class CallbacksImpl
@@ -28,7 +31,7 @@ namespace Qt.NetCore
         IsTypeValidDelegate _isTypeValidDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate bool IsTypeValidDelegate();
+        delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPStr)]string typeName);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -37,9 +40,9 @@ namespace Qt.NetCore
             GCHandle.Alloc(_isTypeValidDelegate);
         }
 
-        private bool IsTypeValid()
+        private bool IsTypeValid(string typeName)
         {
-            return _callbacks.IsTypeValid();
+            return _callbacks.IsTypeValid(typeName);
         }
 
         public Callbacks Callbacks()

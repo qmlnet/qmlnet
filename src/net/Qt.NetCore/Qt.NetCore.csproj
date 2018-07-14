@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RestoreAdditionalProjectSources>https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AdvancedDLSupport" Version="1.3.0" />
+    <PackageReference Include="AdvancedDLSupport" Version="1.0.0-CI000690" />
   </ItemGroup>
 </Project>
