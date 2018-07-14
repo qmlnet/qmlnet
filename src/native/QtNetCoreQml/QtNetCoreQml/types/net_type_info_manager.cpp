@@ -1,8 +1,12 @@
 #include <QtNetCoreQml/types/net_type_info_manager.h>
 #include <iostream>
 
-static NetTypeInfoManagerCallbacks* sharedCallbacks = nullptr;
+static NetTypeInfoManagerCallbacks sharedCallbacks;
 
-void registerCallbacks() {
-    std::cout << "test" << std::endl;
+void registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
+    sharedCallbacks = *callbacks;
+}
+
+bool isTypeValid() {
+    sharedCallbacks.isTypeValid();
 }

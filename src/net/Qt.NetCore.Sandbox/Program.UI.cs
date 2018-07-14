@@ -11,9 +11,7 @@ namespace Qt.NetCore.Sandbox
     {
         static int Main()
         {
-            System.Console.WriteLine("Test");
-            var callbacks = new CallbacksImpl();
-            Interop.Callbacks.registerCallbacks();
+            
         }
     }
 }
