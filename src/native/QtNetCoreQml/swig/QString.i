@@ -3,10 +3,10 @@
 typedef wchar_t TCHAR;
 #define _WCHAR_MODE
 #elif defined(Q_OS_LINUX)
-typedef char16_t TCHAR;
+typedef unsigned short TCHAR;
 #define _UTF16_MODE
 #else
-typedef char16_t TCHAR;
+typedef unsigned short TCHAR;
 #define _UTF16_MODE
 #endif
 %}
@@ -74,7 +74,7 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterQStringCallback_$module(SWIG_CSharpQStri
         #if defined(_WCHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdWString().c_str());
         #elif defined(_UTF16_MODE)
-        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdU16String().c_str());
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->utf16());
         #elif defined(_CHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toUtf8().data());
         #endif
@@ -115,7 +115,7 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterQStringCallback_$module(SWIG_CSharpQStri
         #if defined(_WCHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1.toStdWString().c_str());
         #elif defined(_UTF16_MODE)
-        $result = (TCHAR*)SWIG_csharp_qstring_callback($1.toStdU16String().c_str());
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1.utf16());
         #elif defined(_CHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1.toUtf8().data());
         #endif
@@ -157,7 +157,7 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterQStringCallback_$module(SWIG_CSharpQStri
         #if defined(_WCHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdWString().c_str());
         #elif defined(_UTF16_MODE)
-        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toStdU16String().c_str());
+        $result = (TCHAR*)SWIG_csharp_qstring_callback($1->utf16());
         #elif defined(_CHAR_MODE)
         $result = (TCHAR*)SWIG_csharp_qstring_callback($1->toUtf8().data());
         #endif

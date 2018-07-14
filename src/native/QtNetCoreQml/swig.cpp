@@ -315,10 +315,10 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterWStringCallback_QtNetCoreQml(SWIG_CSharp
 typedef wchar_t TCHAR;
 #define _WCHAR_MODE
 #elif defined(Q_OS_LINUX)
-typedef char16_t TCHAR;
+typedef unsigned short TCHAR;
 #define _UTF16_MODE
 #else
-typedef char16_t TCHAR;
+typedef unsigned short TCHAR;
 #define _UTF16_MODE
 #endif
 
@@ -1579,7 +1579,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetVariant_GetString(void * jarg1) {
 #if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdWString().c_str());
 #elif defined(_UTF16_MODE)
-    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdU16String().c_str());
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->utf16());
 #elif defined(_CHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toUtf8().data());
 #endif
@@ -3256,7 +3256,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTestStringInterop_GetStringValue(void * 
 #if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdWString().c_str());
 #elif defined(_UTF16_MODE)
-    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toStdU16String().c_str());
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->utf16());
 #elif defined(_CHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback((&result)->toUtf8().data());
 #endif
@@ -3302,7 +3302,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTestStringInterop_GetStringReference(voi
 #if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdWString().c_str());
 #elif defined(_UTF16_MODE)
-    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdU16String().c_str());
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->utf16());
 #elif defined(_CHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toUtf8().data());
 #endif
@@ -3348,7 +3348,7 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_NetTestStringInterop_GetStringPointer(void 
 #if defined(_WCHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdWString().c_str());
 #elif defined(_UTF16_MODE)
-    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toStdU16String().c_str());
+    jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->utf16());
 #elif defined(_CHAR_MODE)
     jresult = (TCHAR*)SWIG_csharp_qstring_callback(result->toUtf8().data());
 #endif

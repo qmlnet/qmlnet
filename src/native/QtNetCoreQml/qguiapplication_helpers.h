@@ -8,10 +8,13 @@
 #include <string>
 #include <QDateTime>
 
-class GuiThreadContextTriggerCallback {
+class GuiThreadContextTriggerCallback : public QObject {
+    Q_OBJECT
 public:
-    virtual ~GuiThreadContextTriggerCallback() { }
+    virtual ~GuiThreadContextTriggerCallback() {}
     virtual void onGuiThreadContextTrigger() {}
+public slots:
+    void trigger();
 };
 
 extern "C" {

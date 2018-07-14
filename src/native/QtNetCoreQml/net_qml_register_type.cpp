@@ -1,5 +1,6 @@
 #include "net_qml_register_type.h"
 #include "net_qml_value_type.h"
+#include <QtQml>
 #include <QQmlApplicationEngine>
 
 #define DEFINE_NETVALUETYPE(N) \

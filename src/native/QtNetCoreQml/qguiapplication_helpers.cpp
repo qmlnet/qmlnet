@@ -23,7 +23,7 @@ QGuiApplication* new_QGuiApplication(std::vector<std::string> argv)
         qDebug() << "[" << i << "]=" << newArgs->at(i);
     }
 
-    auto app = new QGuiApplication(*var, (char**)&(newArgs->at(0)));
+    QGuiApplication* app = new QGuiApplication(*var, (char**)&(newArgs->at(0)));
 
     qDebug() << "args after:";
     for(unsigned int i=0; i<newArgs->size(); i++) {
@@ -45,11 +45,9 @@ void QGuiApplication_setGuiThreadContextTriggerCallback(QGuiApplication*, GuiThr
 }
 
 void QGuiApplication_requestGuiThreadContextTrigger(QGuiApplication* instance) {
-    QMetaObject::invokeMethod(instance, []()
-    {
-        auto localCallback = s_guiThreadContextTriggerCallback;
-        if(localCallback != nullptr) {
-            localCallback->onGuiThreadContextTrigger();
-        }
-    });
+    QMetaObject::invokeMethod(s_guiThreadContextTriggerCallback, "trigger", Qt::QueuedConnection);
+}
+
+void GuiThreadContextTriggerCallback::trigger() {
+    onGuiThreadContextTrigger();
 }
