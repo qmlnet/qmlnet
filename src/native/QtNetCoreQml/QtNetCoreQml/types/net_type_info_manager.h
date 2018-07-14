@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-typedef bool (*isTypeValidCb)(LPSTR typeName);
+typedef bool (*isTypeValidCb)(LPWSTR typeName);
 
 struct NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
@@ -15,7 +15,7 @@ struct NetTypeInfoManagerCallbacks {
 
 void type_info_manager_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks);
 
-bool type_info_manager_isTypeValid(LPSTR typeName);
+bool type_info_manager_isTypeValid(LPWSTR typeName);
 
 #ifdef __cplusplus
 }

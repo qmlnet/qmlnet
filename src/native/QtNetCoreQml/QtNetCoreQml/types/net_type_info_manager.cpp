@@ -7,6 +7,6 @@ void type_info_manager_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks)
     sharedCallbacks = *callbacks;
 }
 
-bool type_info_manager_isTypeValid(LPSTR typeName) {
+bool type_info_manager_isTypeValid(LPWSTR typeName) {
     return sharedCallbacks.isTypeValid(typeName);
 }

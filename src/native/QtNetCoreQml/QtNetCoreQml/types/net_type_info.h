@@ -3,33 +3,34 @@
 
 #include <QtNetCoreQml.h>
 #include <QList>
-
-class NetMethodInfo;
-class NetPropertyInfo;
-class NetValue;
+#include <QString>
+#include <QSharedPointer>
 
 class NetTypeInfo {
 public:
-    NetTypeInfo(std::string fullTypeName);
+    NetTypeInfo(QString fullTypeName);
     ~NetTypeInfo();
-    NetVariantTypeEnum GetPrefVariantType();
-    void SetPrefVariantType(NetVariantTypeEnum value);
-    std::string GetFullTypeName();
-    void SetClassName(std::string className);
-    std::string GetClassName();
-    void AddMethod(NetMethodInfo* methodInfo);
-    int GetMethodCount();
-    NetMethodInfo* GetMethod(int index);
-    void AddProperty(NetPropertyInfo* propertyInfo);
-    int GetPropertyCount();
-    NetPropertyInfo* GetProperty(int index);
+
+    QString getFullTypeName();
+
 private:
-    NetVariantTypeEnum prefVariantType;
-    std::string fullTypeName;
-    std::string className;
-    QList<NetMethodInfo*> methods;
-    QList<NetPropertyInfo*> properties;
+    QString _fullTypeName;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct NetTypeInfoContainer {
+    QSharedPointer<NetTypeInfo> netTypeInfo;
+};
+
+NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName);
+void type_info_destroy(NetTypeInfoContainer* netTypeInfo);
+LPWSTR type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // NET_TYPE_INFO_H
