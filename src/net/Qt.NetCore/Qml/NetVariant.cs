@@ -50,6 +50,12 @@ namespace Qt.NetCore.Qml
             set => Interop.NetVariant.SetUInt(Handle, value);
         }
         
+        public double Double
+        {
+            get => Interop.NetVariant.GetDouble(Handle);
+            set => Interop.NetVariant.SetDouble(Handle, value);
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
@@ -87,6 +93,11 @@ namespace Qt.NetCore.Qml
         void SetUInt(IntPtr variant, uint value);
         [NativeSymbol(Entrypoint = "net_variant_getUInt")]
         uint GetUInt(IntPtr variant);
+        
+        [NativeSymbol(Entrypoint = "net_variant_setDouble")]
+        void SetDouble(IntPtr variant, double value);
+        [NativeSymbol(Entrypoint = "net_variant_getDouble")]
+        double GetDouble(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);

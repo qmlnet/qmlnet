@@ -257,6 +257,14 @@ unsigned int net_variant_getUInt(NetVariantContainer* container) {
     return container->variant->getUInt();
 }
 
+void net_variant_setDouble(NetVariantContainer* container, double value) {
+    container->variant->setDouble(value);
+}
+
+double net_variant_getDouble(NetVariantContainer* container) {
+    return container->variant->getDouble();
+}
+
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
 }
