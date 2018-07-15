@@ -1,5 +1,6 @@
 ﻿using System;
 using Qt.NetCore.Qml;
+using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Sandbox
 {
@@ -12,14 +13,12 @@ namespace Qt.NetCore.Sandbox
         
         static int Main()
         {
-            var variant = new NetVariant();
-            variant.DateTime = new DateTime(1988, 9, 3);
-            Console.WriteLine(variant.DateTime);
-            
             using (var app = new QGuiApplication())
             {
                 using (var engine = new QQmlApplicationEngine())
                 {
+                    var type = NetTypeManager.GetTypeInfo<TestQmlImport>();
+                    
                     QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
                     
                     engine.Load("main.qml");
