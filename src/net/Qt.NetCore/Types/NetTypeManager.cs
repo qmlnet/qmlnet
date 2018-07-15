@@ -28,6 +28,6 @@ namespace Qt.NetCore.Types
     public interface INetTypeManagerInterop
     {
         [NativeSymbol(Entrypoint = "type_manager_getTypeInfo")]
-        IntPtr GetTypeInfo([MarshalAs(UnmanagedType.LPStr)]string fullTypeName);
+        IntPtr GetTypeInfo([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
     }
 }
