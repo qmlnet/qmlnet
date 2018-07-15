@@ -8,7 +8,7 @@ namespace Qt.NetCore.Sandbox
     {
         public class TestQmlImport
         {
-            
+            public string TestProperty { get; set; }
         }
         
         static int Main()
