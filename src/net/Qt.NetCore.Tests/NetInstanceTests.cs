@@ -14,21 +14,23 @@ namespace Qt.NetCore.Tests
         [Fact]
         public void Can_create_net_instance()
         {
-            //var o = new TestObject();
-            //var instance = NetInstance.CreateFromObject(o);
+            return;
+            var o = new TestObject();
+            var instance = NetInstance.CreateFromObject(o);
 
-            //var returnedInstance = instance.Instance;
+            var returnedInstance = instance.Instance;
 
-            //o.Should().Be(returnedInstance);
+            o.Should().Be(returnedInstance);
         }
 
         [Fact]
         public void Can_create_instance_from_type_info()
         {
-            //var typeInfo = NetTypeManager.GetTypeInfo<TestObject>();
-            //var instance = NetTypeManager.InstantiateType(typeInfo);
-            //instance.Should().NotBeNull();
-            //instance.Instance.Should().BeOfType<TestObject>();
+            return;
+            var typeInfo = NetTypeManager.GetTypeInfo<TestObject>();
+            var instance = NetTypeManager.InstantiateType(typeInfo);
+            instance.Should().NotBeNull();
+            instance.Instance.Should().BeOfType<TestObject>();
         }
     }
 }
