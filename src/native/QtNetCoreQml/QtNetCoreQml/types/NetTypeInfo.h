@@ -13,8 +13,12 @@ public:
 
     QString getFullTypeName();
 
+    QString getClassName();
+    void setClassName(QString className);
+
 private:
     QString _fullTypeName;
+    QString _className;
 };
 
 struct NetTypeInfoContainer {

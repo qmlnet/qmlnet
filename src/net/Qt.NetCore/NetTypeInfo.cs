@@ -19,6 +19,12 @@ namespace Qt.NetCore
         }
 
         public string FullTypeName => Interop.NetTypeInfo.GetFullTypeName(Handle);
+
+        public string ClassName
+        {
+            get => Interop.NetTypeInfo.GetClassName(Handle);
+            set => Interop.NetTypeInfo.SetClassName(Handle, value);
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -32,7 +38,13 @@ namespace Qt.NetCore
         IntPtr Create([MarshalAs(UnmanagedType.LPStr)]string fullTypeName);
         [NativeSymbol(Entrypoint = "type_info_destroy")]
         void Destroy(IntPtr netTypeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getFullTypeName")]
         [return: MarshalAs(UnmanagedType.LPStr)]string GetFullTypeName(IntPtr netTypeInfo);
+        
+        [NativeSymbol(Entrypoint = "type_info_setClassName")]
+        void SetClassName(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string className);
+        [NativeSymbol(Entrypoint = "type_info_getClassName")]
+        [return: MarshalAs(UnmanagedType.LPWStr)]string GetClassName(IntPtr netTypeInfo);
     }
 }
