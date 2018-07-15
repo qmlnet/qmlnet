@@ -1,4 +1,5 @@
 ﻿using System;
+using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Sandbox
 {

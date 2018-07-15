@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 
-namespace Qt.NetCore
+namespace Qt.NetCore.Types
 {
     public class NetTypeManager
     {
