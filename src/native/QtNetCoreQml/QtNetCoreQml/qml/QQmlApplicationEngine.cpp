@@ -12,7 +12,7 @@ void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer* container) {
     delete container;
 }
 
-int qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR path) {
+void qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR path) {
     container->qmlEngine->load(QString::fromUtf16(path));
 }
 
