@@ -44,6 +44,12 @@ namespace Qt.NetCore.Qml
             set => Interop.NetVariant.SetInt(Handle, value);
         }
         
+        public uint UInt
+        {
+            get => Interop.NetVariant.GetUInt(Handle);
+            set => Interop.NetVariant.SetUInt(Handle, value);
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
@@ -76,6 +82,11 @@ namespace Qt.NetCore.Qml
         void SetInt(IntPtr variant, int value);
         [NativeSymbol(Entrypoint = "net_variant_getInt")]
         int GetInt(IntPtr variant);
+        
+        [NativeSymbol(Entrypoint = "net_variant_setUInt")]
+        void SetUInt(IntPtr variant, uint value);
+        [NativeSymbol(Entrypoint = "net_variant_getUInt")]
+        uint GetUInt(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);
