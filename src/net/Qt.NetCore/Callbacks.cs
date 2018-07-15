@@ -129,11 +129,11 @@ namespace Qt.NetCore
 
         private void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
         {
-            using (var property = new NetPropertyInfo(p, false))
+            using (var property = new NetPropertyInfo(p))
             {
-                using (var target = new NetInstance(t, false))
+                using (var target = new NetInstance(t))
                 {
-                    using (var result = new NetVariant(r, false))
+                    using (var result = new NetVariant(r))
                     {
                         _callbacks.ReadProperty(property, target, result);
                     }
@@ -143,11 +143,11 @@ namespace Qt.NetCore
 
         private void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
         {
-            using (var property = new NetPropertyInfo(p, false))
+            using (var property = new NetPropertyInfo(p))
             {
-                using (var target = new NetInstance(t, false))
+                using (var target = new NetInstance(t))
                 {
-                    using (var value = new NetVariant(v, false))
+                    using (var value = new NetVariant(v))
                     {
                         _callbacks.WriteProperty(property, target, value);
                     }

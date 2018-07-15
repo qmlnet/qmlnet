@@ -94,12 +94,33 @@ namespace Qt.NetCore.Internal
 
         public void ReadProperty(NetPropertyInfo property, NetInstance target, NetVariant result)
         {
+            var o = target.Instance;
+
+            var propertInfo = o.GetType()
+                .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
             
+            if(propertInfo == null)
+                throw new InvalidOperationException($"Invalid property {property.Name}");
+
+            var value = propertInfo.GetValue(o);
+            
+            PackValue(ref value, result);
         }
 
         public void WriteProperty(NetPropertyInfo property, NetInstance target, NetVariant value)
         {
+            var o = target.Instance;
+
+            var propertInfo = o.GetType()
+                .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
+
+            if(propertInfo == null)
+                throw new InvalidOperationException($"Invalid property {property.Name}");
             
+            object newValue = null;
+            Unpackvalue(ref newValue, value);
+
+            propertInfo.SetValue(o, newValue);
         }
 
         private bool IsPrimitive(Type type)
@@ -113,6 +134,72 @@ namespace Qt.NetCore.Internal
             if (type == typeof(int))
                 return true;
             return false;
+        }
+        
+        private void PackValue(ref object source, NetVariant destination)
+        {
+            if (source == null)
+            {
+                destination.Clear();
+            }
+            else
+            {
+                var type = source.GetType();
+                if (type == typeof(bool))
+                    destination.Bool = (bool)source;
+                else if(type == typeof(char))
+                    destination.Char = (char)source;
+                else if(type == typeof(double))
+                    destination.Double = (double)source;
+                else if (type == typeof(int))
+                    destination.Int = (int)source;
+                else if(type == typeof(uint))
+                    destination.UInt = (uint)source;
+                else if (type == typeof(string))
+                    destination.String = (string)source;
+                else if(type == typeof(DateTime))
+                    destination.DateTime = (DateTime)source;
+                else
+                {
+                    destination.Instance = NetInstance.CreateFromObject(source);
+                }
+            }
+        }
+
+        private void Unpackvalue(ref object destination, NetVariant source)
+        {
+            switch (source.VariantType)
+            {
+                case NetVariantType.Invalid:
+                    destination = null;
+                    break;
+                case NetVariantType.Bool:
+                    destination = source.Bool;
+                    break;
+                case NetVariantType.Char:
+                    destination = source.Char;
+                    break;
+                case NetVariantType.Int:
+                    destination = source.Int;
+                    break;
+                case NetVariantType.UInt:
+                    destination = source.UInt;
+                    break;
+                case NetVariantType.Double:
+                    destination = source.Double;
+                    break;
+                case NetVariantType.String:
+                    destination = source.String;
+                    break;
+                case NetVariantType.DateTime:
+                    destination = source.DateTime;
+                    break;
+                case NetVariantType.Object:
+                    destination = source.Instance;
+                    break;
+                default:
+                    throw new Exception("Unsupported variant type.");
+            }
         }
     }
 }
