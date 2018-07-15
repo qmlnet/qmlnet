@@ -12,7 +12,7 @@ namespace Qt.NetCore.Types
         {
         }
 
-        public NetInstance(IntPtr handle, bool ownsHandle)
+        public NetInstance(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
             
