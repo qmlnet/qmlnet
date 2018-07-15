@@ -241,6 +241,14 @@ ushort net_variant_getChar(NetVariantContainer* container) {
     return (ushort)container->variant->getChar().unicode();
 }
 
+void net_variant_setInt(NetVariantContainer* container, int value) {
+    container->variant->setInt(value);
+}
+
+int net_variant_getInt(NetVariantContainer* container) {
+    return container->variant->getInt();
+}
+
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
 }
