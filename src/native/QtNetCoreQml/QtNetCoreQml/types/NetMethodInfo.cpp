@@ -1,10 +1,10 @@
 #include <QtNetCoreQml/types/NetMethodInfo.h>
+#include <iostream>
 
 NetMethodInfoArguement::NetMethodInfoArguement(QString name,
                                                QSharedPointer<NetTypeInfo> type) :
     _name(name),
     _type(type) {
-
 }
 
 QString NetMethodInfoArguement::getName() {
@@ -20,18 +20,14 @@ NetMethodInfo::NetMethodInfo(QSharedPointer<NetTypeInfo> parentTypeInfo,
                              QSharedPointer<NetTypeInfo> returnType) :
     _parentTypeInfo(parentTypeInfo),
     _methodName(methodName),
-    _returnType(returnType)
-{
-
+    _returnType(returnType) {
 }
 
-QString NetMethodInfo::getMethodName()
-{
+QString NetMethodInfo::getMethodName() {
     return _methodName;
 }
 
-QSharedPointer<NetTypeInfo> NetMethodInfo::getReturnType()
-{
+QSharedPointer<NetTypeInfo> NetMethodInfo::getReturnType() {
     return _returnType;
 }
 
@@ -84,6 +80,20 @@ NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* parentTypeConta
 
 void method_info_destroy(NetMethodInfoContainer* container) {
     delete container;
+}
+
+LPWSTR method_info_getMethodName(NetMethodInfoContainer* container) {
+    return (LPWSTR)container->method->getMethodName().utf16();
+}
+
+NetTypeInfoContainer* method_info_getReturnType(NetMethodInfoContainer* container) {
+    QSharedPointer<NetTypeInfo> returnType = container->method->getReturnType();
+    if(returnType == NULL) {
+        return NULL;
+    }
+    NetTypeInfoContainer* result = new NetTypeInfoContainer();
+    result->netTypeInfo = returnType;
+    return result;
 }
 
 void method_info_addParameter(NetMethodInfoContainer* container, LPWSTR name, NetTypeInfoContainer* typeInfoContainer) {

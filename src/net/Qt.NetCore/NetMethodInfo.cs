@@ -30,6 +30,18 @@ namespace Qt.NetCore
                 returnTypeInfo?.Handle ?? IntPtr.Zero);
         }
 
+        public string MethodName => Interop.NetMethodInfo.GetMethodName(Handle);
+
+        public NetTypeInfo ReturnType
+        {
+            get
+            {
+                var result = Interop.NetMethodInfo.GetReturnType(Handle);
+                if (result == IntPtr.Zero) return null;
+                return new NetTypeInfo(result);
+            }
+        }
+
         public void AddParameter(string name, NetTypeInfo type)
         {
             Interop.NetMethodInfo.AddParameter(Handle, name, type.Handle);
@@ -86,10 +98,15 @@ namespace Qt.NetCore
         IntPtr GetParameterType(IntPtr methodParameter);
         
         [NativeSymbol(Entrypoint = "method_info_create")]
-        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPStr)]string methodName, IntPtr returnTypeInfo);
+        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string methodName, IntPtr returnTypeInfo);
         [NativeSymbol(Entrypoint = "method_info_destroy")]
         void Destroy(IntPtr methodInfo);
 
+        [NativeSymbol(Entrypoint = "method_info_getMethodName")]
+        [return: MarshalAs(UnmanagedType.LPWStr)]string GetMethodName(IntPtr method);
+        [NativeSymbol(Entrypoint = "method_info_getReturnType")]
+        IntPtr GetReturnType(IntPtr method);
+        
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
         void AddParameter(IntPtr method, [MarshalAs(UnmanagedType.LPWStr)]string name, IntPtr type);
         [NativeSymbol(Entrypoint = "method_info_getParameterCount")]
