@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
+using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Qml
 {
@@ -20,8 +21,12 @@ namespace Qt.NetCore.Qml
 
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
-            return 0;
-            //return Interop.QQmlApplicationEngine.RegisterType(typeof(T).AssemblyQualifiedName, uri, versionMajor, versionMinor, typeof(T).Name);
+            return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
+        }
+
+        public static int RegisterType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
+        {
+            return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
         }
 
         protected override void DisposeUnmanaged(IntPtr ptr)
