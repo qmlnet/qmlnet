@@ -109,6 +109,18 @@ namespace Qt.NetCore.Tests.Types
             method.MethodName.Should().Be("ThisIsMethodName");
         }
 
+        public class TestType6
+        {
+            public string Property { get; set; }
+        }
+        
+        [Fact]
+        public void Can_get_property()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType6>();
+            
+        }
+
         [Fact]
         public void Null_type_returned_for_invalid_type()
         {
