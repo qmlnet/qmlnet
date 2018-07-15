@@ -9,6 +9,11 @@ namespace Qt.NetCore.Sandbox
         public class TestQmlImport
         {
             public string TestProperty { get; set; }
+
+            public void TestMethod()
+            {
+                
+            }
         }
         
         static int Main()

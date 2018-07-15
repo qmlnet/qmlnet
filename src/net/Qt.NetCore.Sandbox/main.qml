@@ -15,6 +15,7 @@ ApplicationWindow {
 			onTriggered: {
 				console.log(test.TestProperty)
 				test.TestProperty = ""
+				test.TestMethod()
 			}
 		}
 	}
