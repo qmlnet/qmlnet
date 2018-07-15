@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/NetValue.h \
     $$PWD/NetValueMetaObject.h \
     $$PWD/NetValueType.h \
-    $$PWD/NetVariantList.h
+    $$PWD/NetVariantList.h \
+    $$PWD/NetTestHelper.h
 
 SOURCES += \
     $$PWD/QGuiApplication.cpp \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/NetValue.cpp \
     $$PWD/NetValueMetaObject.cpp \
     $$PWD/NetValueType.cpp \
-    $$PWD/NetVariantList.cpp
+    $$PWD/NetVariantList.cpp \
+    $$PWD/NetTestHelper.cpp

@@ -1,10 +1,11 @@
 ﻿using System;
 using Moq;
+using Qt.NetCore.Qml;
 using Xunit;
 
 namespace Qt.NetCore.Tests
 {
-    public class CharTests : BaseTests<CharTests.CharTestsQml>
+    public class CharTests : BaseQmlTests<CharTests.CharTestsQml>
     {
         public class CharTestsQml
         {
@@ -47,8 +48,6 @@ namespace Qt.NetCore.Tests
         {
             Mock.Setup(x => x.Property).Returns('T');
 
-            Console.WriteLine("char.MaxValue = " + (int)char.MaxValue);
-
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
@@ -69,8 +68,6 @@ namespace Qt.NetCore.Tests
         public void Can_read_write_char_unicode()
         {
             Mock.Setup(x => x.Property).Returns('Ώ');
-
-            Console.WriteLine("char.MaxValue = " + (int)char.MaxValue);
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
