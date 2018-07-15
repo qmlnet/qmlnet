@@ -12,7 +12,11 @@ namespace Qt.NetCore.Internal
 
         public void BuildTypeInfo(NetTypeInfo typeInfo)
         {
-            // TODO:
+            var type = Type.GetType(typeInfo.FullTypeName);
+            if(type == null) throw new InvalidOperationException();
+            
+            typeInfo.ClassName = type.Name;
+            Console.WriteLine(typeInfo.ClassName);
         }
     }
 }

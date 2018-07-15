@@ -18,6 +18,7 @@ namespace Qt.NetCore.Tests.Types
             var typeInfo = NetTypeManager.GetTypeInfo<TestType>();
 
             typeInfo.FullTypeName.Should().Be(typeof(TestType).AssemblyQualifiedName);
+            typeInfo.ClassName.Should().Be("TestType");
         }
 
         [Fact]
