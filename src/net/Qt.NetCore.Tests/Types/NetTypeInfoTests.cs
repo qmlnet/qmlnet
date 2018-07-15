@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Qt.NetCore.Types;
 using Xunit;
 
 namespace Qt.NetCore.Tests.Types

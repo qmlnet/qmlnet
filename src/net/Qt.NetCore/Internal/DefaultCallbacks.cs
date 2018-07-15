@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Internal
 {

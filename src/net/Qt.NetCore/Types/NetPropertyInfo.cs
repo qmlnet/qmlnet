@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
 
-namespace Qt.NetCore
+namespace Qt.NetCore.Types
 {
     public class NetPropertyInfo : BaseDisposable
     {

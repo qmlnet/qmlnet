@@ -1,6 +1,7 @@
 ﻿using System;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
+using Qt.NetCore.Types;
 
 namespace Qt.NetCore
 {

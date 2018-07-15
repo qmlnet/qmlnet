@@ -2,6 +2,7 @@
 using AdvancedDLSupport;
 using FluentAssertions;
 using Moq;
+using Qt.NetCore.Types;
 using Xunit;
 
 namespace Qt.NetCore.Tests.Types
