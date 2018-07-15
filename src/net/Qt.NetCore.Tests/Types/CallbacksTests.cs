@@ -129,5 +129,37 @@ namespace Qt.NetCore.Tests.Types
                 Interop.SetDefaultCallbacks();
             }
         }
+        
+        [Fact]
+        public void Can_write_property()
+        {
+            try
+            {
+                var callbacks = new Mock<ICallbacks>();
+                var property = IntPtr.Zero;
+                var instance = IntPtr.Zero;;
+                var value = IntPtr.Zero;;
+                callbacks.Setup(x =>
+                        x.WriteProperty(It.IsAny<NetPropertyInfo>(), It.IsAny<NetInstance>(), It.IsAny<NetVariant>()))
+                    .Callback(new Action<NetPropertyInfo, NetInstance, NetVariant>((p, i, v) =>
+                    {
+                        property = p.Handle;
+                        instance = i.Handle;
+                        value = v.Handle;
+                    }));
+
+                Interop.RegisterCallbacks(callbacks.Object);
+                Interop.Callbacks.WriteProperty(new IntPtr(1), new IntPtr(2), new IntPtr(3));
+
+                callbacks.Verify(x => x.WriteProperty(It.IsAny<NetPropertyInfo>(), It.IsAny<NetInstance>(), It.IsAny<NetVariant>()), Times.Once);
+                property.Should().Be(new IntPtr(1));
+                instance.Should().Be(new IntPtr(2));
+                value.Should().Be(new IntPtr(3));
+            }
+            finally
+            {
+                Interop.SetDefaultCallbacks();
+            }
+        }
     }
 }
