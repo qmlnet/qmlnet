@@ -30,5 +30,16 @@ namespace Qt.NetCore.Tests
             variant.Instance.Instance.Should().Be(testObject);
             variant.VariantType.Should().Be(NetVariantType.Object);
         }
+
+        [Fact]
+        public void Can_store_bool()
+        {
+            var variant = new NetVariant();
+            variant.Bool = true;
+            variant.VariantType.Should().Be(NetVariantType.Bool);
+            variant.Bool.Should().BeTrue();
+            variant.Bool = false;
+            variant.Bool.Should().BeFalse();
+        }
     }
 }
