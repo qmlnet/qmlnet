@@ -102,6 +102,11 @@ namespace Qt.NetCore.Qml
                 }
             }
         }
+
+        public void Clear()
+        {
+            Interop.NetVariant.Clear(Handle);
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -116,6 +121,9 @@ namespace Qt.NetCore.Qml
         [NativeSymbol(Entrypoint = "net_variant_destroy")]
         void Destroy(IntPtr variant);
 
+        [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
+        NetVariantType GetVariantType(IntPtr variant);
+        
         [NativeSymbol(Entrypoint = "net_variant_setNetInstance")]
         void SetNetInstance(IntPtr variant, IntPtr instance);
         [NativeSymbol(Entrypoint = "net_variant_getNetInstance")]
@@ -154,10 +162,10 @@ namespace Qt.NetCore.Qml
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
         void SetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
         [NativeSymbol(Entrypoint = "net_variant_getDateTime")]
-        void GetDateTime(IntPtr varian, ref DateTimeContainer dateTime);
-        
-        [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
-        NetVariantType GetVariantType(IntPtr variant);
+        void GetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+
+        [NativeSymbol(Entrypoint = "net_variant_clear")]
+        void Clear(IntPtr variant);
     }
     
     [StructLayout(LayoutKind.Sequential)]
