@@ -46,6 +46,20 @@ namespace Qt.NetCore
             return new NetMethodInfo(result);
         }
         
+        public void AddProperty(NetPropertyInfo property)
+        {
+            Interop.NetTypeInfo.AddProperty(Handle, property.Handle);
+        }
+
+        public uint PropertyCount => Interop.NetTypeInfo.GetPropertyCount(Handle);
+
+        public NetPropertyInfo GetProperty(uint index)
+        {
+            var result = Interop.NetTypeInfo.GetProperty(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetPropertyInfo(result);
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetTypeInfo.Destroy(ptr);
@@ -78,5 +92,12 @@ namespace Qt.NetCore
         uint GetMethodCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
         IntPtr GetMethodInfo(IntPtr typeInfo, uint index);
+        
+        [NativeSymbol(Entrypoint = "type_info_addProperty")]
+        void AddProperty(IntPtr typeInfo, IntPtr property);
+        [NativeSymbol(Entrypoint = "type_info_getPropertyCount")]
+        uint GetPropertyCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getProperty")]
+        IntPtr GetProperty(IntPtr typeInfo, uint index);
     }
 }

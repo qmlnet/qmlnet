@@ -12,11 +12,17 @@ namespace Qt.NetCore
             NetTypeInfo returnType,
             bool canRead,
             bool canWrite)
-            : base(Create(parentType,
+            : this(Create(parentType,
                 name,
                 returnType,
                 canRead,
                 canWrite))
+        {
+            
+        }
+
+        public NetPropertyInfo(IntPtr handle, bool ownsHandle = true)
+            : base(handle, ownsHandle)
         {
             
         }

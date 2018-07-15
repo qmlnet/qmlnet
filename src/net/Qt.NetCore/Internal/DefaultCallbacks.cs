@@ -36,15 +36,11 @@ namespace Qt.NetCore.Internal
                 typeInfo.PrefVariantType = NetVariantType.Object;
 
             // Don't grab properties and methods for system-level types.
-            if (type.IsPrimitive ||
-                type == typeof(string))
-                return;
+            if (IsPrimitive(type)) return;
             
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                if(method.DeclaringType == null) continue;
-                if(method.DeclaringType == typeof(Object)) continue;
-                if(method.DeclaringType.IsPrimitive) continue;
+                if(IsPrimitive(method.DeclaringType)) continue;
                 
                 NetTypeInfo returnType = null;
 
@@ -65,13 +61,31 @@ namespace Qt.NetCore.Internal
 
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                var propertyInfo = new NetPropertyInfo(
+                if(IsPrimitive(property.DeclaringType)) continue;
+                
+                using (var propertyInfo = new NetPropertyInfo(
                     typeInfo,
                     property.Name,
                     NetTypeManager.GetTypeInfo(property.PropertyType.AssemblyQualifiedName),
                     property.CanRead,
-                    property.CanWrite);
+                    property.CanWrite))
+                {
+                    typeInfo.AddProperty(propertyInfo);
+                }
             }
+        }
+
+        private bool IsPrimitive(Type type)
+        {
+            if (type == typeof(Object))
+                return true;
+            if (type.IsPrimitive) 
+                return true;
+            if (type == typeof(string))
+                return true;
+            if (type == typeof(int))
+                return true;
+            return false;
         }
     }
 }
