@@ -13,7 +13,8 @@ namespace Qt.NetCore.Sandbox
         static int Main()
         {
             var variant = new NetVariant();
-            Console.WriteLine(variant.String);
+            variant.DateTime = new DateTime(1988, 9, 3);
+            Console.WriteLine(variant.DateTime);
             
             using (var app = new QGuiApplication())
             {

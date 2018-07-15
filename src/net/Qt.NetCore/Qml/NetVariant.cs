@@ -62,6 +62,46 @@ namespace Qt.NetCore.Qml
             set => Interop.NetVariant.SetString(Handle, value);
         }
         
+        public DateTime? DateTime
+        {
+            get
+            {
+                var dateTime = new DateTimeContainer(); 
+                Interop.NetVariant.GetDateTime(Handle, ref dateTime);
+                if (dateTime.IsNull)
+                    return null;
+                return new DateTime(dateTime.Year,
+                    dateTime.Month,
+                    dateTime.Day,
+                    dateTime.Hour,
+                    dateTime.Minute,
+                    dateTime.Second,
+                    dateTime.Minute,
+                    DateTimeKind.Local);
+            }
+            set
+            {
+                var dateTime = new DateTimeContainer();
+                if (value == null)
+                {
+                    dateTime.IsNull = true;
+                    Interop.NetVariant.SetDateTime(Handle, ref dateTime);
+                }
+                else
+                {
+                    dateTime.IsNull = false;
+                    dateTime.Year = value.Value.Year;
+                    dateTime.Month = value.Value.Month;
+                    dateTime.Day = value.Value.Day;
+                    dateTime.Hour = value.Value.Hour;
+                    dateTime.Minute = value.Value.Minute;
+                    dateTime.Second = value.Value.Second;
+                    dateTime.Msec = value.Value.Millisecond;
+                    Interop.NetVariant.SetDateTime(Handle, ref dateTime);
+                }
+            }
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
@@ -110,7 +150,26 @@ namespace Qt.NetCore.Qml
         [NativeSymbol(Entrypoint = "net_variant_getString")]
         [return:MarshalAs(UnmanagedType.LPWStr)]string GetString(IntPtr variant);
         
+        [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
+        void SetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+        [NativeSymbol(Entrypoint = "net_variant_getDateTime")]
+        void GetDateTime(IntPtr varian, ref DateTimeContainer dateTime);
+        
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);
+    }
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DateTimeContainer
+    {
+        public bool IsNull;
+        public int Month;
+        public int Day;
+        public int Year;
+        public int Hour;
+        public int Minute;
+        public int Second;
+        public int Msec;
+        public int TimeZone;
     }
 }
