@@ -26,6 +26,13 @@ namespace Qt.NetCore.Types
             var handle = GCHandle.Alloc(value);
             return new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
         }
+        
+        public static NetInstance InstantiateType(NetTypeInfo type)
+        {
+            var result = Interop.Callbacks.InstantiateType(type.FullTypeName);
+            if (result == IntPtr.Zero) return null;
+            return new NetInstance(result, type);
+        }
 
         public object Instance
         {

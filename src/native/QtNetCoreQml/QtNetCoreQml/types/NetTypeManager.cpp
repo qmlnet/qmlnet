@@ -7,7 +7,7 @@ QMap<QString, QSharedPointer<NetTypeInfo>> NetTypeManager::types;
 NetTypeManager::NetTypeManager() {
 }
 
-QSharedPointer<NetTypeInfo> NetTypeManager::GetTypeInfo(QString typeName) {
+QSharedPointer<NetTypeInfo> NetTypeManager::getTypeInfo(QString typeName) {
     if(NetTypeManager::types.contains(typeName))
         return NetTypeManager::types.value(typeName);
 
@@ -27,7 +27,7 @@ QSharedPointer<NetTypeInfo> NetTypeManager::GetTypeInfo(QString typeName) {
 extern "C" {
 
 NetTypeInfoContainer* type_manager_getTypeInfo(LPWSTR fullTypeName) {
-    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::GetTypeInfo(QString::fromUtf16(fullTypeName));
+    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo(QString::fromUtf16(fullTypeName));
     if(typeInfo == NULL) {
         return NULL;
     }

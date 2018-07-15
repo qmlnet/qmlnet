@@ -4,7 +4,7 @@
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*releaseGCHandleCb)(NetGCHandle* handle);
-typedef NetInstanceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* typeInfo);
+typedef NetGCHandle* (*instantiateTypeCb)(LPWSTR typeName);
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
@@ -32,13 +32,11 @@ void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
 }
 
 QSharedPointer<NetInstance> instantiateType(QSharedPointer<NetTypeInfo> type) {
-    NetTypeInfoContainer* container = new NetTypeInfoContainer();
-    container->netTypeInfo = type;
-    NetInstanceContainer* result = sharedCallbacks.instantiateType(container);
+    NetGCHandle* result = sharedCallbacks.instantiateType((LPWSTR)type->getFullTypeName().utf16());
     if(result == NULL) {
         return QSharedPointer<NetInstance>(NULL);
     } else {
-        return result->instance;
+        return QSharedPointer<NetInstance>(new NetInstance(result, type));
     }
 }
 
@@ -60,8 +58,8 @@ void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* typeInfo) {
     sharedCallbacks.buildTypeInfo(typeInfo);
 }
 
-NetInstanceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* typeInfo) {
-    return sharedCallbacks.instantiateType(typeInfo);
+NetGCHandle* type_info_callbacks_instantiateType(LPWSTR typeName) {
+    return sharedCallbacks.instantiateType(typeName);
 }
 
 }
