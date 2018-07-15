@@ -6,9 +6,12 @@ namespace Qt.NetCore.Sandbox
     {
         static void Main()
         {
-            using (var guiApp = new QGuiApplication())
+            using (new QGuiApplication())
             {
-                
+                using (new QQmlApplicationEngine())
+                {
+                    
+                }
             }
         }
     }

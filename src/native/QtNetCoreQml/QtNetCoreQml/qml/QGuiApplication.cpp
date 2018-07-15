@@ -5,7 +5,8 @@ extern "C" {
 
 QGuiApplicationContainer* qguiapplication_create() {
     QGuiApplicationContainer* result = new QGuiApplicationContainer();
-    result->guiApp = QSharedPointer(new QGuiApplication(0, NULL, 0));
+    result->argCount = 0;
+    result->guiApp = QSharedPointer<QGuiApplication>(new QGuiApplication(result->argCount, (char**)NULL, 0));
     return result;
 }
 

@@ -24,7 +24,7 @@ namespace Qt.NetCore.Qml
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
         IntPtr Create();
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
-        void Destroy(IntPtr methodInfo);
+        void Destroy(IntPtr app);
     }
     
 }
