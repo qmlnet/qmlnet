@@ -1,4 +1,5 @@
-﻿using Qt.NetCore.Qml;
+﻿using FluentAssertions;
+using Qt.NetCore.Qml;
 using Xunit;
 
 namespace Qt.NetCore.Tests
@@ -10,7 +11,7 @@ namespace Qt.NetCore.Tests
         {
             using (var list = new NetVariantList())
             {
-                
+                list.Count.Should().Be(0);
             }
         }
     }

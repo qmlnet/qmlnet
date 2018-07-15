@@ -18,6 +18,8 @@ namespace Qt.NetCore.Qml
             
         }
 
+        public int Count => Interop.NetVariantList.Count(Handle);
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariantList.Destroy(ptr);
@@ -29,6 +31,9 @@ namespace Qt.NetCore.Qml
         [NativeSymbol(Entrypoint = "net_variant_list_create")]
         IntPtr Create();
         [NativeSymbol(Entrypoint = "net_variant_list_destroy")]
-        void Destroy(IntPtr variant);
+        void Destroy(IntPtr list);
+
+        [NativeSymbol(Entrypoint = "net_variant_list_count")]
+        int Count(IntPtr list);
     }
 }

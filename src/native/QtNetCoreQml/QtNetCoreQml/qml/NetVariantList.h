@@ -10,6 +10,9 @@ class NetVariantList
 public:
     NetVariantList();
     ~NetVariantList();
+
+    int count();
+
 private:
     QList<QSharedPointer<NetVariant>> variants;
 };

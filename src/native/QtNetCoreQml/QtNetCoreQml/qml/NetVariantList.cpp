@@ -10,6 +10,10 @@ NetVariantList::~NetVariantList()
 
 }
 
+int NetVariantList::count() {
+    return variants.size();
+}
+
 extern "C" {
 
 NetVariantListContainer* net_variant_list_create() {
@@ -20,6 +24,10 @@ NetVariantListContainer* net_variant_list_create() {
 
 void net_variant_list_destroy(NetVariantListContainer* container) {
     delete container;
+}
+
+int net_variant_list_count(NetVariantListContainer* container) {
+    return container->list->count();
 }
 
 }
