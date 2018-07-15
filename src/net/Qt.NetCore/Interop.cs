@@ -20,7 +20,8 @@ namespace Qt.NetCore
             NetTypeManager = NativeLibraryBuilder.Default.ActivateInterface<INetTypeManagerInterop>("QtNetCoreQml");
             QGuiApplication = NativeLibraryBuilder.Default.ActivateInterface<IQGuiApplicationInterop>("QtNetCoreQml");
             QQmlApplicationEngine = NativeLibraryBuilder.Default.ActivateInterface<IQQmlApplicationEngine>("QtNetCoreQml");
-
+            NetVariant = NativeLibraryBuilder.Default.ActivateInterface<INetVariantInterop>("QtNetCoreQml");
+            
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
         }
@@ -38,6 +39,8 @@ namespace Qt.NetCore
         public static IQGuiApplicationInterop QGuiApplication { get; }
         
         public static IQQmlApplicationEngine QQmlApplicationEngine { get; }
+        
+        public static INetVariantInterop NetVariant { get; }
         
         public static void RegisterCallbacks(ICallbacks callbacks)
         {
