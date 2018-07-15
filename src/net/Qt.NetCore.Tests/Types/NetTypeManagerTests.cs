@@ -13,6 +13,8 @@ namespace Qt.NetCore.Tests.Types
             {
                 
             }
+            
+            public int TestProperty { get; set; }
         }
         
         [Fact]
@@ -23,7 +25,8 @@ namespace Qt.NetCore.Tests.Types
             typeInfo.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
             typeInfo.ClassName.Should().Be("TestType1");
             typeInfo.PrefVariantType.Should().Be(NetVariantType.Object);
-            typeInfo.MethodCount.Should().Be(1);
+            typeInfo.MethodCount.Should().Be(3); // the property has a "getter" and "setter" method
+            typeInfo.PropertyCount.Should().Be(1);
         }
 
         public class TestType2
@@ -118,7 +121,14 @@ namespace Qt.NetCore.Tests.Types
         public void Can_get_property()
         {
             var type = NetTypeManager.GetTypeInfo<TestType6>();
-            
+            type.PropertyCount.Should().Be(1);
+            var property = type.GetProperty(0);
+            property.Should().NotBeNull();
+            property.Name.Should().Be("Property");
+            property.CanRead.Should().BeTrue();
+            property.CanWrite.Should().BeTrue();
+            property.ReturnType.ClassName.Should().Be("String");
+            property.ParentType.ClassName.Should().Be("TestType6");
         }
 
         [Fact]

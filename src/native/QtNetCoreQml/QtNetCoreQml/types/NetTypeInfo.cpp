@@ -1,5 +1,6 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
 #include <QtNetCoreQml/types/NetMethodInfo.h>
+#include <QtNetCoreQml/types/NetPropertyInfo.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _fullTypeName(fullTypeName),
@@ -43,6 +44,19 @@ uint NetTypeInfo::getMethodCount() {
 QSharedPointer<NetMethodInfo> NetTypeInfo::getMethodInfo(uint index) {
     if(index >= (uint)_methods.length()) return QSharedPointer<NetMethodInfo>(NULL);
     return _methods.at(index);
+}
+
+void NetTypeInfo::addProperty(QSharedPointer<NetPropertyInfo> property) {
+    _properties.append(property);
+}
+
+uint NetTypeInfo::getPropertyCount() {
+    return _properties.size();
+}
+
+QSharedPointer<NetPropertyInfo> NetTypeInfo::getProperty(uint index) {
+    if(index >= (uint)_properties.length()) return QSharedPointer<NetPropertyInfo>(NULL);
+    return _properties.at(index);
 }
 
 extern "C" {
@@ -93,6 +107,24 @@ NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container,
     }
     NetMethodInfoContainer* result = new NetMethodInfoContainer();
     result->method = methodInfo;
+    return result;
+}
+
+void type_info_addProperty(NetTypeInfoContainer* container, NetPropertyInfoContainer* propertyContainer) {
+    container->netTypeInfo->addProperty(propertyContainer->property);
+}
+
+uint type_info_getPropertyCount(NetTypeInfoContainer* container) {
+    return container->netTypeInfo->getPropertyCount();
+}
+
+NetPropertyInfoContainer* type_info_getProperty(NetTypeInfoContainer* container, uint index) {
+    QSharedPointer<NetPropertyInfo> property = container->netTypeInfo->getProperty(index);
+    if(property == NULL) {
+        return NULL;
+    }
+    NetPropertyInfoContainer* result = new NetPropertyInfoContainer();
+    result->property = property;
     return result;
 }
 

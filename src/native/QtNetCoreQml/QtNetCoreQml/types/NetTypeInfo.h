@@ -7,6 +7,7 @@
 #include <QSharedPointer>
 
 class NetMethodInfo;
+class NetPropertyInfo;
 
 class NetTypeInfo {
 public:
@@ -25,11 +26,16 @@ public:
     uint getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(uint index);
 
+    void addProperty(QSharedPointer<NetPropertyInfo> property);
+    uint getPropertyCount();
+    QSharedPointer<NetPropertyInfo> getProperty(uint index);
+
 private:
     QString _fullTypeName;
     QString _className;
     NetVariantTypeEnum _variantType;
     QList<QSharedPointer<NetMethodInfo>> _methods;
+    QList<QSharedPointer<NetPropertyInfo>> _properties;
 };
 
 struct NetTypeInfoContainer {
