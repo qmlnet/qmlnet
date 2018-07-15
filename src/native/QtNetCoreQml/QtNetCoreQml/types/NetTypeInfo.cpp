@@ -1,4 +1,5 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
+#include <QtNetCoreQml/types/NetMethodInfo.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _fullTypeName(fullTypeName),
@@ -29,6 +30,20 @@ NetVariantTypeEnum NetTypeInfo::getPrefVariantType() {
 
 void NetTypeInfo::setPrefVariantType(NetVariantTypeEnum variantType) {
     _variantType = variantType;
+}
+
+void NetTypeInfo::addMethod(QSharedPointer<NetMethodInfo> methodInfo) {
+    _methods.append(methodInfo);
+}
+
+uint NetTypeInfo::getMethodCount() {
+    return _methods.size();
+}
+
+QSharedPointer<NetMethodInfo> NetTypeInfo::getMethodInfo(uint index) {
+    if(index >= (uint)_methods.length()) return QSharedPointer<NetMethodInfo>(NULL);
+
+    return _methods.at(index);
 }
 
 extern "C" {
@@ -62,6 +77,24 @@ NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContainer* netTypeInf
 
 void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantTypeEnum variantType) {
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
+}
+
+void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
+    netTypeInfo->netTypeInfo->addMethod(methodInfo->methodInfo);
+}
+
+uint type_info_getMethodCount(NetTypeInfoContainer* container) {
+    return container->netTypeInfo->getMethodCount();
+}
+
+NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container, uint index) {
+    QSharedPointer<NetMethodInfo> methodInfo = container->netTypeInfo->getMethodInfo(index);
+    if(methodInfo == NULL) {
+        return NULL;
+    }
+    NetMethodInfoContainer* result = new NetMethodInfoContainer();
+    result->methodInfo = methodInfo;
+    return result;
 }
 
 }

@@ -2,7 +2,9 @@
 #define NETTYPEMANAGER_H
 
 #include <QtNetCoreQml.h>
-#include <QtNetCoreQml/types/NetTypeInfo.h>
+#include <QSharedPointer>
+
+class NetTypeInfo;
 
 class NetTypeManager {
 public:
@@ -11,5 +13,6 @@ public:
 private:
     static QMap<QString, QSharedPointer<NetTypeInfo>> types;
 };
+
 
 #endif // NETTYPEMANAGER_H
