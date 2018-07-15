@@ -14,4 +14,8 @@ void qguiapplication_destroy(QGuiApplicationContainer* container) {
     delete container;
 }
 
+int qguiapplication_exec(QGuiApplicationContainer* container) {
+    return container->guiApp->exec();
+}
+
 }

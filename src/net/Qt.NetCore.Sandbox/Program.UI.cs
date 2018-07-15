@@ -4,13 +4,22 @@ namespace Qt.NetCore.Sandbox
 {
     class Program
     {
-        static void Main()
+        public class TestQmlImport
         {
-            using (new QGuiApplication())
+            
+        }
+        
+        static int Main()
+        {
+            using (var app = new QGuiApplication())
             {
-                using (new QQmlApplicationEngine())
+                using (var engine = new QQmlApplicationEngine())
                 {
+                    QQmlApplicationEngine.RegisterType<TestQmlImport>();
                     
+                    engine.Load("main.qml");
+
+                    return app.Exec();
                 }
             }
         }
