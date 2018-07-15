@@ -32,6 +32,12 @@ namespace Qt.NetCore.Qml
             set => Interop.NetVariant.SetBool(Handle, value);
         }
         
+        public char Char
+        {
+            get => (char)Interop.NetVariant.GetChar(Handle);
+            set => Interop.NetVariant.SetChar(Handle, value);
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
@@ -54,6 +60,11 @@ namespace Qt.NetCore.Qml
         void SetBool(IntPtr variant, bool value);
         [NativeSymbol(Entrypoint = "net_variant_getBool")]
         bool GetBool(IntPtr variant);
+        
+        [NativeSymbol(Entrypoint = "net_variant_setChar")]
+        void SetChar(IntPtr variant, ushort value);
+        [NativeSymbol(Entrypoint = "net_variant_getChar")]
+        ushort GetChar(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);
