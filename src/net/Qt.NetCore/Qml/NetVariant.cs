@@ -62,7 +62,7 @@ namespace Qt.NetCore.Qml
             set => Interop.NetVariant.SetString(Handle, value);
         }
         
-        public DateTime? DateTime
+        public DateTimeOffset? DateTime
         {
             get
             {
@@ -70,14 +70,14 @@ namespace Qt.NetCore.Qml
                 Interop.NetVariant.GetDateTime(Handle, ref dateTime);
                 if (dateTime.IsNull)
                     return null;
-                return new DateTime(dateTime.Year,
+                return new DateTimeOffset(dateTime.Year,
                     dateTime.Month,
                     dateTime.Day,
                     dateTime.Hour,
                     dateTime.Minute,
                     dateTime.Second,
                     dateTime.Minute,
-                    DateTimeKind.Local);
+                    TimeSpan.FromSeconds(dateTime.OffsetSeconds));
             }
             set
             {
@@ -97,6 +97,7 @@ namespace Qt.NetCore.Qml
                     dateTime.Minute = value.Value.Minute;
                     dateTime.Second = value.Value.Second;
                     dateTime.Msec = value.Value.Millisecond;
+                    dateTime.OffsetSeconds = (int)value.Value.Offset.TotalSeconds;
                     Interop.NetVariant.SetDateTime(Handle, ref dateTime);
                 }
             }
@@ -170,6 +171,6 @@ namespace Qt.NetCore.Qml
         public int Minute;
         public int Second;
         public int Msec;
-        public int TimeZone;
+        public int OffsetSeconds;
     }
 }

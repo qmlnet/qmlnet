@@ -205,7 +205,7 @@ struct DateTimeContainer {
     int minute;
     int second;
     int msec;
-    int timeZone;
+    int offsetSeconds;
 };
 
 NetVariantContainer* net_variant_create() {
@@ -298,7 +298,9 @@ void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* 
         QDateTime dt;
         container->variant->setDateTime(dt);
     } else {
-        QDateTime dt(QDate(value->year, value->month, value->day), QTime(value->hour, value->minute, value->second, value->msec));
+        QDateTime dt(QDate(value->year, value->month, value->day),
+                     QTime(value->hour, value->minute, value->second, value->msec),
+                     Qt::OffsetFromUTC, value->offsetSeconds);
         container->variant->setDateTime(dt);
     }
 }
@@ -320,6 +322,7 @@ void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* 
     value->minute = dt.time().minute();
     value->second = dt.time().second();
     value->msec = dt.time().msec();
+    value->offsetSeconds = dt.offsetFromUtc();
 }
 
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
