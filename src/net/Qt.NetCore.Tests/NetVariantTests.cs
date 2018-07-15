@@ -59,10 +59,20 @@ namespace Qt.NetCore.Tests
             var variant = new NetVariant();
             variant.Int = -1;
             variant.VariantType.Should().Be(NetVariantType.Int);
-            var t = variant.Int;
             variant.Int.Should().Be(-1);
             variant.Int = int.MaxValue;
             variant.Int.Should().Be(int.MaxValue);
+        }
+        
+        [Fact]
+        public void Can_store_uint()
+        {
+            var variant = new NetVariant();
+            variant.UInt = uint.MinValue;
+            variant.VariantType.Should().Be(NetVariantType.UInt);
+            variant.UInt.Should().Be(uint.MinValue);
+            variant.UInt = uint.MaxValue;
+            variant.UInt.Should().Be(uint.MaxValue);
         }
     }
 }

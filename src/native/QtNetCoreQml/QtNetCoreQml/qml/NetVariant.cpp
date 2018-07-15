@@ -249,6 +249,14 @@ int net_variant_getInt(NetVariantContainer* container) {
     return container->variant->getInt();
 }
 
+void net_variant_setUInt(NetVariantContainer* container, unsigned int value) {
+    container->variant->setUInt(value);
+}
+
+unsigned int net_variant_getUInt(NetVariantContainer* container) {
+    return container->variant->getUInt();
+}
+
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
 }
