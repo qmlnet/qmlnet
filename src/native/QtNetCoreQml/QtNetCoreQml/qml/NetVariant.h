@@ -3,6 +3,7 @@
 
 #include <QtNetCoreQml/types/NetInstance.h>
 #include <QVariant>
+#include <QDateTime>
 
 class NetVariant
 {
