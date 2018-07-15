@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using Qt.NetCore.Qml;
 
 namespace Qt.NetCore.Sandbox
 {
     class Program
     {
-        static int Main()
+        static void Main()
         {
-            
+            using (var guiApp = new QGuiApplication())
+            {
+                
+            }
         }
     }
 }

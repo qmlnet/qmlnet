@@ -1,4 +1,5 @@
 ﻿using System;
+using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Sandbox
@@ -12,9 +13,7 @@ namespace Qt.NetCore.Sandbox
         
         static void Main()
         {
-            Console.WriteLine("test");
-            var typeInfo = NetTypeManager.GetTypeInfo<TestType>();
-            Console.WriteLine(typeInfo.PrefVariantType);
+            
         }
     }
 }

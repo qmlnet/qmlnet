@@ -1,6 +1,7 @@
 ﻿using System;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
+using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 
 namespace Qt.NetCore
@@ -17,6 +18,7 @@ namespace Qt.NetCore
             NetMethodInfo = NativeLibraryBuilder.Default.ActivateInterface<INetMethodInfoInterop>("QtNetCoreQml");
             NetPropertyInfo = NativeLibraryBuilder.Default.ActivateInterface<INetPropertyInfoInterop>("QtNetCoreQml");
             NetTypeManager = NativeLibraryBuilder.Default.ActivateInterface<INetTypeManagerInterop>("QtNetCoreQml");
+            QGuiApplication = NativeLibraryBuilder.Default.ActivateInterface<IQGuiApplicationInterop>("QtNetCoreQml");
 
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
@@ -31,6 +33,8 @@ namespace Qt.NetCore
         public static INetPropertyInfoInterop NetPropertyInfo { get; }
         
         public static INetTypeManagerInterop NetTypeManager { get; }
+        
+        public static IQGuiApplicationInterop QGuiApplication { get; }
         
         public static void RegisterCallbacks(ICallbacks callbacks)
         {
