@@ -9,28 +9,28 @@ class NetVariant
 public:
     NetVariant();
     ~NetVariant();
-    NetVariantTypeEnum GetVariantType();
-    void SetNetInstance(QSharedPointer<NetInstance> netInstance);
-    QSharedPointer<NetInstance> GetNetInstance();
-    void SetBool(bool value);
-    bool GetBool();
-    void SetChar(QChar value);
-    QChar GetChar();
-    void SetInt(int value);
-    int GetInt();
-    void SetUInt(unsigned int value);
-    unsigned int GetUInt();
-    void SetDouble(double value);
-    double GetDouble();
-    void SetString(QString* value);
-    QString GetString();
-    void SetDateTime(QDateTime& value);
-    QDateTime GetDateTime();
-    void Clear();
+    NetVariantTypeEnum getVariantType();
+    void setNetInstance(QSharedPointer<NetInstance> netInstance);
+    QSharedPointer<NetInstance> getNetInstance();
+    void setBool(bool value);
+    bool getBool();
+    void setChar(QChar value);
+    QChar getChar();
+    void setInt(int value);
+    int getInt();
+    void setUInt(unsigned int value);
+    unsigned int getUInt();
+    void setDouble(double value);
+    double getDouble();
+    void setString(QString* value);
+    QString getString();
+    void setDateTime(QDateTime& value);
+    QDateTime getDateTime();
+    void clear();
 
-    QVariant AsQVariant();
+    QVariant asQVariant();
 private:
-    void ClearNetInstance();
+    void clearNetInstance();
     QVariant variant;
 };
 

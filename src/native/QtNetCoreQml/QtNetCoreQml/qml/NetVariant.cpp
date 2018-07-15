@@ -16,10 +16,10 @@ NetVariant::NetVariant()
 
 NetVariant::~NetVariant()
 {
-    ClearNetInstance();
+    clearNetInstance();
 }
 
-NetVariantTypeEnum NetVariant::GetVariantType()
+NetVariantTypeEnum NetVariant::getVariantType()
 {
     switch(variant.type()) {
     case QVariant::Invalid:
@@ -49,24 +49,24 @@ NetVariantTypeEnum NetVariant::GetVariantType()
     }
 }
 
-void NetVariant::SetNetInstance(QSharedPointer<NetInstance> netInstance)
+void NetVariant::setNetInstance(QSharedPointer<NetInstance> netInstance)
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.setValue(NetInstanceContainer{ netInstance });
 }
 
-QSharedPointer<NetInstance> NetVariant::GetNetInstance()
+QSharedPointer<NetInstance> NetVariant::getNetInstance()
 {
     return variant.value<NetInstanceContainer>().netInstance;
 }
 
-void NetVariant::SetBool(bool value)
+void NetVariant::setBool(bool value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.setValue(value);
 }
 
-bool NetVariant::GetBool()
+bool NetVariant::getBool()
 {
     if(variant.canConvert(QMetaType::Bool))
         return variant.value<int>();
@@ -76,24 +76,24 @@ bool NetVariant::GetBool()
     return false;
 }
 
-void NetVariant::SetChar(QChar value)
+void NetVariant::setChar(QChar value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.setValue(value);
 }
 
-QChar NetVariant::GetChar()
+QChar NetVariant::getChar()
 {
     return variant.toChar();
 }
 
-void NetVariant::SetInt(int value)
+void NetVariant::setInt(int value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.setValue(value);
 }
 
-int NetVariant::GetInt()
+int NetVariant::getInt()
 {
     if(variant.canConvert(QMetaType::Int))
         return variant.value<int>();
@@ -103,13 +103,13 @@ int NetVariant::GetInt()
     return 0;
 }
 
-void NetVariant::SetUInt(unsigned int value)
+void NetVariant::setUInt(unsigned int value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.setValue(value);
 }
 
-unsigned int NetVariant::GetUInt()
+unsigned int NetVariant::getUInt()
 {
     bool ok = false;
     unsigned int result = variant.toUInt(&ok);
@@ -121,13 +121,13 @@ unsigned int NetVariant::GetUInt()
     return result;
 }
 
-void NetVariant::SetDouble(double value)
+void NetVariant::setDouble(double value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.setValue(value);
 }
 
-double NetVariant::GetDouble()
+double NetVariant::getDouble()
 {
     bool ok = false;
     double result = variant.toDouble(&ok);
@@ -139,9 +139,9 @@ double NetVariant::GetDouble()
     return result;
 }
 
-void NetVariant::SetString(QString* value)
+void NetVariant::setString(QString* value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     if(value) {
         variant.setValue(*value);
     } else {
@@ -149,7 +149,7 @@ void NetVariant::SetString(QString* value)
     }
 }
 
-QString NetVariant::GetString()
+QString NetVariant::getString()
 {
     if(variant.type() != QVariant::String) {
         qDebug() << "Variant is not a string";
@@ -159,9 +159,9 @@ QString NetVariant::GetString()
     return variant.toString();
 }
 
-void NetVariant::SetDateTime(QDateTime& value)
+void NetVariant::setDateTime(QDateTime& value)
 {
-    ClearNetInstance();
+    clearNetInstance();
     if(value.isNull()) {
         variant.clear();
     } else {
@@ -169,23 +169,23 @@ void NetVariant::SetDateTime(QDateTime& value)
     }
 }
 
-QDateTime NetVariant::GetDateTime()
+QDateTime NetVariant::getDateTime()
 {
     return variant.toDateTime();
 }
 
-void NetVariant::Clear()
+void NetVariant::clear()
 {
-    ClearNetInstance();
+    clearNetInstance();
     variant.clear();
 }
 
-QVariant NetVariant::AsQVariant()
+QVariant NetVariant::asQVariant()
 {
     return variant;
 }
 
-void NetVariant::ClearNetInstance()
+void NetVariant::clearNetInstance()
 {
     if(variant.canConvert<NetInstanceContainer>())
     {
