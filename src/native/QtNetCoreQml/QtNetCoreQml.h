@@ -4,15 +4,15 @@
 #include <QtCore/qglobal.h>
 
 enum NetVariantTypeEnum {
-    NetVariantTypeEnum_Invalid,
-    NetVariantTypeEnum_Bool,
-    NetVariantTypeEnum_Char,
-    NetVariantTypeEnum_Int,
-    NetVariantTypeEnum_UInt,
-    NetVariantTypeEnum_Double,
-    NetVariantTypeEnum_String,
-    NetVariantTypeEnum_DateTime,
-    NetVariantTypeEnum_Object
+    NetVariantTypeEnum_Invalid = 0,
+    NetVariantTypeEnum_Bool = 1,
+    NetVariantTypeEnum_Char = 2,
+    NetVariantTypeEnum_Int = 3,
+    NetVariantTypeEnum_UInt = 4,
+    NetVariantTypeEnum_Double = 5,
+    NetVariantTypeEnum_String = 6,
+    NetVariantTypeEnum_DateTime = 7,
+    NetVariantTypeEnum_Object = 8
 };
 
 #define NetGCHandle void

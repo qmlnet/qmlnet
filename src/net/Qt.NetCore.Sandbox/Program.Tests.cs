@@ -13,6 +13,7 @@ namespace Qt.NetCore.Sandbox
         {
             Console.WriteLine("test");
             var typeInfo = NetTypeManager.GetTypeInfo<TestType>();
+            Console.WriteLine(typeInfo.PrefVariantType);
         }
     }
 }

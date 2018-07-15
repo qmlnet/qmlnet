@@ -19,6 +19,7 @@ namespace Qt.NetCore.Tests.Types
 
             typeInfo.FullTypeName.Should().Be(typeof(TestType).AssemblyQualifiedName);
             typeInfo.ClassName.Should().Be("TestType");
+            typeInfo.PrefVariantType.Should().Be(NetVariantType.Object);
         }
 
         [Fact]

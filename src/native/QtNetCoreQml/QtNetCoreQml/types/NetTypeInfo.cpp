@@ -1,7 +1,8 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
-    _fullTypeName(fullTypeName) {
+    _fullTypeName(fullTypeName),
+    _variantType(NetVariantTypeEnum_Invalid) {
 
 }
 
@@ -20,6 +21,14 @@ QString NetTypeInfo::getClassName() {
 
 void NetTypeInfo::setClassName(QString className) {
     _className = className;
+}
+
+NetVariantTypeEnum NetTypeInfo::getPrefVariantType() {
+    return _variantType;
+}
+
+void NetTypeInfo::setPrefVariantType(NetVariantTypeEnum variantType) {
+    _variantType = variantType;
 }
 
 extern "C" {
@@ -45,6 +54,14 @@ LPWSTR type_info_getClassName(NetTypeInfoContainer* netTypeInfo) {
 
 void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {
     netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16(className));
+}
+
+NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContainer* netTypeInfo) {
+    return netTypeInfo->netTypeInfo->getPrefVariantType();
+}
+
+void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantTypeEnum variantType) {
+    netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
 }
