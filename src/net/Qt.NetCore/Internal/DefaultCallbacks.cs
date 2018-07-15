@@ -168,6 +168,7 @@ namespace Qt.NetCore.Internal
         private bool IsPrimitive(Type type)
         {
             if (type.Namespace == "System") return true;
+            if (type.Namespace == "System.Threading.Tasks") return true;
             return false;
         }
         
