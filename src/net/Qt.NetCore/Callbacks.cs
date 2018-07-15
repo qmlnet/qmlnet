@@ -29,7 +29,7 @@ namespace Qt.NetCore
         void BuildTypeInfo(IntPtr handle);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
-        IntPtr InstantiateType(IntPtr type);
+        IntPtr InstantiateType([MarshalAs(UnmanagedType.LPWStr)]string typeName);
     }
 
     public interface ICallbacks
@@ -40,7 +40,7 @@ namespace Qt.NetCore
         
         void BuildTypeInfo(NetTypeInfo typeInfo);
 
-        NetInstance InstantiateType(NetTypeInfo typeInfo);
+        GCHandle InstantiateType(string typeName);
     }
     
     public class CallbacksImpl
@@ -61,7 +61,7 @@ namespace Qt.NetCore
         delegate void ReleaseGCHandleDelegate(IntPtr handle);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate IntPtr InstantiateTypeDelgate(IntPtr typeInfo);
+        delegate IntPtr InstantiateTypeDelgate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -95,10 +95,9 @@ namespace Qt.NetCore
             _callbacks.BuildTypeInfo(new NetTypeInfo(typeInfo));
         }
         
-        private IntPtr InstantiateType(IntPtr typeInfo)
+        private IntPtr InstantiateType(string typeName)
         {
-            var instance = _callbacks.InstantiateType(new NetTypeInfo(typeInfo));
-            return instance?.Handle ?? IntPtr.Zero;
+            return GCHandle.ToIntPtr(_callbacks.InstantiateType(typeName));
         }
 
         public Callbacks Callbacks()

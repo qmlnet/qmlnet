@@ -14,7 +14,6 @@ namespace Qt.NetCore.Tests
         [Fact]
         public void Can_create_net_instance()
         {
-            return;
             var o = new TestObject();
             var instance = NetInstance.CreateFromObject(o);
 
@@ -26,9 +25,8 @@ namespace Qt.NetCore.Tests
         [Fact]
         public void Can_create_instance_from_type_info()
         {
-            return;
             var typeInfo = NetTypeManager.GetTypeInfo<TestObject>();
-            var instance = NetTypeManager.InstantiateType(typeInfo);
+            var instance = NetInstance.InstantiateType(typeInfo);
             instance.Should().NotBeNull();
             instance.Instance.Should().BeOfType<TestObject>();
         }

@@ -9,7 +9,7 @@ class NetTypeInfo;
 class NetTypeManager {
 public:
     NetTypeManager();
-    static QSharedPointer<NetTypeInfo> GetTypeInfo(QString typeName);
+    static QSharedPointer<NetTypeInfo> getTypeInfo(QString typeName);
 private:
     static QMap<QString, QSharedPointer<NetTypeInfo>> types;
 };

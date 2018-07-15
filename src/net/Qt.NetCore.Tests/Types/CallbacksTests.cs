@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using FluentAssertions;
 using Moq;
@@ -78,16 +79,16 @@ namespace Qt.NetCore.Tests.Types
             try
             {
                 var callbacks = new Mock<ICallbacks>();
-                NetTypeInfo typeInfo = null;
-                callbacks.Setup(x => x.InstantiateType(It.IsAny<NetTypeInfo>()))
-                    .Callback(new Action<NetTypeInfo>(x => typeInfo = x))
-                    .Returns(new NetInstance(new IntPtr(3), false /*this is a fake handle, don't delete it*/));
+                string typeName = null;
+                callbacks.Setup(x => x.InstantiateType(It.IsAny<string>()))
+                    .Callback(new Action<string>(x => typeName = x))
+                    .Returns((GCHandle)new IntPtr(3));
 
                 Interop.RegisterCallbacks(callbacks.Object);
-                var result = Interop.Callbacks.InstantiateType(new NetTypeInfo("test").Handle);
+                var result = Interop.Callbacks.InstantiateType("test");
 
-                callbacks.Verify(x => x.InstantiateType(It.IsAny<NetTypeInfo>()), Times.Once);
-                typeInfo.FullTypeName.Should().Be("test");
+                callbacks.Verify(x => x.InstantiateType(It.IsAny<string>()), Times.Once);
+                typeName.Should().Be("test");
                 result.Should().Be(new IntPtr(3));
             }
             finally
