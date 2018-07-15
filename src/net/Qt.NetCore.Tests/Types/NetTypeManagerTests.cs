@@ -9,7 +9,15 @@ namespace Qt.NetCore.Tests.Types
     {
         class TestType
         {
-            
+            public void TestMethodNoReturn()
+            {
+                
+            }
+
+            public int TestMethodReturn()
+            {
+                return 0;
+            }
         }
         
         [Fact]
@@ -20,6 +28,8 @@ namespace Qt.NetCore.Tests.Types
             typeInfo.FullTypeName.Should().Be(typeof(TestType).AssemblyQualifiedName);
             typeInfo.ClassName.Should().Be("TestType");
             typeInfo.PrefVariantType.Should().Be(NetVariantType.Object);
+
+            typeInfo.MethodCount.Should().Be(2);
         }
 
         [Fact]

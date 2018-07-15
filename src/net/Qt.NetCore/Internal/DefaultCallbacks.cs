@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Qt.NetCore.Internal
 {
@@ -33,6 +34,27 @@ namespace Qt.NetCore.Internal
                 typeInfo.PrefVariantType = NetVariantType.DateTime;
             else
                 typeInfo.PrefVariantType = NetVariantType.Object;
+            
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (method.DeclaringType == typeof(Object)) continue;
+
+                NetTypeInfo returnType = null;
+
+                if (method.ReturnParameter != null && method.ReturnParameter.ParameterType != typeof(void))
+                {
+                    returnType = NetTypeManager.GetTypeInfo(method.ReturnParameter.ParameterType.AssemblyQualifiedName);
+                }
+
+                var methodInfo = new NetMethodInfo(typeInfo, method.Name, returnType);
+
+//                foreach (var parameter in method.GetParameters())
+//                {
+//                    methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType));
+//                }
+
+                typeInfo.AddMethod(methodInfo);
+            }
         }
     }
 }

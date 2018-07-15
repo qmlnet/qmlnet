@@ -31,6 +31,20 @@ namespace Qt.NetCore
             get => Interop.NetTypeInfo.GetPrefVariantType(Handle);
             set => Interop.NetTypeInfo.SetPrefVariantType(Handle, value);
         }
+
+        public void AddMethod(NetMethodInfo methodInfo)
+        {
+            Interop.NetTypeInfo.AddMethod(Handle, methodInfo.Handle);
+        }
+
+        public uint MethodCount => Interop.NetTypeInfo.GetMethodCount(Handle);
+
+        public NetMethodInfo GetMethod(uint index)
+        {
+            var result = Interop.NetTypeInfo.GetMethodInfo(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfo(result);
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -57,5 +71,12 @@ namespace Qt.NetCore
         void SetPrefVariantType(IntPtr netTypeInfo, NetVariantType variantType);
         [NativeSymbol(Entrypoint = "type_info_getPrefVariantType")]
         NetVariantType GetPrefVariantType(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_addMethod")]
+        void AddMethod(IntPtr typeInfo, IntPtr methodInfo);
+        [NativeSymbol(Entrypoint = "type_info_getMethodCount")]
+        uint GetMethodCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
+        IntPtr GetMethodInfo(IntPtr typeInfo, uint index);
     }
 }

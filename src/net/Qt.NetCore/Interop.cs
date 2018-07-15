@@ -13,6 +13,7 @@ namespace Qt.NetCore
             Environment.SetEnvironmentVariable("DYLD_LIBRARY_PATH", "/Users/pknopf/git/net-core-qml/src/native/build-QtNetCoreQml-Desktop_Qt_5_11_1_clang_64bit-Debug");
             Callbacks = NativeLibraryBuilder.Default.ActivateInterface<ICallbacksIterop>("QtNetCoreQml");
             NetTypeInfo = NativeLibraryBuilder.Default.ActivateInterface<INetTypeInfoInterop>("QtNetCoreQml");
+            NetMethodInfo = NativeLibraryBuilder.Default.ActivateInterface<INetMethodInfoInterop>("QtNetCoreQml");
             NetTypeManager = NativeLibraryBuilder.Default.ActivateInterface<INetTypeManagerInterop>("QtNetCoreQml");
 
             var cb = DefaultCallbacks.Callbacks();
@@ -22,6 +23,8 @@ namespace Qt.NetCore
         public static ICallbacksIterop Callbacks { get; }
 
         public static INetTypeInfoInterop NetTypeInfo { get; }
+        
+        public static INetMethodInfoInterop NetMethodInfo { get; }
         
         public static INetTypeManagerInterop NetTypeManager { get; }
         
