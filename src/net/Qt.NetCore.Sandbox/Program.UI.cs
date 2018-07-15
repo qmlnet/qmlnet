@@ -1,4 +1,5 @@
-﻿using Qt.NetCore.Qml;
+﻿using System;
+using Qt.NetCore.Qml;
 
 namespace Qt.NetCore.Sandbox
 {
@@ -11,6 +12,9 @@ namespace Qt.NetCore.Sandbox
         
         static int Main()
         {
+            var variant = new NetVariant();
+            Console.WriteLine(variant.String);
+            
             using (var app = new QGuiApplication())
             {
                 using (var engine = new QQmlApplicationEngine())
