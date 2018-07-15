@@ -153,7 +153,7 @@ QString NetVariant::getString()
 {
     if(variant.type() != QVariant::String) {
         qDebug() << "Variant is not a string";
-        return QString::null;
+        return QString();
     }
 
     return variant.toString();
@@ -196,6 +196,17 @@ void NetVariant::clearNetInstance()
 
 extern "C" {
 
+struct DateTimeContainer {
+    bool isNull;
+    int month;
+    int day;
+    int year;
+    int hour;
+    int minute;
+    int second;
+    int msec;
+    int timeZone;
+};
 
 NetVariantContainer* net_variant_create() {
     NetVariantContainer* result = new NetVariantContainer();
@@ -280,6 +291,35 @@ LPWSTR net_variant_getString(NetVariantContainer* container) {
         return NULL;
     }
     return (LPWSTR)string.utf16();
+}
+
+void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* value) {
+    if(value == NULL || value->isNull) {
+        QDateTime dt;
+        container->variant->setDateTime(dt);
+    } else {
+        QDateTime dt(QDate(value->year, value->month, value->day), QTime(value->hour, value->minute, value->second, value->msec));
+        container->variant->setDateTime(dt);
+    }
+}
+void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* value) {
+    QDateTime dt = container->variant->getDateTime();
+    if(dt.isNull()) {
+        value->isNull = true;
+        return;
+    }
+    if(!dt.isValid()) {
+        qWarning("QDateTime is invalid");
+        value->isNull = true;
+        return;
+    }
+    value->year = dt.date().year();
+    value->month = dt.date().month();
+    value->day = dt.date().day();
+    value->hour = dt.time().hour();
+    value->minute = dt.time().minute();
+    value->second = dt.time().second();
+    value->msec = dt.time().msec();
 }
 
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {

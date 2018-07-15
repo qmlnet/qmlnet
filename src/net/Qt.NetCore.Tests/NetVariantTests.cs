@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 using Xunit;
@@ -98,6 +99,24 @@ namespace Qt.NetCore.Tests
             variant.String.Should().Be("");
             variant.String = null;
             variant.String.Should().BeNull();
+        }
+        
+        [Fact]
+        public void Can_store_date()
+        {
+            var variant = new NetVariant();
+            variant.DateTime.Should().BeNull();
+            variant.DateTime = new DateTime(1988, 9, 3);
+            variant.VariantType.Should().Be(NetVariantType.DateTime);
+            var value = variant.DateTime;
+            value.Should().NotBeNull();
+            value.Value.Year.Should().Be(1988);
+            value.Value.Month.Should().Be(9);
+            value.Value.Day.Should().Be(3);
+            value.Value.Hour.Should().Be(0);
+            value.Value.Minute.Should().Be(0);
+            value.Value.Second.Should().Be(0);
+            value.Value.Millisecond.Should().Be(0);
         }
     }
 }
