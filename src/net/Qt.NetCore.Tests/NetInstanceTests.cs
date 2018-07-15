@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Qt.NetCore.Tests
 {
-    public class NetInstanceTests
+    public class NetInstanceTests : BaseTests
     {
         class TestObject
         {

@@ -69,11 +69,11 @@ NetGCHandle* type_info_callbacks_instantiateType(LPWSTR typeName) {
 }
 
 void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result) {
-    //sharedCallbacks.readProperty(property, target, result);
+    sharedCallbacks.readProperty(property, target, result);
 }
 
 void type_info_callbacks_writeProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value) {
-    //sharedCallbacks.writeProperty(property, target, value);
+    sharedCallbacks.writeProperty(property, target, value);
 }
 
 }
