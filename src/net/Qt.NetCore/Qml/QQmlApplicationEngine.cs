@@ -18,9 +18,9 @@ namespace Qt.NetCore.Qml
             Interop.QQmlApplicationEngine.Load(Handle, path);
         }
 
-        public static int RegisterType<T>(int versionMajor = 1, int versionMinor = 0)
+        public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
-            return Interop.QQmlApplicationEngine.RegisterType(typeof(T).AssemblyQualifiedName, versionMajor, versionMinor, typeof(T).Name);
+            return Interop.QQmlApplicationEngine.RegisterType(typeof(T).AssemblyQualifiedName, uri, versionMajor, versionMinor, typeof(T).Name);
         }
 
         protected override void DisposeUnmanaged(IntPtr ptr)
@@ -40,7 +40,7 @@ namespace Qt.NetCore.Qml
         int Load(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
         
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
-        int RegisterType([MarshalAs(UnmanagedType.LPWStr)]string typeName, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string componentName);
+        int RegisterType([MarshalAs(UnmanagedType.LPWStr)]string typeName, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
     }
 
 }

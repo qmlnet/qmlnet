@@ -16,7 +16,7 @@ int qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR
     container->qmlEngine->load(QString::fromUtf16(path));
 }
 
-int qqmlapplicationengine_registerType(LPWSTR typeName, int versionMajor, int versionMinor, LPWSTR componentName) {
+int qqmlapplicationengine_registerType(LPWSTR typeName, LPWSTR uri, int versionMajor, int versionMinor, LPWSTR qmlName) {
     return -1;
 }
 
