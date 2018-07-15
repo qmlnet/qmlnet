@@ -1,9 +1,10 @@
 ﻿using Moq;
+using Qt.NetCore.Qml;
 using Xunit;
 
 namespace Qt.NetCore.Tests
 {
-    public class BoolTests : BaseTests<BoolTests.BoolTestsQml>
+    public class BoolTests : BaseQmlTests<BoolTests.BoolTestsQml>
     {
         public class BoolTestsQml
         {

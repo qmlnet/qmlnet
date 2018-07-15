@@ -88,7 +88,10 @@ namespace Qt.NetCore.Internal
         {
             var type = Type.GetType(typeName);
             if(type == null) throw new InvalidOperationException($"Invalid type {typeName}");
-            var instance = Activator.CreateInstance(type);
+            
+            var typeCreator = NetInstance.TypeCreator;
+            object instance = typeCreator != null ? typeCreator.Create(type) : Activator.CreateInstance(type);
+            
             var instanceHandle = GCHandle.Alloc(instance);
             return instanceHandle;
         }
@@ -164,14 +167,7 @@ namespace Qt.NetCore.Internal
 
         private bool IsPrimitive(Type type)
         {
-            if (type == typeof(Object))
-                return true;
-            if (type.IsPrimitive) 
-                return true;
-            if (type == typeof(string))
-                return true;
-            if (type == typeof(int))
-                return true;
+            if (type.Namespace == "System") return true;
             return false;
         }
         

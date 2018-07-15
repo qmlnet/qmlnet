@@ -7,6 +7,11 @@ namespace Qt.NetCore.Types
 {
     public class NetInstance : BaseDisposable
     {
+        static NetInstance()
+        {
+            
+        }
+        
         public NetInstance(IntPtr gcHandle, NetTypeInfo type)
             :base(Interop.NetInstance.Create(gcHandle, type.Handle))
         {
@@ -21,7 +26,7 @@ namespace Qt.NetCore.Types
         public static NetInstance CreateFromObject(object value)
         {
             if (value == null) return null;
-            var typeInfo = NetTypeManager.GetTypeInfo(value.GetType().AssemblyQualifiedName);
+            var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
             return new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
@@ -46,6 +51,16 @@ namespace Qt.NetCore.Types
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetInstance.Destroy(ptr);
+        }
+        
+        public static ITypeCreator TypeCreator { get; set; }
+        
+        private static Type GetUnproxiedType(Type type)
+        {
+            if (type.Namespace == "Castle.Proxies")
+                return type.BaseType;
+
+            return type;
         }
     }
 

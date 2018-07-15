@@ -267,6 +267,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
         metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
     }
+        break;
     case WriteProperty:
     {
         int offset = propertyOffset();
