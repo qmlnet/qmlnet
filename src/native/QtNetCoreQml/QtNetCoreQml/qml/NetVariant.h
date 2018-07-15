@@ -34,4 +34,8 @@ private:
     QVariant variant;
 };
 
+struct NetVariantContainer {
+    QSharedPointer<NetVariant> variant;
+};
+
 #endif // NETVARIANT_H

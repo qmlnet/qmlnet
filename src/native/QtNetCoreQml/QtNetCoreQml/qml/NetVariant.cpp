@@ -193,3 +193,22 @@ void NetVariant::clearNetInstance()
         variant.clear();
     }
 }
+
+extern "C" {
+
+
+NetVariantContainer* net_variant_create() {
+    NetVariantContainer* result = new NetVariantContainer();
+    result->variant = QSharedPointer<NetVariant>(new NetVariant());
+    return result;
+}
+
+void net_variant_destroy(NetVariantContainer* container) {
+    delete container;
+}
+
+NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
+    return container->variant->getVariantType();
+}
+
+}
