@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
+using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Qml
 {
@@ -15,6 +16,16 @@ namespace Qt.NetCore.Qml
 
         public NetVariantType VariantType => Interop.NetVariant.GetVariantType(Handle);
 
+        public NetInstance Instance
+        {
+            get
+            {
+                var result = Interop.NetVariant.GetNetInstance(Handle);
+                return result == IntPtr.Zero ? null : new NetInstance(result);
+            }
+            set => Interop.NetVariant.SetNetInstance(Handle, value?.Handle ?? IntPtr.Zero);
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);

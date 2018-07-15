@@ -39,7 +39,7 @@ NetVariantTypeEnum NetVariant::getVariantType()
     case QVariant::DateTime:
         return NetVariantTypeEnum_DateTime;
     case QVariant::UserType:
-        if(strcmp(variant.typeName(), "NetInstanceContainer") == 0)
+        if(strcmp(variant.typeName(), "NetInstanceQmlContainer") == 0)
             return NetVariantTypeEnum_Object;
         qWarning() << "Unknown user type for NetVariant: " << variant.typeName();
         return NetVariantTypeEnum_Invalid;
