@@ -20,7 +20,8 @@ namespace Qt.NetCore.Qml
 
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
-            return Interop.QQmlApplicationEngine.RegisterType(typeof(T).AssemblyQualifiedName, uri, versionMajor, versionMinor, typeof(T).Name);
+            return 0;
+            //return Interop.QQmlApplicationEngine.RegisterType(typeof(T).AssemblyQualifiedName, uri, versionMajor, versionMinor, typeof(T).Name);
         }
 
         protected override void DisposeUnmanaged(IntPtr ptr)
