@@ -1,0 +1,39 @@
+#include <QtNetCoreQml/types/NetTypeManager.h>
+#include <QtNetCoreQml/types/Callbacks.h>
+#include <QSharedPointer>
+
+QMap<QString, QSharedPointer<NetTypeInfo>> NetTypeManager::types;
+
+NetTypeManager::NetTypeManager() {
+}
+
+QSharedPointer<NetTypeInfo> NetTypeManager::GetTypeInfo(QString typeName) {
+    if(NetTypeManager::types.contains(typeName))
+        return NetTypeManager::types.value(typeName);
+
+    if(!isTypeValid(typeName)) {
+        qWarning("Invalid type name: %s", qUtf8Printable(typeName));
+        return QSharedPointer<NetTypeInfo>();
+    }
+
+    QSharedPointer<NetTypeInfo> typeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(typeName));
+    NetTypeManager::types.insert(NetTypeManager::types.end(), typeName, typeInfo);
+
+    //NetTypeInfoManager::callbacks->BuildTypeInfo(typeInfo);
+
+    return typeInfo;
+}
+
+extern "C" {
+
+NetTypeInfoContainer* type_manager_getTypeInfo(LPWSTR fullTypeName) {
+    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::GetTypeInfo(QString::fromUtf16(fullTypeName));
+    if(typeInfo == NULL) {
+        return NULL;
+    }
+    NetTypeInfoContainer* container = new NetTypeInfoContainer();
+    container->netTypeInfo = typeInfo;
+    return container;
+}
+
+}

@@ -1,4 +1,4 @@
-#include <QtNetCoreQml/types/net_type_info.h>
+#include <QtNetCoreQml/types/NetTypeInfo.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _fullTypeName(fullTypeName) {
@@ -14,6 +14,8 @@ QString NetTypeInfo::getFullTypeName() {
     return _fullTypeName;
 }
 
+extern "C" {
+
 NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
     result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString::fromUtf16(fullTypeName)));
@@ -27,4 +29,6 @@ void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
 
 LPWSTR type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
     return (LPWSTR)netTypeInfo->netTypeInfo->getFullTypeName().utf16();
+}
+
 }
