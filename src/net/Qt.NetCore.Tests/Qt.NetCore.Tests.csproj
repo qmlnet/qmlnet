@@ -33,8 +33,6 @@
     <None Include="StringTests.cs" />
     <Compile Remove="UIntTests.cs" />
     <None Include="UIntTests.cs" />
-    <Compile Remove="BaseTests.cs" />
-    <None Include="BaseTests.cs" />
     <Compile Remove="Interop\StringInteropTests.cs" />
     <None Include="Interop\StringInteropTests.cs" />
   </ItemGroup>

@@ -31,5 +31,11 @@ namespace Qt.NetCore
             var callbacksRef = callbacksImpl.Callbacks();
             Callbacks.RegisterCallbacks(ref callbacksRef);
         }
+
+        public static void SetDefaultCallbacks()
+        {
+            var cb = DefaultCallbacks.Callbacks();
+            Callbacks.RegisterCallbacks(ref cb);   
+        }
     }
 }

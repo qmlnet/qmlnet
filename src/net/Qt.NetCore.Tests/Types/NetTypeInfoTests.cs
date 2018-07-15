@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Qt.NetCore.Tests.Types
 {
-    public class NetTypeInfoTests
+    public class NetTypeInfoTests : BaseTests
     {
         [Fact]
         public void Can_create_type()
