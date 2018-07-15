@@ -153,7 +153,7 @@ QString NetVariant::getString()
 {
     if(variant.type() != QVariant::String) {
         qDebug() << "Variant is not a string";
-        return "";
+        return QString::null;
     }
 
     return variant.toString();
@@ -263,6 +263,23 @@ void net_variant_setDouble(NetVariantContainer* container, double value) {
 
 double net_variant_getDouble(NetVariantContainer* container) {
     return container->variant->getDouble();
+}
+
+void net_variant_setString(NetVariantContainer* container, LPWSTR value) {
+    if(value == NULL) {
+        container->variant->setString(NULL);
+    } else {
+        QString temp = QString::fromUtf16(value);
+        container->variant->setString(&temp);
+    }
+}
+
+LPWSTR net_variant_getString(NetVariantContainer* container) {
+    QString string = container->variant->getString();
+    if(string.isNull()) {
+        return NULL;
+    }
+    return (LPWSTR)string.utf16();
 }
 
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {

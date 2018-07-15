@@ -56,6 +56,12 @@ namespace Qt.NetCore.Qml
             set => Interop.NetVariant.SetDouble(Handle, value);
         }
         
+        public string String 
+        {
+            get => Interop.NetVariant.GetString(Handle);
+            set => Interop.NetVariant.SetString(Handle, value);
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
@@ -98,6 +104,11 @@ namespace Qt.NetCore.Qml
         void SetDouble(IntPtr variant, double value);
         [NativeSymbol(Entrypoint = "net_variant_getDouble")]
         double GetDouble(IntPtr variant);
+        
+        [NativeSymbol(Entrypoint = "net_variant_setString")]
+        void SetString(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr)]string value);
+        [NativeSymbol(Entrypoint = "net_variant_getString")]
+        [return:MarshalAs(UnmanagedType.LPWStr)]string GetString(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);

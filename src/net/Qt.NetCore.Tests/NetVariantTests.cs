@@ -85,5 +85,19 @@ namespace Qt.NetCore.Tests
             variant.Double = double.MaxValue;
             variant.Double.Should().Be(double.MaxValue);
         }
+        
+        [Fact]
+        public void Can_store_string()
+        {
+            var variant = new NetVariant();
+            variant.String.Should().BeNull();
+            variant.String = "test";
+            variant.VariantType.Should().Be(NetVariantType.String);
+            variant.String.Should().Be("test");
+            variant.String = "";
+            variant.String.Should().Be("");
+            variant.String = null;
+            variant.String.Should().BeNull();
+        }
     }
 }
