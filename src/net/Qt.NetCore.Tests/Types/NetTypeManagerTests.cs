@@ -1,9 +1,11 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Threading;
+using FluentAssertions;
 using Xunit;
 
 namespace Qt.NetCore.Tests.Types
 {
-    public class NetTypeManagerTests
+    public class NetTypeManagerTests : BaseTests
     {
         class TestType
         {
@@ -16,6 +18,13 @@ namespace Qt.NetCore.Tests.Types
             var typeInfo = NetTypeManager.GetTypeInfo<TestType>();
 
             typeInfo.FullTypeName.Should().Be(typeof(TestType).AssemblyQualifiedName);
+        }
+
+        [Fact]
+        public void Null_type_returned_for_invalid_type()
+        {
+            var typeInfo = NetTypeManager.GetTypeInfo("tt");
+            typeInfo.Should().BeNull();
         }
     }
 }

@@ -8,7 +8,12 @@ namespace Qt.NetCore
     {
         public static NetTypeInfo GetTypeInfo<T>()
         {
-            var result = Interop.NetTypeManager.GetTypeInfo(typeof(T).AssemblyQualifiedName);
+            return GetTypeInfo(typeof(T).AssemblyQualifiedName);
+        }
+
+        public static NetTypeInfo GetTypeInfo(string fullTypeName)
+        {
+            var result = Interop.NetTypeManager.GetTypeInfo(fullTypeName);
             return result == IntPtr.Zero ? null : new NetTypeInfo(result);
         }
     }
