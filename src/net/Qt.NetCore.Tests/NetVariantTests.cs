@@ -106,7 +106,7 @@ namespace Qt.NetCore.Tests
         {
             var variant = new NetVariant();
             variant.DateTime.Should().BeNull();
-            variant.DateTime = new DateTime(1988, 9, 3);
+            variant.DateTime = new DateTimeOffset(1988, 9, 3, 0, 0, 0, 0, TimeSpan.FromHours(5));
             variant.VariantType.Should().Be(NetVariantType.DateTime);
             var value = variant.DateTime;
             value.Should().NotBeNull();
@@ -117,6 +117,7 @@ namespace Qt.NetCore.Tests
             value.Value.Minute.Should().Be(0);
             value.Value.Second.Should().Be(0);
             value.Value.Millisecond.Should().Be(0);
+            value.Value.Offset.Should().Be(TimeSpan.FromHours(5));
         }
     }
 }
