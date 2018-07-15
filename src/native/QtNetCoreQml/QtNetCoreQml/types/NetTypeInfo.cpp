@@ -3,9 +3,9 @@
 #include <QtNetCoreQml/types/NetPropertyInfo.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
+    metaObject(NULL),
     _fullTypeName(fullTypeName),
-    _variantType(NetVariantTypeEnum_Invalid),
-    metaObject(NULL) {
+    _variantType(NetVariantTypeEnum_Invalid) {
 
 }
 
