@@ -23,5 +23,8 @@ private:
     bool _canWrite;
 };
 
+struct NetPropertyInfoContainer {
+    QSharedPointer<NetPropertyInfo> property;
+};
 
 #endif // NET_TYPE_INFO_PROPERTY_H

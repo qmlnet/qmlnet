@@ -34,6 +34,11 @@ namespace Qt.NetCore.Internal
                 typeInfo.PrefVariantType = NetVariantType.DateTime;
             else
                 typeInfo.PrefVariantType = NetVariantType.Object;
+
+            // Don't grab properties and methods for system-level types.
+            if (type.IsPrimitive ||
+                type == typeof(string))
+                return;
             
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -56,6 +61,16 @@ namespace Qt.NetCore.Internal
                 }
 
                 typeInfo.AddMethod(methodInfo);
+            }
+
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                var propertyInfo = new NetPropertyInfo(
+                    typeInfo,
+                    property.Name,
+                    NetTypeManager.GetTypeInfo(property.PropertyType.AssemblyQualifiedName),
+                    property.CanRead,
+                    property.CanWrite);
             }
         }
     }

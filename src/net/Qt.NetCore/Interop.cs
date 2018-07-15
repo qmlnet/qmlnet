@@ -14,6 +14,7 @@ namespace Qt.NetCore
             Callbacks = NativeLibraryBuilder.Default.ActivateInterface<ICallbacksIterop>("QtNetCoreQml");
             NetTypeInfo = NativeLibraryBuilder.Default.ActivateInterface<INetTypeInfoInterop>("QtNetCoreQml");
             NetMethodInfo = NativeLibraryBuilder.Default.ActivateInterface<INetMethodInfoInterop>("QtNetCoreQml");
+            NetPropertyInfo = NativeLibraryBuilder.Default.ActivateInterface<INetPropertyInfoInterop>("QtNetCoreQml");
             NetTypeManager = NativeLibraryBuilder.Default.ActivateInterface<INetTypeManagerInterop>("QtNetCoreQml");
 
             var cb = DefaultCallbacks.Callbacks();
@@ -25,6 +26,8 @@ namespace Qt.NetCore
         public static INetTypeInfoInterop NetTypeInfo { get; }
         
         public static INetMethodInfoInterop NetMethodInfo { get; }
+        
+        public static INetPropertyInfoInterop NetPropertyInfo { get; }
         
         public static INetTypeManagerInterop NetTypeManager { get; }
         
