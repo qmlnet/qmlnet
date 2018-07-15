@@ -11,11 +11,11 @@ ApplicationWindow {
 
 	Item {
 		Timer {
-			interval: 1000; running: true; repeat: true
+			interval: 10; running: true; repeat: true
 			onTriggered: {
-				console.log(test.TestProperty)
-				test.TestProperty = ""
-				test.TestMethod()
+				var par = test.Create()
+                test.TestMethod(par)
+                gc()
 			}
 		}
 	}

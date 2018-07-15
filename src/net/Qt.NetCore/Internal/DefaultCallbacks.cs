@@ -234,7 +234,7 @@ namespace Qt.NetCore.Internal
                     destination = source.DateTime;
                     break;
                 case NetVariantType.Object:
-                    destination = source.Instance;
+                    destination = source.Instance.Instance;
                     break;
                 default:
                     throw new Exception("Unsupported variant type.");
