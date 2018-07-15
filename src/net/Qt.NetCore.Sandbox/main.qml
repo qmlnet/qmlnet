@@ -13,9 +13,7 @@ ApplicationWindow {
 		Timer {
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
-				var par = test.Create()
-				test.TestMethod(par)
-				gc()
+				console.log(test.TestProperty)
 			}
 		}
 	}
