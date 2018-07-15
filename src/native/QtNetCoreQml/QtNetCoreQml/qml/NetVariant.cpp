@@ -218,6 +218,10 @@ void net_variant_destroy(NetVariantContainer* container) {
     delete container;
 }
 
+NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
+    return container->variant->getVariantType();
+}
+
 void net_variant_setNetInstance(NetVariantContainer* container, NetInstanceContainer* instanceContainer) {
     if(instanceContainer == NULL) {
         container->variant->setNetInstance(NULL);
@@ -325,8 +329,8 @@ void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* 
     value->offsetSeconds = dt.offsetFromUtc();
 }
 
-NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
-    return container->variant->getVariantType();
+void net_variant_clear(NetVariantContainer* container) {
+    container->variant->clear();
 }
 
 }

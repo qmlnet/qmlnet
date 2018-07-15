@@ -119,5 +119,15 @@ namespace Qt.NetCore.Tests
             value.Value.Millisecond.Should().Be(0);
             value.Value.Offset.Should().Be(TimeSpan.FromHours(5));
         }
+
+        [Fact]
+        public void Can_clear_value()
+        {
+            var variant = new NetVariant();
+            variant.String = "test";
+            variant.VariantType.Should().Be(NetVariantType.String);
+            variant.Clear();
+            variant.VariantType.Should().Be(NetVariantType.Invalid);
+        }
     }
 }
