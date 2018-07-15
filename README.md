@@ -15,7 +15,9 @@ The intended platforms to support include:
   * OSX
   * Windows
 
-# The idea
+*As of now, the only focus is on **.NET Core** (Linux/OSX/Window). The other frameworks should theoretically work though. Drop us an issue if you have any problems. When there is enough demand and userbase, I'd be happy to fully bring in other frameworks.*
+
+## The idea
 
 **Define a .NET type (POCO)**
 
@@ -90,7 +92,7 @@ using (var app = new QGuiApplication(r))
 }
 ```
 
-**Using the .NET type in Qml**
+**Use the .NET type in Qml**
 
 ```js
 import QtQuick 2.7
@@ -128,13 +130,19 @@ ApplicationWindow {
 }
 ```
 
-## Building
+## Building and running
 
-Setting up an environment is simple, but takes many steps.
+Setting up an environment takes a little effort, but it is easy enough.
 
 1. Install Qt and Qt Creator.
-2. Build ```src\native\QtNetCoreQml\QtNetCoreQml.pro```.
-3. Open ```src\net\Qt.NetCore.sln``` and run! The ```PATH``` is auto-configured when running in ```Debug``` mode.
+2. Build and deploy ```src/native/QtNetCoreQml/QtNetCoreQml.pro```.
+3. Open ```src/net/Qt.NetCore.sln``` and run the sandbox! *Mark sure your ```LD_LIBRARY_PATH``` (etc) is setup for your app to properly find your ```QtNetCoreQml``` installation.*
+
+There will be a proper NuGet/MyGet feed shortly.
+
+Also, there is no plans to ever bundle the native libraries into the NuGet packages considering the complexity of a traditional Qt installation. It will always be recommend/required to install the native ```QtNetCoreQml``` on the OS of your choice.
+
+## Things
 
 ## Things left to do
 
@@ -143,3 +151,5 @@ Setting up an environment is simple, but takes many steps.
 - [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in Qml. This will allow Qml to bind to .NET properties.
 - [ ] .NET Events to signals
 - [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
+- [ ] General perf improvements (particularly with reflection).
+- [ ] NuGet/MyGet feed.
