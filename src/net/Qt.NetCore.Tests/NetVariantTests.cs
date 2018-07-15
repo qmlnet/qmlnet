@@ -74,5 +74,16 @@ namespace Qt.NetCore.Tests
             variant.UInt = uint.MaxValue;
             variant.UInt.Should().Be(uint.MaxValue);
         }
+        
+        [Fact]
+        public void Can_store_double()
+        {
+            var variant = new NetVariant();
+            variant.Double = double.MinValue;
+            variant.VariantType.Should().Be(NetVariantType.Double);
+            variant.Double.Should().Be(double.MinValue);
+            variant.Double = double.MaxValue;
+            variant.Double.Should().Be(double.MaxValue);
+        }
     }
 }
