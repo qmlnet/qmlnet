@@ -14,6 +14,7 @@ ApplicationWindow {
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
 				console.log(test.TestProperty)
+				test.TestProperty = ""
 			}
 		}
 	}

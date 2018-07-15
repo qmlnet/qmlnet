@@ -2,6 +2,7 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
 #include <QtNetCoreQml/types/NetMethodInfo.h>
 #include <QtNetCoreQml/types/NetPropertyInfo.h>
+#include <QtNetCoreQml/types/Callbacks.h>
 #include <QQmlEngine>
 #include <QDebug>
 #include <private/qmetaobjectbuilder_p.h>
@@ -46,7 +47,7 @@ void metaPackValue(QSharedPointer<NetVariant> source, QVariant* destination) {
     }
 }
 
-void metaUnpackValue(NetVariant* destination, QVariant* source, NetVariantTypeEnum prefType) {
+void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, NetVariantTypeEnum prefType) {
     bool ok = false;
 
     if(source->isNull()) {
@@ -249,5 +250,39 @@ NetValueMetaObject::NetValueMetaObject(QObject *value,
 
 int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 {
+    switch(c) {
+    case ReadProperty:
+    {
+        int offset = propertyOffset();
+        if (idx < offset) {
+            return value->qt_metacall(c, idx, a);
+        }
 
+        QSharedPointer<NetPropertyInfo> propertyInfo = instance->getTypeInfo()->getProperty(idx - offset);
+
+        QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
+        readProperty(propertyInfo, instance, result);
+
+        metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
+    }
+    case WriteProperty:
+    {
+        int offset = propertyOffset();
+        if (idx < offset) {
+            return value->qt_metacall(c, idx, a);
+        }
+
+        QSharedPointer<NetPropertyInfo> propertyInfo = instance->getTypeInfo()->getProperty(idx - offset);
+
+        QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
+        metaUnpackValue(newValue, reinterpret_cast<QVariant*>(a[0]), propertyInfo->getReturnType()->getPrefVariantType());
+
+        writeProperty(propertyInfo, instance, newValue);
+    }
+        break;
+    default:
+        break; // Unhandled.
+    }
+
+    return -1;
 }

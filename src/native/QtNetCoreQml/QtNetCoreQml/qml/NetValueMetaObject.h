@@ -22,7 +22,6 @@ protected:
 private:
     QObject *value;
     QSharedPointer<NetInstance> instance;
-    int signalCount;
 };
 
 #endif // NETVALUEMETAOBJECT_H

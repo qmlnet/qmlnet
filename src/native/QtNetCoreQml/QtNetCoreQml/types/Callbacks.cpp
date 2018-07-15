@@ -46,6 +46,28 @@ QSharedPointer<NetInstance> instantiateType(QSharedPointer<NetTypeInfo> type) {
     }
 }
 
+void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetInstance> target, QSharedPointer<NetVariant> result) {
+    NetPropertyInfoContainer* propertyContainer = new NetPropertyInfoContainer();
+    propertyContainer->property = property;
+    NetInstanceContainer* targetContainer = new NetInstanceContainer();
+    targetContainer->instance = target;
+    NetVariantContainer* valueContainer = new NetVariantContainer();
+    valueContainer->variant = result;
+    sharedCallbacks.readProperty(propertyContainer, targetContainer, valueContainer);
+    // The callbacks dispose of the types.
+}
+
+void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetInstance> target, QSharedPointer<NetVariant> value) {
+    NetPropertyInfoContainer* propertyContainer = new NetPropertyInfoContainer();
+    propertyContainer->property = property;
+    NetInstanceContainer* targetContainer = new NetInstanceContainer();
+    targetContainer->instance = target;
+    NetVariantContainer* resultContainer = new NetVariantContainer();
+    resultContainer->variant = value;
+    sharedCallbacks.writeProperty(propertyContainer, targetContainer, resultContainer);
+    // The callbacks dispose of the types.
+}
+
 extern "C" {
 
 void type_info_callbacks_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
