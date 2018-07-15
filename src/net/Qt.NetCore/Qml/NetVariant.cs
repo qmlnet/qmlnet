@@ -25,6 +25,12 @@ namespace Qt.NetCore.Qml
             }
             set => Interop.NetVariant.SetNetInstance(Handle, value?.Handle ?? IntPtr.Zero);
         }
+
+        public bool Bool
+        {
+            get => Interop.NetVariant.GetBool(Handle);
+            set => Interop.NetVariant.SetBool(Handle, value);
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -43,6 +49,11 @@ namespace Qt.NetCore.Qml
         void SetNetInstance(IntPtr variant, IntPtr instance);
         [NativeSymbol(Entrypoint = "net_variant_getNetInstance")]
         IntPtr GetNetInstance(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setBool")]
+        void SetBool(IntPtr variant, bool value);
+        [NativeSymbol(Entrypoint = "net_variant_getBool")]
+        bool GetBool(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);

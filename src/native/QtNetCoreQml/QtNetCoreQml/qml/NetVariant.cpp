@@ -225,6 +225,14 @@ NetInstanceContainer* net_variant_getNetInstance(NetVariantContainer* container)
     return result;
 }
 
+void net_variant_setBool(NetVariantContainer* container, bool value) {
+    container->variant->setBool(value);
+}
+
+bool net_variant_getBool(NetVariantContainer* container) {
+    return container->variant->getBool();
+}
+
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
 }
