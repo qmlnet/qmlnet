@@ -5,6 +5,7 @@
 #include <QSharedPointer>
 
 struct QGuiApplicationContainer {
+    int argCount;
     QSharedPointer<QGuiApplication> guiApp;
 };
 
