@@ -37,8 +37,10 @@ namespace Qt.NetCore.Internal
             
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                if (method.DeclaringType == typeof(Object)) continue;
-
+                if(method.DeclaringType == null) continue;
+                if(method.DeclaringType == typeof(Object)) continue;
+                if(method.DeclaringType.IsPrimitive) continue;
+                
                 NetTypeInfo returnType = null;
 
                 if (method.ReturnParameter != null && method.ReturnParameter.ParameterType != typeof(void))
@@ -48,10 +50,10 @@ namespace Qt.NetCore.Internal
 
                 var methodInfo = new NetMethodInfo(typeInfo, method.Name, returnType);
 
-//                foreach (var parameter in method.GetParameters())
-//                {
-//                    methodInfo.AddParameter(parameter.Name, NetTypeInfoManager.GetTypeInfo(parameter.ParameterType));
-//                }
+                foreach (var parameter in method.GetParameters())
+                {
+                    methodInfo.AddParameter(parameter.Name, NetTypeManager.GetTypeInfo(parameter.ParameterType.AssemblyQualifiedName));
+                }
 
                 typeInfo.AddMethod(methodInfo);
             }

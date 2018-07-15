@@ -42,7 +42,6 @@ uint NetTypeInfo::getMethodCount() {
 
 QSharedPointer<NetMethodInfo> NetTypeInfo::getMethodInfo(uint index) {
     if(index >= (uint)_methods.length()) return QSharedPointer<NetMethodInfo>(NULL);
-
     return _methods.at(index);
 }
 
@@ -80,7 +79,7 @@ void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantT
 }
 
 void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
-    netTypeInfo->netTypeInfo->addMethod(methodInfo->methodInfo);
+    netTypeInfo->netTypeInfo->addMethod(methodInfo->method);
 }
 
 uint type_info_getMethodCount(NetTypeInfoContainer* container) {
@@ -93,7 +92,7 @@ NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container,
         return NULL;
     }
     NetMethodInfoContainer* result = new NetMethodInfoContainer();
-    result->methodInfo = methodInfo;
+    result->method = methodInfo;
     return result;
 }
 
