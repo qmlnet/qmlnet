@@ -69,12 +69,12 @@ namespace Qt.NetCore.Types
     public interface INetTypeInfoInterop
     {
         [NativeSymbol(Entrypoint = "type_info_create")]
-        IntPtr Create([MarshalAs(UnmanagedType.LPStr)]string fullTypeName);
+        IntPtr Create([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
         [NativeSymbol(Entrypoint = "type_info_destroy")]
         void Destroy(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_getFullTypeName")]
-        [return: MarshalAs(UnmanagedType.LPStr)]string GetFullTypeName(IntPtr netTypeInfo);
+        [return: MarshalAs(UnmanagedType.LPWStr)]string GetFullTypeName(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_setClassName")]
         void SetClassName(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string className);

@@ -40,7 +40,7 @@ namespace Qt.NetCore.Qml
         int Load(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
         
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
-        int RegisterType([MarshalAs(UnmanagedType.LPWStr)]string typeName, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
+        int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
     }
 
 }

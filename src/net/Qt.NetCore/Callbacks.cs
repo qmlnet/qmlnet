@@ -20,7 +20,7 @@ namespace Qt.NetCore
         void RegisterCallbacks(ref Callbacks callbacks);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_isTypeValid")]
-        bool IsTypeValid([MarshalAs(UnmanagedType.LPStr)]string typeName);
+        bool IsTypeValid([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseGCHandle")]
         void ReleaseGCHandle(IntPtr handle);
@@ -52,7 +52,7 @@ namespace Qt.NetCore
         InstantiateTypeDelgate _instantiateTypeDelgate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPStr)]string typeName);
+        delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void BuildTypeInfoDelegate(IntPtr typeInfo);
