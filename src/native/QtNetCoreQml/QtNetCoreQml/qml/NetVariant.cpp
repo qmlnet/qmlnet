@@ -233,6 +233,14 @@ bool net_variant_getBool(NetVariantContainer* container) {
     return container->variant->getBool();
 }
 
+void net_variant_setChar(NetVariantContainer* container, ushort value) {
+    container->variant->setChar(value);
+}
+
+ushort net_variant_getChar(NetVariantContainer* container) {
+    return (ushort)container->variant->getChar().unicode();
+}
+
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
 }

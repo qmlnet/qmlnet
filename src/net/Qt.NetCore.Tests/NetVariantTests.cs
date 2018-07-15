@@ -41,5 +41,16 @@ namespace Qt.NetCore.Tests
             variant.Bool = false;
             variant.Bool.Should().BeFalse();
         }
+
+        [Fact]
+        public void Can_store_char()
+        {
+            var variant = new NetVariant();
+            variant.Char = 'Ώ';
+            variant.VariantType.Should().Be(NetVariantType.Char);
+            variant.Char.Should().Be('Ώ');
+            variant.Char = ' ';
+            variant.Char.Should().Be(' ');
+        }
     }
 }
