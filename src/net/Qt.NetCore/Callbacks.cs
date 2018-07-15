@@ -11,6 +11,7 @@ namespace Qt.NetCore
         public IntPtr IsTypeValid;
         public IntPtr BuildTypeInfo;
         public IntPtr ReleaseGCHandle;
+        public IntPtr InstantiateType;
     }
 
     public interface ICallbacksIterop
@@ -26,6 +27,9 @@ namespace Qt.NetCore
         
         [NativeSymbol(Entrypoint = "type_info_callbacks_buildTypeInfo")]
         void BuildTypeInfo(IntPtr handle);
+
+        [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
+        IntPtr InstantiateType(IntPtr type);
     }
 
     public interface ICallbacks
@@ -35,6 +39,8 @@ namespace Qt.NetCore
         void ReleaseGCHandle(IntPtr handle);
         
         void BuildTypeInfo(NetTypeInfo typeInfo);
+
+        NetInstance InstantiateType(NetTypeInfo typeInfo);
     }
     
     public class CallbacksImpl
@@ -43,6 +49,7 @@ namespace Qt.NetCore
         IsTypeValidDelegate _isTypeValidDelegate;
         BuildTypeInfoDelegate _buildTypeInfoDelegate;
         ReleaseGCHandleDelegate _releaseGCHandleDelegate;
+        InstantiateTypeDelgate _instantiateTypeDelgate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPStr)]string typeName);
@@ -52,6 +59,9 @@ namespace Qt.NetCore
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ReleaseGCHandleDelegate(IntPtr handle);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate IntPtr InstantiateTypeDelgate(IntPtr typeInfo);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -65,6 +75,9 @@ namespace Qt.NetCore
             
             _buildTypeInfoDelegate = BuildTypeInfo;
             GCHandle.Alloc(_buildTypeInfoDelegate);
+            
+            _instantiateTypeDelgate = InstantiateType;
+            GCHandle.Alloc(_instantiateTypeDelgate);
         }
 
         private bool IsTypeValid(string typeName)
@@ -81,6 +94,12 @@ namespace Qt.NetCore
         {
             _callbacks.BuildTypeInfo(new NetTypeInfo(typeInfo));
         }
+        
+        private IntPtr InstantiateType(IntPtr typeInfo)
+        {
+            var instance = _callbacks.InstantiateType(new NetTypeInfo(typeInfo));
+            return instance?.Handle ?? IntPtr.Zero;
+        }
 
         public Callbacks Callbacks()
         {
@@ -88,7 +107,8 @@ namespace Qt.NetCore
             {
                 IsTypeValid = Marshal.GetFunctionPointerForDelegate(_isTypeValidDelegate),
                 BuildTypeInfo = Marshal.GetFunctionPointerForDelegate(_buildTypeInfoDelegate),
-                ReleaseGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseGCHandleDelegate)
+                ReleaseGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseGCHandleDelegate),
+                InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate)
             };
         }
     }

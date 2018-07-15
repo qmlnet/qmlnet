@@ -4,6 +4,7 @@
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*releaseGCHandleCb)(NetGCHandle* handle);
+typedef NetInstanceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* typeInfo);
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
@@ -11,6 +12,7 @@ struct NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
     buildTypeInfoCb buildTypeInfo;
     releaseGCHandleCb releaseGCHandle;
+    instantiateTypeCb instantiateType;
 };
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
@@ -29,6 +31,17 @@ void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
     sharedCallbacks.buildTypeInfo(container);
 }
 
+QSharedPointer<NetInstance> instantiateType(QSharedPointer<NetTypeInfo> type) {
+    NetTypeInfoContainer* container = new NetTypeInfoContainer();
+    container->netTypeInfo = type;
+    NetInstanceContainer* result = sharedCallbacks.instantiateType(container);
+    if(result == NULL) {
+        return QSharedPointer<NetInstance>(NULL);
+    } else {
+        return result->instance;
+    }
+}
+
 extern "C" {
 
 void type_info_callbacks_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
@@ -45,6 +58,10 @@ void type_info_callbacks_releaseGCHandle(NetGCHandle* handle) {
 
 void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* typeInfo) {
     sharedCallbacks.buildTypeInfo(typeInfo);
+}
+
+NetInstanceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* typeInfo) {
+    return sharedCallbacks.instantiateType(typeInfo);
 }
 
 }
