@@ -16,7 +16,23 @@ namespace Qt.NetCore.Internal
             if(type == null) throw new InvalidOperationException();
             
             typeInfo.ClassName = type.Name;
-            Console.WriteLine(typeInfo.ClassName);
+
+            if (type == typeof(bool))
+                typeInfo.PrefVariantType = NetVariantType.Bool;
+            else if (type == typeof(char))
+                typeInfo.PrefVariantType = NetVariantType.Char;
+            else if (type == typeof(int))
+                typeInfo.PrefVariantType = NetVariantType.Int;
+            else if (type == typeof(uint))
+                typeInfo.PrefVariantType = NetVariantType.UInt;
+            else if (type == typeof(double))
+                typeInfo.PrefVariantType = NetVariantType.Double;
+            else if (type == typeof(string))
+                typeInfo.PrefVariantType = NetVariantType.String;
+            else if (type == typeof(DateTime))
+                typeInfo.PrefVariantType = NetVariantType.DateTime;
+            else
+                typeInfo.PrefVariantType = NetVariantType.Object;
         }
     }
 }

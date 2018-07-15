@@ -16,9 +16,13 @@ public:
     QString getClassName();
     void setClassName(QString className);
 
+    NetVariantTypeEnum getPrefVariantType();
+    void setPrefVariantType(NetVariantTypeEnum variantType);
+
 private:
     QString _fullTypeName;
     QString _className;
+    NetVariantTypeEnum _variantType;
 };
 
 struct NetTypeInfoContainer {
