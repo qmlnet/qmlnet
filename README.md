@@ -1,6 +1,6 @@
 # Qt/Qml support for .NET/.NET Core on Linux/OSX/Windows
 
-This is a work-in-progress to bridge .NET to Qml in a seamless way.
+This is a work-in-progress (but usable) to bridge .NET to Qml in a seamless way.
 
 To see what is currently working, check out the [unit tests](https://github.com/pauldotknopf/net-core-qml/tree/master/src/net/Qt.NetCore.Tests). Checkout the outstanding items that need to be done [here](#things-left-to-do).
 
@@ -150,6 +150,7 @@ Also, there is no plans to ever bundle the native libraries into the NuGet packa
 
 ## Things left to do
 
+- [ ] Compiling Qml resource files and bundling them within .NET.
 - [ ] Passing dynamic javascript objects to .NET as ```dynamic```. They will be either a live mutable instance, or as a JSON serialized snapshot of the object.
 - [ ] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 - [ ] Cancellable async tasks.
