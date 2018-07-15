@@ -1,14 +1,21 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
+using Qt.NetCore.Internal;
 
 namespace Qt.NetCore
 {
     public class NetTypeInfo : BaseDisposable
     {
         public NetTypeInfo(string fullTypeName)
-            :base(Interop.NetTypeInfo.Create(fullTypeName))
+            :this(Interop.NetTypeInfo.Create(fullTypeName))
         {
+        }
+
+        public NetTypeInfo(IntPtr handle, bool ownsHandle = true)
+            :base(handle, ownsHandle)
+        {
+            
         }
 
         public string FullTypeName => Interop.NetTypeInfo.GetFullTypeName(Handle);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Qt.NetCore
+namespace Qt.NetCore.Internal
 {
     public abstract class BaseDisposable : IDisposable
     {
