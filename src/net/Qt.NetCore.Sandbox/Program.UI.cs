@@ -15,7 +15,7 @@ namespace Qt.NetCore.Sandbox
             {
                 using (var engine = new QQmlApplicationEngine())
                 {
-                    QQmlApplicationEngine.RegisterType<TestQmlImport>();
+                    QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
                     
                     engine.Load("main.qml");
 
