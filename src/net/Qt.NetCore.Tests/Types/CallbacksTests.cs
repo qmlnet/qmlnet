@@ -49,5 +49,27 @@ namespace Qt.NetCore.Tests.Types
                 Interop.SetDefaultCallbacks();
             }
         }
+
+        [Fact]
+        public void Can_release_gc_handle()
+        {
+            try
+            {
+                var callbacks = new Mock<ICallbacks>();
+                IntPtr handle = IntPtr.Zero;
+                callbacks.Setup(x => x.ReleaseGCHandle(It.IsAny<IntPtr>()))
+                    .Callback(new Action<IntPtr>(x => handle = x));
+
+                Interop.RegisterCallbacks(callbacks.Object);
+                Interop.Callbacks.ReleaseGCHandle(new IntPtr(3));
+
+                callbacks.Verify(x => x.ReleaseGCHandle(It.IsAny<IntPtr>()), Times.Once);
+                handle.Should().Be(new IntPtr(3));
+            }
+            finally
+            {
+                Interop.SetDefaultCallbacks();
+            }
+        }
     }
 }

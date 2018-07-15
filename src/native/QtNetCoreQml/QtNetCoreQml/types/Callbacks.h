@@ -8,6 +8,8 @@
 
 bool isTypeValid(QString type);
 
+void releaseGCHandle(NetGCHandle* handle);
+
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
 #endif // NET_TYPE_INFO_MANAGER_H

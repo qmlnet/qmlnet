@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Internal
@@ -76,6 +77,12 @@ namespace Qt.NetCore.Internal
             }
         }
 
+        public void ReleaseGCHandle(IntPtr handle)
+        {
+            var h = (GCHandle)handle;
+            h.Free();
+        }
+        
         private bool IsPrimitive(Type type)
         {
             if (type == typeof(Object))
