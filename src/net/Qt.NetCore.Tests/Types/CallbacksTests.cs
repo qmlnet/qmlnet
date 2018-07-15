@@ -71,5 +71,29 @@ namespace Qt.NetCore.Tests.Types
                 Interop.SetDefaultCallbacks();
             }
         }
+        
+        [Fact]
+        public void Can_instantiate_type()
+        {
+            try
+            {
+                var callbacks = new Mock<ICallbacks>();
+                NetTypeInfo typeInfo = null;
+                callbacks.Setup(x => x.InstantiateType(It.IsAny<NetTypeInfo>()))
+                    .Callback(new Action<NetTypeInfo>(x => typeInfo = x))
+                    .Returns(new NetInstance(new IntPtr(3), false /*this is a fake handle, don't delete it*/));
+
+                Interop.RegisterCallbacks(callbacks.Object);
+                var result = Interop.Callbacks.InstantiateType(new NetTypeInfo("test").Handle);
+
+                callbacks.Verify(x => x.InstantiateType(It.IsAny<NetTypeInfo>()), Times.Once);
+                typeInfo.FullTypeName.Should().Be("test");
+                result.Should().Be(new IntPtr(3));
+            }
+            finally
+            {
+                Interop.SetDefaultCallbacks();
+            }
+        }
     }
 }

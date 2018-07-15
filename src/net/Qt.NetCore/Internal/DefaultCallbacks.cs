@@ -83,6 +83,16 @@ namespace Qt.NetCore.Internal
             h.Free();
         }
         
+        public NetInstance InstantiateType(NetTypeInfo typeInfo)
+        {
+            if (typeInfo == null) return null;
+            var type = Type.GetType(typeInfo.FullTypeName);
+            if(type == null) throw new InvalidOperationException($"Invalid type {typeInfo.FullTypeName}");
+            var instance = Activator.CreateInstance(type);
+            var instanceHandle = GCHandle.Alloc(instance);
+            return new NetInstance(GCHandle.ToIntPtr(instanceHandle), typeInfo);
+        }
+        
         private bool IsPrimitive(Type type)
         {
             if (type == typeof(Object))
