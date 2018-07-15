@@ -239,13 +239,15 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
 NetValueMetaObject::NetValueMetaObject(QObject *value,
                                        QSharedPointer<NetInstance> instance) :
     value(value),
-    instance(instance),
-    signalCount(0)
+    instance(instance)
 {
+    *static_cast<QMetaObject *>(this) = *metaObjectFor(instance->getTypeInfo());
 
+    QObjectPrivate *objPriv = QObjectPrivate::get(value);
+    objPriv->metaObject = this;
 }
 
 int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 {
-    return -1;
+
 }
