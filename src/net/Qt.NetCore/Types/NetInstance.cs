@@ -21,8 +21,10 @@ namespace Qt.NetCore.Types
         public static NetInstance CreateFromObject(object value)
         {
             if (value == null) return null;
+            var typeInfo = NetTypeManager.GetTypeInfo(value.GetType().AssemblyQualifiedName);
+            if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
-            return new NetInstance(GCHandle.ToIntPtr(handle), NetTypeManager.GetTypeInfo(value.GetType().AssemblyQualifiedName));
+            return new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
         }
 
         public object Instance
