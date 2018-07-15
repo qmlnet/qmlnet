@@ -142,10 +142,16 @@ There will be a proper NuGet/MyGet feed shortly.
 
 Also, there is no plans to ever bundle the native libraries into the NuGet packages considering the complexity of a traditional Qt installation. It will always be recommend/required to install the native ```QtNetCoreQml``` on the OS of your choice.
 
-## Things
+## Currently implemented
+
+- [x] Support for all the basic Qml types and the back-and-forth between them (``DateTime```, ```string```, etc).
+- [x] Reading/setting properties on .NET objects.
+- [x] Invoking methods on .NET obejcts.
 
 ## Things left to do
 
+- [ ] Passing dynamic javascript objects to .NET as ```dynamic```. They will be either a live mutable instance, or as a JSON serialized snapshot of the object.
+- [ ] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 - [ ] Cancellable async tasks.
 - [ ] Return value from async tasks.
 - [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in Qml. This will allow Qml to bind to .NET properties.
