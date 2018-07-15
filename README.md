@@ -144,7 +144,7 @@ Also, there is no plans to ever bundle the native libraries into the NuGet packa
 
 ## Currently implemented
 
-- [x] Support for all the basic Qml types and the back-and-forth between them (``DateTime```, ```string```, etc).
+- [x] Support for all the basic Qml types and the back-and-forth between them (```DateTime```, ```string```, etc).
 - [x] Reading/setting properties on .NET objects.
 - [x] Invoking methods on .NET obejcts.
 
