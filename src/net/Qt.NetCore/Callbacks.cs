@@ -15,6 +15,7 @@ namespace Qt.NetCore
         public IntPtr InstantiateType;
         public IntPtr ReadProperty;
         public IntPtr WriteProperty;
+        public IntPtr InvokeMethod;
     }
 
     public interface ICallbacksIterop
@@ -39,6 +40,9 @@ namespace Qt.NetCore
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_writeProperty")]
         void WriteProperty(IntPtr property, IntPtr target, IntPtr value);
+
+        [NativeSymbol(Entrypoint = "type_info_callbacks_invokeMethod")]
+        void InvokeMethod(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
     }
 
     public interface ICallbacks
@@ -54,6 +58,8 @@ namespace Qt.NetCore
         void ReadProperty(NetPropertyInfo property, NetInstance target, NetVariant result);
 
         void WriteProperty(NetPropertyInfo property, NetInstance target, NetVariant value);
+
+        void InvokeMethod(NetMethodInfo method, NetInstance target, NetVariantList parameters, NetVariant result);
     }
     
     public class CallbacksImpl
@@ -65,6 +71,7 @@ namespace Qt.NetCore
         InstantiateTypeDelgate _instantiateTypeDelgate;
         ReadPropertyDelegate _readPropertyDelegate;
         WritePropertyDelegate _writePropertyDelegate;
+        InvokeMethodDelegate _invokeMethodDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
@@ -83,6 +90,9 @@ namespace Qt.NetCore
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void WritePropertyDelegate(IntPtr property, IntPtr target, IntPtr value);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void InvokeMethodDelegate(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -105,6 +115,9 @@ namespace Qt.NetCore
 
             _writePropertyDelegate = WriteProperty;
             GCHandle.Alloc(_writePropertyDelegate);
+
+            _invokeMethodDelegate = InvokeMethod;
+            GCHandle.Alloc(_invokeMethodDelegate);
         }
 
         private bool IsTypeValid(string typeName)
@@ -126,7 +139,7 @@ namespace Qt.NetCore
         {
             return GCHandle.ToIntPtr(_callbacks.InstantiateType(typeName));
         }
-
+        
         private void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
         {
             using (var property = new NetPropertyInfo(p))
@@ -155,6 +168,30 @@ namespace Qt.NetCore
             }
         }
 
+        private void InvokeMethod(IntPtr m, IntPtr t, IntPtr v, IntPtr r)
+        {
+            using (var method = new NetMethodInfo(m))
+            {
+                using (var target = new NetInstance(t))
+                {
+                    using (var variants = new NetVariantList(v))
+                    {
+                        if (r == IntPtr.Zero)
+                        {
+                            _callbacks.InvokeMethod(method, target, variants, null);
+                        }
+                        else
+                        {
+                            using (var result = new NetVariant(r))
+                            {
+                                _callbacks.InvokeMethod(method, target, variants, result);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public Callbacks Callbacks()
         {
             return new Callbacks
@@ -164,7 +201,8 @@ namespace Qt.NetCore
                 ReleaseGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseGCHandleDelegate),
                 InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
                 ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),
-                WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate)
+                WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate),
+                InvokeMethod = Marshal.GetFunctionPointerForDelegate(_invokeMethodDelegate)
             };
         }
     }

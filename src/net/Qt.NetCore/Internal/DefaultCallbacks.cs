@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Qt.NetCore.Qml;
@@ -121,6 +122,44 @@ namespace Qt.NetCore.Internal
             Unpackvalue(ref newValue, value);
 
             propertInfo.SetValue(o, newValue);
+        }
+
+        public void InvokeMethod(NetMethodInfo method, NetInstance target, NetVariantList parameters, NetVariant result)
+        {
+            var instance = target.Instance;
+            
+            List<object> methodParameters = null;
+
+            if (parameters.Count > 0)
+            {
+                methodParameters = new List<object>();
+                int parameterCount = parameters.Count;
+                for (var x = 0; x < parameterCount; x++)
+                {
+                    object v = null;
+                    Unpackvalue(ref v, parameters.Get(x));
+                    methodParameters.Add(v);
+                }
+            }
+
+            var methodInfo = instance.GetType()
+                .GetMethod(method.MethodName, BindingFlags.Instance | BindingFlags.Public);
+
+            if (methodInfo == null)
+            {
+                throw new InvalidOperationException($"Invalid method name {method.MethodName}");
+            }
+            
+            var r = methodInfo.Invoke(instance, methodParameters?.ToArray());
+
+            if (result == null)
+            {
+                // this method doesn't have return type
+            }
+            else
+            {
+                PackValue(ref r, result);
+            }
         }
 
         private bool IsPrimitive(Type type)

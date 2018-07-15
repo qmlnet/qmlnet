@@ -1,7 +1,4 @@
 #include <QtNetCoreQml/types/Callbacks.h>
-#include <QtNetCoreQml/types/NetPropertyInfo.h>
-#include <QtNetCoreQml/qml/NetVariant.h>
-#include <iostream>
 
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
@@ -9,8 +6,7 @@ typedef void (*releaseGCHandleCb)(NetGCHandle* handle);
 typedef NetGCHandle* (*instantiateTypeCb)(LPWSTR typeName);
 typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result);
 typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value);
-
-void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
+typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetInstanceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
 
 struct NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
@@ -19,9 +15,12 @@ struct NetTypeInfoManagerCallbacks {
     instantiateTypeCb instantiateType;
     readPropertyCb readProperty;
     writePropertyCb writeProperty;
+    invokeMethodCb invokeMethod;
 };
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
+
+void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
 bool isTypeValid(QString type) {
     return sharedCallbacks.isTypeValid((LPWSTR)type.utf16());
@@ -68,6 +67,23 @@ void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetI
     // The callbacks dispose of the types.
 }
 
+void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetInstance> target, QSharedPointer<NetVariantList> parameters, QSharedPointer<NetVariant> result) {
+    NetMethodInfoContainer* methodContainer = new NetMethodInfoContainer();
+    methodContainer->method = method;
+    NetInstanceContainer* targetContainer = new NetInstanceContainer();
+    targetContainer->instance = target;
+    NetVariantListContainer* parametersContainer = new NetVariantListContainer();
+    parametersContainer->list = parameters;
+    NetVariantContainer* resultContainer = NULL;
+    if(result != NULL) {
+        // The result is nullable (no return type)
+        resultContainer = new NetVariantContainer();
+        resultContainer->variant = result;
+    }
+    sharedCallbacks.invokeMethod(methodContainer, targetContainer, parametersContainer, resultContainer);
+    // The callbacks dispose of types.
+}
+
 extern "C" {
 
 void type_info_callbacks_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
@@ -96,6 +112,10 @@ void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetIns
 
 void type_info_callbacks_writeProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value) {
     sharedCallbacks.writeProperty(property, target, value);
+}
+
+void type_info_callbacks_invokeMethod(NetMethodInfoContainer* method, NetInstanceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result) {
+    sharedCallbacks.invokeMethod(method, target, parameters, result);
 }
 
 }

@@ -133,6 +133,8 @@ void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, N
         }
         break;
     }
+    default:
+        break;
     }
 
     switch(source->type()) {
@@ -278,6 +280,40 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         metaUnpackValue(newValue, reinterpret_cast<QVariant*>(a[0]), propertyInfo->getReturnType()->getPrefVariantType());
 
         writeProperty(propertyInfo, instance, newValue);
+    }
+        break;
+    case  InvokeMetaMethod:
+    {
+        int offset = methodOffset();
+        if (idx < offset) {
+            return value->qt_metacall(c, idx, a);
+        }
+
+        QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx - offset);
+
+        QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
+
+        if(methodInfo->getParameterCount() > 0) {
+            for(uint index = 0; index <= methodInfo->getParameterCount() - 1; index++)
+            {
+                QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
+
+                QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
+                metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), parameter->getType()->getPrefVariantType());
+                parameters->add(netVariant);
+            }
+        }
+
+        QSharedPointer<NetVariant> result;
+        if(methodInfo->getReturnType() != NULL) {
+            result = QSharedPointer<NetVariant>(new NetVariant());
+        }
+
+        invokeNetMethod(methodInfo, instance, parameters, result);
+
+        if(result != NULL) {
+            metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
+        }
     }
         break;
     default:
