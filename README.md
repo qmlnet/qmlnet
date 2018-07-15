@@ -59,6 +59,19 @@ public class QmlType
         string result = qObject.PropertyDefinedInCpp;
         qObject.MethodDefinedInCpp(result);
     }
+    
+    /// <summary>
+    /// Async methods can be invoked with continuations happening on Qt's main thread.
+    /// </summary>
+    public async Task TestAsync()
+    {
+        Console.WriteLine("Hello from UI thread!");
+        await Task.Run(() =>
+        {
+            Console.WriteLine("Hello from background thread!");
+        });
+        Console.WriteLine("Welcome back to the UI thread!");
+    }
 }
 ```
 
@@ -125,9 +138,8 @@ Setting up an environment is simple, but takes many steps.
 
 ## Things left to do
 
-- [ ] .NET Task Scheduler/Dispatcher - Support dispatching delegates from C# to Qt's UI thread.
-- [ ] ```async``` and ```await``` support.
+- [ ] Cancellable async tasks.
+- [ ] Return value from async tasks.
 - [ ] ```INotifyPropertyChanged``` support for signal notification of property changes in Qml. This will allow Qml to bind to .NET properties.
 - [ ] .NET Events to signals
 - [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
-- [ ] CI server for unit tests and deliverables
