@@ -13,6 +13,11 @@ namespace Qt.NetCore.Qml
             
         }
 
+        public int Exec()
+        {
+            return Interop.QGuiApplication.Exec(Handle);
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.QGuiApplication.Destroy(ptr);
@@ -25,6 +30,9 @@ namespace Qt.NetCore.Qml
         IntPtr Create();
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
         void Destroy(IntPtr app);
+
+        [NativeSymbol(Entrypoint = "qguiapplication_exec")]
+        int Exec(IntPtr app);
     }
     
 }
