@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
 
@@ -27,6 +28,11 @@ namespace Qt.NetCore.Qml
         [NativeSymbol(Entrypoint = "net_variant_destroy")]
         void Destroy(IntPtr variant);
 
+        [NativeSymbol(Entrypoint = "net_variant_setNetInstance")]
+        void SetNetInstance(IntPtr variant, IntPtr instance);
+        [NativeSymbol(Entrypoint = "net_variant_getNetInstance")]
+        IntPtr GetNetInstance(IntPtr variant);
+        
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);
     }

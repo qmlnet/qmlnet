@@ -21,6 +21,7 @@ namespace Qt.NetCore
             QGuiApplication = NativeLibraryBuilder.Default.ActivateInterface<IQGuiApplicationInterop>("QtNetCoreQml");
             QQmlApplicationEngine = NativeLibraryBuilder.Default.ActivateInterface<IQQmlApplicationEngine>("QtNetCoreQml");
             NetVariant = NativeLibraryBuilder.Default.ActivateInterface<INetVariantInterop>("QtNetCoreQml");
+            NetInstance = NativeLibraryBuilder.Default.ActivateInterface<INetInstanceInterop>("QtNetCoreQml");
             
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
@@ -41,6 +42,8 @@ namespace Qt.NetCore
         public static IQQmlApplicationEngine QQmlApplicationEngine { get; }
         
         public static INetVariantInterop NetVariant { get; }
+        
+        public static INetInstanceInterop NetInstance { get; }
         
         public static void RegisterCallbacks(ICallbacks callbacks)
         {

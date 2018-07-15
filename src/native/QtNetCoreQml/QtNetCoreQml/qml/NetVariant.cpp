@@ -2,12 +2,12 @@
 #include <QDateTime>
 #include <QDebug>
 
-struct NetInstanceContainer
+struct NetInstanceQmlContainer
 {
     QSharedPointer<NetInstance> netInstance;
 };
 
-Q_DECLARE_METATYPE(NetInstanceContainer)
+Q_DECLARE_METATYPE(NetInstanceQmlContainer)
 
 NetVariant::NetVariant()
 {
@@ -52,12 +52,12 @@ NetVariantTypeEnum NetVariant::getVariantType()
 void NetVariant::setNetInstance(QSharedPointer<NetInstance> netInstance)
 {
     clearNetInstance();
-    variant.setValue(NetInstanceContainer{ netInstance });
+    variant.setValue(NetInstanceQmlContainer{ netInstance });
 }
 
 QSharedPointer<NetInstance> NetVariant::getNetInstance()
 {
-    return variant.value<NetInstanceContainer>().netInstance;
+    return variant.value<NetInstanceQmlContainer>().netInstance;
 }
 
 void NetVariant::setBool(bool value)
@@ -187,9 +187,9 @@ QVariant NetVariant::asQVariant()
 
 void NetVariant::clearNetInstance()
 {
-    if(variant.canConvert<NetInstanceContainer>())
+    if(variant.canConvert<NetInstanceQmlContainer>())
     {
-        variant.value<NetInstanceContainer>().netInstance.clear();
+        variant.value<NetInstanceQmlContainer>().netInstance.clear();
         variant.clear();
     }
 }
@@ -205,6 +205,24 @@ NetVariantContainer* net_variant_create() {
 
 void net_variant_destroy(NetVariantContainer* container) {
     delete container;
+}
+
+void net_variant_setNetInstance(NetVariantContainer* container, NetInstanceContainer* instanceContainer) {
+    if(instanceContainer == NULL) {
+        container->variant->setNetInstance(NULL);
+    } else {
+        container->variant->setNetInstance(instanceContainer->instance);
+    }
+}
+
+NetInstanceContainer* net_variant_getNetInstance(NetVariantContainer* container) {
+    QSharedPointer<NetInstance> instance = container->variant->getNetInstance();
+    if(instance == NULL) {
+        return NULL;
+    }
+    NetInstanceContainer* result = new NetInstanceContainer();
+    result->instance = instance;
+    return result;
 }
 
 NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {

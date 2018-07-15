@@ -38,7 +38,7 @@ namespace Qt.NetCore.Internal
             GC.SuppressFinalize(this); 
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected void Dispose(bool disposing)
         {
             if (_disposed) return;
             
