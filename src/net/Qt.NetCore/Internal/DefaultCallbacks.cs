@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 
 namespace Qt.NetCore.Internal
@@ -79,8 +80,7 @@ namespace Qt.NetCore.Internal
 
         public void ReleaseGCHandle(IntPtr handle)
         {
-            var h = (GCHandle)handle;
-            h.Free();
+            ((GCHandle)handle).Free();
         }
         
         public GCHandle InstantiateType(string typeName)
@@ -91,7 +91,17 @@ namespace Qt.NetCore.Internal
             var instanceHandle = GCHandle.Alloc(instance);
             return instanceHandle;
         }
-        
+
+        public void ReadProperty(NetPropertyInfo property, NetInstance target, NetVariant result)
+        {
+            
+        }
+
+        public void WriteProperty(NetPropertyInfo property, NetInstance target, NetVariant value)
+        {
+            
+        }
+
         private bool IsPrimitive(Type type)
         {
             if (type == typeof(Object))

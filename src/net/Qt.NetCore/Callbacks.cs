@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
+using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 
 namespace Qt.NetCore
@@ -12,6 +13,8 @@ namespace Qt.NetCore
         public IntPtr BuildTypeInfo;
         public IntPtr ReleaseGCHandle;
         public IntPtr InstantiateType;
+        public IntPtr ReadProperty;
+        public IntPtr WriteProperty;
     }
 
     public interface ICallbacksIterop
@@ -30,6 +33,12 @@ namespace Qt.NetCore
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
         IntPtr InstantiateType([MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        
+        [NativeSymbol(Entrypoint = "type_info_callbacks_readProperty")]
+        void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
+
+        [NativeSymbol(Entrypoint = "type_info_callbacks_writeProperty")]
+        void WriteProperty(IntPtr property, IntPtr target, IntPtr value);
     }
 
     public interface ICallbacks
@@ -41,6 +50,10 @@ namespace Qt.NetCore
         void BuildTypeInfo(NetTypeInfo typeInfo);
 
         GCHandle InstantiateType(string typeName);
+
+        void ReadProperty(NetPropertyInfo property, NetInstance target, NetVariant result);
+
+        void WriteProperty(NetPropertyInfo property, NetInstance target, NetVariant value);
     }
     
     public class CallbacksImpl
@@ -50,6 +63,8 @@ namespace Qt.NetCore
         BuildTypeInfoDelegate _buildTypeInfoDelegate;
         ReleaseGCHandleDelegate _releaseGCHandleDelegate;
         InstantiateTypeDelgate _instantiateTypeDelgate;
+        ReadPropertyDelegate _readPropertyDelegate;
+        WritePropertyDelegate _writePropertyDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
@@ -62,6 +77,12 @@ namespace Qt.NetCore
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate IntPtr InstantiateTypeDelgate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void ReadPropertyDelegate(IntPtr property, IntPtr target, IntPtr result);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void WritePropertyDelegate(IntPtr property, IntPtr target, IntPtr value);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -78,6 +99,12 @@ namespace Qt.NetCore
             
             _instantiateTypeDelgate = InstantiateType;
             GCHandle.Alloc(_instantiateTypeDelgate);
+
+            _readPropertyDelegate = ReadProperty;
+            GCHandle.Alloc(_readPropertyDelegate);
+
+            _writePropertyDelegate = WriteProperty;
+            GCHandle.Alloc(_writePropertyDelegate);
         }
 
         private bool IsTypeValid(string typeName)
@@ -100,6 +127,34 @@ namespace Qt.NetCore
             return GCHandle.ToIntPtr(_callbacks.InstantiateType(typeName));
         }
 
+        private void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
+        {
+            using (var property = new NetPropertyInfo(p, false))
+            {
+                using (var target = new NetInstance(t, false))
+                {
+                    using (var result = new NetVariant(r, false))
+                    {
+                        _callbacks.ReadProperty(property, target, result);
+                    }
+                }
+            }
+        }
+
+        private void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
+        {
+            using (var property = new NetPropertyInfo(p, false))
+            {
+                using (var target = new NetInstance(t, false))
+                {
+                    using (var value = new NetVariant(v, false))
+                    {
+                        _callbacks.WriteProperty(property, target, value);
+                    }
+                }
+            }
+        }
+
         public Callbacks Callbacks()
         {
             return new Callbacks
@@ -107,7 +162,9 @@ namespace Qt.NetCore
                 IsTypeValid = Marshal.GetFunctionPointerForDelegate(_isTypeValidDelegate),
                 BuildTypeInfo = Marshal.GetFunctionPointerForDelegate(_buildTypeInfoDelegate),
                 ReleaseGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseGCHandleDelegate),
-                InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate)
+                InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
+                ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),
+                WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate)
             };
         }
     }

@@ -9,7 +9,13 @@ namespace Qt.NetCore.Qml
     public class NetVariant : BaseDisposable
     {
         public NetVariant()
-            :base(Interop.NetVariant.Create())
+            : this(Interop.NetVariant.Create())
+        {
+            
+        }
+
+        public NetVariant(IntPtr handle, bool ownsHandle = true)
+            : base(handle, ownsHandle)
         {
             
         }
