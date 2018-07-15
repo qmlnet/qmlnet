@@ -30,6 +30,8 @@ public:
     uint getPropertyCount();
     QSharedPointer<NetPropertyInfo> getProperty(uint index);
 
+    QMetaObject* metaObject;
+
 private:
     QString _fullTypeName;
     QString _className;

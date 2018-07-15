@@ -4,7 +4,8 @@
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _fullTypeName(fullTypeName),
-    _variantType(NetVariantTypeEnum_Invalid) {
+    _variantType(NetVariantTypeEnum_Invalid),
+    metaObject(NULL) {
 
 }
 
