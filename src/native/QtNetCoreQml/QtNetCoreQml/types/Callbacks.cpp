@@ -1,10 +1,14 @@
 #include <QtNetCoreQml/types/Callbacks.h>
+#include <QtNetCoreQml/types/NetPropertyInfo.h>
+#include <QtNetCoreQml/qml/NetVariant.h>
 #include <iostream>
 
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*releaseGCHandleCb)(NetGCHandle* handle);
 typedef NetGCHandle* (*instantiateTypeCb)(LPWSTR typeName);
+typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result);
+typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value);
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
@@ -13,6 +17,8 @@ struct NetTypeInfoManagerCallbacks {
     buildTypeInfoCb buildTypeInfo;
     releaseGCHandleCb releaseGCHandle;
     instantiateTypeCb instantiateType;
+    readPropertyCb readProperty;
+    writePropertyCb writeProperty;
 };
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
@@ -60,6 +66,14 @@ void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* typeInfo) {
 
 NetGCHandle* type_info_callbacks_instantiateType(LPWSTR typeName) {
     return sharedCallbacks.instantiateType(typeName);
+}
+
+void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result) {
+    //sharedCallbacks.readProperty(property, target, result);
+}
+
+void type_info_callbacks_writeProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value) {
+    //sharedCallbacks.writeProperty(property, target, value);
 }
 
 }

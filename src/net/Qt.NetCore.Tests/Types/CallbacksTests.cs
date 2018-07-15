@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using FluentAssertions;
 using Moq;
+using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 using Xunit;
 
@@ -89,6 +90,38 @@ namespace Qt.NetCore.Tests.Types
 
                 callbacks.Verify(x => x.InstantiateType(It.IsAny<string>()), Times.Once);
                 typeName.Should().Be("test");
+                ((IntPtr)result).Should().Be(new IntPtr(3));
+            }
+            finally
+            {
+                Interop.SetDefaultCallbacks();
+            }
+        }
+        
+        [Fact]
+        public void Can_read_property()
+        {
+            try
+            {
+                var callbacks = new Mock<ICallbacks>();
+                var property = IntPtr.Zero;
+                var instance = IntPtr.Zero;;
+                var result = IntPtr.Zero;;
+                callbacks.Setup(x =>
+                        x.ReadProperty(It.IsAny<NetPropertyInfo>(), It.IsAny<NetInstance>(), It.IsAny<NetVariant>()))
+                    .Callback(new Action<NetPropertyInfo, NetInstance, NetVariant>((p, i, r) =>
+                    {
+                        property = p.Handle;
+                        instance = i.Handle;
+                        result = r.Handle;
+                    }));
+
+                Interop.RegisterCallbacks(callbacks.Object);
+                Interop.Callbacks.ReadProperty(new IntPtr(1), new IntPtr(2), new IntPtr(3));
+
+                callbacks.Verify(x => x.ReadProperty(It.IsAny<NetPropertyInfo>(), It.IsAny<NetInstance>(), It.IsAny<NetVariant>()), Times.Once);
+                property.Should().Be(new IntPtr(1));
+                instance.Should().Be(new IntPtr(2));
                 result.Should().Be(new IntPtr(3));
             }
             finally
