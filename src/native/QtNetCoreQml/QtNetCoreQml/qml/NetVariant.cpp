@@ -196,7 +196,7 @@ void NetVariant::clearNetInstance()
 
 extern "C" {
 
-struct DateTimeContainer {
+struct Q_DECL_EXPORT DateTimeContainer {
     bool isNull;
     int month;
     int day;
@@ -208,21 +208,21 @@ struct DateTimeContainer {
     int offsetSeconds;
 };
 
-NetVariantContainer* net_variant_create() {
+Q_DECL_EXPORT NetVariantContainer* net_variant_create() {
     NetVariantContainer* result = new NetVariantContainer();
     result->variant = QSharedPointer<NetVariant>(new NetVariant());
     return result;
 }
 
-void net_variant_destroy(NetVariantContainer* container) {
+Q_DECL_EXPORT void net_variant_destroy(NetVariantContainer* container) {
     delete container;
 }
 
-NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
+Q_DECL_EXPORT NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
 }
 
-void net_variant_setNetInstance(NetVariantContainer* container, NetInstanceContainer* instanceContainer) {
+Q_DECL_EXPORT void net_variant_setNetInstance(NetVariantContainer* container, NetInstanceContainer* instanceContainer) {
     if(instanceContainer == NULL) {
         container->variant->setNetInstance(NULL);
     } else {
@@ -230,7 +230,7 @@ void net_variant_setNetInstance(NetVariantContainer* container, NetInstanceConta
     }
 }
 
-NetInstanceContainer* net_variant_getNetInstance(NetVariantContainer* container) {
+Q_DECL_EXPORT NetInstanceContainer* net_variant_getNetInstance(NetVariantContainer* container) {
     QSharedPointer<NetInstance> instance = container->variant->getNetInstance();
     if(instance == NULL) {
         return NULL;
@@ -240,56 +240,56 @@ NetInstanceContainer* net_variant_getNetInstance(NetVariantContainer* container)
     return result;
 }
 
-void net_variant_setBool(NetVariantContainer* container, bool value) {
+Q_DECL_EXPORT void net_variant_setBool(NetVariantContainer* container, bool value) {
     container->variant->setBool(value);
 }
 
-bool net_variant_getBool(NetVariantContainer* container) {
+Q_DECL_EXPORT bool net_variant_getBool(NetVariantContainer* container) {
     return container->variant->getBool();
 }
 
-void net_variant_setChar(NetVariantContainer* container, ushort value) {
+Q_DECL_EXPORT void net_variant_setChar(NetVariantContainer* container, ushort value) {
     container->variant->setChar(value);
 }
 
-ushort net_variant_getChar(NetVariantContainer* container) {
+Q_DECL_EXPORT ushort net_variant_getChar(NetVariantContainer* container) {
     return (ushort)container->variant->getChar().unicode();
 }
 
-void net_variant_setInt(NetVariantContainer* container, int value) {
+Q_DECL_EXPORT void net_variant_setInt(NetVariantContainer* container, int value) {
     container->variant->setInt(value);
 }
 
-int net_variant_getInt(NetVariantContainer* container) {
+Q_DECL_EXPORT int net_variant_getInt(NetVariantContainer* container) {
     return container->variant->getInt();
 }
 
-void net_variant_setUInt(NetVariantContainer* container, unsigned int value) {
+Q_DECL_EXPORT void net_variant_setUInt(NetVariantContainer* container, unsigned int value) {
     container->variant->setUInt(value);
 }
 
-unsigned int net_variant_getUInt(NetVariantContainer* container) {
+Q_DECL_EXPORT unsigned int net_variant_getUInt(NetVariantContainer* container) {
     return container->variant->getUInt();
 }
 
-void net_variant_setDouble(NetVariantContainer* container, double value) {
+Q_DECL_EXPORT void net_variant_setDouble(NetVariantContainer* container, double value) {
     container->variant->setDouble(value);
 }
 
-double net_variant_getDouble(NetVariantContainer* container) {
+Q_DECL_EXPORT double net_variant_getDouble(NetVariantContainer* container) {
     return container->variant->getDouble();
 }
 
-void net_variant_setString(NetVariantContainer* container, LPWSTR value) {
+Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, LPWSTR value) {
     if(value == NULL) {
         container->variant->setString(NULL);
     } else {
-        QString temp = QString::fromUtf16(value);
+        QString temp = QString::fromUtf16((const char16_t*)value);
         container->variant->setString(&temp);
     }
 }
 
-LPWSTR net_variant_getString(NetVariantContainer* container) {
+Q_DECL_EXPORT LPWSTR net_variant_getString(NetVariantContainer* container) {
     QString string = container->variant->getString();
     if(string.isNull()) {
         return NULL;
@@ -297,7 +297,7 @@ LPWSTR net_variant_getString(NetVariantContainer* container) {
     return (LPWSTR)string.utf16();
 }
 
-void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* value) {
+Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* value) {
     if(value == NULL || value->isNull) {
         QDateTime dt;
         container->variant->setDateTime(dt);
@@ -308,7 +308,7 @@ void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* 
         container->variant->setDateTime(dt);
     }
 }
-void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* value) {
+Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* value) {
     QDateTime dt = container->variant->getDateTime();
     if(dt.isNull()) {
         value->isNull = true;
@@ -329,7 +329,7 @@ void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* 
     value->offsetSeconds = dt.offsetFromUtc();
 }
 
-void net_variant_clear(NetVariantContainer* container) {
+Q_DECL_EXPORT void net_variant_clear(NetVariantContainer* container) {
     container->variant->clear();
 }
 

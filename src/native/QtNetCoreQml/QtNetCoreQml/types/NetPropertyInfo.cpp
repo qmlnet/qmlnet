@@ -41,14 +41,14 @@ bool NetPropertyInfo::canWrite()
 
 extern "C" {
 
-NetPropertyInfoContainer* property_info_create(NetTypeInfoContainer* parentType,
+Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContainer* parentType,
                                                LPWSTR name,
                                                NetTypeInfoContainer* returnType,
                                                bool canRead,
                                                bool canWrite) {
     NetPropertyInfoContainer* result = new NetPropertyInfoContainer();
     NetPropertyInfo* instance = new NetPropertyInfo(parentType->netTypeInfo,
-                                                    QString::fromUtf16(name),
+                                                    QString::fromUtf16((const char16_t*)name),
                                                     returnType->netTypeInfo,
                                                     canRead,
                                                     canWrite);
@@ -56,32 +56,32 @@ NetPropertyInfoContainer* property_info_create(NetTypeInfoContainer* parentType,
     return result;
 }
 
-void property_info_destroy(NetTypeInfoContainer* container) {
+Q_DECL_EXPORT void property_info_destroy(NetTypeInfoContainer* container) {
     delete container;
 }
 
-NetTypeInfoContainer* property_info_getParentType(NetPropertyInfoContainer* container) {
+Q_DECL_EXPORT NetTypeInfoContainer* property_info_getParentType(NetPropertyInfoContainer* container) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
     result->netTypeInfo = container->property->getParentType();
     return result;
 }
 
 
-LPWSTR property_info_getPropertyName(NetPropertyInfoContainer* container) {
+Q_DECL_EXPORT LPWSTR property_info_getPropertyName(NetPropertyInfoContainer* container) {
     return (LPWSTR)container->property->getPropertyName().utf16();
 }
 
-NetTypeInfoContainer* property_info_getReturnType(NetPropertyInfoContainer* container) {
+Q_DECL_EXPORT NetTypeInfoContainer* property_info_getReturnType(NetPropertyInfoContainer* container) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
     result->netTypeInfo = container->property->getReturnType();
     return result;
 }
 
-bool property_info_canRead(NetPropertyInfoContainer* container) {
+Q_DECL_EXPORT bool property_info_canRead(NetPropertyInfoContainer* container) {
     return container->property->canRead();
 }
 
-bool property_info_canWrite(NetPropertyInfoContainer* container) {
+Q_DECL_EXPORT bool property_info_canWrite(NetPropertyInfoContainer* container) {
     return container->property->canWrite();
 }
 

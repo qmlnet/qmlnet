@@ -1,5 +1,6 @@
 #include <QtNetCoreQml/qml/QGuiApplication.h>
 #include <QGuiApplication>
+#include <QtNetCoreQml.h>
 
 GuiThreadContextTriggerCallback::GuiThreadContextTriggerCallback() :
     callback(NULL) {
@@ -14,7 +15,7 @@ void GuiThreadContextTriggerCallback::trigger() {
 
 extern "C" {
 
-QGuiApplicationContainer* qguiapplication_create() {
+Q_DECL_EXPORT QGuiApplicationContainer* qguiapplication_create() {
     QGuiApplicationContainer* result = new QGuiApplicationContainer();
     result->argCount = 0;
     result->guiApp = QSharedPointer<QGuiApplication>(new QGuiApplication(result->argCount, (char**)NULL, 0));
@@ -22,19 +23,19 @@ QGuiApplicationContainer* qguiapplication_create() {
     return result;
 }
 
-void qguiapplication_destroy(QGuiApplicationContainer* container) {
+Q_DECL_EXPORT void qguiapplication_destroy(QGuiApplicationContainer* container) {
     delete container;
 }
 
-int qguiapplication_exec(QGuiApplicationContainer* container) {
+Q_DECL_EXPORT int qguiapplication_exec(QGuiApplicationContainer* container) {
     return container->guiApp->exec();
 }
 
-void qguiapplication_addTriggerCallback(QGuiApplicationContainer* container, guiThreadTriggerCb callback) {
+Q_DECL_EXPORT void qguiapplication_addTriggerCallback(QGuiApplicationContainer* container, guiThreadTriggerCb callback) {
     container->callback->callback = callback;
 }
 
-void qguiapplication_requestTrigger(QGuiApplicationContainer* container) {
+Q_DECL_EXPORT void qguiapplication_requestTrigger(QGuiApplicationContainer* container) {
     QMetaObject::invokeMethod(container->callback.data(), "trigger", Qt::QueuedConnection);
 }
 
