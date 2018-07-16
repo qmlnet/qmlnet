@@ -1,8 +1,6 @@
 # Qt/Qml support for .NET/.NET Core on Linux/OSX/Windows
 
-This is a work-in-progress (but usable) to bridge .NET to Qml in a seamless way.
-
-To see what is currently working, check out the [unit tests](https://github.com/pauldotknopf/net-core-qml/tree/master/src/net/Qt.NetCore.Tests). Checkout the outstanding items that need to be done [here](#things-left-to-do).
+This is a work-in-progress (but usable) bridge between .NET and Qml.
 
 The intended platforms to support include:
 
@@ -15,7 +13,7 @@ The intended platforms to support include:
   * OSX
   * Windows
 
-*As of now, the only focus is on **.NET Core** (Linux/OSX/Window). The other frameworks should theoretically work though. Drop us an issue if you have any problems. When there is enough demand and userbase, I'd be happy to fully bring in other frameworks.*
+*As of now, the only focus is on **.NET Core (Linux/OSX/Window)**. The other frameworks should theoretically work though. Drop us an issue if you have any problems. When there is enough demand and userbase, I'd be happy to fully bring in other frameworks.*
 
 ## The idea
 
@@ -148,7 +146,7 @@ Also, there is no plans to ever bundle the native libraries into the NuGet packa
 - [x] Reading/setting properties on .NET objects.
 - [x] Invoking methods on .NET obejcts.
 
-## Things left to do
+## Not implemented (but planned)
 
 - [ ] Compiling Qml resource files and bundling them within .NET.
 - [ ] Passing dynamic javascript objects to .NET as ```dynamic```. They will be either a live mutable instance, or as a JSON serialized snapshot of the object.
