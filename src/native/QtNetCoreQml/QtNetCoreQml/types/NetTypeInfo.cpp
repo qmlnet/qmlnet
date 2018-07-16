@@ -62,46 +62,46 @@ QSharedPointer<NetPropertyInfo> NetTypeInfo::getProperty(uint index) {
 
 extern "C" {
 
-NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
+Q_DECL_EXPORT NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
-    result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString::fromUtf16(fullTypeName)));
+    result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString::fromUtf16((const char16_t*)fullTypeName)));
     return result;
 }
 
-void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
+Q_DECL_EXPORT void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
     delete netTypeInfo;
     netTypeInfo = NULL;
 }
 
-LPWSTR type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
+Q_DECL_EXPORT LPWSTR type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
     return (LPWSTR)netTypeInfo->netTypeInfo->getFullTypeName().utf16();
 }
 
-LPWSTR type_info_getClassName(NetTypeInfoContainer* netTypeInfo) {
+Q_DECL_EXPORT LPWSTR type_info_getClassName(NetTypeInfoContainer* netTypeInfo) {
     return (LPWSTR)netTypeInfo->netTypeInfo->getClassName().utf16();
 }
 
-void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {
-    netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16(className));
+Q_DECL_EXPORT void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {
+    netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16((const char16_t*)className));
 }
 
-NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContainer* netTypeInfo) {
+Q_DECL_EXPORT NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContainer* netTypeInfo) {
     return netTypeInfo->netTypeInfo->getPrefVariantType();
 }
 
-void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantTypeEnum variantType) {
+Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantTypeEnum variantType) {
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
-void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
+Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
     netTypeInfo->netTypeInfo->addMethod(methodInfo->method);
 }
 
-uint type_info_getMethodCount(NetTypeInfoContainer* container) {
+Q_DECL_EXPORT uint type_info_getMethodCount(NetTypeInfoContainer* container) {
     return container->netTypeInfo->getMethodCount();
 }
 
-NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container, uint index) {
     QSharedPointer<NetMethodInfo> methodInfo = container->netTypeInfo->getMethodInfo(index);
     if(methodInfo == NULL) {
         return NULL;
@@ -111,15 +111,15 @@ NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container,
     return result;
 }
 
-void type_info_addProperty(NetTypeInfoContainer* container, NetPropertyInfoContainer* propertyContainer) {
+Q_DECL_EXPORT void type_info_addProperty(NetTypeInfoContainer* container, NetPropertyInfoContainer* propertyContainer) {
     container->netTypeInfo->addProperty(propertyContainer->property);
 }
 
-uint type_info_getPropertyCount(NetTypeInfoContainer* container) {
+Q_DECL_EXPORT uint type_info_getPropertyCount(NetTypeInfoContainer* container) {
     return container->netTypeInfo->getPropertyCount();
 }
 
-NetPropertyInfoContainer* type_info_getProperty(NetTypeInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetPropertyInfoContainer* type_info_getProperty(NetTypeInfoContainer* container, uint index) {
     QSharedPointer<NetPropertyInfo> property = container->netTypeInfo->getProperty(index);
     if(property == NULL) {
         return NULL;

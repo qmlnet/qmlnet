@@ -34,25 +34,25 @@ void NetVariantList::clear() {
 
 extern "C" {
 
-NetVariantListContainer* net_variant_list_create() {
+Q_DECL_EXPORT NetVariantListContainer* net_variant_list_create() {
     NetVariantListContainer* result = new NetVariantListContainer();
     result->list = QSharedPointer<NetVariantList>(new NetVariantList());
     return result;
 }
 
-void net_variant_list_destroy(NetVariantListContainer* container) {
+Q_DECL_EXPORT void net_variant_list_destroy(NetVariantListContainer* container) {
     delete container;
 }
 
-int net_variant_list_count(NetVariantListContainer* container) {
+Q_DECL_EXPORT int net_variant_list_count(NetVariantListContainer* container) {
     return container->list->count();
 }
 
-void net_variant_list_add(NetVariantListContainer* container, NetVariantContainer* variant) {
+Q_DECL_EXPORT void net_variant_list_add(NetVariantListContainer* container, NetVariantContainer* variant) {
     container->list->add(variant->variant);
 }
 
-NetVariantContainer* net_variant_list_get(NetVariantListContainer* container, int index){
+Q_DECL_EXPORT NetVariantContainer* net_variant_list_get(NetVariantListContainer* container, int index){
     QSharedPointer<NetVariant> variant = container->list->get(index);
     if(variant == NULL) return NULL;
     NetVariantContainer* result = new NetVariantContainer();
@@ -60,11 +60,11 @@ NetVariantContainer* net_variant_list_get(NetVariantListContainer* container, in
     return result;
 }
 
-void net_variant_list_remove(NetVariantListContainer* container, int index) {
+Q_DECL_EXPORT void net_variant_list_remove(NetVariantListContainer* container, int index) {
     container->list->remove(index);
 }
 
-void net_variant_list_clear(NetVariantListContainer* container) {
+Q_DECL_EXPORT void net_variant_list_clear(NetVariantListContainer* container) {
     container->list->clear();
 }
 

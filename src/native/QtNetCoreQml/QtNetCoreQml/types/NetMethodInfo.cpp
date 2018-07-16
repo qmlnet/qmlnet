@@ -46,21 +46,21 @@ QSharedPointer<NetMethodInfoArguement> NetMethodInfo::getParameter(uint index) {
 
 extern "C" {
 
-void method_info_parameter_destroy(NetMethodInfoArguementContainer* container) {
+Q_DECL_EXPORT void method_info_parameter_destroy(NetMethodInfoArguementContainer* container) {
     delete container;
 }
 
-LPWSTR method_info_parameter_getName(NetMethodInfoArguementContainer* container) {
+Q_DECL_EXPORT LPWSTR method_info_parameter_getName(NetMethodInfoArguementContainer* container) {
     return (LPWSTR)container->methodArguement->getName().utf16();
 }
 
-NetTypeInfoContainer* method_info_parameter_getType(NetMethodInfoArguementContainer* container) {
+Q_DECL_EXPORT NetTypeInfoContainer* method_info_parameter_getType(NetMethodInfoArguementContainer* container) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
     result->netTypeInfo = container->methodArguement->getType();
     return result;
 }
 
-NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR methodName, NetTypeInfoContainer* returnTypeContainer) {
+Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR methodName, NetTypeInfoContainer* returnTypeContainer) {
     NetMethodInfoContainer* result = new NetMethodInfoContainer();
 
     QSharedPointer<NetTypeInfo> parentType;
@@ -73,20 +73,20 @@ NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* parentTypeConta
         returnType = returnTypeContainer->netTypeInfo;
     }
 
-    NetMethodInfo* instance = new NetMethodInfo(parentType, QString::fromUtf16(methodName), returnType);
+    NetMethodInfo* instance = new NetMethodInfo(parentType, QString::fromUtf16((const char16_t*)methodName), returnType);
     result->method = QSharedPointer<NetMethodInfo>(instance);
     return result;
 }
 
-void method_info_destroy(NetMethodInfoContainer* container) {
+Q_DECL_EXPORT void method_info_destroy(NetMethodInfoContainer* container) {
     delete container;
 }
 
-LPWSTR method_info_getMethodName(NetMethodInfoContainer* container) {
+Q_DECL_EXPORT LPWSTR method_info_getMethodName(NetMethodInfoContainer* container) {
     return (LPWSTR)container->method->getMethodName().utf16();
 }
 
-NetTypeInfoContainer* method_info_getReturnType(NetMethodInfoContainer* container) {
+Q_DECL_EXPORT NetTypeInfoContainer* method_info_getReturnType(NetMethodInfoContainer* container) {
     QSharedPointer<NetTypeInfo> returnType = container->method->getReturnType();
     if(returnType == NULL) {
         return NULL;
@@ -96,15 +96,15 @@ NetTypeInfoContainer* method_info_getReturnType(NetMethodInfoContainer* containe
     return result;
 }
 
-void method_info_addParameter(NetMethodInfoContainer* container, LPWSTR name, NetTypeInfoContainer* typeInfoContainer) {
-    container->method->addParameter(QString::fromUtf16(name), typeInfoContainer->netTypeInfo);
+Q_DECL_EXPORT void method_info_addParameter(NetMethodInfoContainer* container, LPWSTR name, NetTypeInfoContainer* typeInfoContainer) {
+    container->method->addParameter(QString::fromUtf16((const char16_t*)name), typeInfoContainer->netTypeInfo);
 }
 
-uint method_info_getParameterCount(NetMethodInfoContainer* container) {
+Q_DECL_EXPORT uint method_info_getParameterCount(NetMethodInfoContainer* container) {
     return container->method->getParameterCount();
 }
 
-NetMethodInfoArguementContainer* method_info_getParameter(NetMethodInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetMethodInfoArguementContainer* method_info_getParameter(NetMethodInfoContainer* container, uint index) {
     QSharedPointer<NetMethodInfoArguement> parameter = container->method->getParameter(index);
     if(parameter == NULL) {
         return NULL;

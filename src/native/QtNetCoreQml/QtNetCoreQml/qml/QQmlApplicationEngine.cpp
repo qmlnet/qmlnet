@@ -2,40 +2,6 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
 #include <QtNetCoreQml/qml/NetValueType.h>
 
-#define DEFINE_NETVALUETYPE(N) \
-    template<> QMetaObject NetValueType<N>::staticMetaObject = QMetaObject();
-
-DEFINE_NETVALUETYPE(1)
-DEFINE_NETVALUETYPE(2)
-DEFINE_NETVALUETYPE(3)
-DEFINE_NETVALUETYPE(4)
-DEFINE_NETVALUETYPE(5)
-DEFINE_NETVALUETYPE(6)
-DEFINE_NETVALUETYPE(7)
-DEFINE_NETVALUETYPE(8)
-DEFINE_NETVALUETYPE(9)
-DEFINE_NETVALUETYPE(10)
-DEFINE_NETVALUETYPE(11)
-DEFINE_NETVALUETYPE(12)
-DEFINE_NETVALUETYPE(13)
-DEFINE_NETVALUETYPE(14)
-DEFINE_NETVALUETYPE(15)
-DEFINE_NETVALUETYPE(16)
-DEFINE_NETVALUETYPE(17)
-DEFINE_NETVALUETYPE(18)
-DEFINE_NETVALUETYPE(19)
-DEFINE_NETVALUETYPE(20)
-DEFINE_NETVALUETYPE(21)
-DEFINE_NETVALUETYPE(22)
-DEFINE_NETVALUETYPE(23)
-DEFINE_NETVALUETYPE(24)
-DEFINE_NETVALUETYPE(25)
-DEFINE_NETVALUETYPE(26)
-DEFINE_NETVALUETYPE(27)
-DEFINE_NETVALUETYPE(28)
-DEFINE_NETVALUETYPE(29)
-DEFINE_NETVALUETYPE(30)
-
 static int netValueTypeNumber = 0;
 
 #define NETVALUETYPE_CASE(N) \
@@ -43,24 +9,24 @@ static int netValueTypeNumber = 0;
 
 extern "C" {
 
-QQmlApplicationEngineContainer* qqmlapplicationengine_create() {
+Q_DECL_EXPORT QQmlApplicationEngineContainer* qqmlapplicationengine_create() {
     QQmlApplicationEngineContainer* result = new QQmlApplicationEngineContainer();
     result->qmlEngine = QSharedPointer<QQmlApplicationEngine>(new QQmlApplicationEngine());
     return result;
 }
 
-void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer* container) {
+Q_DECL_EXPORT void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer* container) {
     delete container;
 }
 
-void qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR path) {
-    container->qmlEngine->load(QString::fromUtf16(path));
+Q_DECL_EXPORT void qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR path) {
+    container->qmlEngine->load(QString::fromUtf16((const char16_t*)path));
 }
 
-int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeContainer, LPWSTR uri, int versionMajor, int versionMinor, LPWSTR qmlName) {
+Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeContainer, LPWSTR uri, int versionMajor, int versionMinor, LPWSTR qmlName) {
 
-    QString uriString = QString::fromUtf16(uri);
-    QString qmlNameString = QString::fromUtf16(qmlName);
+    QString uriString = QString::fromUtf16((const char16_t*)uri);
+    QString qmlNameString = QString::fromUtf16((const char16_t*)qmlName);
     QSharedPointer<NetTypeInfo> typeInfo = typeContainer->netTypeInfo;
     QString fullType = typeInfo->getFullTypeName();
 

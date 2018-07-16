@@ -40,7 +40,7 @@ private:
     QList<QSharedPointer<NetPropertyInfo>> _properties;
 };
 
-struct NetTypeInfoContainer {
+struct Q_DECL_EXPORT NetTypeInfoContainer {
     QSharedPointer<NetTypeInfo> netTypeInfo;
 };
 

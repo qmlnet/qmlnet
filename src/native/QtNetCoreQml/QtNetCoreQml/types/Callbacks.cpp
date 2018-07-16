@@ -8,7 +8,7 @@ typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetInstanceCo
 typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value);
 typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetInstanceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
 
-struct NetTypeInfoManagerCallbacks {
+struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
     buildTypeInfoCb buildTypeInfo;
     releaseGCHandleCb releaseGCHandle;
@@ -86,35 +86,35 @@ void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetIns
 
 extern "C" {
 
-void type_info_callbacks_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
+Q_DECL_EXPORT void type_info_callbacks_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
     sharedCallbacks = *callbacks;
 }
 
-bool type_info_callbacks_isTypeValid(LPWSTR typeName) {
+Q_DECL_EXPORT bool type_info_callbacks_isTypeValid(LPWSTR typeName) {
     return sharedCallbacks.isTypeValid(typeName);
 }
 
-void type_info_callbacks_releaseGCHandle(NetGCHandle* handle) {
+Q_DECL_EXPORT void type_info_callbacks_releaseGCHandle(NetGCHandle* handle) {
     sharedCallbacks.releaseGCHandle(handle);
 }
 
-void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* typeInfo) {
+Q_DECL_EXPORT void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* typeInfo) {
     sharedCallbacks.buildTypeInfo(typeInfo);
 }
 
-NetGCHandle* type_info_callbacks_instantiateType(LPWSTR typeName) {
+Q_DECL_EXPORT NetGCHandle* type_info_callbacks_instantiateType(LPWSTR typeName) {
     return sharedCallbacks.instantiateType(typeName);
 }
 
-void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result) {
+Q_DECL_EXPORT void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result) {
     sharedCallbacks.readProperty(property, target, result);
 }
 
-void type_info_callbacks_writeProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value) {
+Q_DECL_EXPORT void type_info_callbacks_writeProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value) {
     sharedCallbacks.writeProperty(property, target, value);
 }
 
-void type_info_callbacks_invokeMethod(NetMethodInfoContainer* method, NetInstanceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result) {
+Q_DECL_EXPORT void type_info_callbacks_invokeMethod(NetMethodInfoContainer* method, NetInstanceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result) {
     sharedCallbacks.invokeMethod(method, target, parameters, result);
 }
 

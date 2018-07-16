@@ -27,17 +27,17 @@ QSharedPointer<NetTypeInfo> NetInstance::getTypeInfo()
 
 extern "C" {
 
-NetInstanceContainer* net_instance_create(NetGCHandle* handle, NetTypeInfoContainer* typeContainer) {
+Q_DECL_EXPORT NetInstanceContainer* net_instance_create(NetGCHandle* handle, NetTypeInfoContainer* typeContainer) {
     NetInstanceContainer* result = new NetInstanceContainer();
     result->instance = QSharedPointer<NetInstance>(new NetInstance(handle, typeContainer->netTypeInfo));
     return result;
 }
 
-void net_instance_destroy(NetInstanceContainer* container) {
+Q_DECL_EXPORT void net_instance_destroy(NetInstanceContainer* container) {
     delete container;
 }
 
-NetGCHandle* net_instance_getHandle(NetInstanceContainer* container) {
+Q_DECL_EXPORT NetGCHandle* net_instance_getHandle(NetInstanceContainer* container) {
     return container->instance->getGCHandle();
 }
 
