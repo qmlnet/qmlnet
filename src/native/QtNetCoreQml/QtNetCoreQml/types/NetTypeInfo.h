@@ -30,6 +30,10 @@ public:
     uint getPropertyCount();
     QSharedPointer<NetPropertyInfo> getProperty(uint index);
 
+    void addSignal(QSharedPointer<NetMethodInfo> signal);
+    uint getSignalCount();
+    QSharedPointer<NetMethodInfo> getSignal(uint index);
+
     QMetaObject* metaObject;
 
 private:
@@ -38,6 +42,7 @@ private:
     NetVariantTypeEnum _variantType;
     QList<QSharedPointer<NetMethodInfo>> _methods;
     QList<QSharedPointer<NetPropertyInfo>> _properties;
+    QList<QSharedPointer<NetMethodInfo>> _signals;
 };
 
 struct Q_DECL_EXPORT NetTypeInfoContainer {

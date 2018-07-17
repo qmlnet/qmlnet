@@ -59,6 +59,20 @@ namespace Qt.NetCore.Types
             if (result == IntPtr.Zero) return null;
             return new NetPropertyInfo(result);
         }
+        
+        public void AddSignal(NetMethodInfo signal)
+        {
+            Interop.NetTypeInfo.AddSignal(Handle, signal.Handle);
+        }
+
+        public uint SignalCount => Interop.NetTypeInfo.GetSignalCount(Handle);
+
+        public NetMethodInfo GetSignal(uint index)
+        {
+            var result = Interop.NetTypeInfo.GetSignal(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfo(result);
+        }
 
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -99,5 +113,12 @@ namespace Qt.NetCore.Types
         uint GetPropertyCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getProperty")]
         IntPtr GetProperty(IntPtr typeInfo, uint index);
+        
+        [NativeSymbol(Entrypoint = "type_info_addSignal")]
+        void AddSignal(IntPtr typeInfo, IntPtr signal);
+        [NativeSymbol(Entrypoint = "type_info_getSignalCount")]
+        uint GetSignalCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getSignal")]
+        IntPtr GetSignal(IntPtr typeInfo, uint index);
     }
 }
