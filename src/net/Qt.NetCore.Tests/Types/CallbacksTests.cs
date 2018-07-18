@@ -36,15 +36,15 @@ namespace Qt.NetCore.Tests.Types
             try
             {
                 var callbacks = new Mock<ICallbacks>();
-                NetTypeInfo typeInfo = null;
-                callbacks.Setup(x => x.BuildTypeInfo(It.IsAny<NetTypeInfo>()))
-                    .Callback(new Action<NetTypeInfo>(x => typeInfo = x));
+                var type = IntPtr.Zero;
+                callbacks.Setup(x => x.BuildTypeInfo(It.IsAny<IntPtr>()))
+                    .Callback(new Action<IntPtr>(x => type = x));
 
                 Interop.RegisterCallbacks(callbacks.Object);
-                Interop.Callbacks.BuildTypeInfo(new NetTypeInfo("test").Handle);
+                Interop.Callbacks.BuildTypeInfo(new IntPtr(3));
 
-                callbacks.Verify(x => x.BuildTypeInfo(It.IsAny<NetTypeInfo>()), Times.Once);
-                typeInfo.FullTypeName.Should().Be("test");
+                callbacks.Verify(x => x.BuildTypeInfo(It.IsAny<IntPtr>()), Times.Once);
+                type.Should().Be(new IntPtr(3));
             }
             finally
             {

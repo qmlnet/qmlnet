@@ -51,15 +51,15 @@ namespace Qt.NetCore
 
         void ReleaseGCHandle(IntPtr handle);
         
-        void BuildTypeInfo(NetTypeInfo typeInfo);
+        void BuildTypeInfo(IntPtr typeInfo);
 
         GCHandle InstantiateType(string typeName);
 
-        void ReadProperty(NetPropertyInfo property, NetInstance target, NetVariant result);
+        void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
 
-        void WriteProperty(NetPropertyInfo property, NetInstance target, NetVariant value);
+        void WriteProperty(IntPtr property, IntPtr target, IntPtr value);
 
-        void InvokeMethod(NetMethodInfo method, NetInstance target, NetVariantList parameters, NetVariant result);
+        void InvokeMethod(IntPtr method, IntPtr target, IntPtr parameters, IntPtr result);
     }
     
     public class CallbacksImpl
@@ -130,9 +130,9 @@ namespace Qt.NetCore
             _callbacks.ReleaseGCHandle(handle);
         }
 
-        private void BuildTypeInfo(IntPtr typeInfo)
+        private void BuildTypeInfo(IntPtr type)
         {
-            _callbacks.BuildTypeInfo(new NetTypeInfo(typeInfo));
+            _callbacks.BuildTypeInfo(type);
         }
         
         private IntPtr InstantiateType(string typeName)
@@ -140,56 +140,19 @@ namespace Qt.NetCore
             return GCHandle.ToIntPtr(_callbacks.InstantiateType(typeName));
         }
         
-        private void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
+        private void ReadProperty(IntPtr property, IntPtr target, IntPtr result)
         {
-            using (var property = new NetPropertyInfo(p))
-            {
-                using (var target = new NetInstance(t))
-                {
-                    using (var result = new NetVariant(r))
-                    {
-                        _callbacks.ReadProperty(property, target, result);
-                    }
-                }
-            }
+            _callbacks.ReadProperty(property, target, result);
         }
 
-        private void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
+        private void WriteProperty(IntPtr property, IntPtr target, IntPtr value)
         {
-            using (var property = new NetPropertyInfo(p))
-            {
-                using (var target = new NetInstance(t))
-                {
-                    using (var value = new NetVariant(v))
-                    {
-                        _callbacks.WriteProperty(property, target, value);
-                    }
-                }
-            }
+            _callbacks.WriteProperty(property, target, value);
         }
 
-        private void InvokeMethod(IntPtr m, IntPtr t, IntPtr v, IntPtr r)
+        private void InvokeMethod(IntPtr method, IntPtr target, IntPtr variants, IntPtr result)
         {
-            using (var method = new NetMethodInfo(m))
-            {
-                using (var target = new NetInstance(t))
-                {
-                    using (var variants = new NetVariantList(v))
-                    {
-                        if (r == IntPtr.Zero)
-                        {
-                            _callbacks.InvokeMethod(method, target, variants, null);
-                        }
-                        else
-                        {
-                            using (var result = new NetVariant(r))
-                            {
-                                _callbacks.InvokeMethod(method, target, variants, result);
-                            }
-                        }
-                    }
-                }
-            }
+            _callbacks.InvokeMethod(method, target, variants, result);
         }
 
         public Callbacks Callbacks()

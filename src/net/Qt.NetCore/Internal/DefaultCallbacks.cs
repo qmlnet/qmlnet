@@ -15,66 +15,71 @@ namespace Qt.NetCore.Internal
             return t != null;
         }
 
-        public void BuildTypeInfo(NetTypeInfo typeInfo)
+        public void BuildTypeInfo(IntPtr t)
         {
-            var type = Type.GetType(typeInfo.FullTypeName);
-            if(type == null) throw new InvalidOperationException();
-            
-            typeInfo.ClassName = type.Name;
-
-            if (type == typeof(bool))
-                typeInfo.PrefVariantType = NetVariantType.Bool;
-            else if (type == typeof(char))
-                typeInfo.PrefVariantType = NetVariantType.Char;
-            else if (type == typeof(int))
-                typeInfo.PrefVariantType = NetVariantType.Int;
-            else if (type == typeof(uint))
-                typeInfo.PrefVariantType = NetVariantType.UInt;
-            else if (type == typeof(double))
-                typeInfo.PrefVariantType = NetVariantType.Double;
-            else if (type == typeof(string))
-                typeInfo.PrefVariantType = NetVariantType.String;
-            else if (type == typeof(DateTime))
-                typeInfo.PrefVariantType = NetVariantType.DateTime;
-            else
-                typeInfo.PrefVariantType = NetVariantType.Object;
-
-            // Don't grab properties and methods for system-level types.
-            if (IsPrimitive(type)) return;
-            
-            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            using (var type = new NetTypeInfo(t))
             {
-                if(IsPrimitive(method.DeclaringType)) continue;
-                
-                NetTypeInfo returnType = null;
+                var typeInfo = Type.GetType(type.FullTypeName);
+                if (typeInfo == null) throw new InvalidOperationException();
 
-                if (method.ReturnParameter != null && method.ReturnParameter.ParameterType != typeof(void))
+                type.ClassName = typeInfo.Name;
+
+                if (typeInfo == typeof(bool))
+                    type.PrefVariantType = NetVariantType.Bool;
+                else if (typeInfo == typeof(char))
+                    type.PrefVariantType = NetVariantType.Char;
+                else if (typeInfo == typeof(int))
+                    type.PrefVariantType = NetVariantType.Int;
+                else if (typeInfo == typeof(uint))
+                    type.PrefVariantType = NetVariantType.UInt;
+                else if (typeInfo == typeof(double))
+                    type.PrefVariantType = NetVariantType.Double;
+                else if (typeInfo == typeof(string))
+                    type.PrefVariantType = NetVariantType.String;
+                else if (typeInfo == typeof(DateTime))
+                    type.PrefVariantType = NetVariantType.DateTime;
+                else
+                    type.PrefVariantType = NetVariantType.Object;
+
+                // Don't grab properties and methods for system-level types.
+                if (IsPrimitive(typeInfo)) return;
+
+                foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    returnType = NetTypeManager.GetTypeInfo(method.ReturnParameter.ParameterType.AssemblyQualifiedName);
+                    if (IsPrimitive(methodInfo.DeclaringType)) continue;
+
+                    NetTypeInfo returnType = null;
+
+                    if (methodInfo.ReturnParameter != null && methodInfo.ReturnParameter.ParameterType != typeof(void))
+                    {
+                        returnType =
+                            NetTypeManager.GetTypeInfo(methodInfo.ReturnParameter.ParameterType.AssemblyQualifiedName);
+                    }
+
+                    var method = new NetMethodInfo(type, methodInfo.Name, returnType);
+
+                    foreach (var parameter in methodInfo.GetParameters())
+                    {
+                        method.AddParameter(parameter.Name,
+                            NetTypeManager.GetTypeInfo(parameter.ParameterType.AssemblyQualifiedName));
+                    }
+
+                    type.AddMethod(method);
                 }
 
-                var methodInfo = new NetMethodInfo(typeInfo, method.Name, returnType);
-
-                foreach (var parameter in method.GetParameters())
+                foreach (var propertyInfo in typeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    methodInfo.AddParameter(parameter.Name, NetTypeManager.GetTypeInfo(parameter.ParameterType.AssemblyQualifiedName));
-                }
+                    if (IsPrimitive(propertyInfo.DeclaringType)) continue;
 
-                typeInfo.AddMethod(methodInfo);
-            }
-
-            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-            {
-                if(IsPrimitive(property.DeclaringType)) continue;
-                
-                using (var propertyInfo = new NetPropertyInfo(
-                    typeInfo,
-                    property.Name,
-                    NetTypeManager.GetTypeInfo(property.PropertyType.AssemblyQualifiedName),
-                    property.CanRead,
-                    property.CanWrite))
-                {
-                    typeInfo.AddProperty(propertyInfo);
+                    using (var property = new NetPropertyInfo(
+                        type,
+                        propertyInfo.Name,
+                        NetTypeManager.GetTypeInfo(propertyInfo.PropertyType.AssemblyQualifiedName),
+                        propertyInfo.CanRead,
+                        propertyInfo.CanWrite))
+                    {
+                        type.AddProperty(property);
+                    }
                 }
             }
         }
@@ -96,72 +101,88 @@ namespace Qt.NetCore.Internal
             return instanceHandle;
         }
 
-        public void ReadProperty(NetPropertyInfo property, NetInstance target, NetVariant result)
+        public void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
         {
-            var o = target.Instance;
-
-            var propertInfo = o.GetType()
-                .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-            
-            if(propertInfo == null)
-                throw new InvalidOperationException($"Invalid property {property.Name}");
-
-            var value = propertInfo.GetValue(o);
-            
-            PackValue(ref value, result);
-        }
-
-        public void WriteProperty(NetPropertyInfo property, NetInstance target, NetVariant value)
-        {
-            var o = target.Instance;
-
-            var propertInfo = o.GetType()
-                .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-
-            if(propertInfo == null)
-                throw new InvalidOperationException($"Invalid property {property.Name}");
-            
-            object newValue = null;
-            Unpackvalue(ref newValue, value);
-
-            propertInfo.SetValue(o, newValue);
-        }
-
-        public void InvokeMethod(NetMethodInfo method, NetInstance target, NetVariantList parameters, NetVariant result)
-        {
-            var instance = target.Instance;
-            
-            List<object> methodParameters = null;
-
-            if (parameters.Count > 0)
+            using(var property = new NetPropertyInfo(p))
+            using(var target = new NetInstance(t))
+            using(var result = new NetVariant(r))
             {
-                methodParameters = new List<object>();
-                int parameterCount = parameters.Count;
-                for (var x = 0; x < parameterCount; x++)
+                var o = target.Instance;
+
+                var propertInfo = o.GetType()
+                    .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
+            
+                if(propertInfo == null)
+                    throw new InvalidOperationException($"Invalid property {property.Name}");
+
+                var value = propertInfo.GetValue(o);
+            
+                PackValue(ref value, result);
+            }
+        }
+
+        public void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
+        {
+            using (var property = new NetPropertyInfo(p))
+            using (var target = new NetInstance(t))
+            using (var value = new NetVariant(v))
+            {
+                var o = target.Instance;
+
+                var propertInfo = o.GetType()
+                    .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
+
+                if (propertInfo == null)
+                    throw new InvalidOperationException($"Invalid property {property.Name}");
+
+                object newValue = null;
+                Unpackvalue(ref newValue, value);
+
+                propertInfo.SetValue(o, newValue);
+            }
+        }
+
+        public void InvokeMethod(IntPtr m, IntPtr t, IntPtr p, IntPtr r)
+        {
+            using (var method = new NetMethodInfo(m))
+            using (var target = new NetInstance(t))
+            using (var parameters = new NetVariantList(p))
+            using (var result = r != IntPtr.Zero ? new NetVariant(r) : null)
+            {
+                var instance = target.Instance;
+            
+                List<object> methodParameters = null;
+
+                if (parameters.Count > 0)
                 {
-                    object v = null;
-                    Unpackvalue(ref v, parameters.Get(x));
-                    methodParameters.Add(v);
+                    methodParameters = new List<object>();
+                    var parameterCount = parameters.Count;
+                    for (var x = 0; x < parameterCount; x++)
+                    {
+                        object v = null;
+                        Unpackvalue(ref v, parameters.Get(x));
+                        methodParameters.Add(v);
+                    }
                 }
-            }
 
-            var methodInfo = instance.GetType()
-                .GetMethod(method.MethodName, BindingFlags.Instance | BindingFlags.Public);
+                var methodInfo = instance.GetType()
+                    .GetMethod(method.MethodName, BindingFlags.Instance | BindingFlags.Public);
 
-            if (methodInfo == null)
-            {
-                throw new InvalidOperationException($"Invalid method name {method.MethodName}");
-            }
+                if (methodInfo == null)
+                {
+                    throw new InvalidOperationException($"Invalid method name {method.MethodName}");
+                }
             
-            var r = methodInfo.Invoke(instance, methodParameters?.ToArray());
+                var returnValue = methodInfo.Invoke(instance, methodParameters?.ToArray());
 
-            if (result == null)
-            {
-                // this method doesn't have return type
-            }
-            else
-            {
-                PackValue(ref r, result);
+                if (result == null)
+                {
+                    // this method doesn't have return type
+                }
+                else
+                {
+                    PackValue(ref returnValue, result);
+                }
             }
         }
 
