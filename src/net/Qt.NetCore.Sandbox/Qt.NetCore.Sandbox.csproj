@@ -2,15 +2,21 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Qt.NetCore.Tests\Qt.NetCore.Tests.csproj" />
     <ProjectReference Include="..\Qt.NetCore\Qt.NetCore.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="main.qml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Remove="Program.Tests.cs" />
-    <None Include="Program.Tests.cs" />
+    <Compile Remove="Program.UI.cs" />
+    <None Include="Program.UI.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.core" Version="2.4.0" />
+    <PackageReference Include="xunit.runner.utility" Version="2.4.0" />
   </ItemGroup>
 </Project>
