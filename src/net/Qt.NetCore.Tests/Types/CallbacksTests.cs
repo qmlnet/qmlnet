@@ -1,98 +1,89 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using Qt.NetCore.Qml;
+using Qt.NetCore.Types;
 using Xunit;
 
 namespace Qt.NetCore.Tests.Types
 {
     public class CallbacksTests : BaseTests
     {
+        class TestObject 
+        { 
+            public void Method(TestObject o) 
+            { 
+                Object = o; 
+            } 
+             
+            public TestObject Object { get; set; } 
+        }
+        
         [Fact]
         public void Can_call_is_type_valid()
         {
-            try
-            {
-                var callbacks = new Mock<ICallbacks>();
-                callbacks.Setup(x => x.IsTypeValid("test-type")).Returns(true);
-
-                Interop.RegisterCallbacks(callbacks.Object);
-                Interop.Callbacks.IsTypeValid("test-type").Should().BeTrue();
-
-                callbacks.Verify(x => x.IsTypeValid("test-type"), Times.Once);
-            }
-            finally
-            {
-                Interop.SetDefaultCallbacks();
-            }
-        }
-
-        [Fact]
-        public void Can_build_type_info()
-        {
-            try
-            {
-                var callbacks = new Mock<ICallbacks>();
-                var type = IntPtr.Zero;
-                callbacks.Setup(x => x.BuildTypeInfo(It.IsAny<IntPtr>()))
-                    .Callback(new Action<IntPtr>(x => type = x));
-
-                Interop.RegisterCallbacks(callbacks.Object);
-                Interop.Callbacks.BuildTypeInfo(new IntPtr(3));
-
-                callbacks.Verify(x => x.BuildTypeInfo(It.IsAny<IntPtr>()), Times.Once);
-                type.Should().Be(new IntPtr(3));
-            }
-            finally
-            {
-                Interop.SetDefaultCallbacks();
-            }
+            Interop.Callbacks.IsTypeValid("none-type").Should().BeFalse();
+            Interop.Callbacks.IsTypeValid(typeof(TestObject).AssemblyQualifiedName).Should().BeTrue();
         }
 
         [Fact]
         public void Can_release_gc_handle()
         {
-            try
+            WeakReference reference = null;
+            NetInstance instance = null;
+            Task.Factory.StartNew(() =>
             {
-                var callbacks = new Mock<ICallbacks>();
-                IntPtr handle = IntPtr.Zero;
-                callbacks.Setup(x => x.ReleaseGCHandle(It.IsAny<IntPtr>()))
-                    .Callback(new Action<IntPtr>(x => handle = x));
+                var o = new TestObject();
+                reference = new WeakReference(o);
+                instance = NetInstance.CreateFromObject(o);
+            }).Wait();
 
-                Interop.RegisterCallbacks(callbacks.Object);
-                Interop.Callbacks.ReleaseGCHandle(new IntPtr(3));
-
-                callbacks.Verify(x => x.ReleaseGCHandle(It.IsAny<IntPtr>()), Times.Once);
-                handle.Should().Be(new IntPtr(3));
-            }
-            finally
-            {
-                Interop.SetDefaultCallbacks();
-            }
+            // NetInstance is still alive, so the weak reference must be alive as well.
+            GC.Collect(GC.MaxGeneration);
+            reference.IsAlive.Should().BeTrue();
+            
+            instance.Dispose();
+            
+            // NetInstance has been destroyed, so the handle should have been released.
+            GC.Collect(GC.MaxGeneration);
+            reference.IsAlive.Should().BeFalse();
         }
         
         [Fact]
         public void Can_instantiate_type()
         {
-            try
-            {
-                var callbacks = new Mock<ICallbacks>();
-                string typeName = null;
-                callbacks.Setup(x => x.InstantiateType(It.IsAny<string>()))
-                    .Callback(new Action<string>(x => typeName = x))
-                    .Returns((GCHandle)new IntPtr(3));
+            var type = NetTypeManager.GetTypeInfo<TestObject>();
 
-                Interop.RegisterCallbacks(callbacks.Object);
-                var result = Interop.Callbacks.InstantiateType("test");
-
-                callbacks.Verify(x => x.InstantiateType(It.IsAny<string>()), Times.Once);
-                typeName.Should().Be("test");
-                result.Should().Be(new IntPtr(3));
-            }
-            finally
+            using(var instance = new NetInstance(Interop.Callbacks.InstantiateType(type.FullTypeName), type))
             {
-                Interop.SetDefaultCallbacks();
+                instance.Instance.Should().NotBeNull();
+                instance.Instance.Should().BeOfType<TestObject>();
             }
+        }
+        
+        [Fact] 
+        public void Can_invoke_method() 
+        { 
+            var o = new TestObject(); 
+            var type = NetTypeManager.GetTypeInfo<TestObject>(); 
+            var method = type.GetMethod(0); 
+            var instance = NetInstance.CreateFromObject(o); 
+            
+            // This will jump to native, to then call the .NET delegate (round trip).
+            // The purpose is to simulate Qml invoking a method, sending .NET instance back.
+            // We will inspect the returned instance that it got back to verify that it
+            using (var parameter = new NetVariant())
+            using (var list = new NetVariantList())
+            {
+                parameter.Instance = instance;
+                list.Add(parameter);
+                Interop.Callbacks.InvokeMethod(method.Handle, instance.Handle, list.Handle, IntPtr.Zero);
+            }
+
+            o.Object.Should().NotBeNull();
+            ReferenceEquals(o.Object, o).Should().BeTrue();
         }
     }
 }
