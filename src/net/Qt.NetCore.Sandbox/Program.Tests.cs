@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Xunit;
 using Xunit.Abstractions;
@@ -11,7 +12,7 @@ namespace Qt.NetCore.Sandbox
         {
             switch (message)
             {
-                case Xunit.Sdk.TestAssemblyFinished _:
+                case ITestAssemblyFinished _:
                     TestAssemblyFinished.Set();
                     break;
             }
@@ -32,10 +33,11 @@ namespace Qt.NetCore.Sandbox
         {
             switch (message)
             {
-                case DiscoveryCompleteMessage _:
+                case IDiscoveryCompleteMessage _:
                     DiscoveryComplete.Set();
                     break;
-                case Xunit.Sdk.TestCaseDiscoveryMessage testCaseDiscoveryMessage:
+                case ITestCaseDiscoveryMessage testCaseDiscoveryMessage:
+                    Console.WriteLine(testCaseDiscoveryMessage.TestCase.DisplayName);
                     TestCases.Add(testCaseDiscoveryMessage.TestCase);
                     break;
             }
@@ -61,10 +63,12 @@ namespace Qt.NetCore.Sandbox
             var sink = new Sink();
             
             // Discover the tests
+            Console.WriteLine("Discovering...");
             controller.Find(false, sinkWithTypes, discoverOptions);
             sinkWithTypes.DiscoveryComplete.WaitOne();
             
             // Run the tests
+            Console.WriteLine("Running...");
             controller.RunTests(sinkWithTypes.TestCases, sink, executionOptions);
             sink.TestAssemblyFinished.WaitOne();
         }
