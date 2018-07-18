@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Qt.NetCore.Tests
 {
-    public class NetInstanceInteropTests : BaseQmlTestsWithInstance<NetInstanceInteropTests.NetInteropTestQml>
+    public class NetInstanceLifetimeTests : BaseQmlTestsWithInstance<NetInstanceLifetimeTests.NetInteropTestQml>
     {
         public class SecondLevelType
         {
@@ -37,6 +37,7 @@ namespace Qt.NetCore.Tests
             public void ReleaseNetReferenceParameter()
             {
                 Parameter = null;
+                Parameter2 = null;
             }
             
             public bool CheckIsParameterAlive()
@@ -140,7 +141,7 @@ namespace Qt.NetCore.Tests
             Assert.True(Instance.TestResult);
         }
 
-        [Fact(Skip = "Not working yet")]
+        [Fact(Skip = "Not working")]
         public void Can_handle_instance_deref_of_all_refs_in_qml_and_net()
         {
             NetTestHelper.RunQml(qmlApplicationEngine,
@@ -150,18 +151,15 @@ namespace Qt.NetCore.Tests
                     NetInteropTestQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance1 = test.Parameter;
-                            var instance2 = test.Parameter;
+                            //var instance1 = test.Parameter;
+                            //var instance2 = test.Parameter;
 
                             //deref Parameter
-                            instance1 = null;
-                            instance2 = null;
+                            //instance1 = null;
+                            //instance2 = null;
                             test.ReleaseNetReferenceParameter();
                             
                             gc();
-gc();
-gc();
-gc();
 
                             test.TestResult = test.CheckIsParameterAlive();
                         }
