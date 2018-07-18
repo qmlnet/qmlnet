@@ -2,7 +2,7 @@
 using Qt.NetCore.Types;
 using Xunit;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Types
 {
     public class NetInstanceTests : BaseTests
     {
