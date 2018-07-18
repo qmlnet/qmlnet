@@ -15,17 +15,17 @@ namespace Qt.NetCore.Tests
         // ReSharper restore InconsistentNaming
         readonly List<Type> _registeredTypes = new List<Type>();
 
-        public BaseQmlTests()
+        protected BaseQmlTests()
         {
             _coreApplication = new QGuiApplication();
             qmlApplicationEngine = new QQmlApplicationEngine();
         }
-        
-        public void RegisterType<T>()
+
+        protected void RegisterType<T>()
         {
             if (_registeredTypes.Contains(typeof(T))) return;
             _registeredTypes.Add(typeof(T));
-            QQmlApplicationEngine.RegisterType<T>("tests", 1, 0);
+            QQmlApplicationEngine.RegisterType<T>("tests");
         }
 
         public override void Dispose()
@@ -39,7 +39,7 @@ namespace Qt.NetCore.Tests
 
     public abstract class BaseQmlTests<T> : BaseQmlTests where T:class
     {
-        protected Mock<T> Mock;
+        protected readonly Mock<T> Mock;
 
         protected BaseQmlTests()
         {
@@ -50,8 +50,26 @@ namespace Qt.NetCore.Tests
 
         public override void Dispose()
         {
-            base.Dispose();
             NetInstance.TypeCreator = null;
+            base.Dispose();
+        }
+    }
+
+    public abstract class BaseQmlTestsWithInstance<T> : BaseQmlTests where T : class, new()
+    {
+        protected readonly T Instance;
+
+        protected BaseQmlTestsWithInstance()
+        {
+            RegisterType<T>();
+            Instance = new T();
+            NetInstance.TypeCreator = new MockTypeCreator(Instance);
+        }
+
+        public override void Dispose()
+        {
+            NetInstance.TypeCreator = null;
+            base.Dispose();
         }
     }
 }
