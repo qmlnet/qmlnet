@@ -2,35 +2,35 @@
 using Qt.NetCore.Qml;
 using Xunit;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Qml
 {
-    public class IntTests : BaseQmlTests<IntTests.IntTestsQml>
+    public class CharTests : BaseQmlTests<CharTests.CharTestsQml>
     {
-        public class IntTestsQml
+        public class CharTestsQml
         {
-            public virtual int Property { get; set; }
+            public virtual char Property { get; set; }
 
-            public virtual void MethodParameter(int value)
+            public virtual void MethodParameter(char value)
             {
 
             }
 
-            public virtual int MethodReturn()
+            public virtual char MethodReturn()
             {
-                return 0;
+                return char.MinValue;
             }
         }
         
         [Fact]
-        public void Can_read_write_int_min_value()
+        public void Can_read_write_char_null()
         {
-            Mock.Setup(x => x.Property).Returns(int.MinValue);
+            Mock.Setup(x => x.Property).Returns((char)0);
             
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    IntTestsQml {
+                    CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.Property = test.Property
@@ -39,19 +39,19 @@ namespace Qt.NetCore.Tests
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = int.MinValue, Times.Once);
+            Mock.VerifySet(x => x.Property = (char)0, Times.Once);
         }
 
         [Fact]
-        public void Can_read_write_int_max_value()
+        public void Can_read_write_char_max_value()
         {
-            Mock.Setup(x => x.Property).Returns(int.MaxValue);
+            Mock.Setup(x => x.Property).Returns('T');
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    IntTestsQml {
+                    CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.Property = test.Property
@@ -60,37 +60,58 @@ namespace Qt.NetCore.Tests
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = int.MaxValue, Times.Once);
+            Mock.VerifySet(x => x.Property = 'T', Times.Once);
         }
 
         [Fact]
-        public void Can_call_method_with_parameter()
+        public void Can_read_write_char_unicode()
         {
+            Mock.Setup(x => x.Property).Returns('Ώ');
+
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    IntTestsQml {
+                    CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameter(3)
+                            test.Property = test.Property
                         }
                     }
                 ");
 
-            Mock.Verify(x => x.MethodParameter(It.Is<int>(y => y == 3)), Times.Once);
+            Mock.VerifyGet(x => x.Property, Times.Once);
+            Mock.VerifySet(x => x.Property = 'Ώ', Times.Once);
         }
 
         [Fact]
-        public void Can_call_method_with_return()
+        public void Can_set_method_parameter()
         {
-            Mock.Setup(x => x.MethodReturn()).Returns(int.MaxValue);
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    CharTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.MethodParameter(""Ώ"")
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.MethodParameter(It.IsIn('Ώ')), Times.Once);
+        }
+
+        [Fact]
+        public void Can_use_as_return_type()
+        {
+            Mock.Setup(x => x.MethodReturn()).Returns('Ώ');
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    IntTestsQml {
+                    CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.MethodParameter(test.MethodReturn())
@@ -98,7 +119,7 @@ namespace Qt.NetCore.Tests
                     }
                 ");
 
-            Mock.Verify(x => x.MethodParameter(It.Is<int>(y => y == int.MaxValue)), Times.Once);
+            Mock.Verify(x => x.MethodParameter(It.IsIn('Ώ')), Times.Once);
         }
     }
 }

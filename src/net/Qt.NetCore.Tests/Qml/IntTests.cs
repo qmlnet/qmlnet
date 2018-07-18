@@ -2,20 +2,20 @@
 using Qt.NetCore.Qml;
 using Xunit;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Qml
 {
-    public class DoubleTests : BaseQmlTests<DoubleTests.DoubleTestsQml>
+    public class IntTests : BaseQmlTests<IntTests.IntTestsQml>
     {
-        public class DoubleTestsQml
+        public class IntTestsQml
         {
-            public virtual double Property { get; set; }
+            public virtual int Property { get; set; }
 
-            public virtual void MethodParameter(double value)
+            public virtual void MethodParameter(int value)
             {
 
             }
 
-            public virtual double MethodReturn()
+            public virtual int MethodReturn()
             {
                 return 0;
             }
@@ -24,13 +24,13 @@ namespace Qt.NetCore.Tests
         [Fact]
         public void Can_read_write_int_min_value()
         {
-            Mock.Setup(x => x.Property).Returns(double.MinValue);
+            Mock.Setup(x => x.Property).Returns(int.MinValue);
             
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    DoubleTestsQml {
+                    IntTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.Property = test.Property
@@ -39,19 +39,19 @@ namespace Qt.NetCore.Tests
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = double.MinValue, Times.Once);
+            Mock.VerifySet(x => x.Property = int.MinValue, Times.Once);
         }
 
         [Fact]
         public void Can_read_write_int_max_value()
         {
-            Mock.Setup(x => x.Property).Returns(double.MaxValue);
+            Mock.Setup(x => x.Property).Returns(int.MaxValue);
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    DoubleTestsQml {
+                    IntTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.Property = test.Property
@@ -60,7 +60,7 @@ namespace Qt.NetCore.Tests
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = double.MaxValue, Times.Once);
+            Mock.VerifySet(x => x.Property = int.MaxValue, Times.Once);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace Qt.NetCore.Tests
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    DoubleTestsQml {
+                    IntTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.MethodParameter(3)
@@ -78,19 +78,19 @@ namespace Qt.NetCore.Tests
                     }
                 ");
 
-            Mock.Verify(x => x.MethodParameter(It.Is<double>(y => y == 3D)), Times.Once);
+            Mock.Verify(x => x.MethodParameter(It.Is<int>(y => y == 3)), Times.Once);
         }
 
         [Fact]
         public void Can_call_method_with_return()
         {
-            Mock.Setup(x => x.MethodReturn()).Returns(double.MaxValue);
+            Mock.Setup(x => x.MethodReturn()).Returns(int.MaxValue);
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    DoubleTestsQml {
+                    IntTestsQml {
                         id: test
                         Component.onCompleted: function() {
                             test.MethodParameter(test.MethodReturn())
@@ -98,7 +98,7 @@ namespace Qt.NetCore.Tests
                     }
                 ");
 
-            Mock.Verify(x => x.MethodParameter(It.Is<double>(y => y == double.MaxValue)), Times.Once);
+            Mock.Verify(x => x.MethodParameter(It.Is<int>(y => y == int.MaxValue)), Times.Once);
         }
     }
 }

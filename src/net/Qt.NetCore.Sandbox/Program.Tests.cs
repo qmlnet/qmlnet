@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Qt.NetCore.Tests;
+using Qt.NetCore.Tests.Qml;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -54,8 +56,8 @@ namespace Qt.NetCore.Sandbox
     {
         static void Main()
         {
-            var config = ConfigReader.Load(typeof(Tests.BaseTests).Assembly.Location);
-            var controller = new XunitFrontController(AppDomainSupport.Denied, typeof(Tests.BaseTests).Assembly.Location);
+            var config = ConfigReader.Load(typeof(BaseTests).Assembly.Location);
+            var controller = new XunitFrontController(AppDomainSupport.Denied, typeof(BaseTests).Assembly.Location);
             var discoverOptions = TestFrameworkOptions.ForDiscovery(config);
             var executionOptions = TestFrameworkOptions.ForExecution(config);
             

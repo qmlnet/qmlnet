@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Moq;
 using Qt.NetCore.Qml;
 using Qt.NetCore.Types;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Qml
 {
     public abstract class BaseQmlTests : BaseTests
     {

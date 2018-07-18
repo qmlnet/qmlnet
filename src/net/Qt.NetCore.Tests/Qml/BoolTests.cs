@@ -2,107 +2,101 @@
 using Qt.NetCore.Qml;
 using Xunit;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Qml
 {
-    public class StringTests : BaseQmlTests<StringTests.StringTestsQml>
+    public class BoolTests : BaseQmlTests<BoolTests.BoolTestsQml>
     {
-        public class StringTestsQml
+        public class BoolTestsQml
         {
-            public virtual string Property { get; set; }
+            public virtual bool Property { get; set; }
 
-            public virtual void MethodParameter(string value)
+            public virtual void MethodParameter(bool value)
             {
 
             }
 
-            public virtual string MethodReturn()
+            public virtual bool MethodReturn()
             {
-                return null;
+                return false;
             }
         }
 
         [Fact]
-        public void Can_read_write_null()
+        public void Can_write_property_true()
         {
-            Mock.Setup(x => x.Property).Returns((string)null);
-
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    StringTestsQml {
+                    BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.Property = true
                         }
                     }
                 ");
-
-            Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = null, Times.Once);
+            
+            Mock.VerifySet(x => x.Property = true, Times.Once);
         }
 
         [Fact]
-        public void Can_read_write_empty()
+        public void Can_write_property_false()
         {
-            Mock.Setup(x => x.Property).Returns("");
-
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    StringTestsQml {
+                    BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.Property = false
                         }
                     }
                 ");
 
-            Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = "", Times.Once);
+            Mock.VerifySet(x => x.Property = false, Times.Once);
         }
 
         [Fact]
-        public void Can_read_write_value()
+        public void Can_read_property_false()
         {
-            Mock.Setup(x => x.Property).Returns("test value");
+            Mock.Setup(x => x.Property).Returns(false);
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    StringTestsQml {
+                    BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.MethodParameter(test.Property)
                         }
                     }
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = "test value", Times.Once);
+            Mock.Verify(x => x.MethodParameter(It.Is<bool>(y => y == false)));
         }
 
         [Fact]
-        public void Can_read_write_value_unicode()
+        public void Can_read_property_true()
         {
-            Mock.Setup(x => x.Property).Returns("test Ώ value");
+            Mock.Setup(x => x.Property).Returns(true);
 
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
                     import QtQuick 2.0
                     import tests 1.0
-                    StringTestsQml {
+                    BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.MethodParameter(test.Property)
                         }
                     }
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
-            Mock.VerifySet(x => x.Property = "test Ώ value", Times.Once);
+            Mock.Verify(x => x.MethodParameter(It.Is<bool>(y => y)));
         }
     }
 }

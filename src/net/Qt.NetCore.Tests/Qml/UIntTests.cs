@@ -2,7 +2,7 @@
 using Qt.NetCore.Qml;
 using Xunit;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Qml
 {
     public class UIntTests : BaseQmlTests<UIntTests.UIntTestsQml>
     {

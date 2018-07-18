@@ -1,5 +1,6 @@
-﻿using Qt.NetCore.Qml;
-using System;
+﻿using System;
+using Qt.NetCore.Qml;
+using Qt.NetCore.Tests.Qml;
 using Xunit;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -7,7 +8,7 @@ using Xunit;
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Types
 {
     public class NetInstanceLifetimeTests : BaseQmlTestsWithInstance<NetInstanceLifetimeTests.NetInteropTestQml>
     {

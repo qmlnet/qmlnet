@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Qt.NetCore.Types;
 using Xunit;
 

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using FluentAssertions;
 using Moq;
-using Qt.NetCore.Qml;
-using Qt.NetCore.Types;
 using Xunit;
 
 namespace Qt.NetCore.Tests.Types

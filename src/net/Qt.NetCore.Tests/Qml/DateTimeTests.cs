@@ -1,9 +1,8 @@
 ﻿using System;
-using Moq;
 using Qt.NetCore.Qml;
 using Xunit;
 
-namespace Qt.NetCore.Tests
+namespace Qt.NetCore.Tests.Qml
 {
     public class DateTimeTests : BaseQmlTests<DateTimeTests.DateTimeTestsQml>
     {
