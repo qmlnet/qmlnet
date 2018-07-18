@@ -3,7 +3,7 @@
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*releaseGCHandleCb)(NetGCHandle* handle);
-typedef NetGCHandle* (*instantiateTypeCb)(LPWSTR typeName);
+typedef NetInstanceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* type);
 typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result);
 typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* value);
 typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetInstanceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
@@ -37,12 +37,21 @@ void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
 }
 
 QSharedPointer<NetInstance> instantiateType(QSharedPointer<NetTypeInfo> type) {
-    NetGCHandle* result = sharedCallbacks.instantiateType((LPWSTR)type->getFullTypeName().utf16());
-    if(result == NULL) {
-        return QSharedPointer<NetInstance>(NULL);
-    } else {
-        return QSharedPointer<NetInstance>(new NetInstance(result, type));
+    NetTypeInfoContainer* typeContainer = new NetTypeInfoContainer{ type }; // .NET will delete this type
+    NetInstanceContainer* resultContainer = sharedCallbacks.instantiateType(typeContainer);
+
+    QSharedPointer<NetInstance> result;
+
+    if(resultContainer != NULL) {
+        result = resultContainer->instance;
+        // Special care is given here. .NET
+        // has given us a container that it will NOT delete itself.
+        // This means that .NET didn't wrap the pointer up in an object
+        // that will be GC'd.
+        delete resultContainer;
     }
+
+    return result;
 }
 
 void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetInstance> target, QSharedPointer<NetVariant> result) {
@@ -103,8 +112,11 @@ Q_DECL_EXPORT void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* type)
     sharedCallbacks.buildTypeInfo(typeCopy);
 }
 
-Q_DECL_EXPORT NetGCHandle* type_info_callbacks_instantiateType(LPWSTR typeName) {
-    return sharedCallbacks.instantiateType(typeName);
+Q_DECL_EXPORT NetInstanceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* type) {
+    // The parameters have to be copied to new containers, because the callback
+    // will delete them.
+    NetTypeInfoContainer* typeCopy = new NetTypeInfoContainer{type->netTypeInfo};
+    return sharedCallbacks.instantiateType(typeCopy);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetInstanceContainer* target, NetVariantContainer* result) {

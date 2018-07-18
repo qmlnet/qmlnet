@@ -34,9 +34,9 @@ namespace Qt.NetCore.Types
         
         public static NetInstance InstantiateType(NetTypeInfo type)
         {
-            var result = Interop.Callbacks.InstantiateType(type.FullTypeName);
+            var result = Interop.Callbacks.InstantiateType(type.Handle);
             if (result == IntPtr.Zero) return null;
-            return new NetInstance(result, type);
+            return new NetInstance(result);
         }
 
         public object Instance

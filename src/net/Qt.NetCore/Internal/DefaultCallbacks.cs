@@ -89,16 +89,25 @@ namespace Qt.NetCore.Internal
             ((GCHandle)handle).Free();
         }
         
-        public GCHandle InstantiateType(string typeName)
+        public IntPtr InstantiateType(IntPtr type)
         {
-            var type = Type.GetType(typeName);
-            if(type == null) throw new InvalidOperationException($"Invalid type {typeName}");
+            try
+            {
+                var typeName = Interop.NetTypeInfo.GetFullTypeName(type);
+                var typeInfo = Type.GetType(typeName);
+                if(typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
             
-            var typeCreator = NetInstance.TypeCreator;
-            object instance = typeCreator != null ? typeCreator.Create(type) : Activator.CreateInstance(type);
+                var typeCreator = NetInstance.TypeCreator;
+                var instance = typeCreator != null ? typeCreator.Create(typeInfo) : Activator.CreateInstance(typeInfo);
             
-            var instanceHandle = GCHandle.Alloc(instance);
-            return instanceHandle;
+                var instanceHandle = GCHandle.Alloc(instance);
+                // NOTE: We DON'T wrap 
+                return Interop.NetInstance.Create(GCHandle.ToIntPtr(instanceHandle), type);
+            }
+            finally
+            {
+                Interop.NetTypeInfo.Destroy(type);
+            }
         }
 
         public void ReadProperty(IntPtr p, IntPtr t, IntPtr r)

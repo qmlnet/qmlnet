@@ -33,7 +33,7 @@ namespace Qt.NetCore
         void BuildTypeInfo(IntPtr handle);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
-        IntPtr InstantiateType([MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        IntPtr InstantiateType(IntPtr type);
         
         [NativeSymbol(Entrypoint = "type_info_callbacks_readProperty")]
         void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
@@ -53,7 +53,7 @@ namespace Qt.NetCore
         
         void BuildTypeInfo(IntPtr typeInfo);
 
-        GCHandle InstantiateType(string typeName);
+        IntPtr InstantiateType(IntPtr type);
 
         void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
 
@@ -83,7 +83,7 @@ namespace Qt.NetCore
         delegate void ReleaseGCHandleDelegate(IntPtr handle);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate IntPtr InstantiateTypeDelgate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        delegate IntPtr InstantiateTypeDelgate(IntPtr type);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ReadPropertyDelegate(IntPtr property, IntPtr target, IntPtr result);
@@ -135,9 +135,9 @@ namespace Qt.NetCore
             _callbacks.BuildTypeInfo(type);
         }
         
-        private IntPtr InstantiateType(string typeName)
+        private IntPtr InstantiateType(IntPtr type)
         {
-            return GCHandle.ToIntPtr(_callbacks.InstantiateType(typeName));
+            return _callbacks.InstantiateType(type);
         }
         
         private void ReadProperty(IntPtr property, IntPtr target, IntPtr result)

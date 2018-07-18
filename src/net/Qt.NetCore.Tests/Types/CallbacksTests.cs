@@ -56,7 +56,7 @@ namespace Qt.NetCore.Tests.Types
         {
             var type = NetTypeManager.GetTypeInfo<TestObject>();
 
-            using(var instance = new NetInstance(Interop.Callbacks.InstantiateType(type.FullTypeName), type))
+            using(var instance = new NetInstance(Interop.Callbacks.InstantiateType(type.Handle), false))
             {
                 instance.Instance.Should().NotBeNull();
                 instance.Instance.Should().BeOfType<TestObject>();
