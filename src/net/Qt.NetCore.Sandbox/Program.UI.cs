@@ -25,6 +25,43 @@ namespace Qt.NetCore.Sandbox
         {
             
         }
+
+        public class InstanceType
+        {
+            public InstanceType()
+            {
+
+            }
+        }
+
+        public class TestQmlInstanceHandling
+        {
+            private InstanceType _instanceType;
+            private WeakReference<InstanceType> _weakInstanceTypeRef;
+
+            public int State { get; set; } = 0;
+
+            public TestQmlInstanceHandling()
+            {
+                _instanceType = new InstanceType();
+                _weakInstanceTypeRef = new WeakReference<InstanceType>(_instanceType);
+            }
+
+            public InstanceType GetInstance()
+            {
+                return _instanceType;
+            }
+
+            public void DeleteInstances()
+            {
+                _instanceType = null;
+            }
+
+            public bool IsInstanceAlive()
+            {
+                return _weakInstanceTypeRef.TryGetTarget(out var _);
+            }
+        }
         
         static int Main()
         {
@@ -43,7 +80,8 @@ namespace Qt.NetCore.Sandbox
                     var type = NetTypeManager.GetTypeInfo<TestQmlImport>();
                     
                     QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
-                    
+                    QQmlApplicationEngine.RegisterType<TestQmlInstanceHandling>("testInstances");
+
                     engine.Load("main.qml");
 
                     return app.Exec();
