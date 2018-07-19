@@ -39,6 +39,16 @@ namespace Qt.NetCore.Qml
             RequestTrigger();
         }
 
+        public void Exit(int returnCode = 0)
+        {
+            Interop.QGuiApplication.Exit(Handle, returnCode);
+        }
+
+        public void Quit()
+        {
+            Exit();
+        }
+
         private void RequestTrigger()
         {
             Interop.QGuiApplication.RequestTrigger(Handle);
@@ -93,6 +103,8 @@ namespace Qt.NetCore.Qml
         void AddTriggerCallback(IntPtr app, IntPtr callback);
         [NativeSymbol(Entrypoint = "qguiapplication_requestTrigger")]
         void RequestTrigger(IntPtr app);
+        [NativeSymbol(Entrypoint = "qguiapplication_exit")]
+        void Exit(IntPtr app, int returnCode);
     }
     
 }

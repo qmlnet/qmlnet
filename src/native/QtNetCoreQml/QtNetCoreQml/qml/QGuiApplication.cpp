@@ -39,4 +39,8 @@ Q_DECL_EXPORT void qguiapplication_requestTrigger(QGuiApplicationContainer* cont
     QMetaObject::invokeMethod(container->callback.data(), "trigger", Qt::QueuedConnection);
 }
 
+Q_DECL_EXPORT void qguiapplication_exit(QGuiApplicationContainer* container, int returnCode) {
+    container->guiApp->exit(returnCode);
+}
+
 }
