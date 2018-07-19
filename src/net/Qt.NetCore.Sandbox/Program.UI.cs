@@ -9,31 +9,12 @@ namespace Qt.NetCore.Sandbox
 {
     class Program
     {
+        [Signal("testSignal", NetVariantType.String)]
         public class TestQmlImport
         {
-            public AnotherType Create()
+            public void TestMethod()
             {
-                return new AnotherType();
-            }
-            
-            public void TestMethod(AnotherType anotherType)
-            {
-
-            }
-        }
-        
-        public class AnotherType
-        {
-            private static int _instanceCounter = 0;
-            
-            public AnotherType()
-            {
-                Console.WriteLine($"AnotherType:{Interlocked.Increment(ref _instanceCounter)}");
-            }
-
-            ~AnotherType()
-            {
-                Console.WriteLine($"AnotherType:{Interlocked.Decrement(ref _instanceCounter)}");
+                Console.WriteLine("Invoked method!");
             }
         }
         

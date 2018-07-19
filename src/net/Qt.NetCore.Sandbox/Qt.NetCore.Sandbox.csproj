@@ -12,8 +12,8 @@
     <None Update="main.qml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Remove="Program.UI.cs" />
-    <None Include="Program.UI.cs" />
+    <Compile Remove="Program.Tests.cs" />
+    <None Include="Program.Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="xunit.core" Version="2.4.0" />

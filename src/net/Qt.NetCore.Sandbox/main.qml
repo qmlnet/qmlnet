@@ -11,16 +11,21 @@ ApplicationWindow {
 
 	Item {
 		Timer {
-			interval: 10; running: true; repeat: true
+			interval: 1000; running: true; repeat: true
 			onTriggered: {
-				var par = test.Create()
-                test.TestMethod(par)
-                gc()
+                test.testSignal("test")
+                test.TestMethod()
 			}
 		}
 	}
 
 	TestQmlImport {
 		id: test
+		Component.onCompleted : {
+		    testSignal.connect(function(o) {
+		        console.log("Signal raised: " + o)
+		    })
+		    console.log("Connected signal")
+		}
 	}
 }

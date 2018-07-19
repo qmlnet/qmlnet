@@ -2,6 +2,7 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
 #include <QtNetCoreQml/types/NetMethodInfo.h>
 #include <QtNetCoreQml/types/NetPropertyInfo.h>
+#include <QtNetCoreQml/types/NetSignalInfo.h>
 #include <QtNetCoreQml/types/Callbacks.h>
 #include <QQmlEngine>
 #include <QDebug>
@@ -193,6 +194,32 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
     mob.setClassName(typeInfo->getClassName().toLatin1());
     mob.setFlags(QMetaObjectBuilder::DynamicMetaObject);
 
+    // register all the signals for the type
+
+    if(typeInfo->getSignalCount() > 0) {
+        for(uint index = 0; index <= typeInfo->getSignalCount() - 1; index++)
+        {
+            QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
+            QString signature = signalInfo->getName();
+
+            signature.append("(");
+
+            if(signalInfo->getParameterCount() > 0) {
+                for(uint parameterIndex = 0; parameterIndex <= signalInfo->getParameterCount() - 1; parameterIndex++)
+                {
+                    if(parameterIndex > 0) {
+                        signature.append(", ");
+                    }
+                    signature.append("QVariant");
+                }
+            }
+
+            signature.append(")");
+
+            mob.addSignal(signature.toLocal8Bit().constData());
+        }
+    }
+
     if(typeInfo->getMethodCount() > 0) {
         for(uint index = 0; index <= typeInfo->getMethodCount() - 1; index++)
         {
@@ -290,7 +317,16 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             return value->qt_metacall(c, idx, a);
         }
 
-        QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx - offset);
+        idx -= offset;
+        if(idx < instance->getTypeInfo()->getSignalCount()) {
+            // This is a signal call, activate it!
+            activate(value, idx + offset, a);
+            return -1;
+        }
+
+        idx -= instance->getTypeInfo()->getSignalCount();
+
+        QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx);
 
         QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
 
