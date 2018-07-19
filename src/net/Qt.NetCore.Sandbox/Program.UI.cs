@@ -73,6 +73,12 @@ namespace Qt.NetCore.Sandbox
             {
                 return _weakInstanceTypeRef.TryGetTarget(out var _);
             }
+
+            public void GarbageCollect()
+            {
+                Thread.Sleep(1000);
+                GC.Collect(GC.MaxGeneration);
+            }
         }
         
         static int Main()

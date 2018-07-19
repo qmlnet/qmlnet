@@ -5,14 +5,12 @@ NetInstance::NetInstance(NetGCHandle* gcHandle, QSharedPointer<NetTypeInfo> type
     gcHandle(gcHandle),
     typeInfo(typeInfo)
 {
-
+    qDebug("NetInstance created: " + typeInfo->getClassName().toLatin1());
 }
 
 NetInstance::~NetInstance()
 {
-    releaseGCHandle(gcHandle);
-    gcHandle = NULL;
-    typeInfo = NULL;
+    release();
 }
 
 NetGCHandle* NetInstance::getGCHandle()
@@ -23,6 +21,17 @@ NetGCHandle* NetInstance::getGCHandle()
 QSharedPointer<NetTypeInfo> NetInstance::getTypeInfo()
 {
     return typeInfo;
+}
+
+void NetInstance::release()
+{
+    if(gcHandle != nullptr) {
+        releaseGCHandle(gcHandle);
+        auto typeInfoClassName = typeInfo->getClassName();
+        gcHandle = nullptr;
+        typeInfo = nullptr;
+        qDebug("NetInstance released: " + typeInfoClassName.toLatin1());
+    }
 }
 
 extern "C" {

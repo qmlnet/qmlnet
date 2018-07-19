@@ -11,11 +11,13 @@ ApplicationWindow {
     title: qsTr("Hello World")
 	Item {
 		Timer {
+			id: signalTimer
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
                 var o = test.GetSharedInstance()
                 o.testSignal.connect(function(message) {
                     console.log("Signal was raised: " + message)
+					signalTimer.running = false
                 })
                 var o2 = test.GetSharedInstance()
                 o2.testSignal("Hello")
@@ -26,8 +28,11 @@ ApplicationWindow {
 			property var instanceRef: null
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
+				testInstances.GarbageCollect()
+				gc()
 				switch(testInstances.State) {
 					case 0:
+						console.log("Creating two QML references")
 						var ref1 = testInstances.GetInstance()
 						var ref2 = testInstances.GetInstance()
 
@@ -43,7 +48,7 @@ ApplicationWindow {
 						testInstances.State++
 						break
 					case 2:
-						if(testInstances.IsInstanceAlive()) {
+						if(!testInstances.IsInstanceAlive()) {
 							console.log("Yeah! Instance has been released!");
 							testInstances.State++
 						}
@@ -89,7 +94,7 @@ ApplicationWindow {
 						testInstances.State++
 						break;
 					case 11:
-						if(testInstances.IsInstanceAlive()) {
+						if(!testInstances.IsInstanceAlive()) {
 							console.log("Yeah! Instance has been released a second time!");
 							testInstances.State++
 						}
@@ -120,7 +125,7 @@ ApplicationWindow {
 						testInstances.State++
 						break;
 					case 17:
-						if(testInstances.IsInstanceAlive()) {
+						if(!testInstances.IsInstanceAlive()) {
 							console.log("Yeah! Instance has been released a third time!");
 							testInstances.State++
 						}

@@ -9,6 +9,10 @@ NetValue::~NetValue()
     {
         netValues.erase(hit);
     }
+    qDebug("NetValue deleted: " + instance->getTypeInfo()->getClassName().toLatin1());
+    if(instance != nullptr) {
+        instance->release();
+    }
 }
 
 
@@ -34,6 +38,7 @@ NetValue::NetValue(QSharedPointer<NetInstance> instance, QObject *parent)
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
     netValues[instance.data()] = this;
+    qDebug("NetValue created: " + instance->getTypeInfo()->getClassName().toLatin1());
 }
 
 std::map<NetInstance*, NetValue*> NetValue::netValues = std::map<NetInstance*, NetValue*>();
