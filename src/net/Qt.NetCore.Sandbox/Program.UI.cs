@@ -32,6 +32,11 @@ namespace Qt.NetCore.Sandbox
             {
 
             }
+
+            public void Log(string logMessage)
+            {
+                Console.WriteLine(logMessage);
+            }
         }
 
         public class TestQmlInstanceHandling
@@ -52,9 +57,15 @@ namespace Qt.NetCore.Sandbox
                 return _instanceType;
             }
 
-            public void DeleteInstances()
+            public void DeleteInstance()
             {
                 _instanceType = null;
+            }
+
+            public void CreateNewInstance()
+            {
+                _instanceType = new InstanceType();
+                _weakInstanceTypeRef = new WeakReference<InstanceType>(_instanceType);
             }
 
             public bool IsInstanceAlive()
