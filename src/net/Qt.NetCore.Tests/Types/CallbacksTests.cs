@@ -37,7 +37,7 @@ namespace Qt.NetCore.Tests.Types
             {
                 var o = new TestObject();
                 reference = new WeakReference(o);
-                instance = NetInstance.CreateFromObject(o);
+                instance = NetInstance.GetForObject(o);
             }).Wait();
 
             // NetInstance is still alive, so the weak reference must be alive as well.
@@ -69,7 +69,7 @@ namespace Qt.NetCore.Tests.Types
             var o = new TestObject(); 
             var type = NetTypeManager.GetTypeInfo<TestObject>(); 
             var method = type.GetMethod(0); 
-            var instance = NetInstance.CreateFromObject(o); 
+            var instance = NetInstance.GetForObject(o); 
             
             // This will jump to native, to then call the .NET delegate (round trip).
             // The purpose is to simulate Qml invoking a method, sending .NET instance back.

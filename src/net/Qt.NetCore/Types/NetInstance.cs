@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
@@ -23,13 +24,21 @@ namespace Qt.NetCore.Types
             
         }
 
-        public static NetInstance CreateFromObject(object value)
+        private static ConditionalWeakTable<object, NetInstance> _objectNetInstanceConnections = new ConditionalWeakTable<object, NetInstance>();
+
+        public static NetInstance GetForObject(object value)
         {
+            if(_objectNetInstanceConnections.TryGetValue(value, out var netInstance))
+            {
+                return netInstance;
+            }
             if (value == null) return null;
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
-            return new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
+            var newNetInstance = new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
+            _objectNetInstanceConnections.Add(value, newNetInstance);
+            return newNetInstance;
         }
         
         public static NetInstance InstantiateType(NetTypeInfo type)
