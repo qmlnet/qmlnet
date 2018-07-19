@@ -29,8 +29,10 @@ namespace Qt.NetCore.Types
         public static NetInstance GetForObject(object value)
         {
             if (value == null) return null;
+            bool alreadyExists = false;
             if (_objectNetInstanceConnections.TryGetValue(value, out var netInstance))
             {
+                alreadyExists = true;
                 if (GCHandle.FromIntPtr(netInstance.Handle).IsAllocated)
                 {
                     return netInstance;
@@ -40,6 +42,10 @@ namespace Qt.NetCore.Types
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
             var newNetInstance = new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
+            if(alreadyExists)
+            {
+                _objectNetInstanceConnections.Remove(value);
+            }
             _objectNetInstanceConnections.Add(value, newNetInstance);
             return newNetInstance;
         }
