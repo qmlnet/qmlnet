@@ -76,11 +76,11 @@ ApplicationWindow {
 						testInstances.State++
 						break;
 					case 8:
-						console.log(".Net object IsAlive = " + testInstances.IsInstanceAlive())
+						console.assert(testInstances.IsInstanceAlive(), ".Net object IsAlive = " + testInstances.IsInstanceAlive())
 						testInstances.State++
 						break;
 					case 9:
-						console.log(".Net object IsAlive = " + testInstances.IsInstanceAlive())
+						console.assert(testInstances.IsInstanceAlive(), ".Net object IsAlive = " + testInstances.IsInstanceAlive())
 						testInstances.State++
 						break;
 					case 10:
@@ -91,6 +91,37 @@ ApplicationWindow {
 					case 11:
 						if(testInstances.IsInstanceAlive()) {
 							console.log("Yeah! Instance has been released a second time!");
+							testInstances.State++
+						}
+						break;
+					case 12:
+						testInstances.CreateNewInstance()
+						console.log("Created new .Net Instance. IsAlive = " + testInstances.IsInstanceAlive())
+						testInstances.State++
+						break
+					case 13:
+						instanceRef = testInstances.GetInstance()
+						testInstances.DeleteInstance()
+						console.log("a QML ref and deleted the .Net ref. IsAlive = " + testInstances.IsInstanceAlive())
+
+						testInstances.State++
+						break
+					case 14:
+						console.assert(testInstances.IsInstanceAlive(), ".Net object IsAlive = " + testInstances.IsInstanceAlive())
+						testInstances.State++
+						break;
+					case 15:
+						console.assert(testInstances.IsInstanceAlive(), ".Net object IsAlive = " + testInstances.IsInstanceAlive())
+						testInstances.State++
+						break;
+					case 16:
+						console.log("Releasing last QML ref. IsAlive = " + testInstances.IsInstanceAlive())
+						instanceRef = null
+						testInstances.State++
+						break;
+					case 17:
+						if(testInstances.IsInstanceAlive()) {
+							console.log("Yeah! Instance has been released a third time!");
 							testInstances.State++
 						}
 						break;
