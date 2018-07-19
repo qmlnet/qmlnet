@@ -130,6 +130,25 @@ namespace Qt.NetCore.Tests.Types
             property.ParentType.ClassName.Should().Be("TestType6");
         }
 
+        [Signal("testSignal", NetVariantType.DateTime, NetVariantType.Object)]
+        public class TestType7
+        {
+            
+        }
+        
+        [Fact]
+        public void Can_get_signal()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType7>();
+
+            type.SignalCount.Should().Be(1);
+            var signal = type.GetSignal(0);
+            signal.Name.Should().Be("testSignal");
+            signal.ParameterCount.Should().Be(2);
+            signal.GetParameter(0).Should().Be(NetVariantType.DateTime);
+            signal.GetParameter(1).Should().Be(NetVariantType.Object);
+        }
+
         [Fact]
         public void Null_type_returned_for_invalid_type()
         {

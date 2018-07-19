@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Qt.NetCore.Qml;
@@ -79,6 +80,18 @@ namespace Qt.NetCore.Internal
                         propertyInfo.CanWrite))
                     {
                         type.AddProperty(property);
+                    }
+                }
+
+                foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
+                {
+                    using (var signal = new NetSignalInfo(signalAttribute.Name))
+                    {
+                        foreach (var parameter in signalAttribute.Parameters)
+                        {
+                            signal.AddParameter(parameter);
+                        }
+                        type.AddSignal(signal);
                     }
                 }
             }
