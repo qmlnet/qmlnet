@@ -60,18 +60,18 @@ namespace Qt.NetCore.Types
             return new NetPropertyInfo(result);
         }
         
-        public void AddSignal(NetMethodInfo signal)
+        public void AddSignal(NetSignalInfo signal)
         {
             Interop.NetTypeInfo.AddSignal(Handle, signal.Handle);
         }
 
         public uint SignalCount => Interop.NetTypeInfo.GetSignalCount(Handle);
 
-        public NetMethodInfo GetSignal(uint index)
+        public NetSignalInfo GetSignal(uint index)
         {
             var result = Interop.NetTypeInfo.GetSignal(Handle, index);
             if (result == IntPtr.Zero) return null;
-            return new NetMethodInfo(result);
+            return new NetSignalInfo(result);
         }
 
         protected override void DisposeUnmanaged(IntPtr ptr)

@@ -17,13 +17,15 @@ namespace Qt.NetCore.Tests.Types
         public void Can_add_signals()
         {
             var type = new NetTypeInfo("test");
-            var signal = new NetMethodInfo(type, "signalName", null);
+            var signal = new NetSignalInfo("signalName");
+            signal.AddParameter(NetVariantType.Bool);
 
             type.GetSignal(0).Should().BeNull();
             type.SignalCount.Should().Be(0);
             type.AddSignal(signal);
             type.SignalCount.Should().Be(1);
-            type.GetSignal(0).MethodName.Should().Be("signalName");
+            type.GetSignal(0).Name.Should().Be("signalName");
+            type.GetSignal(0).GetParameter(0).Should().Be(NetVariantType.Bool);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Qt.NetCore.Types
 {
     public class NetSignalInfo : BaseDisposable
     {
-        private NetSignalInfo(IntPtr handle, bool ownsHandle = true)
+        internal NetSignalInfo(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
 
