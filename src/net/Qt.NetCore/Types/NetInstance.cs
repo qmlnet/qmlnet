@@ -28,11 +28,14 @@ namespace Qt.NetCore.Types
 
         public static NetInstance GetForObject(object value)
         {
-            if(_objectNetInstanceConnections.TryGetValue(value, out var netInstance))
-            {
-                return netInstance;
-            }
             if (value == null) return null;
+            if (_objectNetInstanceConnections.TryGetValue(value, out var netInstance))
+            {
+                if (GCHandle.FromIntPtr(netInstance.Handle).IsAllocated)
+                {
+                    return netInstance;
+                }
+            }
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
