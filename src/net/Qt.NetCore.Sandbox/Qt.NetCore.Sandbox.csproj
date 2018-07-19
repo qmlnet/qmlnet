@@ -19,4 +19,8 @@
     <PackageReference Include="xunit.core" Version="2.4.0" />
     <PackageReference Include="xunit.runner.utility" Version="2.4.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Images" />
+    <Folder Include="Qml" />
+  </ItemGroup>
 </Project>

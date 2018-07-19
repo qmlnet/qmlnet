@@ -101,6 +101,10 @@ ApplicationWindow {
 			}
 		}
 	}
+    
+	Image {
+        source: "Images/placeholder.png"
+    }
 
 	TestQmlImport {
 		id: test

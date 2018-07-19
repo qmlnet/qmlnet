@@ -19,6 +19,8 @@ namespace Qt.NetCore.Qml
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
             
+            Interop.QGuiApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
+            
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
@@ -35,6 +37,16 @@ namespace Qt.NetCore.Qml
                 _actionQueue.Enqueue(action);
             }
             RequestTrigger();
+        }
+
+        public void Exit(int returnCode = 0)
+        {
+            Interop.QGuiApplication.Exit(Handle, returnCode);
+        }
+
+        public void Quit()
+        {
+            Exit();
         }
 
         private void RequestTrigger()
@@ -91,6 +103,8 @@ namespace Qt.NetCore.Qml
         void AddTriggerCallback(IntPtr app, IntPtr callback);
         [NativeSymbol(Entrypoint = "qguiapplication_requestTrigger")]
         void RequestTrigger(IntPtr app);
+        [NativeSymbol(Entrypoint = "qguiapplication_exit")]
+        void Exit(IntPtr app, int returnCode);
     }
     
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,7 +89,7 @@ namespace Qt.NetCore.Sandbox
             {
                 using (var engine = new QQmlApplicationEngine())
                 {
-                    var type = NetTypeManager.GetTypeInfo<TestQmlImport>();
+                    engine.AddImportPath(Path.Combine(Directory.GetCurrentDirectory(), "Qml"));
                     
                     QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
                     QQmlApplicationEngine.RegisterType<TestQmlInstanceHandling>("testInstances");
