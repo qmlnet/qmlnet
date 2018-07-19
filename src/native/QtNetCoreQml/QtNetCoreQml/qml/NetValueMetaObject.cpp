@@ -37,8 +37,7 @@ void metaPackValue(QSharedPointer<NetVariant> source, QVariant* destination) {
     case NetVariantTypeEnum_Object:
     {
         QSharedPointer<NetInstance> newInstance = source->getNetInstance();
-        NetValue* netValue = new NetValue(newInstance, NULL);
-        QQmlEngine::setObjectOwnership(netValue, QQmlEngine::JavaScriptOwnership);
+        NetValue* netValue = NetValue::forInstance(newInstance);
         destination->setValue(netValue);
         break;
     }
