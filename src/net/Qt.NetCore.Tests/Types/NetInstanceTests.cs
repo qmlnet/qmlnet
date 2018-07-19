@@ -15,7 +15,7 @@ namespace Qt.NetCore.Tests.Types
         public void Can_create_net_instance()
         {
             var o = new TestObject();
-            var instance = NetInstance.CreateFromObject(o);
+            var instance = NetInstance.GetForObject(o);
 
             var returnedInstance = instance.Instance;
 

@@ -240,7 +240,7 @@ namespace Qt.NetCore.Internal
                     destination.DateTime = (DateTime)source;
                 else
                 {
-                    destination.Instance = NetInstance.CreateFromObject(source);
+                    destination.Instance = NetInstance.GetForObject(source);
                 }
             }
         }
