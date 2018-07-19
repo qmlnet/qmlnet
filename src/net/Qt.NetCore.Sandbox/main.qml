@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import test 1.0
+import MyModule 1.0 as MyModule
 
 ApplicationWindow {
     visible: true
@@ -11,11 +12,9 @@ ApplicationWindow {
 
 	Item {
 		Timer {
-			interval: 10; running: true; repeat: true
+			interval: 1000; running: true; repeat: true
 			onTriggered: {
-				var par = test.Create()
-                test.TestMethod(par)
-                gc()
+			    console.log(Factorial.factorial(10))
 			}
 		}
 	}

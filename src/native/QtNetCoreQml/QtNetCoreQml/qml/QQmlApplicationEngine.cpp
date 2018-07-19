@@ -86,4 +86,9 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeC
     return -1;
 }
 
+Q_DECL_EXPORT void qqmlapplicationengine_addImportPath(QQmlApplicationEngineContainer* container, LPWSTR path) {
+    QString pathString = QString::fromUtf16((const char16_t*)path);
+    container->qmlEngine->addImportPath(pathString);
+}
+
 }

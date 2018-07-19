@@ -29,6 +29,11 @@ namespace Qt.NetCore.Qml
             return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
         }
 
+        public void AddImportPath(string path)
+        {
+            Interop.QQmlApplicationEngine.AddImportPath(Handle, path);
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.QQmlApplicationEngine.Destroy(ptr);
@@ -47,6 +52,9 @@ namespace Qt.NetCore.Qml
         
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
         int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
+        void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
     }
 
 }
