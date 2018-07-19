@@ -8,24 +8,21 @@ ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Hello World")
-
 	Item {
 		Timer {
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
-                test.testSignal("test")
-                test.TestMethod()
+                var o = test.GetSharedInstance()
+                o.testSignal.connect(function(message) {
+                    console.log("Signal was raised: " + message)
+                })
+                var o2 = test.GetSharedInstance()
+                o2.testSignal("Hello")
 			}
 		}
 	}
 
 	TestQmlImport {
 		id: test
-		Component.onCompleted : {
-		    testSignal.connect(function(o) {
-		        console.log("Signal raised: " + o)
-		    })
-		    console.log("Connected signal")
-		}
 	}
 }

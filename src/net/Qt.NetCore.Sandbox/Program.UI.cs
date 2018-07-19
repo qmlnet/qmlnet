@@ -12,10 +12,18 @@ namespace Qt.NetCore.Sandbox
         [Signal("testSignal", NetVariantType.String)]
         public class TestQmlImport
         {
-            public void TestMethod()
+            readonly AnotherType _anotherType = new AnotherType();
+            
+            public AnotherType GetSharedInstance()
             {
-                Console.WriteLine("Invoked method!");
+                return _anotherType;
             }
+        }
+
+        [Signal("testSignal", NetVariantType.String)]
+        public class AnotherType
+        {
+            
         }
         
         static int Main()
