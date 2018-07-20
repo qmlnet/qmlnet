@@ -1,19 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Qt.NetCore.Tests
 {
     public class MockTypeCreator : ITypeCreator
     {
-        private readonly object _instance;
+        private Dictionary<Type, object> _instances;
 
-        public MockTypeCreator(object instance)
+        public MockTypeCreator(params Tuple<Type, object>[] instances)
         {
-            _instance = instance;
+            _instances = new Dictionary<Type, object>();
+            foreach(var tuple in instances)
+            {
+                _instances[tuple.Item1] = tuple.Item2;
+            }
+        }
+
+        public void SetInstance(Type t, object instance)
+        {
+            _instances[t] = instance;
         }
 
         public object Create(Type type)
         {
-            return _instance;
+            if (_instances.ContainsKey(type))
+            {
+                return _instances[type];
+            }
+            return null;
         }
     }
 }
