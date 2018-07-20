@@ -1,6 +1,7 @@
 ﻿using System;
 using Qt.NetCore.Qml;
 using Xunit;
+using FluentAssertions;
 
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
@@ -52,119 +53,187 @@ namespace Qt.NetCore.Tests.Qml
         [Fact]
         public void Can_handle_multiple_instances_equality_qml()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
-                @"
+            qmlApplicationEngine.LoadData(@"
                     import QtQuick 2.0
                     import tests 1.0
-                    NetInteropTestQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var instance1 = test.Parameter;
-                            var instance2 = test.Parameter;
+                    import testContext 1.0
 
-                            test.TestResult = instance1.IsSame(instance2);
+                    Item {
+                        TestContext {
+                            id: tc
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var instance1 = test.Parameter
+                                var instance2 = test.Parameter
+
+                                test.TestResult = instance1.IsSame(instance2)
+
+                                tc.Quit()
+                            }
                         }
                     }
                 ");
+            ExecApplicationWithTimeout(2000).Should().Be(0);
+
             Assert.True(Instance.TestResult);
         }
 
         [Fact]
         public void Can_handle_different_instances_equality_qml()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
-                @"
+            qmlApplicationEngine.LoadData(@"
                     import QtQuick 2.0
                     import tests 1.0
-                    NetInteropTestQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var instance1 = test.Parameter;
-                            var instance2 = test.Parameter2;
+                    import testContext 1.0
 
-                            test.TestResult = instance1.IsSame(instance2);
+                    Item {
+                        TestContext {
+                            id: tc
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var instance1 = test.Parameter;
+                                var instance2 = test.Parameter2;
+
+                                test.TestResult = instance1.IsSame(instance2);
+
+                                tc.Quit()
+                            }
                         }
                     }
                 ");
+
+            ExecApplicationWithTimeout(2000).Should().Be(0);
+
             Assert.False(Instance.TestResult);
         }
 
         [Fact]
         public void Can_handle_instance_deref_of_one_ref_in_qml()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
-                @"
+            qmlApplicationEngine.LoadData(@"
                     import QtQuick 2.0
                     import tests 1.0
-                    NetInteropTestQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var instance1 = test.Parameter;
-                            var instance2 = test.Parameter;
+                    import testContext 1.0
 
-                            //deref Parameter
-                            instance2 = null;
+                    Item {
+                        TestContext {
+                            id: tc
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var instance1 = test.Parameter;
+                                var instance2 = test.Parameter;
+
+                                //deref Parameter
+                                instance2 = null;
                             
-                            gc();
+                                gc();
 
-                            test.TestResult = test.CheckIsParameterAlive();
+                                test.TestResult = test.CheckIsParameterAlive();
+
+                                tc.Quit()
+                            }
                         }
                     }
                 ");
+
+            ExecApplicationWithTimeout(2000).Should().Be(0);
+
             Assert.True(Instance.TestResult);
         }
 
         [Fact]
         public void Can_handle_instance_deref_of_all_refs_in_qml()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
-                @"
+            qmlApplicationEngine.LoadData(@"
                     import QtQuick 2.0
                     import tests 1.0
-                    NetInteropTestQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var instance1 = test.Parameter;
-                            var instance2 = test.Parameter;
+                    import testContext 1.0
 
-                            //deref Parameter
-                            instance1 = null;
-                            instance2 = null;
+                    Item {
+                        TestContext {
+                            id: tc
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var instance1 = test.Parameter;
+                                var instance2 = test.Parameter;
+
+                                //deref Parameter
+                                instance1 = null;
+                                instance2 = null;
                             
-                            gc();
+                                gc();
 
-                            test.TestResult = test.CheckIsParameterAlive();
+                                test.TestResult = test.CheckIsParameterAlive();
+
+                                tc.Quit()
+                            }
                         }
                     }
                 ");
+
+            ExecApplicationWithTimeout(2000).Should().Be(0);
+
             GC.Collect(GC.MaxGeneration);
             Assert.True(Instance.TestResult);
         }
 
-        [Fact(Skip = "Not working")]
+        [Fact()]
         public void Can_handle_instance_deref_of_all_refs_in_qml_and_net()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
-                @"
+            qmlApplicationEngine.LoadData(@"
                     import QtQuick 2.0
                     import tests 1.0
-                    NetInteropTestQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            //var instance1 = test.Parameter;
-                            //var instance2 = test.Parameter;
+                    import testContext 1.0
 
-                            //deref Parameter
-                            //instance1 = null;
-                            //instance2 = null;
-                            test.ReleaseNetReferenceParameter();
+                    Item {
+                        TestContext {
+                            id: tc
+                        }
+
+                        Timer {
+                            id: checkAndQuitTimer
+                            running: false
+                            interval: 1000
+			                onTriggered: {
+                                test.TestResult = test.CheckIsParameterAlive();
+
+                                tc.Quit()
+			                }
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var instance1 = test.Parameter;
+                                var instance2 = test.Parameter;
+
+                                //deref Parameter
+                                instance1 = null;
+                                instance2 = null;
+                                test.ReleaseNetReferenceParameter();
                             
-                            gc();
+                                gc();
 
-                            test.TestResult = test.CheckIsParameterAlive();
+                                checkAndQuitTimer.running = true
+                            }
                         }
                     }
                 ");
+
+            ExecApplicationWithTimeout(3000).Should().Be(0);
+
             GC.Collect(GC.MaxGeneration);
             Assert.False(Instance.TestResult);
         }
