@@ -5,6 +5,7 @@
 
 #include <QtNetCoreQml.h>
 #include <QtNetCoreQml/types/NetInstance.h>
+#include <QtNetCoreQml/qml/NetVariantList.h>
 #include <QObject>
 #include <QSharedPointer>
 
@@ -24,6 +25,7 @@ class NetValue : public QObject, NetValueInterface
 public:
     virtual ~NetValue();
     QSharedPointer<NetInstance> getNetInstance();
+    bool activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments);
 
     static NetValue* forInstance(QSharedPointer<NetInstance> instance, bool autoCreate = true);
 

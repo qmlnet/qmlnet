@@ -34,38 +34,29 @@ namespace Qt.NetCore.Types
             return new NetInstance(Interop.NetInstance.Clone(Handle));
         }
 
-        public void ActivateSignal(string signalName, params object[] parameters)
+        public bool ActivateSignal(string signalName, params object[] parameters)
         {
-            using (var list = new NetVariant())
+            if (parameters != null && parameters.Length > 0)
             {
-                foreach (var parameter in parameters)
+                using (var list = new NetVariantList())
                 {
-                    using (var variant = new NetVariant())
+                    foreach (var parameter in parameters)
                     {
-                        Helpers.PackValue(parameter, variant);
+                        using (var variant = new NetVariant())
+                        {
+                            Helpers.PackValue(parameter, variant);
+                            list.Add(variant);
+                        }
                     }
+                    return Interop.NetInstance.ActivateSignal(Handle, signalName, list.Handle);
                 }
-                ActivateSignal(signalName, list);
             }
-        }
-
-        public void ActivateSignal(string signalName, params NetVariant[] paramters)
-        {
-            using (var list = new NetVariantList())
+            else
             {
-                foreach (var variant in paramters)
-                {
-                    list.Add(variant);
-                }
-                ActivateSignal(signalName, list);
+                return Interop.NetInstance.ActivateSignal(Handle, signalName, IntPtr.Zero);
             }
         }
 
-        public void ActivateSignal(string signalName, NetVariantList paramters)
-        {
-            Interop.NetInstance.ActivateSignal(Handle, signalName, paramters.Handle);
-        }
-        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetInstance.Destroy(ptr);
@@ -132,6 +123,6 @@ namespace Qt.NetCore.Types
         [NativeSymbol(Entrypoint = "net_instance_getHandle")]
         IntPtr GetHandle(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
-        void ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
+        bool ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
     }
 }

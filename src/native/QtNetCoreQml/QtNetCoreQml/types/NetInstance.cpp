@@ -1,6 +1,7 @@
 #include <QtNetCoreQml/types/NetInstance.h>
 #include <QtNetCoreQml/types/Callbacks.h>
 #include <QtNetCoreQml/qml/NetValue.h>
+#include <QDebug>
 
 NetInstance::NetInstance(NetGCHandle* gcHandle, QSharedPointer<NetTypeInfo> typeInfo) :
     gcHandle(gcHandle),
@@ -56,14 +57,20 @@ Q_DECL_EXPORT NetGCHandle* net_instance_getHandle(NetInstanceContainer* containe
     return container->instance->getGCHandle();
 }
 
-Q_DECL_EXPORT void net_instance_activateSignal(NetInstanceContainer* container, LPWSTR signalName, NetVariantListContainer* variants) {
+Q_DECL_EXPORT bool net_instance_activateSignal(NetInstanceContainer* container, LPWSTR signalName, NetVariantListContainer* parametersContainer) {
     NetValue* existing = NetValue::forInstance(container->instance);
     if(existing == NULL) {
         // Not alive in the QML world, so no signals to raise.
-        return;
+        return false;
     }
     QString signalNameString = QString::fromUtf16((const char16_t*)signalName);
-    QMetaObject::invokeMethod(existing, signalNameString.toLatin1().data(), Qt::DirectConnection);
+
+    QSharedPointer<NetVariantList> parameters;
+    if(parametersContainer != NULL) {
+        parameters = parametersContainer->list;
+    }
+
+    return existing->activateSignal(signalNameString, parameters);
 }
 
 }
