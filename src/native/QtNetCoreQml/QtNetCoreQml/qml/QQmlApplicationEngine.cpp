@@ -23,6 +23,10 @@ Q_DECL_EXPORT void qqmlapplicationengine_load(QQmlApplicationEngineContainer* co
     container->qmlEngine->load(QString::fromUtf16((const char16_t*)path));
 }
 
+Q_DECL_EXPORT void qqmlapplicationengine_loadData(QQmlApplicationEngineContainer* container, LPWSTR dataString) {
+    container->qmlEngine->loadData(QByteArray::fromStdString(QString::fromUtf16((const char16_t*)dataString).toStdString()));
+}
+
 Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeContainer, LPWSTR uri, int versionMajor, int versionMinor, LPWSTR qmlName) {
 
     QString uriString = QString::fromUtf16((const char16_t*)uri);
