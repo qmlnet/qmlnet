@@ -6,7 +6,7 @@ NetInstance::NetInstance(NetGCHandle* gcHandle, QSharedPointer<NetTypeInfo> type
     gcHandle(gcHandle),
     typeInfo(typeInfo)
 {
-    qDebug("NetInstance created: " + typeInfo->getClassName().toLatin1());
+    qDebug("NetInstance created: %s", qPrintable(typeInfo->getClassName()));
 }
 
 NetInstance::~NetInstance()
@@ -31,7 +31,7 @@ void NetInstance::release()
         auto typeInfoClassName = typeInfo->getClassName();
         gcHandle = nullptr;
         typeInfo = nullptr;
-        qDebug("NetInstance released: " + typeInfoClassName.toLatin1());
+        qDebug("NetInstance released: %s", qPrintable(typeInfoClassName));
     }
 }
 
