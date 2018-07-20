@@ -317,7 +317,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         }
 
         idx -= offset;
-        if(idx < instance->getTypeInfo()->getSignalCount()) {
+        if(idx < (int)instance->getTypeInfo()->getSignalCount()) {
             // This is a signal call, activate it!
             activate(value, idx + offset, a);
             return -1;
