@@ -112,10 +112,11 @@ namespace Qt.NetCore.Internal
             
                 var typeCreator = NetInstance.TypeCreator;
                 var instance = typeCreator != null ? typeCreator.Create(typeInfo) : Activator.CreateInstance(typeInfo);
-            
-                var instanceHandle = GCHandle.Alloc(instance);
-                // NOTE: We DON'T wrap 
-                return Interop.NetInstance.Create(GCHandle.ToIntPtr(instanceHandle), type);
+
+                var netInstance = NetInstance.GetForObject(instance);
+                // When .NET collects this NetInstance, we don't want it to delete this
+                // handle. Ownership has been passed to the caller.
+                return Interop.NetInstance.Clone(netInstance.Handle);
             }
             finally
             {

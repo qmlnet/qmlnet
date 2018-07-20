@@ -9,8 +9,8 @@ namespace Qt.NetCore.Types
 {
     public class NetInstance : BaseDisposable
     {
-        private NetInstance(IntPtr gcHandle, NetTypeInfo type)
-            :base(Interop.NetInstance.Create(gcHandle, type.Handle))
+        private NetInstance(IntPtr gcHandle, NetTypeInfo type, bool ownsHandle = true)
+            :base(Interop.NetInstance.Create(gcHandle, type.Handle), ownsHandle)
         {
         }
 
@@ -27,6 +27,11 @@ namespace Qt.NetCore.Types
                 var handle = Interop.NetInstance.GetHandle(Handle);
                 return ((GCHandle) handle).Target;
             }
+        }
+
+        public NetInstance Clone()
+        {
+            return new NetInstance(Interop.NetInstance.Clone(Handle));
         }
 
         public void ActivateSignal(string signalName, params object[] parameters)
@@ -58,7 +63,7 @@ namespace Qt.NetCore.Types
 
         public void ActivateSignal(string signalName, NetVariantList paramters)
         {
-            Interop.NetInstance.ActivateSignal(Handle, signalName, paramters.Handle);
+            //Interop.NetInstance.ActivateSignal(Handle, signalName, paramters.Handle);
         }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
@@ -80,7 +85,12 @@ namespace Qt.NetCore.Types
         
         private static readonly ConditionalWeakTable<object, NetInstance> ObjectNetInstanceConnections = new ConditionalWeakTable<object, NetInstance>();
 
-        public static NetInstance GetForObject(object value)
+        public static bool ExistsForObject(object value)
+        {
+            return ObjectNetInstanceConnections.TryGetValue(value, out NetInstance netInstance);
+        }
+        
+        public static NetInstance GetForObject(object value, bool autoCreate = true)
         {
             if (value == null) return null;
             var alreadyExists = false;
@@ -92,6 +102,9 @@ namespace Qt.NetCore.Types
                     return netInstance;
                 }
             }
+
+            if (!autoCreate) return null;
+            
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
@@ -113,6 +126,8 @@ namespace Qt.NetCore.Types
         IntPtr Create(IntPtr handle, IntPtr type);
         [NativeSymbol(Entrypoint = "net_instance_destroy")]
         void Destroy(IntPtr instance);
+        [NativeSymbol(Entrypoint = "net_instance_clone")]
+        IntPtr Clone(IntPtr instance);
 
         [NativeSymbol(Entrypoint = "net_instance_getHandle")]
         IntPtr GetHandle(IntPtr instance);

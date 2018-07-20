@@ -46,6 +46,11 @@ Q_DECL_EXPORT void net_instance_destroy(NetInstanceContainer* container) {
     delete container;
 }
 
+Q_DECL_EXPORT NetInstanceContainer* net_instance_clone(NetInstanceContainer* container) {
+    NetInstanceContainer* result = new NetInstanceContainer{container->instance};
+    return result;
+}
+
 Q_DECL_EXPORT NetGCHandle* net_instance_getHandle(NetInstanceContainer* container) {
     return container->instance->getGCHandle();
 }
