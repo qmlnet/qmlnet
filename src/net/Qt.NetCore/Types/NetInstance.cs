@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qt.NetCore.Internal;
+using Qt.NetCore.Qml;
 
 namespace Qt.NetCore.Types
 {
@@ -28,6 +29,38 @@ namespace Qt.NetCore.Types
             }
         }
 
+        public void ActivateSignal(string signalName, params object[] parameters)
+        {
+            using (var list = new NetVariant())
+            {
+                foreach (var parameter in parameters)
+                {
+                    using (var variant = new NetVariant())
+                    {
+                        Helpers.PackValue(parameter, variant);
+                    }
+                }
+                ActivateSignal(signalName, list);
+            }
+        }
+
+        public void ActivateSignal(string signalName, params NetVariant[] paramters)
+        {
+            using (var list = new NetVariantList())
+            {
+                foreach (var variant in paramters)
+                {
+                    list.Add(variant);
+                }
+                ActivateSignal(signalName, list);
+            }
+        }
+
+        public void ActivateSignal(string signalName, NetVariantList paramters)
+        {
+            Interop.NetInstance.ActivateSignal(Handle, signalName, paramters.Handle);
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetInstance.Destroy(ptr);

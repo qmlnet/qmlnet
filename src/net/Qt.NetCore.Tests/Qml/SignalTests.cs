@@ -15,16 +15,22 @@ namespace Qt.NetCore.Tests.Qml
             }
 
             public virtual bool SignalRaised { get; set; }
+
+            public virtual void MethodWithArgs(string arg1, int arg2)
+            {
+                
+            }
         }
 
         [Signal("testSignal")]
+        [Signal("testSignalWithArgs", NetVariantType.String, NetVariantType.Int)]
         public class SignalObject
         {
             
         }
 
         [Fact]
-        public void Can_raise_signal()
+        public void Can_raise_signal_from_qml()
         {
             var signalObject = new SignalObject();
             Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
@@ -50,7 +56,36 @@ namespace Qt.NetCore.Tests.Qml
         }
         
         [Fact]
-        public void Can_raise_signal_from_different_retrieval_of_net_instance()
+        public void Can_raise_signal_from_qml_with_args()
+        {
+            var signalObject = new SignalObject();
+            Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
+            Mock.Setup(x => x.SignalRaised).Returns(false);
+            Mock.Setup(x => x.MethodWithArgs("arg1", 3));
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var instance = test.GetSignalObject()
+                            instance.testSignalWithArgs.connect(function(arg1, arg2) {
+                                test.SignalRaised = true
+                                test.MethodWithArgs(arg1, arg2)
+                            })
+                            instance.testSignalWithArgs('arg1', 3)
+                        }
+                    }
+                ");
+
+            Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
+            Mock.Verify(x => x.MethodWithArgs("arg1", 3), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_raise_signal_from_qml_different_retrieval_of_net_instance()
         {
             var signalObject = new SignalObject();
             Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
