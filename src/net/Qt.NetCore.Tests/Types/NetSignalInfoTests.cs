@@ -9,8 +9,10 @@ namespace Qt.NetCore.Tests.Types
         [Fact]
         public void Can_create_signal_info()
         {
-            using (var signal = new NetSignalInfo("testSignal"))
+            using (var type = new NetTypeInfo("full type name"))
+            using (var signal = new NetSignalInfo(type, "testSignal"))
             {
+                signal.ParentType.FullTypeName.Should().Be("full type name");
                 signal.Name.Should().Be("testSignal");
                 signal.ParameterCount.Should().Be(0);
                 signal.GetParameter(0).Should().Be(NetVariantType.Invalid);

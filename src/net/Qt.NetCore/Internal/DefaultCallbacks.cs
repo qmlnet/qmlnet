@@ -85,7 +85,7 @@ namespace Qt.NetCore.Internal
 
                 foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
                 {
-                    using (var signal = new NetSignalInfo(signalAttribute.Name))
+                    using (var signal = new NetSignalInfo(type, signalAttribute.Name))
                     {
                         foreach (var parameter in signalAttribute.Parameters)
                         {

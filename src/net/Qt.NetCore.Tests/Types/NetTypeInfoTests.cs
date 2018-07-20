@@ -17,7 +17,7 @@ namespace Qt.NetCore.Tests.Types
         public void Can_add_signals()
         {
             var type = new NetTypeInfo("test");
-            var signal = new NetSignalInfo("signalName");
+            var signal = new NetSignalInfo(type, "signalName");
             signal.AddParameter(NetVariantType.Bool);
 
             type.GetSignal(0).Should().BeNull();

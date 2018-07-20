@@ -1,8 +1,13 @@
 #include <QtNetCoreQml/types/NetSignalInfo.h>
 #include <iostream>
 
-NetSignalInfo::NetSignalInfo(QString name) :
+NetSignalInfo::NetSignalInfo(QSharedPointer<NetTypeInfo> parentType, QString name) :
+    _parentType(parentType),
     _name(name) {
+}
+
+QSharedPointer<NetTypeInfo> NetSignalInfo::getParentType() {
+    return _parentType;
 }
 
 QString NetSignalInfo::getName() {
@@ -25,15 +30,20 @@ NetVariantTypeEnum NetSignalInfo::getParameter(uint index) {
 
 extern "C" {
 
-Q_DECL_EXPORT NetSignalInfoContainer* signal_info_create(LPWSTR name) {
+Q_DECL_EXPORT NetSignalInfoContainer* signal_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR name) {
     NetSignalInfoContainer* result = new NetSignalInfoContainer();
-    NetSignalInfo* instance = new NetSignalInfo(QString::fromUtf16((const char16_t*)name));
+    NetSignalInfo* instance = new NetSignalInfo(parentTypeContainer->netTypeInfo, QString::fromUtf16((const char16_t*)name));
     result->signal = QSharedPointer<NetSignalInfo>(instance);
     return result;
 }
 
 Q_DECL_EXPORT void signal_info_destroy(NetSignalInfoContainer* container) {
     delete container;
+}
+
+Q_DECL_EXPORT NetTypeInfoContainer* signal_info_getParentType(NetSignalInfoContainer* container) {
+    NetTypeInfoContainer* result = new NetTypeInfoContainer{container->signal->getParentType()};
+    return result;
 }
 
 Q_DECL_EXPORT LPWSTR signal_info_getName(NetSignalInfoContainer* container) {
