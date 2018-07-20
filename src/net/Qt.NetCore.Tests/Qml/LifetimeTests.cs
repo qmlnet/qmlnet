@@ -47,6 +47,11 @@ namespace Qt.NetCore.Tests.Qml
                 return _parameterWeakRef.TryGetTarget(out SecondLevelType _);
             }
 
+            public void GarbageCollect()
+            {
+                GC.Collect(GC.MaxGeneration);
+            }
+
             public bool TestResult { get; set; }
         }
 
@@ -185,7 +190,6 @@ namespace Qt.NetCore.Tests.Qml
 
             ExecApplicationWithTimeout(2000).Should().Be(0);
 
-            GC.Collect(GC.MaxGeneration);
             Assert.True(Instance.TestResult);
         }
 
@@ -216,15 +220,16 @@ namespace Qt.NetCore.Tests.Qml
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter;
-                                var instance2 = test.Parameter;
+                                var instance1 = test.Parameter
+                                var instance2 = test.Parameter
 
                                 //deref Parameter
-                                instance1 = null;
-                                instance2 = null;
-                                test.ReleaseNetReferenceParameter();
+                                instance1 = null
+                                instance2 = null
+                                test.ReleaseNetReferenceParameter()
                             
-                                gc();
+                                gc()
+                                test.GarbageCollect()
 
                                 checkAndQuitTimer.running = true
                             }
@@ -234,8 +239,99 @@ namespace Qt.NetCore.Tests.Qml
 
             ExecApplicationWithTimeout(3000).Should().Be(0);
 
-            GC.Collect(GC.MaxGeneration);
             Assert.False(Instance.TestResult);
+        }
+
+        [Fact]
+        public void Can_handle_qml_reference_keeps_net_object_alive()
+        {
+            qmlApplicationEngine.LoadData(@"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    import testContext 1.0
+
+                    Item {
+                        TestContext {
+                            id: tc
+                        }
+
+                        Timer {
+                            id: checkAndQuitTimer
+                            running: false
+                            interval: 1000
+			                onTriggered: {
+                                test.TestResult = test.CheckIsParameterAlive();
+
+                                tc.Quit()
+			                }
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var instance1 = test.Parameter
+
+                                test.ReleaseNetReferenceParameter()
+                                test.GarbageCollect()
+
+                                checkAndQuitTimer.running = true
+                            }
+                        }
+                    }
+                ");
+
+            ExecApplicationWithTimeout(3000).Should().Be(0);
+
+            Assert.True(Instance.TestResult);
+        }
+
+        [Fact]
+        public void Can_handle_deleting_one_qml_ref_does_not_release()
+        {
+            qmlApplicationEngine.LoadData(@"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    import testContext 1.0
+
+                    Item {
+                        property var instanceRef: null
+                        TestContext {
+                            id: tc
+                        }
+
+                        Timer {
+                            id: checkAndQuitTimer
+                            running: false
+                            interval: 1000
+			                onTriggered: {
+                                test.TestResult = test.CheckIsParameterAlive();
+
+                                tc.Quit()
+			                }
+                        }
+
+                        NetInteropTestQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                instanceRef = test.Parameter
+                                var instance2 = test.Parameter
+
+                                test.ReleaseNetReferenceParameter()
+
+                                //release second QML ref
+                                instance2 = null
+                                gc()
+                                test.GarbageCollect()
+
+                                checkAndQuitTimer.running = true
+                            }
+                        }
+                    }
+                ");
+
+            ExecApplicationWithTimeout(3000).Should().Be(0);
+
+            Assert.True(Instance.TestResult);
         }
     }
 }

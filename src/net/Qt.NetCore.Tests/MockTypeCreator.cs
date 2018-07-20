@@ -27,7 +27,7 @@ namespace Qt.NetCore.Tests
             {
                 return _instances[type];
             }
-            return null;
+            throw new ArgumentException("Unknown Type: " + type.AssemblyQualifiedName, "type");
         }
     }
 }
