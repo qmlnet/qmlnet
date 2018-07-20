@@ -29,13 +29,11 @@ namespace Qt.NetCore.Tests.Qml
     public abstract class BaseQmlTests : BaseTests
     {
         private readonly QGuiApplication _coreApplication;
-        // ReSharper disable InconsistentNaming
         protected readonly QQmlApplicationEngine qmlApplicationEngine;
-
         protected MockTypeCreator TypeCreator { get;  private set; }
 
-        // ReSharper restore InconsistentNaming
         readonly List<Type> _registeredTypes = new List<Type>();
+        static bool _testContextRegistered = false;
 
         protected BaseQmlTests()
         {
@@ -44,7 +42,11 @@ namespace Qt.NetCore.Tests.Qml
             TypeCreator = new MockTypeCreator();
             NetInstance.TypeCreator = TypeCreator;
             TypeCreator.SetInstance(typeof(TestContext), new TestContext(_coreApplication));
-            QQmlApplicationEngine.RegisterType<TestContext>("testContext");
+            if (!_testContextRegistered)
+            {
+                QQmlApplicationEngine.RegisterType<TestContext>("testContext");
+                _testContextRegistered = true;
+            }
         }
 
         protected void RegisterType<T>()
