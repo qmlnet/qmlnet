@@ -1,8 +1,11 @@
 #ifndef NETVALUE_H
 #define NETVALUE_H
 
+#include <map>
+
 #include <QtNetCoreQml.h>
 #include <QtNetCoreQml/types/NetInstance.h>
+#include <QtNetCoreQml/qml/NetVariantList.h>
 #include <QObject>
 #include <QSharedPointer>
 
@@ -20,12 +23,20 @@ class NetValue : public QObject, NetValueInterface
     Q_OBJECT
     Q_INTERFACES(NetValueInterface)
 public:
-    NetValue(QSharedPointer<NetInstance> instance, QObject *parent);
     virtual ~NetValue();
     QSharedPointer<NetInstance> getNetInstance();
+    bool activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments);
+
+    static NetValue* forInstance(QSharedPointer<NetInstance> instance, bool autoCreate = true);
+
+protected:
+    NetValue(QSharedPointer<NetInstance> instance, QObject *parent);
+
 private:
     QSharedPointer<NetInstance> instance;
     NetValueMetaObject* valueMeta;
+
+    static std::map<NetInstance*, NetValue*> netValues;
 };
 
 #endif // NETVALUE_H

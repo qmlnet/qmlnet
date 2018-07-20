@@ -10,31 +10,74 @@ namespace Qt.NetCore.Sandbox
 {
     class Program
     {
+        [Signal("testSignal", NetVariantType.String)]
         public class TestQmlImport
         {
-            public AnotherType Create()
-            {
-                return new AnotherType();
-            }
+            readonly AnotherType _anotherType = new AnotherType();
             
-            public void TestMethod(AnotherType anotherType)
+            public AnotherType GetSharedInstance()
             {
-
+                return _anotherType;
             }
         }
-        
+
+        [Signal("testSignal", NetVariantType.String)]
         public class AnotherType
         {
-            private static int _instanceCounter = 0;
             
-            public AnotherType()
+        }
+
+        public class InstanceType
+        {
+            public InstanceType()
             {
-                Console.WriteLine($"AnotherType:{Interlocked.Increment(ref _instanceCounter)}");
+
             }
 
-            ~AnotherType()
+            public void Log(string logMessage)
             {
-                Console.WriteLine($"AnotherType:{Interlocked.Decrement(ref _instanceCounter)}");
+                Console.WriteLine(logMessage);
+            }
+        }
+
+        public class TestQmlInstanceHandling
+        {
+            private InstanceType _instanceType;
+            private WeakReference<InstanceType> _weakInstanceTypeRef;
+
+            public int State { get; set; } = 0;
+
+            public TestQmlInstanceHandling()
+            {
+                _instanceType = new InstanceType();
+                _weakInstanceTypeRef = new WeakReference<InstanceType>(_instanceType);
+            }
+
+            public InstanceType GetInstance()
+            {
+                return _instanceType;
+            }
+
+            public void DeleteInstance()
+            {
+                _instanceType = null;
+            }
+
+            public void CreateNewInstance()
+            {
+                _instanceType = new InstanceType();
+                _weakInstanceTypeRef = new WeakReference<InstanceType>(_instanceType);
+            }
+
+            public bool IsInstanceAlive()
+            {
+                return _weakInstanceTypeRef.TryGetTarget(out var _);
+            }
+
+            public void GarbageCollect()
+            {
+                Thread.Sleep(1000);
+                GC.Collect(GC.MaxGeneration);
             }
         }
         
@@ -55,7 +98,8 @@ namespace Qt.NetCore.Sandbox
                     engine.AddImportPath(Path.Combine(Directory.GetCurrentDirectory(), "Qml"));
                     
                     QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
-                    
+                    QQmlApplicationEngine.RegisterType<TestQmlInstanceHandling>("testInstances");
+
                     engine.Load("main.qml");
 
                     return app.Exec();

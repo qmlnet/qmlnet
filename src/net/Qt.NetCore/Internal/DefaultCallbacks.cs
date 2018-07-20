@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Qt.NetCore.Qml;
@@ -42,11 +43,11 @@ namespace Qt.NetCore.Internal
                     type.PrefVariantType = NetVariantType.Object;
 
                 // Don't grab properties and methods for system-level types.
-                if (IsPrimitive(typeInfo)) return;
+                if (Helpers.IsPrimitive(typeInfo)) return;
 
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if (IsPrimitive(methodInfo.DeclaringType)) continue;
+                    if (Helpers.IsPrimitive(methodInfo.DeclaringType)) continue;
 
                     NetTypeInfo returnType = null;
 
@@ -69,7 +70,7 @@ namespace Qt.NetCore.Internal
 
                 foreach (var propertyInfo in typeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    if (IsPrimitive(propertyInfo.DeclaringType)) continue;
+                    if (Helpers.IsPrimitive(propertyInfo.DeclaringType)) continue;
 
                     using (var property = new NetPropertyInfo(
                         type,
@@ -79,6 +80,18 @@ namespace Qt.NetCore.Internal
                         propertyInfo.CanWrite))
                     {
                         type.AddProperty(property);
+                    }
+                }
+
+                foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
+                {
+                    using (var signal = new NetSignalInfo(signalAttribute.Name))
+                    {
+                        foreach (var parameter in signalAttribute.Parameters)
+                        {
+                            signal.AddParameter(parameter);
+                        }
+                        type.AddSignal(signal);
                     }
                 }
             }
@@ -99,10 +112,11 @@ namespace Qt.NetCore.Internal
             
                 var typeCreator = NetInstance.TypeCreator;
                 var instance = typeCreator != null ? typeCreator.Create(typeInfo) : Activator.CreateInstance(typeInfo);
-            
-                var instanceHandle = GCHandle.Alloc(instance);
-                // NOTE: We DON'T wrap 
-                return Interop.NetInstance.Create(GCHandle.ToIntPtr(instanceHandle), type);
+
+                var netInstance = NetInstance.GetForObject(instance);
+                // When .NET collects this NetInstance, we don't want it to delete this
+                // handle. Ownership has been passed to the caller.
+                return Interop.NetInstance.Clone(netInstance.Handle);
             }
             finally
             {
@@ -124,9 +138,7 @@ namespace Qt.NetCore.Internal
                 if(propertInfo == null)
                     throw new InvalidOperationException($"Invalid property {property.Name}");
 
-                var value = propertInfo.GetValue(o);
-            
-                PackValue(ref value, result);
+                Helpers.PackValue(propertInfo.GetValue(o), result);
             }
         }
 
@@ -145,7 +157,7 @@ namespace Qt.NetCore.Internal
                     throw new InvalidOperationException($"Invalid property {property.Name}");
 
                 object newValue = null;
-                Unpackvalue(ref newValue, value);
+                Helpers.Unpackvalue(ref newValue, value);
 
                 propertInfo.SetValue(o, newValue);
             }
@@ -169,7 +181,7 @@ namespace Qt.NetCore.Internal
                     for (var x = 0; x < parameterCount; x++)
                     {
                         object v = null;
-                        Unpackvalue(ref v, parameters.Get(x));
+                        Helpers.Unpackvalue(ref v, parameters.Get(x));
                         methodParameters.Add(v);
                     }
                 }
@@ -181,90 +193,17 @@ namespace Qt.NetCore.Internal
                 {
                     throw new InvalidOperationException($"Invalid method name {method.MethodName}");
                 }
-            
-                var returnValue = methodInfo.Invoke(instance, methodParameters?.ToArray());
 
+                var returnObject = methodInfo.Invoke(instance, methodParameters?.ToArray());
+                
                 if (result == null)
                 {
                     // this method doesn't have return type
                 }
                 else
                 {
-                    PackValue(ref returnValue, result);
+                    Helpers.PackValue(returnObject, result);
                 }
-            }
-        }
-
-        private bool IsPrimitive(Type type)
-        {
-            if (type.Namespace == "System") return true;
-            if (type.Namespace == "System.Threading.Tasks") return true;
-            return false;
-        }
-        
-        private void PackValue(ref object source, NetVariant destination)
-        {
-            if (source == null)
-            {
-                destination.Clear();
-            }
-            else
-            {
-                var type = source.GetType();
-                if (type == typeof(bool))
-                    destination.Bool = (bool)source;
-                else if(type == typeof(char))
-                    destination.Char = (char)source;
-                else if(type == typeof(double))
-                    destination.Double = (double)source;
-                else if (type == typeof(int))
-                    destination.Int = (int)source;
-                else if(type == typeof(uint))
-                    destination.UInt = (uint)source;
-                else if (type == typeof(string))
-                    destination.String = (string)source;
-                else if(type == typeof(DateTime))
-                    destination.DateTime = (DateTime)source;
-                else
-                {
-                    destination.Instance = NetInstance.CreateFromObject(source);
-                }
-            }
-        }
-
-        private void Unpackvalue(ref object destination, NetVariant source)
-        {
-            switch (source.VariantType)
-            {
-                case NetVariantType.Invalid:
-                    destination = null;
-                    break;
-                case NetVariantType.Bool:
-                    destination = source.Bool;
-                    break;
-                case NetVariantType.Char:
-                    destination = source.Char;
-                    break;
-                case NetVariantType.Int:
-                    destination = source.Int;
-                    break;
-                case NetVariantType.UInt:
-                    destination = source.UInt;
-                    break;
-                case NetVariantType.Double:
-                    destination = source.Double;
-                    break;
-                case NetVariantType.String:
-                    destination = source.String;
-                    break;
-                case NetVariantType.DateTime:
-                    destination = source.DateTime;
-                    break;
-                case NetVariantType.Object:
-                    destination = source.Instance.Instance;
-                    break;
-                default:
-                    throw new Exception("Unsupported variant type.");
             }
         }
     }

@@ -9,6 +9,9 @@
     <ProjectReference Include="..\Qt.NetCore\Qt.NetCore.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Images\placeholder.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="main.qml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

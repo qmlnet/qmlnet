@@ -24,6 +24,7 @@ namespace Qt.NetCore
             NetInstance = NativeLibraryBuilder.Default.ActivateInterface<INetInstanceInterop>("QtNetCoreQml");
             NetVariantList = NativeLibraryBuilder.Default.ActivateInterface<INetVariantListInterop>("QtNetCoreQml");
             NetTestHelper = NativeLibraryBuilder.Default.ActivateInterface<INetTestHelperInterop>("QtNetCoreQml");
+            NetSignalInfo = NativeLibraryBuilder.Default.ActivateInterface<INetSignalInfoInterop>("QtNetCoreQml");
             QResource = NativeLibraryBuilder.Default.ActivateInterface<IQResourceInterop>("QtNetCoreQml");
             
             var cb = DefaultCallbacks.Callbacks();
@@ -51,6 +52,8 @@ namespace Qt.NetCore
         public static INetVariantListInterop NetVariantList { get; }
         
         public static INetTestHelperInterop NetTestHelper { get; }
+        
+        public static INetSignalInfoInterop NetSignalInfo { get; }
         
         public static IQResourceInterop QResource { get; set; }
         

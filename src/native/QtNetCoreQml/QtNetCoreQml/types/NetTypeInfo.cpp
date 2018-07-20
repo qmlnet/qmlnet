@@ -1,6 +1,7 @@
 #include <QtNetCoreQml/types/NetTypeInfo.h>
 #include <QtNetCoreQml/types/NetMethodInfo.h>
 #include <QtNetCoreQml/types/NetPropertyInfo.h>
+#include <QtNetCoreQml/types/NetSignalInfo.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(NULL),
@@ -58,6 +59,19 @@ uint NetTypeInfo::getPropertyCount() {
 QSharedPointer<NetPropertyInfo> NetTypeInfo::getProperty(uint index) {
     if(index >= (uint)_properties.length()) return QSharedPointer<NetPropertyInfo>(NULL);
     return _properties.at(index);
+}
+
+void NetTypeInfo::addSignal(QSharedPointer<NetSignalInfo> signal) {
+    _signals.append(signal);
+}
+
+uint NetTypeInfo::getSignalCount() {
+    return _signals.size();
+}
+
+QSharedPointer<NetSignalInfo> NetTypeInfo::getSignal(uint index) {
+    if(index >= (uint)_signals.size()) return QSharedPointer<NetSignalInfo>(NULL);
+    return _signals.at(index);
 }
 
 extern "C" {
@@ -126,6 +140,24 @@ Q_DECL_EXPORT NetPropertyInfoContainer* type_info_getProperty(NetTypeInfoContain
     }
     NetPropertyInfoContainer* result = new NetPropertyInfoContainer();
     result->property = property;
+    return result;
+}
+
+Q_DECL_EXPORT void type_info_addSignal(NetTypeInfoContainer* container, NetSignalInfoContainer* signalContainer) {
+    container->netTypeInfo->addSignal(signalContainer->signal);
+}
+
+Q_DECL_EXPORT uint type_info_getSignalCount(NetTypeInfoContainer* container) {
+    return container->netTypeInfo->getSignalCount();
+}
+
+Q_DECL_EXPORT NetSignalInfoContainer* type_info_getSignal(NetTypeInfoContainer* container, uint index) {
+    QSharedPointer<NetSignalInfo> signal = container->netTypeInfo->getSignal(index);
+    if(signal == NULL) {
+        return NULL;
+    }
+    NetSignalInfoContainer* result = new NetSignalInfoContainer();
+    result->signal = signal;
     return result;
 }
 

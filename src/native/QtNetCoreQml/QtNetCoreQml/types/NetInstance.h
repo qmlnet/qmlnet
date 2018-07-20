@@ -10,6 +10,8 @@ public:
     ~NetInstance();
     NetGCHandle* getGCHandle();
     QSharedPointer<NetTypeInfo> getTypeInfo();
+
+    void release();
 private:
     NetGCHandle* gcHandle;
     QSharedPointer<NetTypeInfo> typeInfo;
