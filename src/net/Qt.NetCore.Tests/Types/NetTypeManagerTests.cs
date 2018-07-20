@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Qt.NetCore.Types;
 using Xunit;
 
@@ -128,6 +129,7 @@ namespace Qt.NetCore.Tests.Types
             property.CanWrite.Should().BeTrue();
             property.ReturnType.ClassName.Should().Be("String");
             property.ParentType.ClassName.Should().Be("TestType6");
+            property.NotifySignal.Should().BeNull();
         }
 
         [Signal("testSignal", NetVariantType.DateTime, NetVariantType.Object)]
@@ -149,6 +151,58 @@ namespace Qt.NetCore.Tests.Types
             signal.GetParameter(1).Should().Be(NetVariantType.Object);
         }
 
+        [Signal("signalName")]
+        public class TestType8
+        {
+            [NotifySignal("signalName")]
+            public string Property { get; set; }
+        }
+        
+        [Fact]
+        public void Can_get_notifiy_signal_for_property()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType8>();
+            type.SignalCount.Should().Be(1);
+            type.PropertyCount.Should().Be(1);
+            type.GetProperty(0).Name.Should().Be("Property");
+            type.GetProperty(0).NotifySignal.Should().NotBeNull();
+            type.GetProperty(0).NotifySignal.Name.Should().Be("signalName");
+        }
+
+        public class TestType9
+        {
+            [NotifySignal("signalName")]
+            public string Property { get; set; }
+        }
+
+        [Fact]
+        public void Can_auto_add_signal_for_property_notification()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType9>();
+            type.SignalCount.Should().Be(1);
+            type.PropertyCount.Should().Be(1);
+            type.GetProperty(0).Name.Should().Be("Property");
+            type.GetProperty(0).NotifySignal.Should().NotBeNull();
+            type.GetProperty(0).NotifySignal.Name.Should().Be("signalName");
+        }
+
+        public class TestType10
+        {
+            [NotifySignal]
+            public string Property { get; set; }
+        }
+
+        [Fact]
+        public void Can_auto_create_signal_with_property_name_if_no_name_given()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType10>();
+            type.SignalCount.Should().Be(1);
+            type.PropertyCount.Should().Be(1);
+            type.GetProperty(0).Name.Should().Be("Property");
+            type.GetProperty(0).NotifySignal.Should().NotBeNull();
+            type.GetProperty(0).NotifySignal.Name.Should().Be("PropertyChanged");
+        }
+        
         [Fact]
         public void Null_type_returned_for_invalid_type()
         {

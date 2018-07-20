@@ -11,12 +11,14 @@ namespace Qt.NetCore.Types
             string name,
             NetTypeInfo returnType,
             bool canRead,
-            bool canWrite)
+            bool canWrite,
+            NetSignalInfo notifySignal)
             : this(Create(parentType,
                 name,
                 returnType,
                 canRead,
-                canWrite))
+                canWrite,
+                notifySignal))
         {
             
         }
@@ -31,13 +33,15 @@ namespace Qt.NetCore.Types
             string name,
             NetTypeInfo returnType,
             bool canRead,
-            bool canWrite)
+            bool canWrite,
+            NetSignalInfo notifySignal)
         {
             return Interop.NetPropertyInfo.Create(parentType?.Handle ?? IntPtr.Zero,
                 name,
                 returnType?.Handle ?? IntPtr.Zero,
                 canRead,
-                canWrite);
+                canWrite,
+                notifySignal?.Handle ?? IntPtr.Zero);
         }
 
         public NetTypeInfo ParentType => new NetTypeInfo(Interop.NetPropertyInfo.GetParentType(Handle));
@@ -49,6 +53,15 @@ namespace Qt.NetCore.Types
         public bool CanRead => Interop.NetPropertyInfo.GetCanRead(Handle);
 
         public bool CanWrite => Interop.NetPropertyInfo.GetCanWrite(Handle);
+
+        public NetSignalInfo NotifySignal
+        {
+            get
+            {
+                var result = Interop.NetPropertyInfo.GetNotifySignal(Handle);
+                return result == IntPtr.Zero ? null : new NetSignalInfo(result);
+            }
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -63,7 +76,8 @@ namespace Qt.NetCore.Types
             [MarshalAs(UnmanagedType.LPWStr)]string methodName,
             IntPtr returnType,
             bool canRead,
-            bool canWrite);
+            bool canWrite,
+            IntPtr notifySignal);
         [NativeSymbol(Entrypoint = "property_info_destroy")]
         void Destroy(IntPtr property);
 
@@ -81,5 +95,8 @@ namespace Qt.NetCore.Types
 
         [NativeSymbol(Entrypoint = "property_info_canWrite")]
         bool GetCanWrite(IntPtr property);
+
+        [NativeSymbol(Entrypoint = "property_info_getNotifySignal")]
+        IntPtr GetNotifySignal(IntPtr property);
     }
 }

@@ -199,54 +199,13 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
         for(uint index = 0; index <= typeInfo->getSignalCount() - 1; index++)
         {
             QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
-            QString signature = signalInfo->getName();
-
-            signature.append("(");
-
-            if(signalInfo->getParameterCount() > 0) {
-                for(uint parameterIndex = 0; parameterIndex <= signalInfo->getParameterCount() - 1; parameterIndex++)
-                {
-                    if(parameterIndex > 0) {
-                        signature.append(", ");
-                    }
-                    signature.append("QVariant");
-                }
-            }
-
-            signature.append(")");
-
-            mob.addSignal(signature.toLocal8Bit().constData());
+            QString signature = signalInfo->getSignature();
+            mob.addSignal(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
         }
     }
 
-    if(typeInfo->getMethodCount() > 0) {
-        for(uint index = 0; index <= typeInfo->getMethodCount() - 1; index++)
-        {
-            QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(index);
-            QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
-            QString signature = methodInfo->getMethodName();
-
-            signature.append("(");
-
-            if(methodInfo->getParameterCount() > 0) {
-                for(uint parameterIndex = 0; parameterIndex <= methodInfo->getParameterCount() - 1; parameterIndex++)
-                {
-                    if(parameterIndex > 0) {
-                        signature.append(", ");
-                    }
-                    signature.append("QVariant");
-                }
-            }
-
-            signature.append(")");
-
-            if(returnType != NULL) {
-                mob.addMethod(signature.toLocal8Bit().constData(), "QVariant");
-            } else {
-                mob.addMethod(signature.toLocal8Bit().constData());
-            }
-        }
-    }
+    // NOTE: It is important to register properties after the signals (before methods)
+    // because of the assumptions we make about getting the "notifySignal" by index.
 
     if(typeInfo->getPropertyCount() > 0) {
         for(uint index = 0; index <= typeInfo->getPropertyCount() - 1; index++)
@@ -255,8 +214,34 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
             QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->getPropertyName().toLatin1(),
                                                          "QVariant",
                                                          index);
+            QSharedPointer<NetSignalInfo> notifySignal = propertyInfo->getNotifySignal();
+            if(notifySignal != NULL) {
+                // The signal was previously registered, find the index.
+                for(uint signalIndex = 0; signalIndex <= typeInfo->getSignalCount() - 1; signalIndex++)
+                {
+                    if(typeInfo->getSignal(signalIndex) == notifySignal) {
+                        QMetaMethodBuilder notifySignalBuilder = mob.method(signalIndex);
+                        propb.setNotifySignal(notifySignalBuilder);
+                        break;
+                    }
+                }
+            }
             propb.setWritable(propertyInfo->canWrite());
             propb.setReadable(propertyInfo->canRead());
+        }
+    }
+
+    if(typeInfo->getMethodCount() > 0) {
+        for(uint index = 0; index <= typeInfo->getMethodCount() - 1; index++)
+        {
+            QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(index);
+            QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
+            QString signature = methodInfo->getSignature();
+            if(returnType != NULL) {
+                mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()), "QVariant");
+            } else {
+                mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
+            }
         }
     }
 

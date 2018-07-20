@@ -30,6 +30,8 @@ public:
     uint getParameterCount();
     QSharedPointer<NetMethodInfoArguement> getParameter(uint index);
 
+    QString getSignature();
+
 private:
     QSharedPointer<NetTypeInfo> _parentTypeInfo;
     QString _methodName;

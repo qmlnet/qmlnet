@@ -44,6 +44,26 @@ QSharedPointer<NetMethodInfoArguement> NetMethodInfo::getParameter(uint index) {
     return _parameters.at(index);
 }
 
+QString NetMethodInfo::getSignature() {
+    QString signature = _methodName;
+
+    signature.append("(");
+
+    if(_parameters.size() > 0) {
+        for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
+        {
+            if(parameterIndex > 0) {
+                signature.append(",");
+            }
+            signature.append("QVariant");
+        }
+    }
+
+    signature.append(")");
+
+    return signature;
+}
+
 extern "C" {
 
 Q_DECL_EXPORT void method_info_parameter_destroy(NetMethodInfoArguementContainer* container) {

@@ -68,30 +68,59 @@ namespace Qt.NetCore.Internal
                     type.AddMethod(method);
                 }
 
+                var signals = new Dictionary<string, NetSignalInfo>();
+                
+                foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
+                {
+                    var signal = new NetSignalInfo(type, signalAttribute.Name);
+                    foreach (var parameter in signalAttribute.Parameters)
+                    {
+                        signal.AddParameter(parameter);
+                    }
+                    type.AddSignal(signal);
+                    signals.Add(signal.Name, signal);
+                }
+                
                 foreach (var propertyInfo in typeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (Helpers.IsPrimitive(propertyInfo.DeclaringType)) continue;
 
+                    NetSignalInfo notifySignal = null;
+                    var notifySignalAttribute = propertyInfo.GetCustomAttribute<NotifySignalAttribute>();
+                    if (notifySignalAttribute != null)
+                    {
+                        var name = notifySignalAttribute.Name;
+                        if (string.IsNullOrEmpty(name))
+                        {
+                            name = $"{propertyInfo.Name}Changed";
+                        }
+                        
+                        if (signals.ContainsKey(name))
+                        {
+                            notifySignal = signals[name];
+                            // Make sure the signal we are referencing has no parameters.
+                            if (notifySignal.ParameterCount != 0)
+                            {
+                                // TODO: They can actually of parameters, but not implemented yet.
+                                throw new Exception("Notify signals must have no parameters.");
+                            }
+                        }
+                        else
+                        {
+                            notifySignal = new NetSignalInfo(type, name);
+                            type.AddSignal(notifySignal);
+                        }
+                    }
+                    
                     using (var property = new NetPropertyInfo(
                         type,
                         propertyInfo.Name,
                         NetTypeManager.GetTypeInfo(propertyInfo.PropertyType.AssemblyQualifiedName),
                         propertyInfo.CanRead,
-                        propertyInfo.CanWrite))
+                        propertyInfo.CanWrite,
+                        notifySignal))
                     {
                         type.AddProperty(property);
-                    }
-                }
-
-                foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
-                {
-                    using (var signal = new NetSignalInfo(type, signalAttribute.Name))
-                    {
-                        foreach (var parameter in signalAttribute.Parameters)
-                        {
-                            signal.AddParameter(parameter);
-                        }
-                        type.AddSignal(signal);
                     }
                 }
             }

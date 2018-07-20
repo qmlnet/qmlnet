@@ -9,18 +9,21 @@ public:
                     QString name,
                     QSharedPointer<NetTypeInfo> returnType,
                     bool canRead,
-                    bool canWrite);
+                    bool canWrite,
+                    QSharedPointer<NetSignalInfo> notifySignal);
     QSharedPointer<NetTypeInfo> getParentType();
     QString getPropertyName();
     QSharedPointer<NetTypeInfo> getReturnType();
     bool canRead();
     bool canWrite();
+    QSharedPointer<NetSignalInfo> getNotifySignal();
 private:
     QSharedPointer<NetTypeInfo> _parentType;
     QString _name;
     QSharedPointer<NetTypeInfo> _returnType;
     bool _canRead;
     bool _canWrite;
+    QSharedPointer<NetSignalInfo> _notifySignal;
 };
 
 struct NetPropertyInfoContainer {

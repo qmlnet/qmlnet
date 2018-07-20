@@ -13,6 +13,7 @@ public:
     void addParameter(NetVariantTypeEnum type);
     uint getParameterCount();
     NetVariantTypeEnum getParameter(uint index);
+    QString getSignature();
 private:
     QSharedPointer<NetTypeInfo> _parentType;
     QString _name;

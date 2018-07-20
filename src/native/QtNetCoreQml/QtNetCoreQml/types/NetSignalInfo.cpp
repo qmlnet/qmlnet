@@ -28,6 +28,27 @@ NetVariantTypeEnum NetSignalInfo::getParameter(uint index) {
     return _parameters.at(index);
 }
 
+QString NetSignalInfo::getSignature() {
+    QString signature = _name;
+
+    signature.append("(");
+
+    if(_parameters.size() > 0) {
+        for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
+        {
+            if(parameterIndex > 0) {
+                signature.append(",");
+            }
+            signature.append("QVariant");
+        }
+    }
+
+    signature.append(")");
+
+    return signature;
+
+}
+
 extern "C" {
 
 Q_DECL_EXPORT NetSignalInfoContainer* signal_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR name) {
