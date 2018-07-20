@@ -2,6 +2,7 @@
 
 namespace Qt.NetCore
 {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class SignalAttribute : Attribute
     {
         public SignalAttribute(string name, params NetVariantType[] parameters)
