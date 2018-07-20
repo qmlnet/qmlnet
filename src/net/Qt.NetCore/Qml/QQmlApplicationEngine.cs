@@ -19,6 +19,11 @@ namespace Qt.NetCore.Qml
             Interop.QQmlApplicationEngine.Load(Handle, path);
         }
 
+        public void LoadData(string data)
+        {
+            Interop.QQmlApplicationEngine.LoadData(Handle, data);
+        }
+
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
             return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
@@ -49,7 +54,10 @@ namespace Qt.NetCore.Qml
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_load")]
         int Load(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
-        
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_loadData")]
+        int LoadData(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
         int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
 
