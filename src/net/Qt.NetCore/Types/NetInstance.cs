@@ -63,7 +63,7 @@ namespace Qt.NetCore.Types
 
         public void ActivateSignal(string signalName, NetVariantList paramters)
         {
-            //Interop.NetInstance.ActivateSignal(Handle, signalName, paramters.Handle);
+            Interop.NetInstance.ActivateSignal(Handle, signalName, paramters.Handle);
         }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
@@ -131,5 +131,7 @@ namespace Qt.NetCore.Types
 
         [NativeSymbol(Entrypoint = "net_instance_getHandle")]
         IntPtr GetHandle(IntPtr instance);
+        [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
+        void ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
     }
 }

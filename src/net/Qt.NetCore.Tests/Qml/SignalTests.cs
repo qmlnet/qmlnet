@@ -20,6 +20,11 @@ namespace Qt.NetCore.Tests.Qml
             {
                 
             }
+
+            public virtual void TestMethod()
+            {
+                
+            }
         }
 
         [Signal("testSignal")]
@@ -104,6 +109,37 @@ namespace Qt.NetCore.Tests.Qml
                             })
                             var instance2 = test.GetSignalObject()
                             instance2.testSignal()
+                        }
+                    }
+                ");
+
+            Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
+        }
+
+        [Fact]
+        public void Can_raise_signal_from_net()
+        {
+            var signalObject = new SignalObject();
+            Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
+            Mock.Setup(x => x.TestMethod()).Callback(() =>
+            {
+                signalObject.ActivateSignal("testSignal");
+            });
+            Mock.Setup(x => x.SignalRaised).Returns(false);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var instance1 = test.GetSignalObject()
+                            instance1.testSignal.connect(function() {
+                                test.SignalRaised = true
+                            })
+                            test.TestMethod()
+                            console.log(instance1)
                         }
                     }
                 ");

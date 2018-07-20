@@ -21,11 +21,15 @@ QSharedPointer<NetInstance> NetValue::getNetInstance()
     return instance;
 }
 
-NetValue* NetValue::forInstance(QSharedPointer<NetInstance> instance)
+NetValue* NetValue::forInstance(QSharedPointer<NetInstance> instance, bool autoCreate)
 {
     if(netValues.find(instance.data()) != netValues.end())
     {
         return netValues.at(instance.data());
+    }
+    if(!autoCreate)
+    {
+        return NULL;
     }
     auto result = new NetValue(instance, nullptr);
     QQmlEngine::setObjectOwnership(result, QQmlEngine::JavaScriptOwnership);

@@ -25,7 +25,7 @@ public:
     virtual ~NetValue();
     QSharedPointer<NetInstance> getNetInstance();
 
-    static NetValue* forInstance(QSharedPointer<NetInstance> instance);
+    static NetValue* forInstance(QSharedPointer<NetInstance> instance, bool autoCreate = true);
 
 protected:
     NetValue(QSharedPointer<NetInstance> instance, QObject *parent);
