@@ -10,7 +10,7 @@ static int netValueTypeNumber = 0;
 #define NETVALUETYPE_CASE(N) \
     case N: NetValueType<N>::init(typeInfo); return qmlRegisterType<NetValueType<N>>(uriString.toUtf8().data(), versionMajor, versionMinor, qmlNameString.toUtf8().data());
 
-DEFINE_OBJECT_VTABLE(NetObject)
+DEFINE_OBJECT_VTABLE(NetObject);
 
 void Heap::NetObject::init() {
     Scope scope(internalClass->engine);

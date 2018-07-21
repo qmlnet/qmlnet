@@ -6,21 +6,10 @@
 #define NetGCHandle void
 
 #if _MSC_VER
-    #include <Windows.h>
-    #include <stdint.h>
-    #include <Tchar.h>
-
     typedef const wchar_t* BCSTR;
     typedef const char* LPCSTR;
-    typedef const wchar_t* LPWCSTR;
-
-    #if UNICODE
-        #define LPTSTR(value) L ##value;
-        typedef LPWCSTR LPTCSTR;
-    #else
-        #define LPTSTR(value) value;
-        typedef LPCSTR LPTCSTR;
-    #endif
+    typedef const char16_t* LPWCSTR;
+    typedef char16_t* LPWSTR;
 #endif
 
 #if !_MSC_VER
