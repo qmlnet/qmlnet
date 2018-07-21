@@ -4,6 +4,7 @@ using static Build.Buildary.Directory;
 using static Build.Buildary.Path;
 using static Build.Buildary.Shell;
 using static Build.Buildary.Runner;
+using static Build.Buildary.Runtime;
 
 namespace Build
 {
@@ -25,14 +26,25 @@ namespace Build
                 RunShell($"dotnet test src/net/Qml.Net.Tests/ {commandBuildArgs}");
             });
 
-            Add("build", () =>
+            Add("build-native", () =>
             {
-                // Build the native stuff
-                RunShell("./src/native/build.sh");
-                // Build the .NETs stuff
-                RunShell($"dotnet build src/net/Qml.Net.sln {commandBuildArgs}");
+                if (IsWindows())
+                {
+                    RunShell($"{ExpandPath("./src/native/build.bat")}");
+                }
+                else
+                {
+                    RunShell("src/native/build.sh");
+                }
             });
-            
+
+            Add("build-net", () =>
+            {
+                RunShell($"dotnet build {ExpandPath("src/net/Qml.Net.sln")} {commandBuildArgs}");
+            });
+
+            Add("build", DependsOn("build-native", "build-net"));
+
             Add("default", DependsOn("clean", "build"));
 
             Add("ci", DependsOn("build", "test"));
