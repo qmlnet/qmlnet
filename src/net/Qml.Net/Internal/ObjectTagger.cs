@@ -32,6 +32,17 @@ namespace Qml.Net.Internal
 
         #region Id management
 
+        //set in unit tests
+        private static UInt64 MaxId = UInt64.MaxValue - 1;
+
+        //used in unit tests
+        private static void Reset()
+        {
+            MaxId = UInt64.MaxValue - 1;
+            NextId = 1;
+            UsedIds.Clear();
+        }
+
         private static UInt64 NextId = 1;
         private static HashSet<UInt64> UsedIds = new HashSet<UInt64>();
 
@@ -48,7 +59,7 @@ namespace Qml.Net.Internal
             bool firstPass = true;
             while (UsedIds.Contains(nextId))
             {
-                if(nextId == UInt64.MaxValue)
+                if(nextId >= MaxId)
                 {
                     if(!firstPass)
                     {
@@ -71,6 +82,11 @@ namespace Qml.Net.Internal
         }
 
         public void Dispose()
+        {
+            FreeId(Id);
+        }
+
+        ~ObjectId()
         {
             FreeId(Id);
         }
