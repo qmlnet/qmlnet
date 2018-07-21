@@ -7,14 +7,14 @@ using Qml.Net.Qml;
 
 namespace Qml.Net.Types
 {
-    public class NetInstance : BaseDisposable
+    public class NetReference : BaseDisposable
     {
-        private NetInstance(IntPtr gcHandle, NetTypeInfo type, bool ownsHandle = true)
-            :base(Interop.NetInstance.Create(gcHandle, type.Handle), ownsHandle)
+        private NetReference(IntPtr gcHandle, NetTypeInfo type, bool ownsHandle = true)
+            :base(Interop.NetReference.Create(gcHandle, type.Handle), ownsHandle)
         {
         }
 
-        public NetInstance(IntPtr handle, bool ownsHandle = true)
+        public NetReference(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
             
@@ -24,14 +24,14 @@ namespace Qml.Net.Types
         {
             get
             {
-                var handle = Interop.NetInstance.GetHandle(Handle);
+                var handle = Interop.NetReference.GetHandle(Handle);
                 return ((GCHandle) handle).Target;
             }
         }
 
-        public NetInstance Clone()
+        public NetReference Clone()
         {
-            return new NetInstance(Interop.NetInstance.Clone(Handle));
+            return new NetReference(Interop.NetReference.Clone(Handle));
         }
 
         public bool ActivateSignal(string signalName, params object[] parameters)
@@ -48,18 +48,18 @@ namespace Qml.Net.Types
                             list.Add(variant);
                         }
                     }
-                    return Interop.NetInstance.ActivateSignal(Handle, signalName, list.Handle);
+                    return Interop.NetReference.ActivateSignal(Handle, signalName, list.Handle);
                 }
             }
             else
             {
-                return Interop.NetInstance.ActivateSignal(Handle, signalName, IntPtr.Zero);
+                return Interop.NetReference.ActivateSignal(Handle, signalName, IntPtr.Zero);
             }
         }
 
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
-            Interop.NetInstance.Destroy(ptr);
+            Interop.NetReference.Destroy(ptr);
         }
         
         #region Instance helpers
@@ -74,23 +74,23 @@ namespace Qml.Net.Types
             return type;
         }
         
-        private static readonly ConditionalWeakTable<object, NetInstance> ObjectNetInstanceConnections = new ConditionalWeakTable<object, NetInstance>();
+        private static readonly ConditionalWeakTable<object, NetReference> ObjectNetReferenceConnections = new ConditionalWeakTable<object, NetReference>();
 
         public static bool ExistsForObject(object value)
         {
-            return ObjectNetInstanceConnections.TryGetValue(value, out NetInstance netInstance);
+            return ObjectNetReferenceConnections.TryGetValue(value, out NetReference NetReference);
         }
         
-        public static NetInstance GetForObject(object value, bool autoCreate = true)
+        public static NetReference GetForObject(object value, bool autoCreate = true)
         {
             if (value == null) return null;
             var alreadyExists = false;
-            if (ObjectNetInstanceConnections.TryGetValue(value, out var netInstance))
+            if (ObjectNetReferenceConnections.TryGetValue(value, out var NetReference))
             {
                 alreadyExists = true;
-                if (GCHandle.FromIntPtr(netInstance.Handle).IsAllocated)
+                if (GCHandle.FromIntPtr(NetReference.Handle).IsAllocated)
                 {
-                    return netInstance;
+                    return NetReference;
                 }
             }
 
@@ -99,19 +99,19 @@ namespace Qml.Net.Types
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
-            var newNetInstance = new NetInstance(GCHandle.ToIntPtr(handle), typeInfo);
+            var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), typeInfo);
             if(alreadyExists)
             {
-                ObjectNetInstanceConnections.Remove(value);
+                ObjectNetReferenceConnections.Remove(value);
             }
-            ObjectNetInstanceConnections.Add(value, newNetInstance);
-            return newNetInstance;
+            ObjectNetReferenceConnections.Add(value, newNetReference);
+            return newNetReference;
         }
         
         #endregion
     }
 
-    public interface INetInstanceInterop
+    public interface INetReferenceInterop
     {   
         [NativeSymbol(Entrypoint = "net_instance_create")]
         IntPtr Create(IntPtr handle, IntPtr type);

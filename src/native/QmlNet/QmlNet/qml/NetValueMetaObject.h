@@ -14,14 +14,14 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo);
 class NetValueMetaObject : public QAbstractDynamicMetaObject
 {
 public:
-    NetValueMetaObject(QObject* value, QSharedPointer<NetInstance> instance);
+    NetValueMetaObject(QObject* value, QSharedPointer<NetReference> instance);
 
 protected:
     int metaCall(QMetaObject::Call c, int id, void **a);
 
 private:
     QObject *value;
-    QSharedPointer<NetInstance> instance;
+    QSharedPointer<NetReference> instance;
 };
 
 #endif // NETVALUEMETAOBJECT_H

@@ -22,14 +22,14 @@ namespace Qml.Net.Qml
 
         public NetVariantType VariantType => Interop.NetVariant.GetVariantType(Handle);
 
-        public NetInstance Instance
+        public NetReference Instance
         {
             get
             {
-                var result = Interop.NetVariant.GetNetInstance(Handle);
-                return result == IntPtr.Zero ? null : new NetInstance(result);
+                var result = Interop.NetVariant.GetNetReference(Handle);
+                return result == IntPtr.Zero ? null : new NetReference(result);
             }
-            set => Interop.NetVariant.SetNetInstance(Handle, value?.Handle ?? IntPtr.Zero);
+            set => Interop.NetVariant.SetNetReference(Handle, value?.Handle ?? IntPtr.Zero);
         }
 
         public bool Bool
@@ -130,10 +130,10 @@ namespace Qml.Net.Qml
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         NetVariantType GetVariantType(IntPtr variant);
         
-        [NativeSymbol(Entrypoint = "net_variant_setNetInstance")]
-        void SetNetInstance(IntPtr variant, IntPtr instance);
-        [NativeSymbol(Entrypoint = "net_variant_getNetInstance")]
-        IntPtr GetNetInstance(IntPtr variant);
+        [NativeSymbol(Entrypoint = "net_variant_setNetReference")]
+        void SetNetReference(IntPtr variant, IntPtr instance);
+        [NativeSymbol(Entrypoint = "net_variant_getNetReference")]
+        IntPtr GetNetReference(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setBool")]
         void SetBool(IntPtr variant, bool value);

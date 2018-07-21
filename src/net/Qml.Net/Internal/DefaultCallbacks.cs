@@ -139,13 +139,13 @@ namespace Qml.Net.Internal
                 var typeInfo = Type.GetType(typeName);
                 if(typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
             
-                var typeCreator = NetInstance.TypeCreator;
+                var typeCreator = NetReference.TypeCreator;
                 var instance = typeCreator != null ? typeCreator.Create(typeInfo) : Activator.CreateInstance(typeInfo);
 
-                var netInstance = NetInstance.GetForObject(instance);
-                // When .NET collects this NetInstance, we don't want it to delete this
+                var netReference = NetReference.GetForObject(instance);
+                // When .NET collects this NetReference, we don't want it to delete this
                 // handle. Ownership has been passed to the caller.
-                return Interop.NetInstance.Clone(netInstance.Handle);
+                return Interop.NetReference.Clone(netReference.Handle);
             }
             finally
             {
@@ -156,7 +156,7 @@ namespace Qml.Net.Internal
         public void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
         {
             using(var property = new NetPropertyInfo(p))
-            using(var target = new NetInstance(t))
+            using(var target = new NetReference(t))
             using(var result = new NetVariant(r))
             {
                 var o = target.Instance;
@@ -174,7 +174,7 @@ namespace Qml.Net.Internal
         public void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
         {
             using (var property = new NetPropertyInfo(p))
-            using (var target = new NetInstance(t))
+            using (var target = new NetReference(t))
             using (var value = new NetVariant(v))
             {
                 var o = target.Instance;
@@ -195,7 +195,7 @@ namespace Qml.Net.Internal
         public void InvokeMethod(IntPtr m, IntPtr t, IntPtr p, IntPtr r)
         {
             using (var method = new NetMethodInfo(m))
-            using (var target = new NetInstance(t))
+            using (var target = new NetReference(t))
             using (var parameters = new NetVariantList(p))
             using (var result = r != IntPtr.Zero ? new NetVariant(r) : null)
             {

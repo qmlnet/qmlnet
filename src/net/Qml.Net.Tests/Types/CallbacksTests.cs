@@ -30,21 +30,21 @@ namespace Qml.Net.Tests.Types
         public void Can_release_gc_handle()
         {
             WeakReference reference = null;
-            NetInstance instance = null;
+            NetReference instance = null;
             Task.Factory.StartNew(() =>
             {
                 var o = new TestObject();
                 reference = new WeakReference(o);
-                instance = NetInstance.GetForObject(o);
+                instance = NetReference.GetForObject(o);
             }).Wait();
 
-            // NetInstance is still alive, so the weak reference must be alive as well.
+            // NetReference is still alive, so the weak reference must be alive as well.
             GC.Collect(GC.MaxGeneration);
             reference.IsAlive.Should().BeTrue();
             
             instance.Dispose();
             
-            // NetInstance has been destroyed, so the handle should have been released.
+            // NetReference has been destroyed, so the handle should have been released.
             GC.Collect(GC.MaxGeneration);
             reference.IsAlive.Should().BeFalse();
         }
@@ -54,7 +54,7 @@ namespace Qml.Net.Tests.Types
         {
             var type = NetTypeManager.GetTypeInfo<TestObject>();
 
-            using(var instance = new NetInstance(Interop.Callbacks.InstantiateType(type.Handle), false))
+            using(var instance = new NetReference(Interop.Callbacks.InstantiateType(type.Handle), false))
             {
                 instance.Instance.Should().NotBeNull();
                 instance.Instance.Should().BeOfType<TestObject>();
@@ -67,7 +67,7 @@ namespace Qml.Net.Tests.Types
             var o = new TestObject(); 
             var type = NetTypeManager.GetTypeInfo<TestObject>(); 
             var method = type.GetMethod(0); 
-            var instance = NetInstance.GetForObject(o); 
+            var instance = NetReference.GetForObject(o); 
             
             // This will jump to native, to then call the .NET delegate (round trip).
             // The purpose is to simulate Qml invoking a method, sending .NET instance back.
