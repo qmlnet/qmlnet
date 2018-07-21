@@ -1,11 +1,9 @@
-# Qt/Qml support for .NET/.NET Core on Linux/OSX/Windows
+# Qml.Net [![Build Status](https://travis-ci.com/pauldotknopf/net-core-qml.svg?branch=master)](https://travis-ci.com/pauldotknopf/net-core-qml)
 
-This is a work-in-progress (but usable) bridge between .NET and Qml.
-
-The intended platforms to support include:
+A Qml integration with .NET
 
 * Runtimes:
-  * .NET Framework Full
+  * .NET Framework
   * .NET Core
   * Mono
 * Operating systems
@@ -13,24 +11,21 @@ The intended platforms to support include:
   * OSX
   * Windows
 
-*As of now, the only focus is on **.NET Core (Linux/OSX/Window)**. The other frameworks should theoretically work though. Drop us an issue if you have any problems. When there is enough demand and userbase, I'd be happy to fully bring in other frameworks.*
+*As of now, the only focus is on **.NET Core (Linux/OSX/Window)**. The other frameworks should theoretically work though. Drop us an issue if you have any problems. When there is enough demand and user-base, I'd be happy to fully bring in other frameworks.*
 
 ## The idea
 
 **Define a .NET type (POCO)**
 
 ```c#
+[Signal("CustomSignal", NetVariantType.String)] // You can define signals that Qml can listen to.
 public class QmlType
 {
     /// <summary>
     /// Properties are exposed to Qml.
     /// </summary>
+    [NotifySignal("StringPropertyChanged")] // For Qml binding/MVVM.
     public string StringProperty { get; set; }
-
-    /// <summary>
-    /// Events get exposed as signals.
-    /// </summary>
-    public event Action<string> CustomEvent { get; set; }
 
     /// <summary>
     /// Methods can return .NET types.
@@ -72,6 +67,14 @@ public class QmlType
         });
         Console.WriteLine("Welcome back to the UI thread!");
     }
+    
+    /// <summary>
+    /// .NET can activate signals to send notifications to Qml.
+    /// </summary>
+    public void ActivateCustomSignal(string message)
+    {
+        this.ActivateSignal("CustomSignal", message)
+    }
 }
 ```
 
@@ -107,19 +110,25 @@ ApplicationWindow {
     QmlType {
       id: test
       Component.onCompleted: function() {
-          // Wire up signal event handlers
-          test.CustomEvent.connect(testHandler)
-          // And invoke them. This will also trigger any event
-          // handlers assigned in .NET.
-          test.CustomEvent("Event message")
           // We can read/set properties
           console.log(test.StringProperty)
+          test.StringPropertyChanged.connect(function() {
+              console.log("The property was changed!")
+          })
           test.StringProperty = "New value!"
+          
           // We can return .NET types (even ones not registered with Qml).
           var netObject = test.CreateNetObject();
+          
           // All properties/methods/signals can be invoked on "netObject"
           // We can also pass the .NET object back to .NET
           netObject.TestMethod(netObject)
+          
+          // We can trigger signals from .NET
+          test.CustomSignal.connect(function(message) {
+              console.log("message: " + message)
+          })
+          test.ActivateCustomSignal("test message!")
       }
       function testHandler(message) {
           console.log("Message - " message)
@@ -133,18 +142,20 @@ ApplicationWindow {
 Setting up an environment takes a little effort, but it is easy enough.
 
 1. Install Qt and Qt Creator.
-2. Build and deploy ```src/native/QtNetCoreQml/QtNetCoreQml.pro```.
-3. Open ```src/net/Qt.NetCore.sln``` and run the sandbox! *Mark sure your ```LD_LIBRARY_PATH``` (etc) is setup for your app to properly find your ```QtNetCoreQml``` installation.*
+2. Build and deploy ```src/native/QmlNet/QmlNet.pro```.
+3. Open ```src/net/Qt.NetCore.sln``` and run the sandbox! *Mark sure your ```LD_LIBRARY_PATH``` (etc) is setup for your app to properly find your ```QmlNet``` installation.*
 
 There will be a proper NuGet/MyGet feed shortly.
 
-Also, there is no plans to ever bundle the native libraries into the NuGet packages considering the complexity of a traditional Qt installation. It will always be recommend/required to install the native ```QtNetCoreQml``` on the OS of your choice.
+Also, there is no plans to ever bundle the native libraries into the NuGet packages considering the complexity of a traditional Qt installation. It will always be recommend/required to install the native ```QmlNet``` on the OS of your choice.
 
 ## Currently implemented
 
 - [x] Support for all the basic Qml types and the back-and-forth between them (```DateTime```, ```string```, etc).
 - [x] Reading/setting properties on .NET objects.
 - [x] Invoking methods on .NET obejcts.
+- [x] Declaring and activating signals on .NET objects.
+- [x] ```async``` and ```await``` (no return types yet).
 
 ## Not implemented (but planned)
 
