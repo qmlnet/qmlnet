@@ -5,10 +5,10 @@
 
 NetValue::~NetValue()
 {
-    auto hit = netValues.find(instance.data());
-    if(hit != netValues.end())
+    auto hit = objectIdNetValuesMap.find(instance->getObjectId());
+    if(hit != objectIdNetValuesMap.end())
     {
-        netValues.erase(hit);
+        objectIdNetValuesMap.erase(hit);
     }
     qDebug("NetValue deleted: %s", qPrintable(instance->getTypeInfo()->getClassName()));
     if(instance != nullptr) {
@@ -17,7 +17,7 @@ NetValue::~NetValue()
 }
 
 
-QSharedPointer<NetInstance> NetValue::getNetInstance()
+QSharedPointer<NetReference> NetValue::getNetReference()
 {
     return instance;
 }
@@ -76,11 +76,12 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
     return true;
 }
 
-NetValue* NetValue::forInstance(QSharedPointer<NetInstance> instance, bool autoCreate)
+NetValue* NetValue::forInstance(QSharedPointer<NetReference> instance, bool autoCreate)
 {
-    if(netValues.find(instance.data()) != netValues.end())
+    auto objectId = instance->getObjectId();
+    if(objectIdNetValuesMap.find(objectId) != objectIdNetValuesMap.end())
     {
-        return netValues.at(instance.data());
+        return objectIdNetValuesMap.at(objectId);
     }
     if(!autoCreate)
     {
@@ -91,13 +92,13 @@ NetValue* NetValue::forInstance(QSharedPointer<NetInstance> instance, bool autoC
     return result;
 }
 
-NetValue::NetValue(QSharedPointer<NetInstance> instance, QObject *parent)
+NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
     : instance(instance)
 {
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
-    netValues[instance.data()] = this;
+    objectIdNetValuesMap[instance->getObjectId()] = this;
     qDebug("NetValue created: %s", qPrintable(instance->getTypeInfo()->getClassName()));
 }
 
-std::map<NetInstance*, NetValue*> NetValue::netValues = std::map<NetInstance*, NetValue*>();
+std::map<uint64_t, NetValue*> NetValue::objectIdNetValuesMap = std::map<uint64_t, NetValue*>();

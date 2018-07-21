@@ -40,7 +40,7 @@ namespace Qml.Net.Tests.Qml
             _coreApplication = new QGuiApplication();
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
-            NetInstance.TypeCreator = TypeCreator;
+            NetReference.TypeCreator = TypeCreator;
             TypeCreator.SetInstance(typeof(TestContext), new TestContext(_coreApplication));
             if (!_testContextRegistered)
             {
@@ -79,7 +79,7 @@ namespace Qml.Net.Tests.Qml
             qmlApplicationEngine.Dispose();
             _coreApplication.Dispose();
 
-            NetInstance.TypeCreator = null;
+            NetReference.TypeCreator = null;
 
             base.Dispose();
         }

@@ -36,7 +36,7 @@ void metaPackValue(QSharedPointer<NetVariant> source, QVariant* destination) {
         break;
     case NetVariantTypeEnum_Object:
     {
-        QSharedPointer<NetInstance> newInstance = source->getNetInstance();
+        QSharedPointer<NetReference> newInstance = source->getNetReference();
         NetValue* netValue = NetValue::forInstance(newInstance);
         destination->setValue(netValue);
         break;
@@ -127,7 +127,7 @@ void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, N
             QObject* value = source->value<QObject*>();
             NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
             if(netValue) {
-                destination->setNetInstance(netValue->getNetInstance());
+                destination->setNetReference(netValue->getNetReference());
                 return;
             }
         }
@@ -251,7 +251,7 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
 }
 
 NetValueMetaObject::NetValueMetaObject(QObject *value,
-                                       QSharedPointer<NetInstance> instance) :
+                                       QSharedPointer<NetReference> instance) :
     value(value),
     instance(instance)
 {

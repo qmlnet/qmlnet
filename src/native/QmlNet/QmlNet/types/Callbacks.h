@@ -5,7 +5,7 @@
 #include <QmlNet/types/NetTypeInfo.h>
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetMethodInfo.h>
-#include <QmlNet/types/NetInstance.h>
+#include <QmlNet/types/NetReference.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetVariantList.h>
 #include <QSharedPointer>
@@ -17,13 +17,13 @@ void releaseGCHandle(NetGCHandle* handle);
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
-QSharedPointer<NetInstance> instantiateType(QSharedPointer<NetTypeInfo> type);
+QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type);
 
-void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetInstance> target, QSharedPointer<NetVariant> result);
+void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> result);
 
-void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetInstance> target, QSharedPointer<NetVariant> value);
+void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> value);
 
-void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetInstance> target, QSharedPointer<NetVariantList> parameters, QSharedPointer<NetVariant> result);
+void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetReference> target, QSharedPointer<NetVariantList> parameters, QSharedPointer<NetVariant> result);
 
 void gcCollect(int generation);
 

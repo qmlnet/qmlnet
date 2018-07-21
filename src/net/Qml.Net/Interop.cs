@@ -21,7 +21,7 @@ namespace Qml.Net
             QGuiApplication = NativeLibraryBuilder.Default.ActivateInterface<IQGuiApplicationInterop>("QmlNet");
             QQmlApplicationEngine = NativeLibraryBuilder.Default.ActivateInterface<IQQmlApplicationEngine>("QmlNet");
             NetVariant = NativeLibraryBuilder.Default.ActivateInterface<INetVariantInterop>("QmlNet");
-            NetInstance = NativeLibraryBuilder.Default.ActivateInterface<INetInstanceInterop>("QmlNet");
+            NetReference = NativeLibraryBuilder.Default.ActivateInterface<INetReferenceInterop>("QmlNet");
             NetVariantList = NativeLibraryBuilder.Default.ActivateInterface<INetVariantListInterop>("QmlNet");
             NetTestHelper = NativeLibraryBuilder.Default.ActivateInterface<INetTestHelperInterop>("QmlNet");
             NetSignalInfo = NativeLibraryBuilder.Default.ActivateInterface<INetSignalInfoInterop>("QmlNet");
@@ -47,7 +47,7 @@ namespace Qml.Net
         
         public static INetVariantInterop NetVariant { get; }
         
-        public static INetInstanceInterop NetInstance { get; }
+        public static INetReferenceInterop NetReference { get; }
         
         public static INetVariantListInterop NetVariantList { get; }
         

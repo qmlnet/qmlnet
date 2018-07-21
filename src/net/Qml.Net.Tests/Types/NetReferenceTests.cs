@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Qml.Net.Tests.Types
 {
-    public class NetInstanceTests : BaseTests
+    public class NetReferenceTests : BaseTests
     {
         class TestObject
         {
@@ -15,7 +15,7 @@ namespace Qml.Net.Tests.Types
         public void Can_create_net_instance()
         {
             var o = new TestObject();
-            var instance = NetInstance.GetForObject(o);
+            var instance = NetReference.CreateForObject(o);
 
             var returnedInstance = instance.Instance;
 

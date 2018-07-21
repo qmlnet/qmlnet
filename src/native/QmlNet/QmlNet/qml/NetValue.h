@@ -4,7 +4,7 @@
 #include <map>
 
 #include <QmlNet.h>
-#include <QmlNet/types/NetInstance.h>
+#include <QmlNet/types/NetReference.h>
 #include <QmlNet/qml/NetVariantList.h>
 #include <QObject>
 #include <QSharedPointer>
@@ -13,7 +13,7 @@ class NetValueMetaObject;
 
 struct NetValueInterface
 {
-    virtual QSharedPointer<NetInstance> getNetInstance() = 0;
+    virtual QSharedPointer<NetReference> getNetReference() = 0;
 };
 
 Q_DECLARE_INTERFACE(NetValueInterface, "netcoreqml.NetValueInterface")
@@ -24,19 +24,19 @@ class NetValue : public QObject, NetValueInterface
     Q_INTERFACES(NetValueInterface)
 public:
     virtual ~NetValue();
-    QSharedPointer<NetInstance> getNetInstance();
+    QSharedPointer<NetReference> getNetReference();
     bool activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments);
 
-    static NetValue* forInstance(QSharedPointer<NetInstance> instance, bool autoCreate = true);
+    static NetValue* forInstance(QSharedPointer<NetReference> instance, bool autoCreate = true);
 
 protected:
-    NetValue(QSharedPointer<NetInstance> instance, QObject *parent);
+    NetValue(QSharedPointer<NetReference> instance, QObject *parent);
 
 private:
-    QSharedPointer<NetInstance> instance;
+    QSharedPointer<NetReference> instance;
     NetValueMetaObject* valueMeta;
 
-    static std::map<NetInstance*, NetValue*> netValues;
+    static std::map<uint64_t, NetValue*> objectIdNetValuesMap;
 };
 
 #endif // NETVALUE_H

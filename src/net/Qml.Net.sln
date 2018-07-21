@@ -5,11 +5,11 @@ VisualStudioVersion = 15.0.27428.2011
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "..\..\build\scripts\Build.csproj", "{0D8E32F7-D41E-48DB-BE3C-F461DDA9EDB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net", "Qml.Net\Qml.Net.csproj", "{5C802B29-A11A-498D-BAE7-7173DF314DFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qml.Net", "Qml.Net\Qml.Net.csproj", "{5C802B29-A11A-498D-BAE7-7173DF314DFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net.Tests", "Qml.Net.Tests\Qml.Net.Tests.csproj", "{977CD17F-0E1F-4D6F-9014-2816B059FF49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qml.Net.Tests", "Qml.Net.Tests\Qml.Net.Tests.csproj", "{977CD17F-0E1F-4D6F-9014-2816B059FF49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net.Sandbox", "Qml.Net.Sandbox\Qml.Net.Sandbox.csproj", "{69A52738-9606-4CA2-80F2-D898ACCA37BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qml.Net.Sandbox", "Qml.Net.Sandbox\Qml.Net.Sandbox.csproj", "{69A52738-9606-4CA2-80F2-D898ACCA37BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

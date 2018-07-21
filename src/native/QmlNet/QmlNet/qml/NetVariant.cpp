@@ -2,12 +2,12 @@
 #include <QDateTime>
 #include <QDebug>
 
-struct NetInstanceQmlContainer
+struct NetReferenceQmlContainer
 {
-    QSharedPointer<NetInstance> netInstance;
+    QSharedPointer<NetReference> netReference;
 };
 
-Q_DECLARE_METATYPE(NetInstanceQmlContainer)
+Q_DECLARE_METATYPE(NetReferenceQmlContainer)
 
 NetVariant::NetVariant()
 {
@@ -16,7 +16,7 @@ NetVariant::NetVariant()
 
 NetVariant::~NetVariant()
 {
-    clearNetInstance();
+    clearNetReference();
 }
 
 NetVariantTypeEnum NetVariant::getVariantType()
@@ -39,7 +39,7 @@ NetVariantTypeEnum NetVariant::getVariantType()
     case QVariant::DateTime:
         return NetVariantTypeEnum_DateTime;
     case QVariant::UserType:
-        if(strcmp(variant.typeName(), "NetInstanceQmlContainer") == 0)
+        if(strcmp(variant.typeName(), "NetReferenceQmlContainer") == 0)
             return NetVariantTypeEnum_Object;
         qWarning() << "Unknown user type for NetVariant: " << variant.typeName();
         return NetVariantTypeEnum_Invalid;
@@ -49,20 +49,20 @@ NetVariantTypeEnum NetVariant::getVariantType()
     }
 }
 
-void NetVariant::setNetInstance(QSharedPointer<NetInstance> netInstance)
+void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 {
-    clearNetInstance();
-    variant.setValue(NetInstanceQmlContainer{ netInstance });
+    clearNetReference();
+    variant.setValue(NetReferenceQmlContainer{ netReference });
 }
 
-QSharedPointer<NetInstance> NetVariant::getNetInstance()
+QSharedPointer<NetReference> NetVariant::getNetReference()
 {
-    return variant.value<NetInstanceQmlContainer>().netInstance;
+    return variant.value<NetReferenceQmlContainer>().netReference;
 }
 
 void NetVariant::setBool(bool value)
 {
-    clearNetInstance();
+    clearNetReference();
     variant.setValue(value);
 }
 
@@ -78,7 +78,7 @@ bool NetVariant::getBool()
 
 void NetVariant::setChar(QChar value)
 {
-    clearNetInstance();
+    clearNetReference();
     variant.setValue(value);
 }
 
@@ -89,7 +89,7 @@ QChar NetVariant::getChar()
 
 void NetVariant::setInt(int value)
 {
-    clearNetInstance();
+    clearNetReference();
     variant.setValue(value);
 }
 
@@ -105,7 +105,7 @@ int NetVariant::getInt()
 
 void NetVariant::setUInt(unsigned int value)
 {
-    clearNetInstance();
+    clearNetReference();
     variant.setValue(value);
 }
 
@@ -123,7 +123,7 @@ unsigned int NetVariant::getUInt()
 
 void NetVariant::setDouble(double value)
 {
-    clearNetInstance();
+    clearNetReference();
     variant.setValue(value);
 }
 
@@ -141,7 +141,7 @@ double NetVariant::getDouble()
 
 void NetVariant::setString(QString* value)
 {
-    clearNetInstance();
+    clearNetReference();
     if(value) {
         variant.setValue(*value);
     } else {
@@ -161,7 +161,7 @@ QString NetVariant::getString()
 
 void NetVariant::setDateTime(QDateTime& value)
 {
-    clearNetInstance();
+    clearNetReference();
     if(value.isNull()) {
         variant.clear();
     } else {
@@ -176,7 +176,7 @@ QDateTime NetVariant::getDateTime()
 
 void NetVariant::clear()
 {
-    clearNetInstance();
+    clearNetReference();
     variant.clear();
 }
 
@@ -185,11 +185,11 @@ QVariant NetVariant::asQVariant()
     return variant;
 }
 
-void NetVariant::clearNetInstance()
+void NetVariant::clearNetReference()
 {
-    if(variant.canConvert<NetInstanceQmlContainer>())
+    if(variant.canConvert<NetReferenceQmlContainer>())
     {
-        variant.value<NetInstanceQmlContainer>().netInstance.clear();
+        variant.value<NetReferenceQmlContainer>().netReference.clear();
         variant.clear();
     }
 }
@@ -222,20 +222,20 @@ Q_DECL_EXPORT NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer*
     return container->variant->getVariantType();
 }
 
-Q_DECL_EXPORT void net_variant_setNetInstance(NetVariantContainer* container, NetInstanceContainer* instanceContainer) {
+Q_DECL_EXPORT void net_variant_setNetReference(NetVariantContainer* container, NetReferenceContainer* instanceContainer) {
     if(instanceContainer == NULL) {
-        container->variant->setNetInstance(NULL);
+        container->variant->setNetReference(NULL);
     } else {
-        container->variant->setNetInstance(instanceContainer->instance);
+        container->variant->setNetReference(instanceContainer->instance);
     }
 }
 
-Q_DECL_EXPORT NetInstanceContainer* net_variant_getNetInstance(NetVariantContainer* container) {
-    QSharedPointer<NetInstance> instance = container->variant->getNetInstance();
+Q_DECL_EXPORT NetReferenceContainer* net_variant_getNetReference(NetVariantContainer* container) {
+    QSharedPointer<NetReference> instance = container->variant->getNetReference();
     if(instance == NULL) {
         return NULL;
     }
-    NetInstanceContainer* result = new NetInstanceContainer();
+    NetReferenceContainer* result = new NetReferenceContainer();
     result->instance = instance;
     return result;
 }

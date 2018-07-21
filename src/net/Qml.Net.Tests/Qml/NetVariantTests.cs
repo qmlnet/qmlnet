@@ -26,7 +26,7 @@ namespace Qml.Net.Tests.Qml
             var testObject = new TestObject();
             var variant = new NetVariant();
             variant.Instance.Should().BeNull();
-            variant.Instance = NetInstance.GetForObject(testObject);
+            variant.Instance = NetReference.CreateForObject(testObject);
             variant.Instance.Should().NotBeNull();
             variant.Instance.Instance.Should().Be(testObject);
             variant.VariantType.Should().Be(NetVariantType.Object);

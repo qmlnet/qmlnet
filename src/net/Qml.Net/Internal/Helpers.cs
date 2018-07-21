@@ -38,7 +38,7 @@ namespace Qml.Net.Internal
                     destination.DateTime = (DateTime)source;
                 else
                 {
-                    destination.Instance = NetInstance.GetForObject(source);
+                    destination.Instance = NetReference.CreateForObject(source);
                 }
             }
         }

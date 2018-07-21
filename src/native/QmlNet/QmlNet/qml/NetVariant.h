@@ -1,7 +1,7 @@
 #ifndef NETVARIANT_H
 #define NETVARIANT_H
 
-#include <QmlNet/types/NetInstance.h>
+#include <QmlNet/types/NetReference.h>
 #include <QVariant>
 #include <QDateTime>
 
@@ -11,8 +11,8 @@ public:
     NetVariant();
     ~NetVariant();
     NetVariantTypeEnum getVariantType();
-    void setNetInstance(QSharedPointer<NetInstance> netInstance);
-    QSharedPointer<NetInstance> getNetInstance();
+    void setNetReference(QSharedPointer<NetReference> netReference);
+    QSharedPointer<NetReference> getNetReference();
     void setBool(bool value);
     bool getBool();
     void setChar(QChar value);
@@ -31,7 +31,7 @@ public:
 
     QVariant asQVariant();
 private:
-    void clearNetInstance();
+    void clearNetReference();
     QVariant variant;
 };
 
