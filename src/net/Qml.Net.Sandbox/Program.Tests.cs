@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Qt.NetCore.Tests;
-using Qt.NetCore.Tests.Qml;
+using Qml.Net.Tests;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Qt.NetCore.Sandbox
+namespace Qml.Net.Sandbox
 {
     class Sink : IMessageSink
     {
@@ -16,6 +15,12 @@ namespace Qt.NetCore.Sandbox
             {
                 case ITestAssemblyFinished _:
                     TestAssemblyFinished.Set();
+                    break;
+                case ITestPassed testPassed:
+                    Console.WriteLine($"Passed: {testPassed.TestCase.DisplayName}");
+                    break;
+                case ITestFailed testFailed:
+                    Console.WriteLine($"Failed: {testFailed.TestCase.DisplayName}");
                     break;
             }
             return true;
@@ -39,7 +44,6 @@ namespace Qt.NetCore.Sandbox
                     DiscoveryComplete.Set();
                     break;
                 case ITestCaseDiscoveryMessage testCaseDiscoveryMessage:
-                    Console.WriteLine(testCaseDiscoveryMessage.TestCase.DisplayName);
                     TestCases.Add(testCaseDiscoveryMessage.TestCase);
                     break;
             }

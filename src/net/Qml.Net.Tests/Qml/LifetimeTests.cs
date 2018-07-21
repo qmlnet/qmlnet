@@ -46,12 +46,7 @@ namespace Qml.Net.Tests.Qml
                 return _parameterWeakRef.TryGetTarget(out SecondLevelType _);
             }
 
-            public void GarbageCollect()
-            {
-                GC.Collect(GC.MaxGeneration);
-            }
-
-            public bool TestResult { get; set; }
+            public bool? TestResult { get; set; }
         }
 
         [Fact]
@@ -228,7 +223,7 @@ namespace Qml.Net.Tests.Qml
                                 test.ReleaseNetReferenceParameter()
                             
                                 gc()
-                                test.GarbageCollect()
+                                Net.gcCollect(2)
 
                                 checkAndQuitTimer.running = true
                             }
@@ -271,7 +266,7 @@ namespace Qml.Net.Tests.Qml
                                 var instance1 = test.Parameter
 
                                 test.ReleaseNetReferenceParameter()
-                                test.GarbageCollect()
+                                Net.gcCollect(2)
 
                                 checkAndQuitTimer.running = true
                             }
@@ -320,7 +315,7 @@ namespace Qml.Net.Tests.Qml
                                 //release second QML ref
                                 instance2 = null
                                 gc()
-                                test.GarbageCollect()
+                                Net.gcCollect(2)
 
                                 checkAndQuitTimer.running = true
                             }

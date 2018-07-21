@@ -25,4 +25,6 @@ void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetR
 
 void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetReference> target, QSharedPointer<NetVariantList> parameters, QSharedPointer<NetVariant> result);
 
+void gcCollect(int generation);
+
 #endif // NET_TYPE_INFO_MANAGER_H

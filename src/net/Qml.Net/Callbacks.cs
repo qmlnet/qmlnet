@@ -14,6 +14,7 @@ namespace Qml.Net
         public IntPtr ReadProperty;
         public IntPtr WriteProperty;
         public IntPtr InvokeMethod;
+        public IntPtr GCCollect;
     }
 
     public interface ICallbacksIterop
@@ -58,6 +59,8 @@ namespace Qml.Net
         void WriteProperty(IntPtr property, IntPtr target, IntPtr value);
 
         void InvokeMethod(IntPtr method, IntPtr target, IntPtr parameters, IntPtr result);
+
+        void GCCollect(int maxGeneration);
     }
     
     public class CallbacksImpl
@@ -70,6 +73,7 @@ namespace Qml.Net
         ReadPropertyDelegate _readPropertyDelegate;
         WritePropertyDelegate _writePropertyDelegate;
         InvokeMethodDelegate _invokeMethodDelegate;
+        GCCollectDelegate _gcCollectDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
@@ -91,6 +95,9 @@ namespace Qml.Net
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void InvokeMethodDelegate(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void GCCollectDelegate(int maxGeneration);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -116,6 +123,9 @@ namespace Qml.Net
 
             _invokeMethodDelegate = InvokeMethod;
             GCHandle.Alloc(_invokeMethodDelegate);
+
+            _gcCollectDelegate = GCCollect;
+            GCHandle.Alloc(_gcCollectDelegate);
         }
 
         private bool IsTypeValid(string typeName)
@@ -153,6 +163,11 @@ namespace Qml.Net
             _callbacks.InvokeMethod(method, target, variants, result);
         }
 
+        private void GCCollect(int maxGeneration)
+        {
+            _callbacks.GCCollect(maxGeneration);
+        }
+
         public Callbacks Callbacks()
         {
             return new Callbacks
@@ -163,7 +178,8 @@ namespace Qml.Net
                 InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
                 ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),
                 WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate),
-                InvokeMethod = Marshal.GetFunctionPointerForDelegate(_invokeMethodDelegate)
+                InvokeMethod = Marshal.GetFunctionPointerForDelegate(_invokeMethodDelegate),
+                GCCollect = Marshal.GetFunctionPointerForDelegate(_gcCollectDelegate)
             };
         }
     }

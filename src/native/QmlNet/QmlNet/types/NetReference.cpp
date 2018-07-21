@@ -68,7 +68,7 @@ Q_DECL_EXPORT uint64_t net_instance_getObjectId(NetReferenceContainer* container
 }
 
 Q_DECL_EXPORT bool net_instance_activateSignal(NetReferenceContainer* container, LPWSTR signalName, NetVariantListContainer* parametersContainer) {
-    NetValue* existing = NetValue::forInstance(container->instance);
+    NetValue* existing = NetValue::forInstance(container->instance, false);
     if(existing == NULL) {
         // Not alive in the QML world, so no signals to raise.
         return false;

@@ -235,5 +235,10 @@ namespace Qml.Net.Internal
                 }
             }
         }
+
+        public void GCCollect(int maxGeneration)
+        {
+            GC.Collect(maxGeneration);
+        }
     }
 }

@@ -7,6 +7,7 @@ typedef NetReferenceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* type);
 typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* result);
 typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* value);
 typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
+typedef void (*gcCollectCb)(int maxGeneration);
 
 struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
@@ -16,6 +17,7 @@ struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     readPropertyCb readProperty;
     writePropertyCb writeProperty;
     invokeMethodCb invokeMethod;
+    gcCollectCb gcCollect;
 };
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
@@ -91,6 +93,10 @@ void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetRef
     }
     sharedCallbacks.invokeMethod(methodContainer, targetContainer, parametersContainer, resultContainer);
     // The callbacks dispose of types.
+}
+
+void gcCollect(int maxGeneration) {
+    sharedCallbacks.gcCollect(maxGeneration);
 }
 
 extern "C" {
