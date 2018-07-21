@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui qml core-private
+QT       += gui qml qml-private core-private
 
 CONFIG += c++11
 CONFIG += plugin
