@@ -63,16 +63,18 @@ namespace Qml.Net.Tests.Internal
                 obj.GetOrCreateTag();
                 handledObjects.Add(obj);
             }
-            handledObjects.RemoveAt(4);
-            handledObjects.RemoveAt(3);
+            //Ids are all used
+            handledObjects.Clear();
             GC.Collect(2, GCCollectionMode.Forced, true);
             Thread.Sleep(100);
+            //the next one is the already prepared next id
             var obj10 = new object();
             var tag10 = obj10.GetOrCreateTag();
             tag10.Should().Be(10ul);
-            var obj4 = new object();
-            var tag4 = obj4.GetOrCreateTag();
-            tag4.Should().Be(4ul);
+            //the next after that will overflow
+            var obj1 = new object();
+            var tag1 = obj1.GetOrCreateTag();
+            tag1.Should().Be(1ul);
         }
 
         [Fact]
