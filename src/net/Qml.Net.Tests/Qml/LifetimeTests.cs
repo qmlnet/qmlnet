@@ -46,7 +46,7 @@ namespace Qml.Net.Tests.Qml
                 return _parameterWeakRef.TryGetTarget(out SecondLevelType _);
             }
 
-            public bool TestResult { get; set; }
+            public bool? TestResult { get; set; }
         }
 
         [Fact]
