@@ -4,7 +4,7 @@
 
 struct NetReferenceQmlContainer
 {
-    QSharedPointer<NetReference> NetReference;
+    QSharedPointer<NetReference> netReference;
 };
 
 Q_DECLARE_METATYPE(NetReferenceQmlContainer)
@@ -57,7 +57,7 @@ void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 
 QSharedPointer<NetReference> NetVariant::getNetReference()
 {
-    return variant.value<NetReferenceQmlContainer>().NetReference;
+    return variant.value<NetReferenceQmlContainer>().netReference;
 }
 
 void NetVariant::setBool(bool value)
@@ -189,7 +189,7 @@ void NetVariant::clearNetReference()
 {
     if(variant.canConvert<NetReferenceQmlContainer>())
     {
-        variant.value<NetReferenceQmlContainer>().NetReference.clear();
+        variant.value<NetReferenceQmlContainer>().netReference.clear();
         variant.clear();
     }
 }
