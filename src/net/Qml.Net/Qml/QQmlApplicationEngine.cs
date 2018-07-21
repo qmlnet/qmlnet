@@ -1,0 +1,68 @@
+﻿using System;
+using System.Runtime.InteropServices;
+using AdvancedDLSupport;
+using Qml.Net.Internal;
+using Qml.Net.Types;
+
+namespace Qml.Net.Qml
+{
+    public class QQmlApplicationEngine : BaseDisposable
+    {
+        public QQmlApplicationEngine()
+            :base(Interop.QQmlApplicationEngine.Create())
+        {
+            
+        }
+
+        public void Load(string path)
+        {
+            Interop.QQmlApplicationEngine.Load(Handle, path);
+        }
+
+        public void LoadData(string data)
+        {
+            Interop.QQmlApplicationEngine.LoadData(Handle, data);
+        }
+
+        public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
+        {
+            return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
+        }
+
+        public static int RegisterType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
+        {
+            return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
+        }
+
+        public void AddImportPath(string path)
+        {
+            Interop.QQmlApplicationEngine.AddImportPath(Handle, path);
+        }
+
+        protected override void DisposeUnmanaged(IntPtr ptr)
+        {
+            Interop.QQmlApplicationEngine.Destroy(ptr);
+        }
+    }
+    
+    public interface IQQmlApplicationEngine
+    {
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_create")]
+        IntPtr Create();
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_destroy")]
+        void Destroy(IntPtr engine);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_load")]
+        int Load(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_loadData")]
+        int LoadData(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
+        int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
+        void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+    }
+
+}
