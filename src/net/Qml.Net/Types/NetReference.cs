@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 using Qml.Net.Qml;
@@ -9,8 +10,8 @@ namespace Qml.Net.Types
 {
     public class NetReference : BaseDisposable
     {
-        private NetReference(IntPtr gcHandle, NetTypeInfo type, bool ownsHandle = true)
-            :base(Interop.NetReference.Create(gcHandle, type.Handle), ownsHandle)
+        private NetReference(IntPtr gcHandle, UInt64 objectId, NetTypeInfo type, bool ownsHandle = true)
+            :base(Interop.NetReference.Create(gcHandle, objectId, type.Handle), ownsHandle)
         {
         }
 
@@ -26,6 +27,14 @@ namespace Qml.Net.Types
             {
                 var handle = Interop.NetReference.GetHandle(Handle);
                 return ((GCHandle) handle).Target;
+            }
+        }
+
+        public ulong ObjectId
+        {
+            get
+            {
+                return Interop.NetReference.GetObjectId(Handle);
             }
         }
 
@@ -74,37 +83,17 @@ namespace Qml.Net.Types
             return type;
         }
         
-        private static readonly ConditionalWeakTable<object, NetReference> ObjectNetReferenceConnections = new ConditionalWeakTable<object, NetReference>();
-
-        public static bool ExistsForObject(object value)
-        {
-            return ObjectNetReferenceConnections.TryGetValue(value, out NetReference NetReference);
-        }
-        
-        public static NetReference GetForObject(object value, bool autoCreate = true)
+        public static NetReference CreateForObject(object value)
         {
             if (value == null) return null;
-            var alreadyExists = false;
-            if (ObjectNetReferenceConnections.TryGetValue(value, out var NetReference))
-            {
-                alreadyExists = true;
-                if (GCHandle.FromIntPtr(NetReference.Handle).IsAllocated)
-                {
-                    return NetReference;
-                }
-            }
 
-            if (!autoCreate) return null;
-            
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
-            var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), typeInfo);
-            if(alreadyExists)
-            {
-                ObjectNetReferenceConnections.Remove(value);
-            }
-            ObjectNetReferenceConnections.Add(value, newNetReference);
+
+            var objectId = value.GetOrCreateTag();
+            var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), objectId, typeInfo);
+
             return newNetReference;
         }
         
@@ -114,7 +103,7 @@ namespace Qml.Net.Types
     public interface INetReferenceInterop
     {   
         [NativeSymbol(Entrypoint = "net_instance_create")]
-        IntPtr Create(IntPtr handle, IntPtr type);
+        IntPtr Create(IntPtr handle, UInt64 objectId, IntPtr type);
         [NativeSymbol(Entrypoint = "net_instance_destroy")]
         void Destroy(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_clone")]
@@ -122,6 +111,8 @@ namespace Qml.Net.Types
 
         [NativeSymbol(Entrypoint = "net_instance_getHandle")]
         IntPtr GetHandle(IntPtr instance);
+        [NativeSymbol(Entrypoint = "net_instance_getObjectId")]
+        UInt64 GetObjectId(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
         bool ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
     }

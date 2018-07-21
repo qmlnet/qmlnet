@@ -6,14 +6,16 @@
 class NetReference
 {
 public:
-    NetReference(NetGCHandle* gcHandle, QSharedPointer<NetTypeInfo> typeInfo);
+    NetReference(NetGCHandle* gcHandle, uint64_t objectId, QSharedPointer<NetTypeInfo> typeInfo);
     ~NetReference();
     NetGCHandle* getGCHandle();
+    uint64_t getObjectId();
     QSharedPointer<NetTypeInfo> getTypeInfo();
 
     void release();
 private:
     NetGCHandle* gcHandle;
+    uint64_t objectId;
     QSharedPointer<NetTypeInfo> typeInfo;
 };
 

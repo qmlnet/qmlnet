@@ -36,7 +36,7 @@ private:
     QSharedPointer<NetReference> instance;
     NetValueMetaObject* valueMeta;
 
-    static std::map<NetReference*, NetValue*> netValues;
+    static std::map<uint64_t, NetValue*> objectIdNetValuesMap;
 };
 
 #endif // NETVALUE_H

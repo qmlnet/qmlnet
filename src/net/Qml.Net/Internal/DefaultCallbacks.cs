@@ -142,7 +142,7 @@ namespace Qml.Net.Internal
                 var typeCreator = NetReference.TypeCreator;
                 var instance = typeCreator != null ? typeCreator.Create(typeInfo) : Activator.CreateInstance(typeInfo);
 
-                var netReference = NetReference.GetForObject(instance);
+                var netReference = NetReference.CreateForObject(instance);
                 // When .NET collects this NetReference, we don't want it to delete this
                 // handle. Ownership has been passed to the caller.
                 return Interop.NetReference.Clone(netReference.Handle);

@@ -6,7 +6,7 @@ namespace Qml.Net
     {
         public static bool ActivateSignal(this object instance, string signalName, params object[] args)
         {
-            var existing = NetReference.GetForObject(instance, false /*don't create one if doesn't exist*/);
+            var existing = NetReference.CreateForObject(instance);
             return existing != null && existing.ActivateSignal(signalName, args);
         }
     }

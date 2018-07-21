@@ -3,8 +3,9 @@
 #include <QmlNet/qml/NetValue.h>
 #include <QDebug>
 
-NetReference::NetReference(NetGCHandle* gcHandle, QSharedPointer<NetTypeInfo> typeInfo) :
+NetReference::NetReference(NetGCHandle* gcHandle, uint64_t objectId, QSharedPointer<NetTypeInfo> typeInfo) :
     gcHandle(gcHandle),
+    objectId(objectId),
     typeInfo(typeInfo)
 {
     qDebug("NetReference created: %s", qPrintable(typeInfo->getClassName()));
@@ -18,6 +19,11 @@ NetReference::~NetReference()
 NetGCHandle* NetReference::getGCHandle()
 {
     return gcHandle;
+}
+
+uint64_t NetReference::getObjectId()
+{
+    return objectId;
 }
 
 QSharedPointer<NetTypeInfo> NetReference::getTypeInfo()
@@ -38,9 +44,9 @@ void NetReference::release()
 
 extern "C" {
 
-Q_DECL_EXPORT NetReferenceContainer* net_instance_create(NetGCHandle* handle, NetTypeInfoContainer* typeContainer) {
+Q_DECL_EXPORT NetReferenceContainer* net_instance_create(NetGCHandle* handle, uint64_t objectId, NetTypeInfoContainer* typeContainer) {
     NetReferenceContainer* result = new NetReferenceContainer();
-    result->instance = QSharedPointer<NetReference>(new NetReference(handle, typeContainer->netTypeInfo));
+    result->instance = QSharedPointer<NetReference>(new NetReference(handle, objectId, typeContainer->netTypeInfo));
     return result;
 }
 
@@ -55,6 +61,10 @@ Q_DECL_EXPORT NetReferenceContainer* net_instance_clone(NetReferenceContainer* c
 
 Q_DECL_EXPORT NetGCHandle* net_instance_getHandle(NetReferenceContainer* container) {
     return container->instance->getGCHandle();
+}
+
+Q_DECL_EXPORT uint64_t net_instance_getObjectId(NetReferenceContainer* container) {
+    return container->instance->getObjectId();
 }
 
 Q_DECL_EXPORT bool net_instance_activateSignal(NetReferenceContainer* container, LPWSTR signalName, NetVariantListContainer* parametersContainer) {

@@ -15,7 +15,7 @@ namespace Qml.Net.Tests.Types
         public void Can_create_net_instance()
         {
             var o = new TestObject();
-            var instance = NetReference.GetForObject(o);
+            var instance = NetReference.CreateForObject(o);
 
             var returnedInstance = instance.Instance;
 

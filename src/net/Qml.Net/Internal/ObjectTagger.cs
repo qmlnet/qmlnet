@@ -13,14 +13,14 @@ namespace Qml.Net.Internal
         {
         }
 
-        private ObjectId(ulong id)
+        private ObjectId(UInt64 id)
         {
             Id = id;
         }
 
-        public ulong Id { get; private set; }
+        public UInt64 Id { get; private set; }
 
-        public static implicit operator ulong(ObjectId oId)
+        public static implicit operator UInt64(ObjectId oId)
         {
             return oId.Id;
         }
@@ -32,23 +32,23 @@ namespace Qml.Net.Internal
 
         #region Id management
 
-        private static ulong NextId = 1;
-        private static HashSet<ulong> UsedIds = new HashSet<ulong>();
+        private static UInt64 NextId = 1;
+        private static HashSet<UInt64> UsedIds = new HashSet<UInt64>();
 
-        private static ulong TakeNextFreeId()
+        private static UInt64 TakeNextFreeId()
         {
-            ulong nextId = NextId;
+            UInt64 nextId = NextId;
             UsedIds.Add(nextId);
             NextId = CalculateNextFreeId(nextId);
             return nextId;
         }
 
-        private static ulong CalculateNextFreeId(ulong nextId)
+        private static UInt64 CalculateNextFreeId(UInt64 nextId)
         {
             bool firstPass = true;
             while (UsedIds.Contains(nextId))
             {
-                if(nextId == ulong.MaxValue)
+                if(nextId == UInt64.MaxValue)
                 {
                     if(!firstPass)
                     {
@@ -65,7 +65,7 @@ namespace Qml.Net.Internal
             return nextId;
         }
 
-        private static void FreeId(ulong id)
+        private static void FreeId(UInt64 id)
         {
             UsedIds.Remove(id);
         }
@@ -82,7 +82,7 @@ namespace Qml.Net.Internal
     {
         private static readonly ConditionalWeakTable<object, ObjectId> ObjectIdRefs = new ConditionalWeakTable<object, ObjectId>();
 
-        public static ulong GetOrCreateTag(this object obj)
+        public static UInt64 GetOrCreateTag(this object obj)
         {
             var result = GetTag(obj);
             if(result.HasValue)
@@ -94,7 +94,7 @@ namespace Qml.Net.Internal
             return newObjId;
         }
 
-        public static ulong? GetTag(this object obj)
+        public static UInt64? GetTag(this object obj)
         {
             if (ObjectIdRefs.TryGetValue(obj, out var objId))
             {
