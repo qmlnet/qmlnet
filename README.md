@@ -1,4 +1,4 @@
-# Qml.Net [![Build Status](https://travis-ci.com/pauldotknopf/net-core-qml.svg?branch=master)](https://travis-ci.com/pauldotknopf/net-core-qml)
+# Qml.Net [![Build Status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=master)](https://travis-ci.com/pauldotknopf/Qml.Net)
 
 A Qml integration with .NET
 
