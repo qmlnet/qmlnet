@@ -11,7 +11,7 @@ public:
     NetVariant();
     ~NetVariant();
     NetVariantTypeEnum getVariantType();
-    void setNetReference(QSharedPointer<NetReference> NetReference);
+    void setNetReference(QSharedPointer<NetReference> netReference);
     QSharedPointer<NetReference> getNetReference();
     void setBool(bool value);
     bool getBool();

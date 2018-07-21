@@ -49,10 +49,10 @@ NetVariantTypeEnum NetVariant::getVariantType()
     }
 }
 
-void NetVariant::setNetReference(QSharedPointer<NetReference> NetReference)
+void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 {
     clearNetReference();
-    variant.setValue(NetReferenceQmlContainer{ NetReference });
+    variant.setValue(NetReferenceQmlContainer{ netReference });
 }
 
 QSharedPointer<NetReference> NetVariant::getNetReference()
