@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Qml.Net.Internal
+namespace Qml.Net
 {
     public abstract class BaseDisposable : IDisposable
     {

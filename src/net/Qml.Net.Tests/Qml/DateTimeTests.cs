@@ -1,5 +1,5 @@
-﻿using System;
-using Qml.Net.Qml;
+﻿using Qml.Net.Internal.Qml;
+using System;
 using Xunit;
 
 namespace Qml.Net.Tests.Qml

@@ -5,9 +5,9 @@ using System.Threading;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 
-namespace Qml.Net.Qml
+namespace Qml.Net
 {
-    public class QGuiApplication : BaseDisposable
+    public sealed class QGuiApplication : BaseDisposable
     {
         readonly Queue<Action> _actionQueue = new Queue<Action>();
         GCHandle _triggerHandle;
@@ -90,7 +90,7 @@ namespace Qml.Net.Qml
         }
     }
     
-    public interface IQGuiApplicationInterop
+    internal interface IQGuiApplicationInterop
     {
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
         IntPtr Create();
@@ -106,5 +106,4 @@ namespace Qml.Net.Qml
         [NativeSymbol(Entrypoint = "qguiapplication_exit")]
         void Exit(IntPtr app, int returnCode);
     }
-    
 }

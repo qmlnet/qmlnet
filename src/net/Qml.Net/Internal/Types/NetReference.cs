@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
-using Qml.Net.Qml;
+using Qml.Net.Internal.Qml;
 
-namespace Qml.Net.Types
+namespace Qml.Net.Internal.Types
 {
-    public class NetReference : BaseDisposable
+    internal class NetReference : BaseDisposable
     {
         private NetReference(IntPtr gcHandle, UInt64 objectId, NetTypeInfo type, bool ownsHandle = true)
             :base(Interop.NetReference.Create(gcHandle, objectId, type.Handle), ownsHandle)
@@ -73,8 +73,6 @@ namespace Qml.Net.Types
         
         #region Instance helpers
         
-        public static ITypeCreator TypeCreator { get; set; }
-        
         private static Type GetUnproxiedType(Type type)
         {
             if (type.Namespace == "Castle.Proxies")
@@ -100,7 +98,7 @@ namespace Qml.Net.Types
         #endregion
     }
 
-    public interface INetReferenceInterop
+    internal interface INetReferenceInterop
     {   
         [NativeSymbol(Entrypoint = "net_instance_create")]
         IntPtr Create(IntPtr handle, UInt64 objectId, IntPtr type);

@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentAssertions;
-using Qml.Net.Qml;
-using Qml.Net.Types;
+using Qml.Net.Internal.Qml;
+using Qml.Net.Internal.Types;
 using Xunit;
 
 namespace Qml.Net.Tests.Qml

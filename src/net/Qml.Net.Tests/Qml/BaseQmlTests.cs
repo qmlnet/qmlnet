@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
-using Qml.Net.Qml;
-using Qml.Net.Types;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -40,7 +38,7 @@ namespace Qml.Net.Tests.Qml
             _coreApplication = new QGuiApplication();
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
-            NetReference.TypeCreator = TypeCreator;
+            Net.TypeCreator.Current = TypeCreator;
             TypeCreator.SetInstance(typeof(TestContext), new TestContext(_coreApplication));
             if (!_testContextRegistered)
             {
@@ -79,7 +77,7 @@ namespace Qml.Net.Tests.Qml
             qmlApplicationEngine.Dispose();
             _coreApplication.Dispose();
 
-            NetReference.TypeCreator = null;
+            Net.TypeCreator.Current = null;
 
             base.Dispose();
         }

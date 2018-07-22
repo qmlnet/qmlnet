@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Qml.Net.Internal.Qml;
+using Qml.Net.Internal.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Qml.Net.Qml;
-using Qml.Net.Types;
 
 namespace Qml.Net.Internal
 {
-    public class DefaultCallbacks : ICallbacks
+    internal class DefaultCallbacks : ICallbacks
     {
         public bool IsTypeValid(string typeName)
         {
@@ -139,10 +139,7 @@ namespace Qml.Net.Internal
                 var typeInfo = Type.GetType(typeName);
                 if(typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
             
-                var typeCreator = NetReference.TypeCreator;
-                var instance = typeCreator != null ? typeCreator.Create(typeInfo) : Activator.CreateInstance(typeInfo);
-
-                var netReference = NetReference.CreateForObject(instance);
+                var netReference = NetReference.CreateForObject(TypeCreator.Create(typeInfo));
                 // When .NET collects this NetReference, we don't want it to delete this
                 // handle. Ownership has been passed to the caller.
                 return Interop.NetReference.Clone(netReference.Handle);

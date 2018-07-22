@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Qml.Net.Qml;
+using Qml.Net;
 
 namespace Qml.Net.Sandbox
 {

@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 
-namespace Qml.Net.Types
+namespace Qml.Net.Internal.Types
 {
-    public class NetPropertyInfo : BaseDisposable
+    internal class NetPropertyInfo : BaseDisposable
     {
         public NetPropertyInfo(NetTypeInfo parentType,
             string name,
@@ -69,7 +69,7 @@ namespace Qml.Net.Types
         }
     }
 
-    public interface INetPropertyInfoInterop
+    internal interface INetPropertyInfoInterop
     {
         [NativeSymbol(Entrypoint = "property_info_create")]
         IntPtr Create(IntPtr parentType,

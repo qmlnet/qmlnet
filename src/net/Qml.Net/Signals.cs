@@ -1,4 +1,4 @@
-﻿using Qml.Net.Types;
+﻿using Qml.Net.Internal.Types;
 
 namespace Qml.Net
 {

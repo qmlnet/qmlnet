@@ -2,10 +2,10 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 
-namespace Qml.Net
+namespace Qml.Net.Internal.Types
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct Callbacks
+    internal struct Callbacks
     {
         public IntPtr IsTypeValid;
         public IntPtr BuildTypeInfo;
@@ -17,7 +17,7 @@ namespace Qml.Net
         public IntPtr GCCollect;
     }
 
-    public interface ICallbacksIterop
+    internal interface ICallbacksIterop
     {
         [NativeSymbol(Entrypoint = "type_info_callbacks_registerCallbacks")]
         void RegisterCallbacks(ref Callbacks callbacks);
@@ -44,7 +44,7 @@ namespace Qml.Net
         void InvokeMethod(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
     }
 
-    public interface ICallbacks
+    internal interface ICallbacks
     {
         bool IsTypeValid(string typeName);
 
@@ -63,7 +63,7 @@ namespace Qml.Net
         void GCCollect(int maxGeneration);
     }
     
-    public class CallbacksImpl
+    internal class CallbacksImpl
     {
         readonly ICallbacks _callbacks;
         IsTypeValidDelegate _isTypeValidDelegate;

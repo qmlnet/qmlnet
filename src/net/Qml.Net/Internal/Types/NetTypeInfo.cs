@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 
-namespace Qml.Net.Types
+namespace Qml.Net.Internal.Types
 {
-    public class NetTypeInfo : BaseDisposable
+    internal class NetTypeInfo : BaseDisposable
     {
         public NetTypeInfo(string fullTypeName)
             :this(Interop.NetTypeInfo.Create(fullTypeName))
@@ -80,7 +80,7 @@ namespace Qml.Net.Types
         }
     }
 
-    public interface INetTypeInfoInterop
+    internal interface INetTypeInfoInterop
     {
         [NativeSymbol(Entrypoint = "type_info_create")]
         IntPtr Create([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);

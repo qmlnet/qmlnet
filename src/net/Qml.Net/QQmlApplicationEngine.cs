@@ -2,11 +2,11 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
-using Qml.Net.Types;
+using Qml.Net.Internal.Types;
 
-namespace Qml.Net.Qml
+namespace Qml.Net
 {
-    public class QQmlApplicationEngine : BaseDisposable
+    public sealed class QQmlApplicationEngine : BaseDisposable
     {
         public QQmlApplicationEngine()
             :base(Interop.QQmlApplicationEngine.Create())
@@ -29,7 +29,7 @@ namespace Qml.Net.Qml
             return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
         }
 
-        public static int RegisterType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
+        internal static int RegisterType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
         {
             return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
         }
@@ -45,7 +45,7 @@ namespace Qml.Net.Qml
         }
     }
     
-    public interface IQQmlApplicationEngine
+    internal interface IQQmlApplicationEngine
     {
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_create")]
         IntPtr Create();
@@ -64,5 +64,4 @@ namespace Qml.Net.Qml
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
         void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
     }
-
 }

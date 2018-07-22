@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 
-namespace Qml.Net.Types
+namespace Qml.Net.Internal.Types
 {
-    public class NetMethodInfo : BaseDisposable
+    internal class NetMethodInfo : BaseDisposable
     {
         public NetMethodInfo(NetTypeInfo parentTypeInfo,
             string methodName,
@@ -62,7 +62,7 @@ namespace Qml.Net.Types
         }
     }
 
-    public class NetMethodInfoParameter : BaseDisposable
+    internal class NetMethodInfoParameter : BaseDisposable
     {
         public NetMethodInfoParameter(IntPtr handle)
             : base(handle)
@@ -88,7 +88,7 @@ namespace Qml.Net.Types
         }
     }
     
-    public interface INetMethodInfoInterop
+    internal interface INetMethodInfoInterop
     {
         [NativeSymbol(Entrypoint = "method_info_parameter_destroy")]
         void DestroyParameter(IntPtr parameter);
