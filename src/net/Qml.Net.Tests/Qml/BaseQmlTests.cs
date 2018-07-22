@@ -35,7 +35,7 @@ namespace Qml.Net.Tests.Qml
 
         protected BaseQmlTests()
         {
-            _coreApplication = new QGuiApplication();
+            _coreApplication = new QGuiApplication(new []{ "-platform", "offscreen" });
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
