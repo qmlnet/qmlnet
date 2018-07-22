@@ -122,7 +122,7 @@ void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, N
     }
     case NetVariantTypeEnum_Object:
     {
-        if (source->type() == QMetaType::QObjectStar) {
+        if (source->type() == (QVariant::Type)QMetaType::QObjectStar) {
 
             QObject* value = source->value<QObject*>();
             NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
