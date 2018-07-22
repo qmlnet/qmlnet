@@ -205,7 +205,7 @@ namespace Qml.Net.Tests.Types
         [Fact]
         public void Null_type_returned_for_invalid_type()
         {
-            var typeInfo = NetTypeManager.GetTypeInfo("tt");
+            var typeInfo = NetTypeManager.GetTypeInfo(null);
             typeInfo.Should().BeNull();
         }
     }

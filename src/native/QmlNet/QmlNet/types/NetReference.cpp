@@ -34,7 +34,7 @@ QSharedPointer<NetTypeInfo> NetReference::getTypeInfo()
 void NetReference::release()
 {
     if(gcHandle != nullptr) {
-        releaseGCHandle(gcHandle);
+        releaseNetReferenceGCHandle(gcHandle, objectId);
         auto typeInfoClassName = typeInfo->getClassName();
         gcHandle = nullptr;
         typeInfo = nullptr;

@@ -54,7 +54,7 @@ namespace Qml.Net.Internal
                     if (methodInfo.ReturnParameter != null && methodInfo.ReturnParameter.ParameterType != typeof(void))
                     {
                         returnType =
-                            NetTypeManager.GetTypeInfo(methodInfo.ReturnParameter.ParameterType.AssemblyQualifiedName);
+                            NetTypeManager.GetTypeInfo(methodInfo.ReturnParameter.ParameterType);
                     }
 
                     var method = new NetMethodInfo(type, methodInfo.Name, returnType);
@@ -62,7 +62,7 @@ namespace Qml.Net.Internal
                     foreach (var parameter in methodInfo.GetParameters())
                     {
                         method.AddParameter(parameter.Name,
-                            NetTypeManager.GetTypeInfo(parameter.ParameterType.AssemblyQualifiedName));
+                            NetTypeManager.GetTypeInfo(parameter.ParameterType));
                     }
 
                     type.AddMethod(method);
@@ -115,7 +115,7 @@ namespace Qml.Net.Internal
                     using (var property = new NetPropertyInfo(
                         type,
                         propertyInfo.Name,
-                        NetTypeManager.GetTypeInfo(propertyInfo.PropertyType.AssemblyQualifiedName),
+                        NetTypeManager.GetTypeInfo(propertyInfo.PropertyType),
                         propertyInfo.CanRead,
                         propertyInfo.CanWrite,
                         notifySignal))
@@ -123,14 +123,21 @@ namespace Qml.Net.Internal
                         type.AddProperty(property);
                     }
                 }
+
+                InteropBehaviors.OnNetTypeInfoCreated(type, typeInfo);
             }
         }
 
-        public void ReleaseGCHandle(IntPtr handle)
+        public void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId)
         {
-            ((GCHandle)handle).Free();
+            NetReference.ReleaseGCHandle(((GCHandle)handle), objectId);
         }
-        
+
+        public void ReleaseNetDelegateGCHandle(IntPtr handle)
+        {
+            NetDelegate.ReleaseGCHandle(((GCHandle)handle));
+        }
+
         public IntPtr InstantiateType(IntPtr type)
         {
             try
