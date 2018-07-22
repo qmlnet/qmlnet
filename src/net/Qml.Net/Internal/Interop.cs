@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
@@ -14,7 +13,8 @@ namespace Qml.Net.Internal
         
         static Interop()
         {
-            var interop = NativeLibraryBuilder.Default.ActivateInterface<Combined>("QmlNet");
+            System.Environment.SetEnvironmentVariable("DYLD_LIBRARY_PATH", "/Users/pknopf/git/net-core-qml/src/native/build-QmlNet-Desktop_Qt_5_11_1_clang_64bit-Debug");
+            var interop = NativeLibraryBuilder.Default.ActivateInterface<ICombined>("QmlNet");
 
             Callbacks = interop;
             NetTypeInfo = interop;
@@ -29,12 +29,17 @@ namespace Qml.Net.Internal
             NetTestHelper = interop;
             NetSignalInfo = interop;
             QResource = interop;
+            NetDelegate = interop;
 
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
         }
 
-        internal interface Combined :
+        // ReSharper disable PossibleInterfaceMemberAmbiguity
+        // ReSharper disable MemberCanBePrivate.Global
+        internal interface ICombined :
+        // ReSharper restore MemberCanBePrivate.Global
+        // ReSharper restore PossibleInterfaceMemberAmbiguity
             ICallbacksIterop,
             INetTypeInfoInterop,
             INetMethodInfoInterop,
@@ -47,7 +52,8 @@ namespace Qml.Net.Internal
             INetVariantListInterop,
             INetTestHelperInterop,
             INetSignalInfoInterop,
-            IQResourceInterop
+            IQResourceInterop,
+            INetDelegateInterop
         {
 
         }
@@ -77,5 +83,7 @@ namespace Qml.Net.Internal
         public static INetSignalInfoInterop NetSignalInfo { get; }
         
         public static IQResourceInterop QResource { get; }
+        
+        public static INetDelegateInterop NetDelegate { get; }
     }
 }

@@ -46,6 +46,26 @@ QString NetSignalInfo::getSignature() {
     signature.append(")");
 
     return signature;
+}
+
+QString NetSignalInfo::getSlotSignature() {
+    QString signature = _name;
+
+    signature.append("_internal_slot_for_net_del(");
+
+    if(_parameters.size() > 0) {
+        for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
+        {
+            if(parameterIndex > 0) {
+                signature.append(",");
+            }
+            signature.append("QVariant");
+        }
+    }
+
+    signature.append(")");
+
+    return signature;
 
 }
 

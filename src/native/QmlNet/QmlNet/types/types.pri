@@ -5,7 +5,8 @@ SOURCES += \
     $$PWD/NetMethodInfo.cpp \
     $$PWD/NetPropertyInfo.cpp \
     $$PWD/NetReference.cpp \
-    $$PWD/NetSignalInfo.cpp
+    $$PWD/NetSignalInfo.cpp \
+    $$PWD/NetDelegate.cpp
 
 HEADERS += \
     $$PWD/NetTypeInfo.h \
@@ -14,4 +15,5 @@ HEADERS += \
     $$PWD/NetMethodInfo.h \
     $$PWD/NetPropertyInfo.h \
     $$PWD/NetReference.h \
-    $$PWD/NetSignalInfo.h
+    $$PWD/NetSignalInfo.h \
+    $$PWD/NetDelegate.h

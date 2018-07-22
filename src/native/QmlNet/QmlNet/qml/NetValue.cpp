@@ -1,6 +1,7 @@
 #include <QQmlEngine>
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetValueMetaObject.h>
+#include <QmlNet/types/NetSignalInfo.h>
 #include <QDebug>
 
 NetValue::~NetValue()
@@ -85,7 +86,7 @@ NetValue* NetValue::forInstance(QSharedPointer<NetReference> instance, bool auto
     }
     if(!autoCreate)
     {
-        return NULL;
+        return nullptr;
     }
     auto result = new NetValue(instance, nullptr);
     QQmlEngine::setObjectOwnership(result, QQmlEngine::JavaScriptOwnership);
@@ -97,6 +98,25 @@ NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
 {
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
+    if(instance->getTypeInfo()->getSignalCount() > 0) {
+        // Auto wire up all of our signal handlers that will invoke .NET delegates.
+        for(uint index = 0; index <= instance->getTypeInfo()->getSignalCount() - 1; index++)
+        {
+            QSharedPointer<NetSignalInfo> signalInfo = instance->getTypeInfo()->getSignal(index);
+
+            QString signalSig = signalInfo->getSignature();
+            QString slotSig = signalInfo->getSlotSignature();
+
+            int signalIndex = valueMeta->indexOfSignal(signalSig.toLatin1().data());
+            int slotIndex = valueMeta->indexOfSlot(slotSig.toLatin1().data());
+
+            QMetaMethod signalMethod = valueMeta->method(signalIndex);
+            QMetaMethod slotMethod = valueMeta->method(slotIndex);
+
+            QObject::connect(this, signalMethod,
+                             this, slotMethod);
+        }
+    }
     objectIdNetValuesMap[instance->getObjectId()] = this;
     qDebug("NetValue created: %s", qPrintable(instance->getTypeInfo()->getClassName()));
 }

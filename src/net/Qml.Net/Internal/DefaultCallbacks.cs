@@ -237,5 +237,39 @@ namespace Qml.Net.Internal
         {
             GC.Collect(maxGeneration);
         }
+
+        public bool RaiseNetSignals(IntPtr t, string signalName, IntPtr p)
+        {
+            using (var target = new NetReference(t))
+            using (var parameters = p != IntPtr.Zero ? new NetVariantList(p) : null)
+            {
+                var signals = target.Instance.GetAttachedDelegates(signalName);
+                if (signals != null && signals.Count > 0)
+                {
+                    List<object> methodParameters = null;
+
+                    if (parameters != null && parameters.Count > 0)
+                    {
+                        methodParameters = new List<object>();
+                        var parameterCount = parameters.Count;
+                        for (var x = 0; x < parameterCount; x++)
+                        {
+                            object v = null;
+                            Helpers.Unpackvalue(ref v, parameters.Get(x));
+                            methodParameters.Add(v);
+                        }
+                    }
+
+                    foreach (var signal in signals)
+                    {
+                        signal.DynamicInvoke(methodParameters?.ToArray());
+                    }
+
+                    return true; /*some signals were raised*/
+                }
+
+                return false; /*no signals were raised*/
+            }
+        }
     }
 }

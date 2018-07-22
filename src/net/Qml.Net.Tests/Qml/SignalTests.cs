@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using System;
+using FluentAssertions;
+using Moq;
 using Qml.Net.Internal.Qml;
 using Xunit;
 
@@ -24,10 +26,16 @@ namespace Qml.Net.Tests.Qml
             {
                 
             }
+
+            public virtual void TestMethodWithArgs(string arg1, int arg2)
+            {
+                
+            }
         }
 
         [Signal("testSignal")]
-        [Signal("testSignalWithArgs", NetVariantType.String, NetVariantType.Int)]
+        [Signal("testSignalWithArgs1", NetVariantType.String, NetVariantType.Int)]
+        [Signal("testSignalWithArgs2", NetVariantType.String, NetVariantType.Int)]
         public class SignalObject
         {
             
@@ -75,11 +83,11 @@ namespace Qml.Net.Tests.Qml
                         id: test
                         Component.onCompleted: function() {
                             var instance = test.GetSignalObject()
-                            instance.testSignalWithArgs.connect(function(arg1, arg2) {
+                            instance.testSignalWithArgs1.connect(function(arg1, arg2) {
                                 test.SignalRaised = true
                                 test.MethodWithArgs(arg1, arg2)
                             })
-                            instance.testSignalWithArgs('arg1', 3)
+                            instance.testSignalWithArgs1('arg1', 3)
                         }
                     }
                 ");
@@ -152,7 +160,7 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
             Mock.Setup(x => x.TestMethod()).Callback(() =>
             {
-                signalObject.ActivateSignal("testSignalWithArgs", "arg1", 3);
+                signalObject.ActivateSignal("testSignalWithArgs1", "arg1", 3);
             });
             Mock.Setup(x => x.SignalRaised).Returns(false);
             Mock.Setup(x => x.MethodWithArgs("arg1", 3));
@@ -165,7 +173,7 @@ namespace Qml.Net.Tests.Qml
                         id: test
                         Component.onCompleted: function() {
                             var instance1 = test.GetSignalObject()
-                            instance1.testSignalWithArgs.connect(function(arg1, arg2) {
+                            instance1.testSignalWithArgs1.connect(function(arg1, arg2) {
                                 test.SignalRaised = true
                                 test.MethodWithArgs(arg1, arg2)
                             })
@@ -176,6 +184,78 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
             Mock.Verify(x => x.MethodWithArgs("arg1", 3), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_attach_delegate_to_signal_when_object_not_in_qml()
+        {
+            var o = new SignalObject();
+            string message1 = null;
+            string message2 = null;
+            
+            o.AttachToSignal("testSignalWithArgs1", new Action<string, int>((m, _) => { message1 = m; }));
+            o.AttachToSignal("testSignalWithArgs2", new Action<string,int>((m, _) => { message2 = m; }));
+            
+            o.ActivateSignal("testSignalWithArgs1", "message1", 3);
+            message1.Should().Be("message1");
+            message2.Should().BeNull();
+            message1 = null;
+            
+            o.ActivateSignal("testSignalWithArgs2", "message2", 4);
+            message1.Should().BeNull();
+            message2.Should().Be("message2");
+        }
+        
+        [Fact]
+        public void Can_raise_net_signal_from_qml_when_added_before_qml()
+        {
+            var o = new SignalObject();
+            string message = null;
+            o.AttachToSignal("testSignalWithArgs1", new Action<string, int>((m, _) => message = m));
+            Mock.Setup(x => x.GetSignalObject()).Returns(o);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var instance = test.GetSignalObject()
+                            instance.testSignalWithArgs1('from qml', 2)
+                        }
+                    }
+                ");
+
+            message.Should().Be("from qml");
+        }
+        
+        [Fact]
+        public void Can_raise_net_signal_from_qml_when_added_after_qml()
+        {
+            var o = new SignalObject();
+            string message = null;
+            Mock.Setup(x => x.GetSignalObject()).Returns(o);
+            Mock.Setup(x => x.TestMethod()).Callback(() =>
+            {
+                o.AttachToSignal("testSignalWithArgs1", new Action<string, int>((m, _) => message = m));
+            });
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var instance = test.GetSignalObject()
+                            test.TestMethod()
+                            instance.testSignalWithArgs1('from qml', 3)
+                        }
+                    }
+                ");
+
+            message.Should().Be("from qml");
         }
     }
 }
