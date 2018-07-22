@@ -245,6 +245,18 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
         }
     }
 
+    // For every signal that was added, add an associated slot
+    // so that we can auto-hook the slot to each signal so that
+    // we can raise .NET-attached delegates.
+    if(typeInfo->getSignalCount() > 0) {
+        for(uint index = 0; index <= typeInfo->getSignalCount() - 1; index++)
+        {
+            QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
+            QString signature = signalInfo->getSlotSignature();
+            mob.addSlot(signature.toLatin1().data());
+        }
+    }
+
     QMetaObject *mo = mob.toMetaObject();
     typeInfo->metaObject = mo;
     return mo;
@@ -310,30 +322,58 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
         idx -= instance->getTypeInfo()->getSignalCount();
 
-        QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx);
+        if(idx < (int)instance->getTypeInfo()->getMethodCount()) {
+            // This is a method call!
 
-        QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
+            QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx);
+            QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
 
-        if(methodInfo->getParameterCount() > 0) {
-            for(uint index = 0; index <= methodInfo->getParameterCount() - 1; index++)
-            {
-                QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
+            if(methodInfo->getParameterCount() > 0) {
+                for(uint index = 0; index <= methodInfo->getParameterCount() - 1; index++)
+                {
+                    QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
 
-                QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
-                metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), parameter->getType()->getPrefVariantType());
-                parameters->add(netVariant);
+                    QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
+                    metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), parameter->getType()->getPrefVariantType());
+                    parameters->add(netVariant);
+                }
             }
+
+            QSharedPointer<NetVariant> result;
+            if(methodInfo->getReturnType() != NULL) {
+                result = QSharedPointer<NetVariant>(new NetVariant());
+            }
+
+            invokeNetMethod(methodInfo, instance, parameters, result);
+
+            if(result != NULL) {
+                metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
+            }
+
+            return -1;
         }
 
-        QSharedPointer<NetVariant> result;
-        if(methodInfo->getReturnType() != NULL) {
-            result = QSharedPointer<NetVariant>(new NetVariant());
-        }
+        idx -= instance->getTypeInfo()->getMethodCount();
 
-        invokeNetMethod(methodInfo, instance, parameters, result);
+        {
+            // This is a slot invocation, likely the built-in handlers that are used
+            // to trigger NET delegates for any signals.
+            QSharedPointer<NetSignalInfo> signalInfo = instance->getTypeInfo()->getSignal(idx);
+            QSharedPointer<NetVariantList> parameters;
 
-        if(result != NULL) {
-            metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
+            if(signalInfo->getParameterCount() > 0) {
+                parameters = QSharedPointer<NetVariantList>(new NetVariantList());
+                for(uint index = 0; index <= signalInfo->getParameterCount() - 1; index++)
+                {
+                    NetVariantTypeEnum parameterType = signalInfo->getParameter(index);
+
+                    QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
+                    metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), parameterType);
+                    parameters->add(netVariant);
+                }
+            }
+
+            raiseNetSignals(instance, signalInfo->getName(), parameters);
         }
     }
         break;

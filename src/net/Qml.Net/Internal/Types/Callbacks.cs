@@ -15,6 +15,7 @@ namespace Qml.Net.Internal.Types
         public IntPtr WriteProperty;
         public IntPtr InvokeMethod;
         public IntPtr GCCollect;
+        public IntPtr RaseNetSignals;
     }
 
     internal interface ICallbacksIterop
@@ -61,6 +62,8 @@ namespace Qml.Net.Internal.Types
         void InvokeMethod(IntPtr method, IntPtr target, IntPtr parameters, IntPtr result);
 
         void GCCollect(int maxGeneration);
+
+        bool RaiseNetSignals(IntPtr target, string signalName, IntPtr parameters);
     }
     
     internal class CallbacksImpl
@@ -74,6 +77,7 @@ namespace Qml.Net.Internal.Types
         WritePropertyDelegate _writePropertyDelegate;
         InvokeMethodDelegate _invokeMethodDelegate;
         GCCollectDelegate _gcCollectDelegate;
+        RaiseNetSignalsDelegate _raiseNetSignalsDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
@@ -98,6 +102,9 @@ namespace Qml.Net.Internal.Types
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void GCCollectDelegate(int maxGeneration);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate bool RaiseNetSignalsDelegate(IntPtr target, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr parameters);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -126,6 +133,9 @@ namespace Qml.Net.Internal.Types
 
             _gcCollectDelegate = GCCollect;
             GCHandle.Alloc(_gcCollectDelegate);
+
+            _raiseNetSignalsDelegate = RaiseNetSignals;
+            GCHandle.Alloc(_raiseNetSignalsDelegate);
         }
 
         private bool IsTypeValid(string typeName)
@@ -168,6 +178,13 @@ namespace Qml.Net.Internal.Types
             _callbacks.GCCollect(maxGeneration);
         }
 
+        private bool RaiseNetSignals(IntPtr target,
+            [MarshalAs(UnmanagedType.LPWStr)] string signalName,
+            IntPtr parameters)
+        {
+            return _callbacks.RaiseNetSignals(target, signalName, parameters);
+        }
+
         public Callbacks Callbacks()
         {
             return new Callbacks
@@ -179,7 +196,8 @@ namespace Qml.Net.Internal.Types
                 ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),
                 WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate),
                 InvokeMethod = Marshal.GetFunctionPointerForDelegate(_invokeMethodDelegate),
-                GCCollect = Marshal.GetFunctionPointerForDelegate(_gcCollectDelegate)
+                GCCollect = Marshal.GetFunctionPointerForDelegate(_gcCollectDelegate),
+                RaseNetSignals = Marshal.GetFunctionPointerForDelegate(_raiseNetSignalsDelegate)
             };
         }
     }

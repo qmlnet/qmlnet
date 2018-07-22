@@ -8,6 +8,7 @@ typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetReferenceC
 typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* value);
 typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
 typedef void (*gcCollectCb)(int maxGeneration);
+typedef bool (*raiseNetSignalsCb)(NetReferenceContainer* target, LPWCSTR signalName, NetVariantListContainer* parameters);
 
 struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
@@ -18,6 +19,7 @@ struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     writePropertyCb writeProperty;
     invokeMethodCb invokeMethod;
     gcCollectCb gcCollect;
+    raiseNetSignalsCb raiseNetSignals;
 };
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
@@ -85,8 +87,8 @@ void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetRef
     targetContainer->instance = target;
     NetVariantListContainer* parametersContainer = new NetVariantListContainer();
     parametersContainer->list = parameters;
-    NetVariantContainer* resultContainer = NULL;
-    if(result != NULL) {
+    NetVariantContainer* resultContainer = nullptr;
+    if(result != nullptr) {
         // There is a return type.
         resultContainer = new NetVariantContainer();
         resultContainer->variant = result;
@@ -97,6 +99,15 @@ void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetRef
 
 void gcCollect(int maxGeneration) {
     sharedCallbacks.gcCollect(maxGeneration);
+}
+
+bool raiseNetSignals(QSharedPointer<NetReference> target, QString signalName, QSharedPointer<NetVariantList> parameters) {
+    NetReferenceContainer* targetContainer = new NetReferenceContainer{target};
+    NetVariantListContainer* parametersContainer = nullptr;
+    if(parameters != nullptr) {
+        parametersContainer = new NetVariantListContainer{parameters};
+    }
+    return sharedCallbacks.raiseNetSignals(targetContainer, (LPWCSTR)signalName.utf16(), parametersContainer);
 }
 
 extern "C" {

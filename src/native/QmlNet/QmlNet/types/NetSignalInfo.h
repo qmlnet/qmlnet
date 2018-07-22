@@ -14,6 +14,7 @@ public:
     uint getParameterCount();
     NetVariantTypeEnum getParameter(uint index);
     QString getSignature();
+    QString getSlotSignature();
 private:
     QSharedPointer<NetTypeInfo> _parentType;
     QString _name;

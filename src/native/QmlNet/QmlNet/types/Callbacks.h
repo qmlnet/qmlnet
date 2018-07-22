@@ -27,4 +27,6 @@ void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetRef
 
 void gcCollect(int generation);
 
+bool raiseNetSignals(QSharedPointer<NetReference> target, QString signalName, QSharedPointer<NetVariantList> parameters);
+
 #endif // NET_TYPE_INFO_MANAGER_H

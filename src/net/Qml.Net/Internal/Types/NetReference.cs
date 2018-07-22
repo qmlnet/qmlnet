@@ -30,18 +30,7 @@ namespace Qml.Net.Internal.Types
             }
         }
 
-        public ulong ObjectId
-        {
-            get
-            {
-                return Interop.NetReference.GetObjectId(Handle);
-            }
-        }
-
-        public NetReference Clone()
-        {
-            return new NetReference(Interop.NetReference.Clone(Handle));
-        }
+        public ulong ObjectId => Interop.NetReference.GetObjectId(Handle);
 
         public bool ActivateSignal(string signalName, params object[] parameters)
         {
@@ -81,16 +70,23 @@ namespace Qml.Net.Internal.Types
             return type;
         }
         
-        public static NetReference CreateForObject(object value)
+        public static NetReference CreateForObject(object value, bool autoCreateIfNotExist = true)
         {
             if (value == null) return null;
 
+            var objectId = value.GetTag();
+            if (!autoCreateIfNotExist && !objectId.HasValue)
+            {
+                // This item isn't tagged, so don't auto tag.
+                return null;
+            }
+            
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
 
-            var objectId = value.GetOrCreateTag();
-            var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), objectId, typeInfo);
+            objectId = value.GetOrCreateTag();
+            var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), objectId.Value, typeInfo);
 
             return newNetReference;
         }
