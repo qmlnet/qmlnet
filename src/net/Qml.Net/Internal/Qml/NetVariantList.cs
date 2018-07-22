@@ -1,10 +1,9 @@
 ﻿using System;
 using AdvancedDLSupport;
-using Qml.Net.Internal;
 
-namespace Qml.Net.Qml
+namespace Qml.Net.Internal.Qml
 {
-    public class NetVariantList : BaseDisposable
+    internal class NetVariantList : BaseDisposable
     {
         public NetVariantList()
             : this(Interop.NetVariantList.Create())
@@ -48,7 +47,7 @@ namespace Qml.Net.Qml
         }
     }
     
-    public interface INetVariantListInterop
+    internal interface INetVariantListInterop
     {   
         [NativeSymbol(Entrypoint = "net_variant_list_create")]
         IntPtr Create();

@@ -1,17 +1,17 @@
 ﻿using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 
-namespace Qml.Net.Qml
+namespace Qml.Net
 {
-    public class QResource
+    public static class QResource
     {
         public static bool RegisterResource(string rccFileName, string resourceRoot = null)
         {
-            return Interop.QResource.RegisterResource(rccFileName, resourceRoot);
+            return Internal.Interop.QResource.RegisterResource(rccFileName, resourceRoot);
         }
     }
     
-    public interface IQResourceInterop
+    internal interface IQResourceInterop
     {
         [NativeSymbol(Entrypoint = "qresource_registerResource")]
         bool RegisterResource([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);

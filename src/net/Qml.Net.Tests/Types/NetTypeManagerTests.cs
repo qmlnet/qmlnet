@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using Qml.Net.Types;
+using Qml.Net.Internal.Types;
 using Xunit;
 
 namespace Qml.Net.Tests.Types

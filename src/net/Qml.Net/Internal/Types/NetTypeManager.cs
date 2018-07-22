@@ -2,9 +2,9 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 
-namespace Qml.Net.Types
+namespace Qml.Net.Internal.Types
 {
-    public class NetTypeManager
+    internal class NetTypeManager
     {
         public static NetTypeInfo GetTypeInfo<T>()
         {
@@ -18,7 +18,7 @@ namespace Qml.Net.Types
         }
     }
     
-    public interface INetTypeManagerInterop
+    internal interface INetTypeManagerInterop
     {
         [NativeSymbol(Entrypoint = "type_manager_getTypeInfo")]
         IntPtr GetTypeInfo([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);

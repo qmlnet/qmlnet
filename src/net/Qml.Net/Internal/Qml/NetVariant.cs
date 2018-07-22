@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
-using Qml.Net.Internal;
-using Qml.Net.Types;
+using Qml.Net.Internal.Types;
 
-namespace Qml.Net.Qml
+namespace Qml.Net.Internal.Qml
 {
-    public class NetVariant : BaseDisposable
+    internal class NetVariant : BaseDisposable
     {
         public NetVariant()
             : this(Interop.NetVariant.Create())
@@ -120,7 +119,7 @@ namespace Qml.Net.Qml
         }
     }
     
-    public interface INetVariantInterop
+    internal interface INetVariantInterop
     {
         [NativeSymbol(Entrypoint = "net_variant_create")]
         IntPtr Create();
@@ -175,7 +174,7 @@ namespace Qml.Net.Qml
     }
     
     [StructLayout(LayoutKind.Sequential)]
-    public struct DateTimeContainer
+    internal struct DateTimeContainer
     {
         public bool IsNull;
         public int Month;

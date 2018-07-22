@@ -3,7 +3,7 @@
 namespace Qml.Net
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class SignalAttribute : Attribute
+    public sealed class SignalAttribute : Attribute
     {
         public SignalAttribute(string name, params NetVariantType[] parameters)
         {

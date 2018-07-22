@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Qml.Net.Internal
 {
-    public class ObjectId : IDisposable
+    internal class ObjectId : IDisposable
     {
         public ObjectId()
             : this(0)
@@ -94,7 +94,7 @@ namespace Qml.Net.Internal
         #endregion
     }
 
-    public static class ObjectTagger
+    internal static class ObjectTagger
     {
         private static readonly ConditionalWeakTable<object, ObjectId> ObjectIdRefs = new ConditionalWeakTable<object, ObjectId>();
 

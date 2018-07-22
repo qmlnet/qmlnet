@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 
-namespace Qml.Net.Types
+namespace Qml.Net.Internal.Types
 {
-    public class NetSignalInfo : BaseDisposable
+    internal class NetSignalInfo : BaseDisposable
     {
         internal NetSignalInfo(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
@@ -41,7 +41,7 @@ namespace Qml.Net.Types
         }
     }
 
-    public interface INetSignalInfoInterop
+    internal interface INetSignalInfoInterop
     {
         [NativeSymbol(Entrypoint = "signal_info_create")]
         IntPtr Create(IntPtr parentType, [MarshalAs(UnmanagedType.LPWStr)] string name);
