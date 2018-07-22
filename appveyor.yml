@@ -1,0 +1,3 @@
+build_script:
+  - cmd: git submodule update --init
+  - cmd: build/appveyor.bat

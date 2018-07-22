@@ -14,7 +14,7 @@ namespace Build
         {
             var options = ParseOptions<Options>(args);
             
-            var commandBuildArgs = $"--configuration {options.Configuration}";
+            var commandBuildArgs = $"--configuration {options.Configuration} /p:Platform=\"Any CPU\"";
 
             Add("clean", () =>
             {
