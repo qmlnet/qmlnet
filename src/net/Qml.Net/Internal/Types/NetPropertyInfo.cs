@@ -61,6 +61,10 @@ namespace Qml.Net.Internal.Types
                 var result = Interop.NetPropertyInfo.GetNotifySignal(Handle);
                 return result == IntPtr.Zero ? null : new NetSignalInfo(result);
             }
+            set
+            {
+                Interop.NetPropertyInfo.SetNotifySignal(Handle, value.Handle);
+            }
         }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
@@ -98,5 +102,8 @@ namespace Qml.Net.Internal.Types
 
         [NativeSymbol(Entrypoint = "property_info_getNotifySignal")]
         IntPtr GetNotifySignal(IntPtr property);
+
+        [NativeSymbol(Entrypoint = "property_info_setNotifySignal")]
+        void SetNotifySignal(IntPtr property, IntPtr signal);
     }
 }

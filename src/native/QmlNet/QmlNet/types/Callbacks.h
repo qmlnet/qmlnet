@@ -13,7 +13,9 @@
 
 bool isTypeValid(QString type);
 
-void releaseGCHandle(NetGCHandle* handle);
+void releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId);
+
+void releaseNetDelegateGCHandle(NetGCHandle* handle);
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 

@@ -81,16 +81,25 @@ namespace Qml.Net.Internal.Types
                 return null;
             }
             
-            var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()).AssemblyQualifiedName);
+            var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()));
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
             var handle = GCHandle.Alloc(value);
 
             objectId = value.GetOrCreateTag();
             var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), objectId.Value, typeInfo);
 
+            InteropBehaviors.OnNetReferenceCreatedForObject(value, objectId.Value);
+
             return newNetReference;
         }
-        
+
+        public static void ReleaseGCHandle(GCHandle handle, UInt64 objectId)
+        {
+            var obj = handle.Target;
+            handle.Free();
+            InteropBehaviors.OnNetReferenceDeletedForObject(obj, objectId);
+        }
+
         #endregion
     }
 

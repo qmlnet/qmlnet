@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
+using Qml.Net.Internal;
+using Qml.Net.Internal.Behaviors;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -35,7 +37,7 @@ namespace Qml.Net.Tests.Qml
 
         protected BaseQmlTests()
         {
-            _coreApplication = new QGuiApplication();
+            _coreApplication = new QGuiApplication(new []{ "-platform", "offscreen" });
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
@@ -113,6 +115,27 @@ namespace Qml.Net.Tests.Qml
 
         public override void Dispose()
         {
+            base.Dispose();
+        }
+    }
+
+    public abstract class BaseQmlMVVMTestsWithInstance<T> : BaseQmlTests where T : class, new()
+    {
+        protected readonly T Instance;
+
+        protected BaseQmlMVVMTestsWithInstance()
+        {
+            InteropBehaviors.ClearQmlInteropBehaviors();
+            InteropBehaviors.RegisterQmlInteropBehavior(new MVVMQmlInteropBehavior());
+
+            RegisterType<T>();
+            Instance = new T();
+            TypeCreator.SetInstance(typeof(T), Instance);
+        }
+
+        public override void Dispose()
+        {
+            InteropBehaviors.ClearQmlInteropBehaviors();
             base.Dispose();
         }
     }

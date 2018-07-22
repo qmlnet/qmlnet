@@ -1,10 +1,9 @@
 #include <QmlNet/qml/QGuiApplication.h>
+#include <QmlNet/qml/NetVariantList.h>
 #include <QGuiApplication>
-#include <QmlNet.h>
 
 GuiThreadContextTriggerCallback::GuiThreadContextTriggerCallback() :
-    callback(NULL) {
-
+    callback(nullptr) {
 }
 
 void GuiThreadContextTriggerCallback::trigger() {
@@ -15,15 +14,36 @@ void GuiThreadContextTriggerCallback::trigger() {
 
 extern "C" {
 
-Q_DECL_EXPORT QGuiApplicationContainer* qguiapplication_create() {
+Q_DECL_EXPORT QGuiApplicationContainer* qguiapplication_create(NetVariantListContainer* argsContainer) {
+
     QGuiApplicationContainer* result = new QGuiApplicationContainer();
-    result->argCount = 0;
-    result->guiApp = QSharedPointer<QGuiApplication>(new QGuiApplication(result->argCount, (char**)NULL, 0));
+
+    // Build our args
+    if(argsContainer != nullptr) {
+        QSharedPointer<NetVariantList> args = argsContainer->list;
+        for(int x = 0; x < args->count(); x++) {
+            QByteArray arg = args->get(x)->getString().toLatin1();
+            result->args.append(arg);
+            char* cstr = nullptr;
+            cstr = new char [arg.size()+1];
+            strcpy(cstr, arg.data());
+            result->argsPointer.push_back(cstr);
+        }
+        result->argCount = result->args.size();
+    } else {
+        result->argCount = 0;
+    }
+
+    result->guiApp = QSharedPointer<QGuiApplication>(new QGuiApplication(result->argCount, &result->argsPointer[0], 0));
     result->callback = QSharedPointer<GuiThreadContextTriggerCallback>(new GuiThreadContextTriggerCallback());
+
     return result;
 }
 
 Q_DECL_EXPORT void qguiapplication_destroy(QGuiApplicationContainer* container) {
+    for (auto i : container->argsPointer) {
+        delete i;
+    }
     delete container;
 }
 

@@ -9,7 +9,8 @@ namespace Qml.Net.Internal.Types
     {
         public IntPtr IsTypeValid;
         public IntPtr BuildTypeInfo;
-        public IntPtr ReleaseGCHandle;
+        public IntPtr ReleaseNetReferenceGCHandle;
+        public IntPtr ReleaseNetDelegateGCHandle;
         public IntPtr InstantiateType;
         public IntPtr ReadProperty;
         public IntPtr WriteProperty;
@@ -26,9 +27,12 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_callbacks_isTypeValid")]
         bool IsTypeValid([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
-        [NativeSymbol(Entrypoint = "type_info_callbacks_releaseGCHandle")]
-        void ReleaseGCHandle(IntPtr handle);
-        
+        [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetReferenceGCHandle")]
+        void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId);
+
+        [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetDelegateGCHandle")]
+        void ReleaseNetDelegateGCHandle(IntPtr handle);
+
         [NativeSymbol(Entrypoint = "type_info_callbacks_buildTypeInfo")]
         void BuildTypeInfo(IntPtr handle);
 
@@ -49,8 +53,10 @@ namespace Qml.Net.Internal.Types
     {
         bool IsTypeValid(string typeName);
 
-        void ReleaseGCHandle(IntPtr handle);
-        
+        void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId);
+
+        void ReleaseNetDelegateGCHandle(IntPtr handle);
+
         void BuildTypeInfo(IntPtr typeInfo);
 
         IntPtr InstantiateType(IntPtr type);
@@ -71,7 +77,8 @@ namespace Qml.Net.Internal.Types
         readonly ICallbacks _callbacks;
         IsTypeValidDelegate _isTypeValidDelegate;
         BuildTypeInfoDelegate _buildTypeInfoDelegate;
-        ReleaseGCHandleDelegate _releaseGCHandleDelegate;
+        ReleaseNetReferenceGCHandleDelegate _releaseNetReferenceGCHandleDelegate;
+        ReleaseNetDelegateGCHandleDelegate _releaseNetDelegateGCHandleDelegate;
         InstantiateTypeDelgate _instantiateTypeDelgate;
         ReadPropertyDelegate _readPropertyDelegate;
         WritePropertyDelegate _writePropertyDelegate;
@@ -86,8 +93,11 @@ namespace Qml.Net.Internal.Types
         delegate void BuildTypeInfoDelegate(IntPtr typeInfo);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void ReleaseGCHandleDelegate(IntPtr handle);
-        
+        delegate void ReleaseNetReferenceGCHandleDelegate(IntPtr handle, UInt64 objectId);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void ReleaseNetDelegateGCHandleDelegate(IntPtr handle);
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate IntPtr InstantiateTypeDelgate(IntPtr type);
         
@@ -113,9 +123,12 @@ namespace Qml.Net.Internal.Types
             _isTypeValidDelegate = IsTypeValid;
             GCHandle.Alloc(_isTypeValidDelegate);
 
-            _releaseGCHandleDelegate = ReleaseGCHandle;
-            GCHandle.Alloc(_releaseGCHandleDelegate);
-            
+            _releaseNetReferenceGCHandleDelegate = ReleaseNetReferenceGCHandle;
+            GCHandle.Alloc(_releaseNetReferenceGCHandleDelegate);
+
+            _releaseNetDelegateGCHandleDelegate = ReleaseNetDelegateGCHandle;
+            GCHandle.Alloc(_releaseNetDelegateGCHandleDelegate);
+
             _buildTypeInfoDelegate = BuildTypeInfo;
             GCHandle.Alloc(_buildTypeInfoDelegate);
             
@@ -143,9 +156,14 @@ namespace Qml.Net.Internal.Types
             return _callbacks.IsTypeValid(typeName);
         }
         
-        private void ReleaseGCHandle(IntPtr handle)
+        private void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId)
         {
-            _callbacks.ReleaseGCHandle(handle);
+            _callbacks.ReleaseNetReferenceGCHandle(handle, objectId);
+        }
+
+        private void ReleaseNetDelegateGCHandle(IntPtr handle)
+        {
+            _callbacks.ReleaseNetDelegateGCHandle(handle);
         }
 
         private void BuildTypeInfo(IntPtr type)
@@ -191,7 +209,8 @@ namespace Qml.Net.Internal.Types
             {
                 IsTypeValid = Marshal.GetFunctionPointerForDelegate(_isTypeValidDelegate),
                 BuildTypeInfo = Marshal.GetFunctionPointerForDelegate(_buildTypeInfoDelegate),
-                ReleaseGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseGCHandleDelegate),
+                ReleaseNetReferenceGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetReferenceGCHandleDelegate),
+                ReleaseNetDelegateGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetDelegateGCHandleDelegate),
                 InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
                 ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),
                 WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate),

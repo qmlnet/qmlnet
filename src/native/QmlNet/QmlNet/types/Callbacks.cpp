@@ -2,7 +2,8 @@
 
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
-typedef void (*releaseGCHandleCb)(NetGCHandle* handle);
+typedef void (*releaseNetReferenceGCHandleCb)(NetGCHandle* handle, uint64_t objectId);
+typedef void (*releaseNetDelegateGCHandleCb)(NetGCHandle* handle);
 typedef NetReferenceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* type);
 typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* result);
 typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* value);
@@ -13,7 +14,8 @@ typedef bool (*raiseNetSignalsCb)(NetReferenceContainer* target, LPWCSTR signalN
 struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
     buildTypeInfoCb buildTypeInfo;
-    releaseGCHandleCb releaseGCHandle;
+    releaseNetReferenceGCHandleCb releaseNetReferenceGCHandle;
+    releaseNetDelegateGCHandleCb releaseNetDelegateGCHandle;
     instantiateTypeCb instantiateType;
     readPropertyCb readProperty;
     writePropertyCb writeProperty;
@@ -30,8 +32,12 @@ bool isTypeValid(QString type) {
     return sharedCallbacks.isTypeValid((LPWSTR)type.utf16());
 }
 
-void releaseGCHandle(NetGCHandle* handle) {
-    return sharedCallbacks.releaseGCHandle(handle);
+void releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId) {
+    return sharedCallbacks.releaseNetReferenceGCHandle(handle, objectId);
+}
+
+void releaseNetDelegateGCHandle(NetGCHandle* handle) {
+    return sharedCallbacks.releaseNetDelegateGCHandle(handle);
 }
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
@@ -120,8 +126,12 @@ Q_DECL_EXPORT bool type_info_callbacks_isTypeValid(LPWSTR typeName) {
     return sharedCallbacks.isTypeValid(typeName);
 }
 
-Q_DECL_EXPORT void type_info_callbacks_releaseGCHandle(NetGCHandle* handle) {
-    sharedCallbacks.releaseGCHandle(handle);
+Q_DECL_EXPORT void type_info_callbacks_releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId) {
+    sharedCallbacks.releaseNetReferenceGCHandle(handle, objectId);
+}
+
+Q_DECL_EXPORT void type_info_callbacks_releaseNetDelegateGCHandle(NetGCHandle* handle) {
+    sharedCallbacks.releaseNetDelegateGCHandle(handle);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* type) {

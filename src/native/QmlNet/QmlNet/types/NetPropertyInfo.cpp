@@ -47,6 +47,11 @@ QSharedPointer<NetSignalInfo> NetPropertyInfo::getNotifySignal()
     return _notifySignal;
 }
 
+void NetPropertyInfo::setNotifySignal(QSharedPointer<NetSignalInfo> signal)
+{
+    _notifySignal = signal;
+}
+
 extern "C" {
 
 Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContainer* parentTypeContainer,
@@ -106,5 +111,11 @@ Q_DECL_EXPORT NetSignalInfoContainer* property_info_getNotifySignal(NetPropertyI
     }
     return new NetSignalInfoContainer{notifySignal};
 }
+
+Q_DECL_EXPORT void property_info_setNotifySignal(NetPropertyInfoContainer* container, NetSignalInfoContainer* signalContainer) {
+    container->property->setNotifySignal(signalContainer->signal);
+}
+
+
 
 }

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
+using Qml.Net.Internal.Behaviors;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net
@@ -32,6 +33,11 @@ namespace Qml.Net
         internal static int RegisterType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
         {
             return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
+        }
+
+        public static void ActivateMVVMBehavior()
+        {
+            InteropBehaviors.RegisterQmlInteropBehavior(new MVVMQmlInteropBehavior());
         }
 
         public void AddImportPath(string path)

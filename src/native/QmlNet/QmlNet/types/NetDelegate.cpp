@@ -7,7 +7,7 @@ NetDelegate::NetDelegate(NetGCHandle* gcHandle) :
 }
 
 NetDelegate::~NetDelegate() {
-    releaseGCHandle(gcHandle);
+    releaseNetDelegateGCHandle(gcHandle);
 }
 
 NetGCHandle* NetDelegate::getGCHandle() {

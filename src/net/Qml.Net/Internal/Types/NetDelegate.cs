@@ -17,7 +17,13 @@ namespace Qml.Net.Internal.Types
             var handle = GCHandle.Alloc(del);
             return new NetDelegate(Interop.NetDelegate.Create(GCHandle.ToIntPtr(handle)));
         }
-        
+
+        internal static void ReleaseGCHandle(GCHandle handle)
+        {
+            handle.Free();
+        }
+
+
         public Delegate Delegate
         {
             get

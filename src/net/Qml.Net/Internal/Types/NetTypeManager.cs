@@ -8,13 +8,18 @@ namespace Qml.Net.Internal.Types
     {
         public static NetTypeInfo GetTypeInfo<T>()
         {
-            return GetTypeInfo(typeof(T).AssemblyQualifiedName);
+            return GetTypeInfo(typeof(T));
         }
 
-        public static NetTypeInfo GetTypeInfo(string fullTypeName)
+        public static NetTypeInfo GetTypeInfo(Type type)
         {
-            var result = Interop.NetTypeManager.GetTypeInfo(fullTypeName);
-            return result == IntPtr.Zero ? null : new NetTypeInfo(result);
+            if(type == null)
+            {
+                return null;
+            }
+            var result = Interop.NetTypeManager.GetTypeInfo(type.AssemblyQualifiedName);
+            var netTypeInfo = result == IntPtr.Zero ? null : new NetTypeInfo(result);
+            return netTypeInfo;
         }
     }
     
