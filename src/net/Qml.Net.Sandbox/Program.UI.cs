@@ -12,9 +12,9 @@ namespace Qml.Net.Sandbox
             
         }
 
-        static int Main()
+        static int Main(string[] args)
         {
-            using (var app = new QGuiApplication())
+            using (var app = new QGuiApplication(args))
             {
                 using (var engine = new QQmlApplicationEngine())
                 {
