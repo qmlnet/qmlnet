@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
+using Qml.Net.Internal.Qml;
 
 namespace Qml.Net
 {
@@ -12,9 +14,15 @@ namespace Qml.Net
         readonly Queue<Action> _actionQueue = new Queue<Action>();
         GCHandle _triggerHandle;
         readonly SynchronizationContext _oldSynchronizationContext;
-        
+
         public QGuiApplication()
-            :base(Interop.QGuiApplication.Create())
+            :this(null)
+        {
+            
+        }
+        
+        public QGuiApplication(string[] args)
+            :base(Create(args?.ToList()))
         {
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
@@ -71,6 +79,32 @@ namespace Qml.Net
             _triggerHandle.Free();
         }
 
+        private static IntPtr Create(List<string> args)
+        {
+            if (args == null)
+            {
+                args = new List<string>();
+            }
+            
+            // By default, the argv[0] should be the process name.
+            // .NET doesn't pass that name, but Qt should get it
+            // since it does in a normal Qt environment.
+            args.Insert(0, System.Diagnostics.Process.GetCurrentProcess().ProcessName);
+
+            using (var strings = new NetVariantList())
+            {
+                foreach (var arg in args)
+                {
+                    using (var variant = new NetVariant())
+                    {
+                        variant.String = arg;
+                        strings.Add(variant);
+                    }
+                }
+                return Interop.QGuiApplication.Create(strings.Handle);
+            }
+        }
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void TriggerDelegate();
         
@@ -93,7 +127,7 @@ namespace Qml.Net
     internal interface IQGuiApplicationInterop
     {
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
-        IntPtr Create();
+        IntPtr Create(IntPtr args);
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
         void Destroy(IntPtr app);
 

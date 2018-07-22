@@ -1,6 +1,7 @@
 #ifndef NET_QGUIAPPLICATION_H
 #define NET_QGUIAPPLICATION_H
 
+#include <QmlNet.h>
 #include <QGuiApplication>
 #include <QSharedPointer>
 
@@ -17,6 +18,8 @@ public slots:
 
 struct QGuiApplicationContainer {
     int argCount;
+    QList<QString> args;
+    std::vector<char*> argsPointer;
     QSharedPointer<QGuiApplication> guiApp;
     QSharedPointer<GuiThreadContextTriggerCallback> callback;
 };
