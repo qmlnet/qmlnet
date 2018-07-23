@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "PhotoFrame.App": {
+      "commandName": "Project",
+      "commandLineArgs": "-qmljsdebugger=port:4711",
+	  "nativeDebugging" : true
+    }
+  }
+}

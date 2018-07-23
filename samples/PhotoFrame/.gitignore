@@ -1,0 +1,8 @@
+.vs/
+PhotoFrame.App/bin/
+PhotoFrame.App/obj/
+PhotoFrame.Logic/bin/
+PhotoFrame.Logic/obj/
+PhotoFrame.Logic.Tests/bin/
+PhotoFrame.Logic.Tests/obj/
+PhotoFrame.Logic.Tests/lcov.info
