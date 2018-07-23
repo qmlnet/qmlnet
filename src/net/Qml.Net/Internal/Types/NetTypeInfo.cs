@@ -74,6 +74,15 @@ namespace Qml.Net.Internal.Types
             return new NetSignalInfo(result);
         }
 
+        public bool IsLoaded => Interop.NetTypeInfo.IsLoaded(Handle);
+
+        public bool IsLoading => Interop.NetTypeInfo.IsLoading(Handle);
+
+        public void EnsureLoaded()
+        {
+            Interop.NetTypeInfo.EnsureLoaded(Handle);
+        }
+      
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetTypeInfo.Destroy(ptr);
@@ -120,5 +129,12 @@ namespace Qml.Net.Internal.Types
         uint GetSignalCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getSignal")]
         IntPtr GetSignal(IntPtr typeInfo, uint index);
+
+        [NativeSymbol(Entrypoint = "type_info_isLoaded")]
+        bool IsLoaded(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_isLoading")]
+        bool IsLoading(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_ensureLoaded")]
+        void EnsureLoaded(IntPtr typeInfo);
     }
 }

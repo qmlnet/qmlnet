@@ -16,7 +16,7 @@ namespace Qml.Net.Internal
             return t != null;
         }
 
-        public void BuildTypeInfo(IntPtr t)
+        public void CreateLazyTypeInfo(IntPtr t)
         {
             using (var type = new NetTypeInfo(t))
             {
@@ -41,12 +41,27 @@ namespace Qml.Net.Internal
                     type.PrefVariantType = NetVariantType.DateTime;
                 else
                     type.PrefVariantType = NetVariantType.Object;
+                
+                // All the methods/properties/signals are later populated when needed.
+            }
+        }
 
+        public void LoadTypeInfo(IntPtr t)
+        {
+            using (var type = new NetTypeInfo(t))
+            {
+                var typeInfo = Type.GetType(type.FullTypeName);
+                if (typeInfo == null)
+                {
+                    throw new InvalidOperationException($"Invalid type {type.FullTypeName}");
+                }
+                
                 // Don't grab properties and methods for system-level types.
                 if (Helpers.IsPrimitive(typeInfo)) return;
 
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 {
+                    if (methodInfo.IsGenericMethod) continue; // No generics supported.
                     if (Helpers.IsPrimitive(methodInfo.DeclaringType)) continue;
 
                     NetTypeInfo returnType = null;
@@ -61,8 +76,7 @@ namespace Qml.Net.Internal
 
                     foreach (var parameter in methodInfo.GetParameters())
                     {
-                        method.AddParameter(parameter.Name,
-                            NetTypeManager.GetTypeInfo(parameter.ParameterType));
+                        method.AddParameter(parameter.Name, NetTypeManager.GetTypeInfo(parameter.ParameterType));
                     }
 
                     type.AddMethod(method);
@@ -124,10 +138,13 @@ namespace Qml.Net.Internal
                     }
                 }
 
+                // NOTE: This type is going to get a typeInfo object
+                // with IsLoading=true and IsLoaded=false. It technically
+                // is loaded, but it's misleading.
                 InteropBehaviors.OnNetTypeInfoCreated(type, typeInfo);
             }
         }
-
+        
         public void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId)
         {
             NetReference.ReleaseGCHandle(((GCHandle)handle), objectId);

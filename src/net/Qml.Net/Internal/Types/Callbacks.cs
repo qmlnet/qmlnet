@@ -8,7 +8,8 @@ namespace Qml.Net.Internal.Types
     internal struct Callbacks
     {
         public IntPtr IsTypeValid;
-        public IntPtr BuildTypeInfo;
+        public IntPtr CreateLazyTypeInfo;
+        public IntPtr LoadTypeInfo;
         public IntPtr ReleaseNetReferenceGCHandle;
         public IntPtr ReleaseNetDelegateGCHandle;
         public IntPtr InstantiateType;
@@ -33,9 +34,6 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetDelegateGCHandle")]
         void ReleaseNetDelegateGCHandle(IntPtr handle);
 
-        [NativeSymbol(Entrypoint = "type_info_callbacks_buildTypeInfo")]
-        void BuildTypeInfo(IntPtr handle);
-
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
         IntPtr InstantiateType(IntPtr type);
         
@@ -57,8 +55,10 @@ namespace Qml.Net.Internal.Types
 
         void ReleaseNetDelegateGCHandle(IntPtr handle);
 
-        void BuildTypeInfo(IntPtr typeInfo);
+        void CreateLazyTypeInfo(IntPtr typeInfo);
 
+        void LoadTypeInfo(IntPtr typeInfo);
+        
         IntPtr InstantiateType(IntPtr type);
 
         void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
@@ -76,7 +76,8 @@ namespace Qml.Net.Internal.Types
     {
         readonly ICallbacks _callbacks;
         IsTypeValidDelegate _isTypeValidDelegate;
-        BuildTypeInfoDelegate _buildTypeInfoDelegate;
+        CreateLazyTypeInfoDelegate _createLazyTypeInfoDelegate;
+        LoadTypeInfoDelegate _loadTypeInfoDelegate;
         ReleaseNetReferenceGCHandleDelegate _releaseNetReferenceGCHandleDelegate;
         ReleaseNetDelegateGCHandleDelegate _releaseNetDelegateGCHandleDelegate;
         InstantiateTypeDelgate _instantiateTypeDelgate;
@@ -90,7 +91,10 @@ namespace Qml.Net.Internal.Types
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void BuildTypeInfoDelegate(IntPtr typeInfo);
+        delegate void CreateLazyTypeInfoDelegate(IntPtr typeInfo);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void LoadTypeInfoDelegate(IntPtr typeInfo);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ReleaseNetReferenceGCHandleDelegate(IntPtr handle, UInt64 objectId);
@@ -129,8 +133,11 @@ namespace Qml.Net.Internal.Types
             _releaseNetDelegateGCHandleDelegate = ReleaseNetDelegateGCHandle;
             GCHandle.Alloc(_releaseNetDelegateGCHandleDelegate);
 
-            _buildTypeInfoDelegate = BuildTypeInfo;
-            GCHandle.Alloc(_buildTypeInfoDelegate);
+            _createLazyTypeInfoDelegate = CreateLazyTypeInfo;
+            GCHandle.Alloc(_createLazyTypeInfoDelegate);
+
+            _loadTypeInfoDelegate = LoadTypeInfo;
+            GCHandle.Alloc(_loadTypeInfoDelegate);
             
             _instantiateTypeDelgate = InstantiateType;
             GCHandle.Alloc(_instantiateTypeDelgate);
@@ -166,9 +173,14 @@ namespace Qml.Net.Internal.Types
             _callbacks.ReleaseNetDelegateGCHandle(handle);
         }
 
-        private void BuildTypeInfo(IntPtr type)
+        private void CreateLazyTypeInfo(IntPtr type)
         {
-            _callbacks.BuildTypeInfo(type);
+            _callbacks.CreateLazyTypeInfo(type);
+        }
+        
+        private void LoadTypeInfo(IntPtr type)
+        {
+            _callbacks.LoadTypeInfo(type);
         }
         
         private IntPtr InstantiateType(IntPtr type)
@@ -208,7 +220,8 @@ namespace Qml.Net.Internal.Types
             return new Callbacks
             {
                 IsTypeValid = Marshal.GetFunctionPointerForDelegate(_isTypeValidDelegate),
-                BuildTypeInfo = Marshal.GetFunctionPointerForDelegate(_buildTypeInfoDelegate),
+                CreateLazyTypeInfo = Marshal.GetFunctionPointerForDelegate(_createLazyTypeInfoDelegate),
+                LoadTypeInfo = Marshal.GetFunctionPointerForDelegate(_loadTypeInfoDelegate),
                 ReleaseNetReferenceGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetReferenceGCHandleDelegate),
                 ReleaseNetDelegateGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetDelegateGCHandleDelegate),
                 InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
