@@ -6,6 +6,7 @@ A Qml integration with .NET
 [![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat-square&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
 [![Build status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=master)](https://travis-ci.com/pauldotknopf/Qml.Net) [![Build status](https://ci.appveyor.com/api/projects/status/0ob29turkjslh61j/branch/master?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qml-net)
 
+Supported platforms/runtimes:
 * Runtimes:
   * .NET Framework
   * .NET Core
@@ -14,8 +15,6 @@ A Qml integration with .NET
   * Linux
   * OSX
   * Windows
-
-*As of now, the only focus is on **.NET Core (Linux/OSX/Window)**. The other frameworks should theoretically work though. Drop us an issue if you have any problems. When there is enough demand and user-base, I'd be happy to fully bring in other frameworks.*
 
 ## The idea
 
