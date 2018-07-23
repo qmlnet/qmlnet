@@ -45,6 +45,12 @@ namespace Build
 
             Add("build", DependsOn("build-native", "build-net"));
 
+            Add("deploy", DependsOn("clean"), () =>
+            {
+                // Deploy our nuget packages.
+                RunShell($"dotnet pack {ExpandPath("src/net/Qml.Net.sln")} --output {ExpandPath("./output")} {commandBuildArgs}");
+            });
+            
             Add("default", DependsOn("clean", "build"));
 
             Add("ci", DependsOn("build", "test"));
