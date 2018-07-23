@@ -67,6 +67,7 @@ namespace Qml.Net.Tests.Types
         { 
             var o = new TestObject(); 
             var type = NetTypeManager.GetTypeInfo<TestObject>(); 
+            type.EnsureLoaded();
             var method = type.GetMethod(0); 
             var instance = NetReference.CreateForObject(o); 
             

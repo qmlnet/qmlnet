@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Qml.Net.Internal.Types;
 using Xunit;
 
@@ -20,6 +21,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_net_type()
         {
             var typeInfo = NetTypeManager.GetTypeInfo<TestType1>();
+            typeInfo.EnsureLoaded();
 
             typeInfo.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
             typeInfo.ClassName.Should().Be("TestType1");
@@ -40,7 +42,8 @@ namespace Qml.Net.Tests.Types
         public void Can_get_method_parameters()
         {
             var typeInfo = NetTypeManager.GetTypeInfo<TestType2>();
-
+            typeInfo.EnsureLoaded();
+            
             typeInfo.MethodCount.Should().Be(1);
             
             var method = typeInfo.GetMethod(0);
@@ -74,6 +77,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_method_with_return_type()
         {
             var type = NetTypeManager.GetTypeInfo<TestType3>();
+            type.EnsureLoaded();
             var returnType = type.GetMethod(0).ReturnType;
             returnType.Should().NotBeNull();
             returnType.ClassName.Should().Be("TestType3");
@@ -91,6 +95,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_method_without_return_type()
         {
             var type = NetTypeManager.GetTypeInfo<TestType4>();
+            type.EnsureLoaded();
             var returnType = type.GetMethod(0).ReturnType;
             returnType.Should().BeNull();
         }
@@ -107,6 +112,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_method_name()
         {
             var type = NetTypeManager.GetTypeInfo<TestType5>();
+            type.EnsureLoaded();
             var method = type.GetMethod(0);
             method.MethodName.Should().Be("ThisIsMethodName");
         }
@@ -120,6 +126,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_property()
         {
             var type = NetTypeManager.GetTypeInfo<TestType6>();
+            type.EnsureLoaded();
             type.PropertyCount.Should().Be(1);
             var property = type.GetProperty(0);
             property.Should().NotBeNull();
@@ -141,7 +148,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_signal()
         {
             var type = NetTypeManager.GetTypeInfo<TestType7>();
-
+            type.EnsureLoaded();
             type.SignalCount.Should().Be(1);
             var signal = type.GetSignal(0);
             signal.Name.Should().Be("testSignal");
@@ -161,6 +168,7 @@ namespace Qml.Net.Tests.Types
         public void Can_get_notifiy_signal_for_property()
         {
             var type = NetTypeManager.GetTypeInfo<TestType8>();
+            type.EnsureLoaded();
             type.SignalCount.Should().Be(1);
             type.PropertyCount.Should().Be(1);
             type.GetProperty(0).Name.Should().Be("Property");
@@ -178,6 +186,7 @@ namespace Qml.Net.Tests.Types
         public void Can_auto_add_signal_for_property_notification()
         {
             var type = NetTypeManager.GetTypeInfo<TestType9>();
+            type.EnsureLoaded();
             type.SignalCount.Should().Be(1);
             type.PropertyCount.Should().Be(1);
             type.GetProperty(0).Name.Should().Be("Property");
@@ -195,18 +204,41 @@ namespace Qml.Net.Tests.Types
         public void Can_auto_create_signal_with_property_name_if_no_name_given()
         {
             var type = NetTypeManager.GetTypeInfo<TestType10>();
+            type.EnsureLoaded();
             type.SignalCount.Should().Be(1);
             type.PropertyCount.Should().Be(1);
             type.GetProperty(0).Name.Should().Be("Property");
             type.GetProperty(0).NotifySignal.Should().NotBeNull();
             type.GetProperty(0).NotifySignal.Name.Should().Be("PropertyChanged");
         }
+
+        public class TestType11
+        {
+            public InnerType TestFunction()
+            {
+                return null;
+            }
+            
+            public class InnerType
+            {
+                
+            }
+        }
         
         [Fact]
-        public void Null_type_returned_for_invalid_type()
+        public void Can_lazy_load_types()
         {
-            var typeInfo = NetTypeManager.GetTypeInfo(null);
-            typeInfo.Should().BeNull();
+            var type = NetTypeManager.GetTypeInfo<TestType11>();
+            type.IsLoaded.Should().BeFalse();
+            type.EnsureLoaded();
+            type.MethodCount.Should().Be(1);
+            type.IsLoaded.Should().BeTrue();
+            var method = type.GetMethod(0);
+            method.Should().NotBeNull();
+            method.ReturnType.IsLoaded.Should().BeFalse();
+            method.ReturnType.EnsureLoaded();
+            method.ReturnType.MethodCount.Should().Be(0);
+            method.ReturnType.IsLoaded.Should().BeTrue();
         }
     }
 }

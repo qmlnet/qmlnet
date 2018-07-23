@@ -188,6 +188,8 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
         return reinterpret_cast<QMetaObject *>(typeInfo->metaObject);
     }
 
+    typeInfo->ensureLoaded();
+
     QMetaObjectBuilder mob;
     mob.setSuperClass(&QObject::staticMetaObject);
     mob.setClassName(typeInfo->getClassName().toLatin1());

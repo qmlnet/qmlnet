@@ -5,12 +5,13 @@
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
+#include <QEnableSharedFromThis>
 
 class NetMethodInfo;
 class NetPropertyInfo;
 class NetSignalInfo;
 
-class NetTypeInfo {
+class NetTypeInfo : public QEnableSharedFromThis<NetTypeInfo> {
 public:
     NetTypeInfo(QString fullTypeName);
     ~NetTypeInfo();
@@ -35,6 +36,10 @@ public:
     uint getSignalCount();
     QSharedPointer<NetSignalInfo> getSignal(uint index);
 
+    bool isLoaded();
+    bool isLoading();
+    void ensureLoaded();
+
     QMetaObject* metaObject;
 
 private:
@@ -44,6 +49,8 @@ private:
     QList<QSharedPointer<NetMethodInfo>> _methods;
     QList<QSharedPointer<NetPropertyInfo>> _properties;
     QList<QSharedPointer<NetSignalInfo>> _signals;
+    bool _lazyLoaded;
+    bool _isLoading;
 };
 
 struct Q_DECL_EXPORT NetTypeInfoContainer {

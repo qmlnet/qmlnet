@@ -19,7 +19,7 @@ QSharedPointer<NetTypeInfo> NetTypeManager::getTypeInfo(QString typeName) {
     QSharedPointer<NetTypeInfo> typeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(typeName));
     NetTypeManager::types.insert(NetTypeManager::types.end(), typeName, typeInfo);
 
-    buildTypeInfo(typeInfo);
+    createLazyTypeInfo(typeInfo);
 
     return typeInfo;
 }

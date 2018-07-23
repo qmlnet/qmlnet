@@ -1,7 +1,8 @@
 #include <QmlNet/types/Callbacks.h>
 
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
-typedef void (*buildTypeInfoCb)(NetTypeInfoContainer* typeInfo);
+typedef void (*createLazyTypeInfoCb)(NetTypeInfoContainer* typeInfo);
+typedef void (*loadTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*releaseNetReferenceGCHandleCb)(NetGCHandle* handle, uint64_t objectId);
 typedef void (*releaseNetDelegateGCHandleCb)(NetGCHandle* handle);
 typedef NetReferenceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* type);
@@ -13,7 +14,8 @@ typedef bool (*raiseNetSignalsCb)(NetReferenceContainer* target, LPWCSTR signalN
 
 struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
-    buildTypeInfoCb buildTypeInfo;
+    createLazyTypeInfoCb createLazyTypeInfo;
+    loadTypeInfoCb loadTypeInfo;
     releaseNetReferenceGCHandleCb releaseNetReferenceGCHandle;
     releaseNetDelegateGCHandleCb releaseNetDelegateGCHandle;
     instantiateTypeCb instantiateType;
@@ -40,10 +42,16 @@ void releaseNetDelegateGCHandle(NetGCHandle* handle) {
     return sharedCallbacks.releaseNetDelegateGCHandle(handle);
 }
 
-void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
+void createLazyTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
     NetTypeInfoContainer* container = new NetTypeInfoContainer();
     container->netTypeInfo = typeInfo;
-    sharedCallbacks.buildTypeInfo(container);
+    sharedCallbacks.createLazyTypeInfo(container);
+}
+
+void loadTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
+    NetTypeInfoContainer* container = new NetTypeInfoContainer();
+    container->netTypeInfo = typeInfo;
+    sharedCallbacks.loadTypeInfo(container);
 }
 
 QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type) {
@@ -132,11 +140,6 @@ Q_DECL_EXPORT void type_info_callbacks_releaseNetReferenceGCHandle(NetGCHandle* 
 
 Q_DECL_EXPORT void type_info_callbacks_releaseNetDelegateGCHandle(NetGCHandle* handle) {
     sharedCallbacks.releaseNetDelegateGCHandle(handle);
-}
-
-Q_DECL_EXPORT void type_info_callbacks_buildTypeInfo(NetTypeInfoContainer* type) {
-    NetTypeInfoContainer* typeCopy = new NetTypeInfoContainer{type->netTypeInfo};
-    sharedCallbacks.buildTypeInfo(typeCopy);
 }
 
 Q_DECL_EXPORT NetReferenceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* type) {

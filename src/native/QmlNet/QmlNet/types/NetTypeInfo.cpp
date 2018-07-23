@@ -2,11 +2,14 @@
 #include <QmlNet/types/NetMethodInfo.h>
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
+#include <QmlNet/types/Callbacks.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(NULL),
     _fullTypeName(fullTypeName),
-    _variantType(NetVariantTypeEnum_Invalid) {
+    _variantType(NetVariantTypeEnum_Invalid),
+    _lazyLoaded(false),
+    _isLoading(false) {
 
 }
 
@@ -72,6 +75,28 @@ uint NetTypeInfo::getSignalCount() {
 QSharedPointer<NetSignalInfo> NetTypeInfo::getSignal(uint index) {
     if(index >= (uint)_signals.size()) return QSharedPointer<NetSignalInfo>(NULL);
     return _signals.at(index);
+}
+
+bool NetTypeInfo::isLoaded() {
+    return _lazyLoaded;
+}
+
+bool NetTypeInfo::isLoading() {
+    return _isLoading;
+}
+
+void NetTypeInfo::ensureLoaded() {
+    if (_lazyLoaded) {
+        return;
+    }
+    if(_isLoading) {
+        // Prevent recursion
+        qFatal("Recursion detected on type loading for type: %s", qPrintable(getFullTypeName()));
+    }
+    _isLoading = true;
+    loadTypeInfo(sharedFromThis());
+    _isLoading = false;
+    _lazyLoaded = true;
 }
 
 extern "C" {
@@ -159,6 +184,18 @@ Q_DECL_EXPORT NetSignalInfoContainer* type_info_getSignal(NetTypeInfoContainer* 
     NetSignalInfoContainer* result = new NetSignalInfoContainer();
     result->signal = signal;
     return result;
+}
+
+Q_DECL_EXPORT bool type_info_isLoaded(NetTypeInfoContainer* container) {
+    return container->netTypeInfo->isLoaded();
+}
+
+Q_DECL_EXPORT bool type_info_isLoading(NetTypeInfoContainer* container) {
+    return container->netTypeInfo->isLoading();
+}
+
+Q_DECL_EXPORT void type_info_ensureLoaded(NetTypeInfoContainer* container) {
+    container->netTypeInfo->ensureLoaded();
 }
 
 }

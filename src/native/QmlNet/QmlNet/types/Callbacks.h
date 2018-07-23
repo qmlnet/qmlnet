@@ -17,7 +17,9 @@ void releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId);
 
 void releaseNetDelegateGCHandle(NetGCHandle* handle);
 
-void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
+void createLazyTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
+
+void loadTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
 QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type);
 
