@@ -13,6 +13,11 @@ ApplicationWindow {
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
                 Net.gcCollect(2)
+                var collection = test.Contacts
+                var contact = test.CreateContact(34, "werw")
+                console.log(collection.Count)
+                collection.Add(contact)
+                console.log(collection.Count)
 			}
 		}
 	}
