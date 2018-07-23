@@ -20,9 +20,16 @@ namespace Qml.Net.Internal
         /// Registers an additional Qml Interop behavior. This behavior only gets applied to types and instances created or registered after this behavior registration 
         /// </summary> 
         /// <param name="behavior"></param> 
-        public static void RegisterQmlInteropBehavior(IQmlInteropBehavior behavior)
+        public static void RegisterQmlInteropBehavior(IQmlInteropBehavior behavior, bool addIfTypeAlreadyExists = false)
         {
-            _QmlInteropBehaviors.Add(behavior);
+            if(!addIfTypeAlreadyExists && _QmlInteropBehaviors.Any(ib => ib.GetType() == behavior.GetType()))
+            {
+                return;
+            }
+            if (!_QmlInteropBehaviors.Contains(behavior))
+            {
+                _QmlInteropBehaviors.Add(behavior);
+            }
         }
 
         public static void ClearQmlInteropBehaviors()

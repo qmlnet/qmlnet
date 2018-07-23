@@ -35,9 +35,18 @@ namespace Qml.Net
             return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
         }
 
+        /// <summary>
+        /// Activates the MVVM behavior.
+        /// This Behavior automatically connects INotifyPropertyChanged instances with appropriate signals on the QML side
+        /// and triggers those signals whenever the PropertyChanged event of the INotifyPropertyChanged instances is triggered.
+        /// 
+        /// Call this before any INotifyPropertyChanged type is registered! 
+        /// Otherwise the behavior might not include
+        /// INotifyPropertyChanged types that were registered (implicitly or explicitly) before this call
+        /// </summary>
         public static void ActivateMVVMBehavior()
         {
-            InteropBehaviors.RegisterQmlInteropBehavior(new MVVMQmlInteropBehavior());
+            InteropBehaviors.RegisterQmlInteropBehavior(new MVVMQmlInteropBehavior(), false);
         }
 
         public void AddImportPath(string path)
