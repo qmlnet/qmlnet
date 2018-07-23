@@ -141,19 +141,23 @@ ApplicationWindow {
 }
 ```
 
-## Building and running
+# Getting started
 
-Setting up an environment takes a little effort, but it is easy enough.
+## Step 1: Install NuGet package
 
-1. Install Qt and Qt Creator.
+```bash
+dotnet add package Qml.Net
+```
+
+## Step 2: Compile the native bindings
+
+*The native libraries aren't shipped with the NuGet package considering the complexity of a Qt/Qml installation, but there are discussions to do so (see [here](https://github.com/pauldotknopf/Qml.Net/issues/33))*
+
+1. Install Qt (at least 5.9) and Qt Creator.
 2. Build and deploy ```src/native/QmlNet/QmlNet.pro```.
-3. Open ```src/net/Qt.NetCore.sln``` and run the sandbox! *Mark sure your ```LD_LIBRARY_PATH``` (etc) is setup for your app to properly find your ```QmlNet``` installation.*
+3. Massage your ```PATH```/```LD_LIBRARY_PATH```/```DYLD_LIBRARY_PATH``` to contain the path that you've deployed the native ```QmlNet``` library.
 
-There will be a proper NuGet/MyGet feed shortly.
-
-Also, there is no plans to ever bundle the native libraries into the NuGet packages considering the complexity of a traditional Qt installation. It will always be recommend/required to install the native ```QmlNet``` on the OS of your choice.
-
-## Currently implemented
+# Currently implemented
 
 - [x] Support for all the basic Qml types and the back-and-forth between them (```DateTime```, ```string```, etc).
 - [x] Reading/setting properties on .NET objects.
@@ -161,7 +165,7 @@ Also, there is no plans to ever bundle the native libraries into the NuGet packa
 - [x] Declaring and activating signals on .NET objects.
 - [x] ```async``` and ```await``` (no return types yet).
 
-## Not implemented (but planned)
+# Not implemented (but planned)
 
 - [ ] Compiling Qml resource files and bundling them within .NET.
 - [ ] Passing dynamic javascript objects to .NET as ```dynamic```. They will be either a live mutable instance, or as a JSON serialized snapshot of the object.
