@@ -1,0 +1,12 @@
+﻿{
+  "BorderColors": [
+    "#ffe095",
+    "#5cb85c",
+    "#ff6666",
+    "#79c7e0"
+  ],
+  "BorderWidth": 20,
+  "PhotoShowTimeSeconds": 5,
+  "PhotosPath": "UI/images",
+  "ShowDebugInfo":  true
+}
