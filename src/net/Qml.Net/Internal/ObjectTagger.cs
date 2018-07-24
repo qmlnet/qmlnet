@@ -84,10 +84,13 @@ namespace Qml.Net.Internal
 
         private UInt64 TakeNextFreeId()
         {
-            UInt64 nextId = NextId;
-            UsedIds.Add(nextId);
-            NextId = CalculateNextFreeId(nextId);
-            return nextId;
+            lock (this)
+            {
+                UInt64 nextId = NextId;
+                UsedIds.Add(nextId);
+                NextId = CalculateNextFreeId(nextId);
+                return nextId;
+            }
         }
 
         private UInt64 CalculateNextFreeId(UInt64 nextId)
@@ -114,7 +117,10 @@ namespace Qml.Net.Internal
 
         internal void FreeId(UInt64 id)
         {
-            UsedIds.Remove(id);
+            lock (this)
+            {
+                UsedIds.Remove(id);
+            }
         }
 
         #endregion
