@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Qml.Net;
+using System.IO;
 
 namespace PhotoFrame.App
 {
@@ -33,7 +34,9 @@ namespace PhotoFrame.App
                 {
                     QQmlApplicationEngine.RegisterType<AppModel>("app", 1, 1);
 
-                    engine.Load("UI/QML/main.qml");
+                    var assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
+                    var mainQmlPath = Path.Combine(assemblyDir, "UI", "QML", "main.qml");
+                    engine.Load(mainQmlPath);
                     int result = app.Exec();
                     _App = null;
                     return result;
@@ -49,7 +52,7 @@ namespace PhotoFrame.App
             }
             using (var proc = Process.GetCurrentProcess())
             {
-                GC.Collect();
+                GC.Collect(2, GCCollectionMode.Forced, true);
                 var memBytes = proc.WorkingSet64;
                 var memKb = memBytes / 1024d;
                 var memMB = memKb / 1024;
