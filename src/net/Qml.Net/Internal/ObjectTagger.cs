@@ -30,12 +30,18 @@ namespace Qml.Net.Internal
 
         public void Dispose()
         {
-            _Tagger.FreeId(Id);
+            if (_Tagger != null)
+            {
+                _Tagger.FreeId(Id);
+            }
         }
 
         ~ObjectId()
         {
-            _Tagger.FreeId(Id);
+            if(_Tagger != null)
+            {
+                _Tagger.FreeId(Id);
+            }
         }
     }
 
