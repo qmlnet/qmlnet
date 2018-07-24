@@ -30,7 +30,7 @@ namespace Qml.Net.Internal.Types
                 {
                     return obj;
                 }
-                return null;
+                throw new InvalidOperationException($"No object found for object id {ObjectId}");
             }
         }
 
