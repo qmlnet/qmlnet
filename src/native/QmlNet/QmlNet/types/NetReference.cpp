@@ -3,22 +3,15 @@
 #include <QmlNet/qml/NetValue.h>
 #include <QDebug>
 
-NetReference::NetReference(NetGCHandle* gcHandle, uint64_t objectId, QSharedPointer<NetTypeInfo> typeInfo) :
-    gcHandle(gcHandle),
+NetReference::NetReference(uint64_t objectId, QSharedPointer<NetTypeInfo> typeInfo) :
     objectId(objectId),
     typeInfo(typeInfo)
 {
-    qDebug("NetReference created: %s", qPrintable(typeInfo->getClassName()));
 }
 
 NetReference::~NetReference()
 {
     release();
-}
-
-NetGCHandle* NetReference::getGCHandle()
-{
-    return gcHandle;
 }
 
 uint64_t NetReference::getObjectId()
@@ -33,20 +26,17 @@ QSharedPointer<NetTypeInfo> NetReference::getTypeInfo()
 
 void NetReference::release()
 {
-    if(gcHandle != nullptr) {
-        releaseNetReferenceGCHandle(gcHandle, objectId);
-        auto typeInfoClassName = typeInfo->getClassName();
-        gcHandle = nullptr;
+    if(typeInfo != nullptr) {
+        releaseNetReference(objectId);
         typeInfo = nullptr;
-        qDebug("NetReference released: %s", qPrintable(typeInfoClassName));
     }
 }
 
 extern "C" {
 
-Q_DECL_EXPORT NetReferenceContainer* net_instance_create(NetGCHandle* handle, uint64_t objectId, NetTypeInfoContainer* typeContainer) {
+Q_DECL_EXPORT NetReferenceContainer* net_instance_create(uint64_t objectId, NetTypeInfoContainer* typeContainer) {
     NetReferenceContainer* result = new NetReferenceContainer();
-    result->instance = QSharedPointer<NetReference>(new NetReference(handle, objectId, typeContainer->netTypeInfo));
+    result->instance = QSharedPointer<NetReference>(new NetReference(objectId, typeContainer->netTypeInfo));
     return result;
 }
 
@@ -57,10 +47,6 @@ Q_DECL_EXPORT void net_instance_destroy(NetReferenceContainer* container) {
 Q_DECL_EXPORT NetReferenceContainer* net_instance_clone(NetReferenceContainer* container) {
     NetReferenceContainer* result = new NetReferenceContainer{container->instance};
     return result;
-}
-
-Q_DECL_EXPORT NetGCHandle* net_instance_getHandle(NetReferenceContainer* container) {
-    return container->instance->getGCHandle();
 }
 
 Q_DECL_EXPORT uint64_t net_instance_getObjectId(NetReferenceContainer* container) {

@@ -3,7 +3,7 @@
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*createLazyTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*loadTypeInfoCb)(NetTypeInfoContainer* typeInfo);
-typedef void (*releaseNetReferenceGCHandleCb)(NetGCHandle* handle, uint64_t objectId);
+typedef void (*releaseNetReferenceCb)(uint64_t objectId);
 typedef void (*releaseNetDelegateGCHandleCb)(NetGCHandle* handle);
 typedef NetReferenceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* type);
 typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* result);
@@ -16,7 +16,7 @@ struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
     createLazyTypeInfoCb createLazyTypeInfo;
     loadTypeInfoCb loadTypeInfo;
-    releaseNetReferenceGCHandleCb releaseNetReferenceGCHandle;
+    releaseNetReferenceCb releaseNetReference;
     releaseNetDelegateGCHandleCb releaseNetDelegateGCHandle;
     instantiateTypeCb instantiateType;
     readPropertyCb readProperty;
@@ -34,8 +34,8 @@ bool isTypeValid(QString type) {
     return sharedCallbacks.isTypeValid((LPWSTR)type.utf16());
 }
 
-void releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId) {
-    return sharedCallbacks.releaseNetReferenceGCHandle(handle, objectId);
+void releaseNetReference(uint64_t objectId) {
+    return sharedCallbacks.releaseNetReference(objectId);
 }
 
 void releaseNetDelegateGCHandle(NetGCHandle* handle) {
@@ -134,8 +134,8 @@ Q_DECL_EXPORT bool type_info_callbacks_isTypeValid(LPWSTR typeName) {
     return sharedCallbacks.isTypeValid(typeName);
 }
 
-Q_DECL_EXPORT void type_info_callbacks_releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId) {
-    sharedCallbacks.releaseNetReferenceGCHandle(handle, objectId);
+Q_DECL_EXPORT void type_info_callbacks_releaseNetReferenceGCHandle(uint64_t objectId) {
+    sharedCallbacks.releaseNetReference(objectId);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_releaseNetDelegateGCHandle(NetGCHandle* handle) {
