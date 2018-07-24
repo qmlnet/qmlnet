@@ -8,7 +8,6 @@ NetReference::NetReference(NetGCHandle* gcHandle, uint64_t objectId, QSharedPoin
     objectId(objectId),
     typeInfo(typeInfo)
 {
-    qDebug("NetReference created: %s", qPrintable(typeInfo->getClassName()));
 }
 
 NetReference::~NetReference()
@@ -38,7 +37,6 @@ void NetReference::release()
         auto typeInfoClassName = typeInfo->getClassName();
         gcHandle = nullptr;
         typeInfo = nullptr;
-        qDebug("NetReference released: %s", qPrintable(typeInfoClassName));
     }
 }
 

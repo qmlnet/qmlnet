@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qml.Net.Tests", "Qml.Net.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qml.Net.Sandbox", "Qml.Net.Sandbox\Qml.Net.Sandbox.csproj", "{69A52738-9606-4CA2-80F2-D898ACCA37BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net.Benchmarks", "Qml.Net.Benchmarks\Qml.Net.Benchmarks.csproj", "{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{69A52738-9606-4CA2-80F2-D898ACCA37BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69A52738-9606-4CA2-80F2-D898ACCA37BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69A52738-9606-4CA2-80F2-D898ACCA37BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
