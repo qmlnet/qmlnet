@@ -4,27 +4,18 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>7.1</LangVersion>
     <IsPackable>false</IsPackable>
+    <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Qml.Net.Tests\Qml.Net.Tests.csproj" />
     <ProjectReference Include="..\Qml.Net\Qml.Net.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Images\placeholder.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="main.qml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Compile Remove="Program.Tests.cs" />
     <None Include="Program.Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="xunit.core" Version="2.4.0" />
     <PackageReference Include="xunit.runner.utility" Version="2.4.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Images" />
-    <Folder Include="Qml" />
   </ItemGroup>
 </Project>
