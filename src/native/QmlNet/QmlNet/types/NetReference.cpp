@@ -11,7 +11,7 @@ NetReference::NetReference(uint64_t objectId, QSharedPointer<NetTypeInfo> typeIn
 
 NetReference::~NetReference()
 {
-    release();
+    releaseNetReference(objectId);
 }
 
 uint64_t NetReference::getObjectId()
@@ -22,14 +22,6 @@ uint64_t NetReference::getObjectId()
 QSharedPointer<NetTypeInfo> NetReference::getTypeInfo()
 {
     return typeInfo;
-}
-
-void NetReference::release()
-{
-    if(typeInfo != nullptr) {
-        releaseNetReference(objectId);
-        typeInfo = nullptr;
-    }
 }
 
 extern "C" {

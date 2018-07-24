@@ -37,7 +37,7 @@ namespace Qml.Net.Tests.Internal
             base.Dispose();
         }
 
-        [Fact]
+        [Fact(Skip = "Destroys all other tests because the object ids get deleted")]
         void Can_detect_id_overflow()
         {
             SetMaxIdTo(10);
@@ -52,7 +52,7 @@ namespace Qml.Net.Tests.Internal
             Assert.Throws<Exception>(() => { lastObj.GetOrCreateTag(); });
         }
 
-        [Fact]
+        [Fact(Skip = "Destroys all other tests because the object ids get deleted")]
         void Can_handle_id_overflow_by_filling_spots()
         {
             SetMaxIdTo(10);
@@ -77,7 +77,7 @@ namespace Qml.Net.Tests.Internal
             tag1.Should().Be(1ul);
         }
 
-        [Fact]
+        [Fact(Skip = "Destroys all other tests because the object ids get deleted")]
         void Can_deliver_same_tag_for_same_instance()
         {
             var obj = new object();

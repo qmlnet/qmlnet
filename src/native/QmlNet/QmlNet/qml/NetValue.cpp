@@ -12,9 +12,7 @@ NetValue::~NetValue()
         objectIdNetValuesMap.erase(hit);
     }
     qDebug("NetValue deleted: %s", qPrintable(instance->getTypeInfo()->getClassName()));
-    if(instance != nullptr) {
-        instance->release();
-    }
+    instance = nullptr;
 }
 
 
