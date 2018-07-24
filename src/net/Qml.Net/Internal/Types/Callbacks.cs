@@ -10,7 +10,7 @@ namespace Qml.Net.Internal.Types
         public IntPtr IsTypeValid;
         public IntPtr CreateLazyTypeInfo;
         public IntPtr LoadTypeInfo;
-        public IntPtr ReleaseNetReferenceGCHandle;
+        public IntPtr ReleaseNetReference;
         public IntPtr ReleaseNetDelegateGCHandle;
         public IntPtr InstantiateType;
         public IntPtr ReadProperty;
@@ -29,7 +29,7 @@ namespace Qml.Net.Internal.Types
         bool IsTypeValid([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetReferenceGCHandle")]
-        void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId);
+        void ReleaseNetReference(UInt64 objectId);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetDelegateGCHandle")]
         void ReleaseNetDelegateGCHandle(IntPtr handle);
@@ -51,7 +51,7 @@ namespace Qml.Net.Internal.Types
     {
         bool IsTypeValid(string typeName);
 
-        void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId);
+        void ReleaseNetReference(UInt64 objectId);
 
         void ReleaseNetDelegateGCHandle(IntPtr handle);
 
@@ -78,7 +78,7 @@ namespace Qml.Net.Internal.Types
         IsTypeValidDelegate _isTypeValidDelegate;
         CreateLazyTypeInfoDelegate _createLazyTypeInfoDelegate;
         LoadTypeInfoDelegate _loadTypeInfoDelegate;
-        ReleaseNetReferenceGCHandleDelegate _releaseNetReferenceGCHandleDelegate;
+        ReleaseNetReferenceDelegate _releaseNetReferenceDelegate;
         ReleaseNetDelegateGCHandleDelegate _releaseNetDelegateGCHandleDelegate;
         InstantiateTypeDelgate _instantiateTypeDelgate;
         ReadPropertyDelegate _readPropertyDelegate;
@@ -97,7 +97,7 @@ namespace Qml.Net.Internal.Types
         delegate void LoadTypeInfoDelegate(IntPtr typeInfo);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void ReleaseNetReferenceGCHandleDelegate(IntPtr handle, UInt64 objectId);
+        delegate void ReleaseNetReferenceDelegate(UInt64 objectId);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ReleaseNetDelegateGCHandleDelegate(IntPtr handle);
@@ -127,8 +127,8 @@ namespace Qml.Net.Internal.Types
             _isTypeValidDelegate = IsTypeValid;
             GCHandle.Alloc(_isTypeValidDelegate);
 
-            _releaseNetReferenceGCHandleDelegate = ReleaseNetReferenceGCHandle;
-            GCHandle.Alloc(_releaseNetReferenceGCHandleDelegate);
+            _releaseNetReferenceDelegate = ReleaseNetReference;
+            GCHandle.Alloc(_releaseNetReferenceDelegate);
 
             _releaseNetDelegateGCHandleDelegate = ReleaseNetDelegateGCHandle;
             GCHandle.Alloc(_releaseNetDelegateGCHandleDelegate);
@@ -163,9 +163,9 @@ namespace Qml.Net.Internal.Types
             return _callbacks.IsTypeValid(typeName);
         }
         
-        private void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId)
+        private void ReleaseNetReference(UInt64 objectId)
         {
-            _callbacks.ReleaseNetReferenceGCHandle(handle, objectId);
+            _callbacks.ReleaseNetReference(objectId);
         }
 
         private void ReleaseNetDelegateGCHandle(IntPtr handle)
@@ -222,7 +222,7 @@ namespace Qml.Net.Internal.Types
                 IsTypeValid = Marshal.GetFunctionPointerForDelegate(_isTypeValidDelegate),
                 CreateLazyTypeInfo = Marshal.GetFunctionPointerForDelegate(_createLazyTypeInfoDelegate),
                 LoadTypeInfo = Marshal.GetFunctionPointerForDelegate(_loadTypeInfoDelegate),
-                ReleaseNetReferenceGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetReferenceGCHandleDelegate),
+                ReleaseNetReference = Marshal.GetFunctionPointerForDelegate(_releaseNetReferenceDelegate),
                 ReleaseNetDelegateGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetDelegateGCHandleDelegate),
                 InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
                 ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),

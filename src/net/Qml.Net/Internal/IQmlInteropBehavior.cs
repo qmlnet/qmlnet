@@ -11,8 +11,8 @@ namespace Qml.Net.Internal
 
         void OnNetTypeInfoCreated(NetTypeInfo netTypeInfo, Type forType);
 
-        void OnNetReferenceCreatedForObject(object instance, UInt64 objectId);
+        void OnObjectEntersNative(object instance, UInt64 objectId);
 
-        void OnNetReferenceDeletedForObject(object instance, UInt64 objectId);
+        void OnObjectLeavesNative(object instance, UInt64 objectId);
     }
 }
