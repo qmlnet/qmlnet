@@ -116,7 +116,6 @@ NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
         }
     }
     objectIdNetValuesMap[instance->getObjectId()] = this;
-    qDebug("NetValue created: %s", qPrintable(instance->getTypeInfo()->getClassName()));
 }
 
 std::map<uint64_t, NetValue*> NetValue::objectIdNetValuesMap = std::map<uint64_t, NetValue*>();
