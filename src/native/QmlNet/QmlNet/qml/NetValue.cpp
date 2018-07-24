@@ -11,7 +11,6 @@ NetValue::~NetValue()
     {
         objectIdNetValuesMap.erase(hit);
     }
-    qDebug("NetValue deleted: %s", qPrintable(instance->getTypeInfo()->getClassName()));
     instance = nullptr;
 }
 
