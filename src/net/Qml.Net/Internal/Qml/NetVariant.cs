@@ -108,6 +108,16 @@ namespace Qml.Net.Internal.Qml
             }
         }
 
+        public NetJsValue JsValue
+        {
+            get
+            {
+                var result = Interop.NetVariant.GetJsValue(Handle);
+                return result == IntPtr.Zero ? null : new NetJsValue(result);
+            }
+            set => Interop.NetVariant.SetJsValue(Handle, value?.Handle ?? IntPtr.Zero);
+        }
+        
         public void Clear()
         {
             Interop.NetVariant.Clear(Handle);
@@ -168,6 +178,11 @@ namespace Qml.Net.Internal.Qml
         void SetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
         [NativeSymbol(Entrypoint = "net_variant_getDateTime")]
         void GetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+
+        [NativeSymbol(Entrypoint = "net_variant_setJsValue")]
+        void SetJsValue(IntPtr variant, IntPtr jsValue);
+        [NativeSymbol(Entrypoint = "net_variant_getJsValue")]
+        IntPtr GetJsValue(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_clear")]
         void Clear(IntPtr variant);

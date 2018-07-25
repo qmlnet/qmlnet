@@ -45,7 +45,8 @@ enum Q_DECL_EXPORT NetVariantTypeEnum {
     NetVariantTypeEnum_Double = 5,
     NetVariantTypeEnum_String = 6,
     NetVariantTypeEnum_DateTime = 7,
-    NetVariantTypeEnum_Object = 8
+    NetVariantTypeEnum_Object = 8,
+    NetVariantTypeEnum_JSValue = 9
 };
 
 

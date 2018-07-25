@@ -7,7 +7,13 @@ struct NetReferenceQmlContainer
     QSharedPointer<NetReference> netReference;
 };
 
+struct NetJsValueQmlContainer
+{
+    QSharedPointer<NetJSValue> jsValue;
+};
+
 Q_DECLARE_METATYPE(NetReferenceQmlContainer)
+Q_DECLARE_METATYPE(NetJsValueQmlContainer)
 
 NetVariant::NetVariant()
 {
@@ -41,6 +47,8 @@ NetVariantTypeEnum NetVariant::getVariantType()
     case QVariant::UserType:
         if(strcmp(variant.typeName(), "NetReferenceQmlContainer") == 0)
             return NetVariantTypeEnum_Object;
+        if(strcmp(variant.typeName(), "NetJsValueQmlContainer") == 0)
+            return NetVariantTypeEnum_JSValue;
         qWarning() << "Unknown user type for NetVariant: " << variant.typeName();
         return NetVariantTypeEnum_Invalid;
     default:
@@ -174,22 +182,46 @@ QDateTime NetVariant::getDateTime()
     return variant.toDateTime();
 }
 
+void NetVariant::setJsValue(QSharedPointer<NetJSValue> jsValue)
+{
+    clearNetReference();
+    variant.setValue(NetJsValueQmlContainer{ jsValue });
+}
+
+QSharedPointer<NetJSValue> NetVariant::getJsValue()
+{
+    return variant.value<NetJsValueQmlContainer>().jsValue;
+}
+
+QVariant NetVariant::getVariant()
+{
+    return variant;
+}
+
+void NetVariant::setVariant(QVariant v)
+{
+    clear();
+    variant = v;
+}
+
+
 void NetVariant::clear()
 {
     clearNetReference();
     variant.clear();
 }
 
-QVariant NetVariant::asQVariant()
-{
-    return variant;
-}
 
 void NetVariant::clearNetReference()
 {
     if(variant.canConvert<NetReferenceQmlContainer>())
     {
         variant.value<NetReferenceQmlContainer>().netReference.clear();
+        variant.clear();
+    }
+    else if(variant.canConvert<NetJsValueQmlContainer>())
+    {
+        variant.value<NetJsValueQmlContainer>().jsValue.clear();
         variant.clear();
     }
 }
@@ -327,6 +359,24 @@ Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateT
     value->second = dt.time().second();
     value->msec = dt.time().msec();
     value->offsetSeconds = dt.offsetFromUtc();
+}
+
+Q_DECL_EXPORT void net_variant_setJsValue(NetVariantContainer* container, NetJSValueContainer* jsValueContainer) {
+    if(jsValueContainer == nullptr) {
+        container->variant->setJsValue(nullptr);
+    } else {
+        container->variant->setJsValue(jsValueContainer->jsValue);
+    }
+}
+
+Q_DECL_EXPORT NetJSValueContainer* net_variant_getJsValue(NetVariantContainer* container) {
+    QSharedPointer<NetJSValue> instance = container->variant->getJsValue();
+    if(instance == nullptr) {
+        return nullptr;
+    }
+    NetJSValueContainer* result = new NetJSValueContainer();
+    result->jsValue = instance;
+    return result;
 }
 
 Q_DECL_EXPORT void net_variant_clear(NetVariantContainer* container) {

@@ -2,6 +2,7 @@
 #define NETVARIANT_H
 
 #include <QmlNet/types/NetReference.h>
+#include <QmlNet/qml/NetJsValue.h>
 #include <QVariant>
 #include <QDateTime>
 
@@ -27,9 +28,11 @@ public:
     QString getString();
     void setDateTime(QDateTime& value);
     QDateTime getDateTime();
+    void setJsValue(QSharedPointer<NetJSValue> jsValue);
+    QSharedPointer<NetJSValue> getJsValue();
+    QVariant getVariant();
+    void setVariant(QVariant variant);
     void clear();
-
-    QVariant asQVariant();
 private:
     void clearNetReference();
     QVariant variant;
