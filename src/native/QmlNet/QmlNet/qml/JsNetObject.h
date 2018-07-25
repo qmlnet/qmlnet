@@ -20,6 +20,7 @@ struct NetObject : Object
     static void method_gccollect(const BuiltinFunction *, Scope &scope, CallData *callData);
     #else
     static ReturnedValue method_gccollect(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
+    static ReturnedValue method_await(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
     #endif
 };
 

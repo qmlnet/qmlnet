@@ -10,14 +10,15 @@ ApplicationWindow {
     title: qsTr("Hello World")
 	Item {
 		Timer {
-			interval: 1000; running: true; repeat: true
+			interval: 5000; running: true; repeat: true
 			onTriggered: {
-                Net.gcCollect(2)
-                var collection = test.Contacts
-                var contact = test.CreateContact(34, "werw")
-                console.log(collection.Count)
-                collection.Add(contact)
-                console.log(collection.Count)
+			    var t = {
+			        test: false
+			    }
+			    var task = test.Test(t)
+			    //Net.await(task, function() {
+			    //    console.log('callback called!')
+			    //})
 			}
 		}
 	}

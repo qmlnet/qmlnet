@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Qml.Net;
+using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Sandbox
 {
@@ -10,40 +12,10 @@ namespace Qml.Net.Sandbox
         [Signal("testSignal", NetVariantType.String)]
         public class TestQmlImport
         {
-            public TestQmlImport()
+            public void Test(NetJsValue jsValue)
             {
-                Contacts = new List<Contact>
-                {
-                    new Contact
-                    {
-                        Id = 3,
-                        Name = "wer"
-                    },
-                    new Contact
-                    {
-                        Id = 5,
-                        Name = "we"
-                    }
-                };
+                Console.WriteLine(jsValue.IsCallable);
             }
-
-            public Contact CreateContact(int id, string name)
-            {
-                return new Contact
-                {
-                    Id = id,
-                    Name = name
-                };
-            }
-            
-            public List<Contact> Contacts { get; set; }
-        }
-
-        public class Contact
-        {
-            public int Id { get; set; }
-            
-            public string Name { get; set; }
         }
 
         static int Main(string[] args)
@@ -57,7 +29,7 @@ namespace Qml.Net.Sandbox
                     QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
 
                     engine.Load("main.qml");
-
+                    
                     return app.Exec();
                 }
             }

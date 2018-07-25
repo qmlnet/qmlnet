@@ -5,12 +5,16 @@
 #include <QJSValue>
 #include <QSharedPointer>
 
+class NetVariant;
+class NetVariantList;
+
 class NetJSValue
 {
 public:
     NetJSValue(QJSValue jsValue);
     ~NetJSValue();
     bool isCallable();
+    QSharedPointer<NetVariant> call(QSharedPointer<NetVariantList> parameters);
 private:
     QJSValue _jsValue;
 };
