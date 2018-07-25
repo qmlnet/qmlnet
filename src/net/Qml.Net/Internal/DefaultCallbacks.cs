@@ -236,8 +236,51 @@ namespace Qml.Net.Internal
                     }
                 }
 
-                var methodInfo = instance.GetType()
-                    .GetMethod(method.MethodName, BindingFlags.Instance | BindingFlags.Public);
+                MethodInfo methodInfo = null;
+                var methodName = method.MethodName;
+                var methods = instance.GetType()
+                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(x => x.Name == methodName)
+                    .ToList();
+
+                if (methods.Count == 1)
+                {
+                    methodInfo = methods[0];
+                }
+                else if (methods.Count > 1)
+                {
+                    // This is an overload.
+                    
+                    // TODO: Make this more performant. https://github.com/pauldotknopf/Qml.Net/issues/39
+                    
+                    // Get all the parameters for the method we are invoking.
+                    var parameterTypes = method.GetAllParameters().Select(x => x.Type.FullTypeName).ToList();
+                    // And find a good method to invoke.
+                    foreach (var potentialMethod in methods)
+                    {
+                        var potentialMethodParameters = potentialMethod.GetParameters();
+                        if (potentialMethodParameters.Length != parameterTypes.Count)
+                        {
+                            continue;
+                        }
+
+                        bool valid = true;
+                        for (var x = 0; x < potentialMethodParameters.Length; x++)
+                        {
+                            if (potentialMethodParameters[x].ParameterType.AssemblyQualifiedName != parameterTypes[x])
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        if (valid)
+                        {
+                            methodInfo = potentialMethod;
+                            break;
+                        }
+                    }
+                }
 
                 if (methodInfo == null)
                 {

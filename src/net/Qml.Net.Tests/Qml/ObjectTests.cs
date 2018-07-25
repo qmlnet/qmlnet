@@ -17,6 +17,17 @@ namespace Qml.Net.Tests.Qml
             {
                 
             }
+
+            public virtual void Overload()
+            {
+                
+            }
+
+
+            public virtual void Overload(string param)
+            {
+                
+            }
         }
 
         public class ObjectTestsQmlReturnType
@@ -71,6 +82,43 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.TestMethodReturn(), Times.Once);
             Mock.Verify(x => x.TestMethodParameter(It.Is<ObjectTestsQmlReturnType>(y => y == returnedType)), Times.Once);
+        }
+
+        [Fact]
+        public void Can_call_correct_overload()
+        {
+            Mock.Setup(x => x.Overload());
+            Mock.Setup(x => x.Overload(It.IsAny<string>()));
+
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.Overload()
+                        }
+                    }
+                ");
+            
+            Mock.Verify(x => x.Overload(), Times.Once);
+            Mock.Verify(x => x.Overload(It.IsAny<string>()), Times.Never);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.Overload('test')
+                        }
+                    }
+                ");
+            
+            Mock.Verify(x => x.Overload(), Times.Once);
+            Mock.Verify(x => x.Overload(It.IsAny<string>()), Times.Once);
         }
     }
 }

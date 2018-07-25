@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
@@ -54,6 +55,17 @@ namespace Qml.Net.Internal.Types
             var result = Interop.NetMethodInfo.GetParameter(Handle, index);
             if (result == IntPtr.Zero) return null;
             return new NetMethodInfoParameter(result);
+        }
+
+        public List<NetMethodInfoParameter> GetAllParameters()
+        {
+            var result = new List<NetMethodInfoParameter>();
+            var count = ParameterCount;
+            for (var x = 0; x < count; x++)
+            {
+                result.Add(GetParameter((uint)x));
+            }
+            return result;
         }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
