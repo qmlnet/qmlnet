@@ -9,7 +9,6 @@ namespace Qml.Net.Internal
         public static bool IsPrimitive(Type type)
         {
             if (type.Namespace == "System") return true;
-            if (type.Namespace == "System.Threading.Tasks") return true;
             return false;
         }
         
