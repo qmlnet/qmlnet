@@ -10,6 +10,7 @@
         Double = 5,
         String = 6,
         DateTime = 7,
-        Object = 8
+        Object = 8,
+        JsValue = 9
     }
 }

@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/NetVariantList.h \
     $$PWD/NetTestHelper.h \
     $$PWD/QResource.h \
-    $$PWD/JsNetObject.h
+    $$PWD/JsNetObject.h \
+    $$PWD/NetJsValue.h
 
 SOURCES += \
     $$PWD/QGuiApplication.cpp \
@@ -20,4 +21,5 @@ SOURCES += \
     $$PWD/NetVariantList.cpp \
     $$PWD/NetTestHelper.cpp \
     $$PWD/QResource.cpp \
-    $$PWD/JsNetObject.cpp
+    $$PWD/JsNetObject.cpp \
+    $$PWD/NetJsValue.cpp

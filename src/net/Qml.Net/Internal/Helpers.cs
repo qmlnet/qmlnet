@@ -74,6 +74,9 @@ namespace Qml.Net.Internal
                 case NetVariantType.Object:
                     destination = source.Instance.Instance;
                     break;
+                case NetVariantType.JsValue:
+                    destination = source.JsValue;
+                    break;
                 default:
                     throw new Exception("Unsupported variant type.");
             }

@@ -122,7 +122,7 @@ void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, N
     }
     case NetVariantTypeEnum_Object:
     {
-        if (source->type() == (QVariant::Type)QMetaType::QObjectStar) {
+        if (source->type() == static_cast<QVariant::Type>(QMetaType::QObjectStar)) {
 
             QObject* value = source->value<QObject*>();
             NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
@@ -130,6 +130,17 @@ void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, N
                 destination->setNetReference(netValue->getNetReference());
                 return;
             }
+        }
+        break;
+    }
+    case NetVariantTypeEnum_JSValue:
+    {
+        if(source->userType() == qMetaTypeId<QJSValue>()) {
+            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(source->value<QJSValue>()));
+            destination->setJsValue(netJsValue);
+            return;
+        } else {
+            // TODO: Try to convert other types to JS Value.
         }
         break;
     }
@@ -175,6 +186,9 @@ void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, N
             // pass raw value to .NET to be dynamically invoked (using dynamic).
             // See qtdeclarative\src\plugins\qmltooling\qmldbg_debugger\qqmlenginedebugservice.cpp:184
             // for serialization methods.
+            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(source->value<QJSValue>()));
+            destination->setJsValue(netJsValue);
+            break;
         }
 
         qDebug() << "Unsupported variant type: " << source->type();

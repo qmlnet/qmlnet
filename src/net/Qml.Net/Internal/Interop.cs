@@ -30,6 +30,7 @@ namespace Qml.Net.Internal
             NetSignalInfo = interop;
             QResource = interop;
             NetDelegate = interop;
+            NetJsValue = interop;
 
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
@@ -53,7 +54,8 @@ namespace Qml.Net.Internal
             INetTestHelperInterop,
             INetSignalInfoInterop,
             IQResourceInterop,
-            INetDelegateInterop
+            INetDelegateInterop,
+            INetJsValueInterop
         {
 
         }
@@ -85,5 +87,7 @@ namespace Qml.Net.Internal
         public static IQResourceInterop QResource { get; }
         
         public static INetDelegateInterop NetDelegate { get; }
+        
+        public static INetJsValueInterop NetJsValue { get; }
     }
 }
