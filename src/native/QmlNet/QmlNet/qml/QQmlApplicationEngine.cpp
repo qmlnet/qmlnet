@@ -2,48 +2,13 @@
 #include <QmlNet/types/NetTypeInfo.h>
 #include <QmlNet/qml/NetValueType.h>
 #include <QmlNet/types/Callbacks.h>
-
-using namespace QV4;
+#include <QmlNet/qml/JsNetObject.h>
+#include <private/qqmlengine_p.h>
 
 static int netValueTypeNumber = 0;
 
 #define NETVALUETYPE_CASE(N) \
     case N: NetValueType<N>::init(typeInfo); return qmlRegisterType<NetValueType<N>>(uriString.toUtf8().data(), versionMajor, versionMinor, qmlNameString.toUtf8().data());
-
-DEFINE_OBJECT_VTABLE(NetObject);
-
-void Heap::NetObject::init() {
-    Scope scope(internalClass->engine);
-    ScopedObject o(scope, this);
-    o->defineDefaultProperty(QStringLiteral("gcCollect"), QV4::NetObject::method_gccollect);
-}
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-
-void NetObject::method_gccollect(const BuiltinFunction *, Scope &scope, CallData *callData) {
-    int maxGeneration = 0;
-    if(callData->argc > 0) {
-        maxGeneration = callData->args[0].toNumber();
-    }
-    gcCollect(maxGeneration);
-    scope.result = QV4::Encode::undefined();
-}
-
-#else
-
-ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
-    Q_UNUSED(b);
-    Q_UNUSED(thisObject);
-    int maxGeneration = 0;
-    if(argc > 0) {
-        maxGeneration = argv[0].toNumber();
-    }
-    gcCollect(maxGeneration);
-    return Encode::undefined();
-}
-
-#endif
-
 
 extern "C" {
 
