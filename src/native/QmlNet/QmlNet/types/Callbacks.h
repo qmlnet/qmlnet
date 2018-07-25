@@ -13,7 +13,7 @@
 
 bool isTypeValid(QString type);
 
-void releaseNetReferenceGCHandle(NetGCHandle* handle, uint64_t objectId);
+void releaseNetReference(uint64_t objectId);
 
 void releaseNetDelegateGCHandle(NetGCHandle* handle);
 

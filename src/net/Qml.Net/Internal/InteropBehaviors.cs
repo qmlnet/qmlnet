@@ -45,7 +45,7 @@ namespace Qml.Net.Internal
             }
         }
 
-        internal static void OnNetReferenceCreatedForObject(object instance, UInt64 objectId)
+        internal static void OnObjectEntersNative(object instance, UInt64 objectId)
         {
             if (instance == null)
             {
@@ -54,11 +54,11 @@ namespace Qml.Net.Internal
             var type = instance.GetType();
             foreach (var behavior in GetApplicableInteropBehaviors(type))
             {
-                behavior.OnNetReferenceCreatedForObject(instance, objectId);
+                behavior.OnObjectEntersNative(instance, objectId);
             }
         }
 
-        internal static void OnNetReferenceDeletedForObject(object instance, UInt64 objectId)
+        internal static void OnObjectLeavesNative(object instance, UInt64 objectId)
         {
             if (instance == null)
             {
@@ -67,7 +67,7 @@ namespace Qml.Net.Internal
             var type = instance.GetType();
             foreach (var behavior in GetApplicableInteropBehaviors(type))
             {
-                behavior.OnNetReferenceDeletedForObject(instance, objectId);
+                behavior.OnObjectLeavesNative(instance, objectId);
             }
         }
     }

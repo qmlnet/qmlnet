@@ -145,9 +145,9 @@ namespace Qml.Net.Internal
             }
         }
         
-        public void ReleaseNetReferenceGCHandle(IntPtr handle, UInt64 objectId)
+        public void ReleaseNetReference(UInt64 objectId)
         {
-            NetReference.ReleaseGCHandle(((GCHandle)handle), objectId);
+            NetReference.OnRelease(objectId);
         }
 
         public void ReleaseNetDelegateGCHandle(IntPtr handle)

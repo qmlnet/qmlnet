@@ -12,66 +12,33 @@ namespace Qml.Net.Internal.Behaviors
             return typeof(INotifyPropertyChanged).IsAssignableFrom(type);
         }
 
-        private static Dictionary<UInt64, uint> ObjectNetReferenceCount = new Dictionary<ulong, uint>();
-
-        public void OnNetReferenceCreatedForObject(object instance, UInt64 objectId)
+        public void OnObjectEntersNative(object instance, UInt64 objectId)
         {
             if (instance == null)
             {
                 return;
             }
-            lock (this)
+            if (!(instance is INotifyPropertyChanged castedInstance))
             {
-                bool isFirst = false;
-                if (ObjectNetReferenceCount.ContainsKey(objectId))
-                {
-                    ObjectNetReferenceCount[objectId]++;
-                }
-                else
-                {
-                    isFirst = true;
-                    ObjectNetReferenceCount.Add(objectId, 1);
-                }
-                if (isFirst)
-                {
-                    var castedInstance = instance as INotifyPropertyChanged;
-                    if (castedInstance == null)
-                    {
-                        //invalid type 
-                        return;
-                    }
-                    castedInstance.PropertyChanged += PropertyChangedHandler;
-                }
+                //invalid type 
+                return;
             }
+            castedInstance.PropertyChanged += PropertyChangedHandler;
         }
 
-        public void OnNetReferenceDeletedForObject(object instance, UInt64 objectId)
+        public void OnObjectLeavesNative(object instance, UInt64 objectId)
         {
             if (instance == null)
             {
                 return;
             }
-            lock (this)
+            if (!(instance is INotifyPropertyChanged castedInstance))
             {
-                if (!ObjectNetReferenceCount.ContainsKey(objectId))
-                {
-                    //This should not happen! This would mean that a NetReference is deleted that hasn't been counted before
-                    return;
-                }
-                ObjectNetReferenceCount[objectId]--;
-                //check if this had been the last NetReference
-                if (ObjectNetReferenceCount[objectId] == 0)
-                {
-                    var castedInstance = instance as INotifyPropertyChanged;
-                    if (castedInstance == null)
-                    {
-                        //invalid type 
-                        return;
-                    }
-
-                    castedInstance.PropertyChanged -= PropertyChangedHandler;
-                }
+                //invalid type 
+                return;
             }
+
+            castedInstance.PropertyChanged -= PropertyChangedHandler;
         }
 
         private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)

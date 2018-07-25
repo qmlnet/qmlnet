@@ -8,60 +8,105 @@ namespace Qml.Net.Internal
 {
     internal class ObjectId : IDisposable
     {
-        public ObjectId()
-            : this(0)
+        private ObjectTagger _Tagger;
+
+        internal ObjectId(ObjectTagger tagger)
+            : this(0, tagger)
         {
         }
 
-        private ObjectId(UInt64 id)
+        internal ObjectId(UInt64 id, ObjectTagger tagger)
         {
             Id = id;
+            _Tagger = tagger;
         }
 
-        public UInt64 Id { get; private set; }
+        internal UInt64 Id { get; private set; }
 
         public static implicit operator UInt64(ObjectId oId)
         {
             return oId.Id;
         }
 
-        public static ObjectId CreateNew()
+        public void Dispose()
         {
-            return new ObjectId(TakeNextFreeId());
+            if (_Tagger != null)
+            {
+                _Tagger.FreeId(Id);
+            }
+        }
+
+        ~ObjectId()
+        {
+            if(_Tagger != null)
+            {
+                _Tagger.FreeId(Id);
+            }
+        }
+    }
+
+    internal class ObjectTagger
+    {
+        internal static ObjectTagger Default { get; private set; } = new ObjectTagger();
+
+        private readonly ConditionalWeakTable<object, ObjectId> ObjectIdRefs = new ConditionalWeakTable<object, ObjectId>();
+        private UInt64 _MaxId = UInt64.MaxValue - 1;
+
+        internal ObjectTagger(UInt64 maxId = UInt64.MaxValue - 1)
+        {
+            _MaxId = maxId;
+        }
+
+        internal UInt64 GetOrCreateTag(object obj)
+        {
+            var result = GetTag(obj);
+            if (result.HasValue)
+            {
+                return result.Value;
+            }
+            var newObjId = CreateNewObjectId();
+            ObjectIdRefs.Add(obj, newObjId);
+            return newObjId;
+        }
+
+        internal UInt64? GetTag(object obj)
+        {
+            if (ObjectIdRefs.TryGetValue(obj, out var objId))
+            {
+                return objId;
+            }
+            return null;
+        }
+
+        private ObjectId CreateNewObjectId()
+        {
+            return new ObjectId(TakeNextFreeId(), this);
         }
 
         #region Id management
 
-        //set in unit tests
-        private static UInt64 MaxId = UInt64.MaxValue - 1;
+        private UInt64 NextId = 1;
+        private HashSet<UInt64> UsedIds = new HashSet<UInt64>();
 
-        //used in unit tests
-        private static void Reset()
+        private UInt64 TakeNextFreeId()
         {
-            MaxId = UInt64.MaxValue - 1;
-            NextId = 1;
-            UsedIds.Clear();
+            lock (this)
+            {
+                UInt64 nextId = NextId;
+                UsedIds.Add(nextId);
+                NextId = CalculateNextFreeId(nextId);
+                return nextId;
+            }
         }
 
-        private static UInt64 NextId = 1;
-        private static HashSet<UInt64> UsedIds = new HashSet<UInt64>();
-
-        private static UInt64 TakeNextFreeId()
-        {
-            UInt64 nextId = NextId;
-            UsedIds.Add(nextId);
-            NextId = CalculateNextFreeId(nextId);
-            return nextId;
-        }
-
-        private static UInt64 CalculateNextFreeId(UInt64 nextId)
+        private UInt64 CalculateNextFreeId(UInt64 nextId)
         {
             bool firstPass = true;
             while (UsedIds.Contains(nextId))
             {
-                if(nextId >= MaxId)
+                if (nextId >= _MaxId)
                 {
-                    if(!firstPass)
+                    if (!firstPass)
                     {
                         throw new Exception("Too many object ids in use!");
                     }
@@ -76,47 +121,27 @@ namespace Qml.Net.Internal
             return nextId;
         }
 
-        private static void FreeId(UInt64 id)
+        internal void FreeId(UInt64 id)
         {
-            UsedIds.Remove(id);
-        }
-
-        public void Dispose()
-        {
-            FreeId(Id);
-        }
-
-        ~ObjectId()
-        {
-            FreeId(Id);
+            lock (this)
+            {
+                UsedIds.Remove(id);
+            }
         }
 
         #endregion
     }
 
-    internal static class ObjectTagger
+    internal static class ObjectTaggerExtension
     {
-        private static readonly ConditionalWeakTable<object, ObjectId> ObjectIdRefs = new ConditionalWeakTable<object, ObjectId>();
-
         public static UInt64 GetOrCreateTag(this object obj)
         {
-            var result = GetTag(obj);
-            if(result.HasValue)
-            {
-                return result.Value;
-            }
-            var newObjId = ObjectId.CreateNew();
-            ObjectIdRefs.Add(obj, newObjId);
-            return newObjId;
+            return ObjectTagger.Default.GetOrCreateTag(obj);
         }
 
         public static UInt64? GetTag(this object obj)
         {
-            if (ObjectIdRefs.TryGetValue(obj, out var objId))
-            {
-                return objId;
-            }
-            return null;
+            return ObjectTagger.Default.GetTag(obj);
         }
     }
 }

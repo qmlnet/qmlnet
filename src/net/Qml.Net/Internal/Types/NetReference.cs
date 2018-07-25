@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -10,8 +11,8 @@ namespace Qml.Net.Internal.Types
 {
     internal class NetReference : BaseDisposable
     {
-        private NetReference(IntPtr gcHandle, UInt64 objectId, NetTypeInfo type, bool ownsHandle = true)
-            :base(Interop.NetReference.Create(gcHandle, objectId, type.Handle), ownsHandle)
+        private NetReference(UInt64 objectId, NetTypeInfo type, bool ownsHandle = true)
+            :base(Interop.NetReference.Create(objectId, type.Handle), ownsHandle)
         {
         }
 
@@ -25,8 +26,11 @@ namespace Qml.Net.Internal.Types
         {
             get
             {
-                var handle = Interop.NetReference.GetHandle(Handle);
-                return ((GCHandle) handle).Target;
+                if(ObjectIdReferenceTracker.TryGetObjectFor(ObjectId, out var obj))
+                {
+                    return obj;
+                }
+                throw new InvalidOperationException($"No object found for object id {ObjectId}");
             }
         }
 
@@ -83,21 +87,18 @@ namespace Qml.Net.Internal.Types
             
             var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()));
             if(typeInfo == null) throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
-            var handle = GCHandle.Alloc(value);
 
             objectId = value.GetOrCreateTag();
-            var newNetReference = new NetReference(GCHandle.ToIntPtr(handle), objectId.Value, typeInfo);
+            var newNetReference = new NetReference(objectId.Value, typeInfo);
 
-            InteropBehaviors.OnNetReferenceCreatedForObject(value, objectId.Value);
+            ObjectIdReferenceTracker.OnReferenceCreated(value, objectId.Value);
 
             return newNetReference;
         }
 
-        public static void ReleaseGCHandle(GCHandle handle, UInt64 objectId)
+        public static void OnRelease(UInt64 objectId)
         {
-            var obj = handle.Target;
-            handle.Free();
-            InteropBehaviors.OnNetReferenceDeletedForObject(obj, objectId);
+            ObjectIdReferenceTracker.OnReferenceReleased(objectId);
         }
 
         #endregion
@@ -106,17 +107,84 @@ namespace Qml.Net.Internal.Types
     internal interface INetReferenceInterop
     {   
         [NativeSymbol(Entrypoint = "net_instance_create")]
-        IntPtr Create(IntPtr handle, UInt64 objectId, IntPtr type);
+        IntPtr Create(UInt64 objectId, IntPtr type);
         [NativeSymbol(Entrypoint = "net_instance_destroy")]
         void Destroy(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_clone")]
         IntPtr Clone(IntPtr instance);
 
-        [NativeSymbol(Entrypoint = "net_instance_getHandle")]
-        IntPtr GetHandle(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_getObjectId")]
         UInt64 GetObjectId(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
         bool ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
+    }
+
+    internal static class ObjectIdReferenceTracker
+    {
+        class ObjectEntry
+        {
+            public object Obj { get; private set; }
+            public UInt64 Counter { get; set; }
+
+            public ObjectEntry(object obj, UInt64 count)
+            {
+                Obj = obj;
+                Counter = count;
+            }
+        }
+
+        private static Dictionary<UInt64, ObjectEntry> _ObjectIdObjectLookup = new Dictionary<ulong, ObjectEntry>();
+        private static object _LockObject = new object();
+
+        internal static bool TryGetObjectFor(UInt64 objectId, out object obj)
+        {
+            lock(_LockObject)
+            {
+                if(_ObjectIdObjectLookup.ContainsKey(objectId))
+                {
+                    obj = _ObjectIdObjectLookup[objectId].Obj;
+                    return true;
+                }
+                obj = null;
+                return false;
+            }
+        }
+
+        internal static void OnReferenceReleased(UInt64 objectId)
+        {
+            lock (_LockObject)
+            {
+                if (!_ObjectIdObjectLookup.ContainsKey(objectId))
+                {
+                    throw new InvalidOperationException("Releasing a NetReference that hasn't been counted!");
+                }
+                _ObjectIdObjectLookup[objectId].Counter--;
+                //when there are no more QML references
+                if (_ObjectIdObjectLookup[objectId].Counter == 0)
+                {
+                    var obj = _ObjectIdObjectLookup[objectId].Obj;
+                    //remove object entry
+                    _ObjectIdObjectLookup.Remove(objectId);
+                    //and notify the behaviors
+                    InteropBehaviors.OnObjectLeavesNative(obj, objectId);
+                }
+            }
+        }
+
+        internal static void OnReferenceCreated(object obj, UInt64 objectId)
+        {
+            lock (_LockObject)
+            {
+                if (!_ObjectIdObjectLookup.ContainsKey(objectId))
+                {
+                    _ObjectIdObjectLookup[objectId] = new ObjectEntry(obj, 1);
+                    InteropBehaviors.OnObjectEntersNative(obj, objectId);
+                }
+                else
+                {
+                    _ObjectIdObjectLookup[objectId].Counter++;
+                }
+            }
+        }
     }
 }
