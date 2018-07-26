@@ -12,13 +12,12 @@ ApplicationWindow {
 		Timer {
 			interval: 5000; running: true; repeat: true
 			onTriggered: {
-			    var t = {
-			        test: false
-			    }
-			    var task = test.Test(t)
-			    //Net.await(task, function() {
-			    //    console.log('callback called!')
-			    //})
+			    console.log('calling function with callback')
+			    var task = test.Test(function() {
+			        console.log('in callback, going to call AnotherMethod')
+			        test.AnotherMethod()
+			        console.log('done calling AnotherMethod')
+			    })
 			}
 		}
 	}

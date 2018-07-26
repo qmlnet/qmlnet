@@ -12,9 +12,15 @@ namespace Qml.Net.Sandbox
         [Signal("testSignal", NetVariantType.String)]
         public class TestQmlImport
         {
-            public void Test(NetJsValue jsValue)
+            public void Test(INetJsValue jsValue)
             {
-                Console.WriteLine(jsValue.IsCallable);
+                Console.WriteLine("In net method, invoking callback");
+                jsValue.Call();
+            }
+
+            public void AnotherMethod()
+            {
+                Console.WriteLine("Another method");
             }
         }
 

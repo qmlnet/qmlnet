@@ -4,7 +4,7 @@ using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Qml
 {
-    public class NetJsValue : BaseDisposable
+    internal class NetJsValue : BaseDisposable, INetJsValue
     {
         public NetJsValue(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
@@ -14,10 +14,29 @@ namespace Qml.Net.Internal.Qml
 
         public bool IsCallable => Interop.NetJsValue.IsCallable(Handle);
         
+        public NetVariant Call(NetVariantList parameters)
+        {
+            var result = Interop.NetJsValue.Call(Handle, parameters?.Handle ?? IntPtr.Zero);
+            return result != IntPtr.Zero ? new NetVariant(result) : null;
+        }
+        
+        public object Call(params object[] parameters)
+        {
+            Call((NetVariantList)null);
+            return null;
+        }
+        
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
         }
+    }
+
+    public interface INetJsValue
+    {
+        bool IsCallable { get; }
+
+        object Call(params object[] parameters);
     }
     
     internal interface INetJsValueInterop
@@ -27,5 +46,7 @@ namespace Qml.Net.Internal.Qml
 
         [NativeSymbol(Entrypoint = "net_js_value_isCallable")]
         bool IsCallable(IntPtr jsValue);
+        [NativeSymbol(Entrypoint = "net_js_value_call")]
+        IntPtr Call(IntPtr jsValue, IntPtr parameters);
     }
 }

@@ -40,12 +40,13 @@ Q_DECL_EXPORT bool net_js_value_isCallable(NetJSValueContainer* jsValueContainer
     return jsValueContainer->jsValue->isCallable();
 }
 
-Q_DECL_EXPORT void net_js_value_call(NetJSValueContainer* jsValueContainer, NetVariantListContainer* parametersContainer) {
+Q_DECL_EXPORT NetVariantListContainer* net_js_value_call(NetJSValueContainer* jsValueContainer, NetVariantListContainer* parametersContainer) {
     QSharedPointer<NetVariantList> parameters;
     if(parametersContainer != nullptr) {
         parameters = parametersContainer->list;
     }
     jsValueContainer->jsValue->call(parameters);
+    return nullptr; // TODO, return the result.
 }
 
 }
