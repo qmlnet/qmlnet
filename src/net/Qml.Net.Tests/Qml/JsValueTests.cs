@@ -102,5 +102,35 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             Mock.Verify(x => x.MethodWithoutParams(), Times.Once);
         }
+
+        [Fact]
+        public void Can_invoke_js_callback_with_parameters()
+        {
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
+                .Callback(new Action<INetJsValue>(x =>
+                {
+                    x.Call("test1", 4);
+                }));
+            Mock.Setup(x => x.MethodWithParameters("test1", 4));
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    JsTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.Method(function(param1, param2) {
+                                console.log('param 1: ' + param1)
+                                console.log('param 2: ' + param2)
+                                test.MethodWithParameters(param1, param2)
+                            })
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
+            Mock.Verify(x => x.MethodWithParameters("test1", 4), Times.Once);
+        }
     }
 }
