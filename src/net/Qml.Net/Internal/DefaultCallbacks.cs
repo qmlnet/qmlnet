@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace Qml.Net.Internal
 {
@@ -349,7 +350,22 @@ namespace Qml.Net.Internal
                 if (taskObject is Task task)
                 {
                     await task;
-                    callback.Call();
+                    
+                    try
+                    {
+                        var result = (object)((dynamic)task).Result;
+                        callback.Call(result);
+                    }
+                    catch (RuntimeBinderException)
+                    {
+                        // No "Result" property, a task with no callbacks.
+                        // TODO: Find a better way to handle this than catching an exception.
+                        callback.Call();
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Attempted to await on a .NET object that wasn't a Task.");
                 }
             }
         }
