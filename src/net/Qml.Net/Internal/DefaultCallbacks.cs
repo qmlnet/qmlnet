@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Qml.Net.Internal
 {
@@ -336,6 +337,20 @@ namespace Qml.Net.Internal
                 }
 
                 return false; /*no signals were raised*/
+            }
+        }
+
+        public async Task AwaitTask(IntPtr t, IntPtr c)
+        {
+            using (var target = new NetReference(t))
+            using(var callback = new NetJsValue(c))
+            {
+                var taskObject = target.Instance;
+                if (taskObject is Task task)
+                {
+                    await task;
+                    callback.Call();
+                }
             }
         }
     }
