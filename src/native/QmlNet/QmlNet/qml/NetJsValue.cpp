@@ -1,6 +1,9 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetVariantList.h>
+#include <QDebug>
+#include <QJSEngine>
+#include <private/qjsvalue_p.h>
 
 NetJSValue::NetJSValue(QJSValue jsValue) :
     _jsValue(jsValue)
@@ -23,9 +26,12 @@ QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> param
     QJSValueList jsValueList;
     if(parameters != nullptr) {
         for(int x = 0; x < parameters->count(); x++) {
-            jsValueList.append(parameters->get(0)->getVariant().value<QJSValue>());
+            QVariant qVariant = parameters->get(x)->getVariant();
+            QJSEngine* engine = QJSValuePrivate::engine(&_jsValue)->jsEngine();
+            jsValueList.append(engine->toScriptValue<QVariant>(qVariant));
         }
     }
+
     _jsValue.call(jsValueList);
     return nullptr;
 }

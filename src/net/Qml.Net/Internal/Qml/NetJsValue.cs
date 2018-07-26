@@ -22,7 +22,25 @@ namespace Qml.Net.Internal.Qml
         
         public object Call(params object[] parameters)
         {
-            Call((NetVariantList)null);
+            NetVariantList variants = null;
+            
+            if (parameters != null && parameters.Length > 0)
+            {
+                variants = new NetVariantList();
+                foreach (var parameter in parameters)
+                {
+                    using (var variant = new NetVariant())
+                    {
+                        Helpers.PackValue(parameter, variant);
+                        variants.Add(variant);
+                    }
+                }
+            }
+            
+            Call(variants);
+            
+            variants?.Dispose();
+            
             return null;
         }
         
