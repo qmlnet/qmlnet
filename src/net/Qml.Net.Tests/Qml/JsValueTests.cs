@@ -1,6 +1,7 @@
 ﻿using System;
 using FluentAssertions;
 using FluentAssertions.Common;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using Qml.Net.Internal.Qml;
 using Xunit;
@@ -24,6 +25,16 @@ namespace Qml.Net.Tests.Qml
             public virtual void MethodWithParameters(string param1, int param2)
             {
                 
+            }
+
+            public class TestObject
+            {
+                public int CalledCount { get; set; }
+                
+                public void TestMethod()
+                {
+                    CalledCount++;
+                }
             }
         }
 
@@ -135,6 +146,36 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             Mock.Verify(x => x.MethodWithParameters("test1", 4), Times.Once);
             result.Should().BeNull();
+        }
+
+        [Fact]
+        public void Can_invoke_js_callback_with_net_instance()
+        {
+            var testObject = new JsValueTests.JsTestsQml.TestObject();
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
+                .Callback(new Action<INetJsValue>(x =>
+                {
+                    x.Call(testObject);
+                }));
+            Mock.Setup(x => x.MethodWithParameters("test1", 4));
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    JsTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.Method(function(param1) {
+                                param1.TestMethod()
+                                param1.TestMethod()
+                            })
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
+            testObject.CalledCount.Should().Be(2);
         }
     }
 }
