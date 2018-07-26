@@ -27,6 +27,11 @@ namespace Qml.Net.Tests.Qml
                 
             }
 
+            public virtual void CallMethodWithJsValue(INetJsValue value, INetJsValue method)
+            {
+                method.Call(value);
+            }
+
             public class TestObject
             {
                 public int CalledCount { get; set; }
@@ -135,8 +140,6 @@ namespace Qml.Net.Tests.Qml
                         id: test
                         Component.onCompleted: function() {
                             test.Method(function(param1, param2) {
-                                console.log('param 1: ' + param1)
-                                console.log('param 2: ' + param2)
                                 test.MethodWithParameters(param1, param2)
                             })
                         }
@@ -157,7 +160,6 @@ namespace Qml.Net.Tests.Qml
                 {
                     x.Call(testObject);
                 }));
-            Mock.Setup(x => x.MethodWithParameters("test1", 4));
             
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
@@ -176,6 +178,35 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             testObject.CalledCount.Should().Be(2);
+        }
+        
+        [Fact]
+        public void Can_pass_js_value_to_callback()
+        {
+            Mock.CallBase = true;
+            Mock.Setup(x => x.MethodWithParameters("test1", 4));
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    JsTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var o = {
+                                testProperty1: 'test1',
+                                testProperty2: 4
+                            }
+                            test.CallMethodWithJsValue(o,
+                                function(passedIn) {
+                                    test.MethodWithParameters(passedIn.testProperty1, passedIn.testProperty2)
+                                })
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.CallMethodWithJsValue(It.IsAny<INetJsValue>(), It.IsAny<INetJsValue>()), Times.Once);
+            Mock.Verify(x => x.MethodWithParameters("test1", 4), Times.Once);
         }
     }
 }

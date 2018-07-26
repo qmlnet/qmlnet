@@ -13,6 +13,7 @@ class NetJSValue
 public:
     NetJSValue(QJSValue jsValue);
     ~NetJSValue();
+    QJSValue getJsValue();
     bool isCallable();
     QSharedPointer<NetVariant> call(QSharedPointer<NetVariantList> parameters);
 private:

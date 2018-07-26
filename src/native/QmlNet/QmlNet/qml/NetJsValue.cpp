@@ -17,6 +17,11 @@ NetJSValue::~NetJSValue()
     _jsValue.isCallable();
 }
 
+QJSValue NetJSValue::getJsValue()
+{
+    return _jsValue;
+}
+
 bool NetJSValue::isCallable()
 {
     return _jsValue.isCallable();
@@ -35,6 +40,11 @@ QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> param
                 QSharedPointer<NetReference> netReference = netVariant->getNetReference();
                 NetValue* netValue = NetValue::forInstance(netReference);
                 jsValueList.append(engine->newQObject(netValue));
+                break;
+            }
+            case NetVariantTypeEnum_JSValue: {
+                QSharedPointer<NetJSValue> netJsValue = netVariant->getJsValue();
+                jsValueList.append(netJsValue->getJsValue());
                 break;
             }
             default: {
