@@ -1,6 +1,7 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetVariantList.h>
+#include <QmlNet/qml/NetValue.h>
 #include <QDebug>
 #include <QJSEngine>
 #include <private/qjsvalue_p.h>
@@ -23,12 +24,26 @@ bool NetJSValue::isCallable()
 
 QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> parameters)
 {
+    QJSEngine* engine = QJSValuePrivate::engine(&_jsValue)->jsEngine();
+
     QJSValueList jsValueList;
     if(parameters != nullptr) {
         for(int x = 0; x < parameters->count(); x++) {
-            QVariant qVariant = parameters->get(x)->getVariant();
-            QJSEngine* engine = QJSValuePrivate::engine(&_jsValue)->jsEngine();
-            jsValueList.append(engine->toScriptValue<QVariant>(qVariant));
+            QSharedPointer<NetVariant> netVariant = parameters->get(x);
+            switch(netVariant->getVariantType()) {
+            case NetVariantTypeEnum_Object: {
+                QSharedPointer<NetReference> netReference = netVariant->getNetReference();
+                NetValue* netValue = NetValue::forInstance(netReference);
+                jsValueList.append(engine->newQObject(netValue));
+                break;
+            }
+            default: {
+                QVariant qVariant = parameters->get(x)->getVariant();
+                jsValueList.append(engine->toScriptValue<QVariant>(qVariant));
+                break;
+            }
+            }
+
         }
     }
 
