@@ -18,6 +18,7 @@ struct NetObject : Object
     V4_OBJECT2(NetObject, Object)
     #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     static void method_gccollect(const BuiltinFunction *, Scope &scope, CallData *callData);
+    static void method_await(const BuiltinFunction *, Scope &scope, CallData *callData);
     #else
     static ReturnedValue method_gccollect(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
     static ReturnedValue method_await(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
