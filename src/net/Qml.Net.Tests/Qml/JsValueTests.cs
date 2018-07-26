@@ -78,10 +78,11 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_invoke_js_callback()
         {
+            object result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
                 .Callback(new Action<INetJsValue>(x =>
                 {
-                    x.Call();
+                    result = x.Call();
                 }));
             Mock.Setup(x => x.MethodWithoutParams());
             
@@ -101,15 +102,17 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             Mock.Verify(x => x.MethodWithoutParams(), Times.Once);
+            result.Should().BeNull();
         }
 
         [Fact]
         public void Can_invoke_js_callback_with_parameters()
         {
+            object result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
                 .Callback(new Action<INetJsValue>(x =>
                 {
-                    x.Call("test1", 4);
+                    result = x.Call("test1", 4);
                 }));
             Mock.Setup(x => x.MethodWithParameters("test1", 4));
             
@@ -131,6 +134,7 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             Mock.Verify(x => x.MethodWithParameters("test1", 4), Times.Once);
+            result.Should().BeNull();
         }
     }
 }
