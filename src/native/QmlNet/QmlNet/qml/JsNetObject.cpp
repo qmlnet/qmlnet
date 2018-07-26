@@ -1,5 +1,6 @@
 #include <QmlNet/qml/JsNetObject.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNet/qml/NetValue.h>
 #include <QDebug>
 
 using namespace QV4;
@@ -26,6 +27,38 @@ void NetObject::method_gccollect(const BuiltinFunction *, Scope &scope, CallData
 
 void NetObject::method_await(const BuiltinFunction *, Scope &scope, CallData *callData) {
     scope.result = QV4::Encode::undefined();
+
+    if (callData->argc != 2) {
+        qWarning() << "Invalid number of parameters passed to Net.await(task, callback)";
+        return;
+    }
+
+    ScopedValue task(scope, callData->args[0]);
+    ScopedValue callback(scope, callData->args[1]);
+
+    if(task->isNullOrUndefined()) {
+        qWarning() << "No task for Net.await(task, callback)";
+        return;
+    }
+
+    if(callback->isNullOrUndefined()) {
+        qWarning() << "No callback for Net.await(task, callback)";
+        return;
+    }
+
+    QJSValue taskJsValue(scope.engine, task->asReturnedValue());
+    QJSValue callbackJsValue(scope.engine, callback->asReturnedValue());
+
+    QObject* qObject = taskJsValue.toQObject();
+    NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
+
+    if(!netValue) {
+        qWarning() << "Invalid task object passed to Net.await(task, callback)";
+        return;
+    }
+
+    // Send the method to .NET, await the task, and call the callback.
+    awaitTask(netValue->getNetReference(), QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)));
 }
 
 #else
@@ -43,6 +76,44 @@ ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *
 
 ReturnedValue NetObject::method_await(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
     QV4::Scope scope(b);
+
+    if(argc != 2) {
+        qWarning() << "Invalid number of parameters passed to Net.await(task, callback)";
+        return Encode::undefined();
+    }
+
+    QV4::ScopedValue task(scope, argv[0]);
+    QV4::ScopedValue callback(scope, argv[1]);
+
+    if(task->isNullOrUndefined()) {
+        qWarning() << "No task for Net.await(task, callback)";
+        return Encode::undefined();
+    }
+
+    if(callback->isNullOrUndefined()) {
+        qWarning() << "No callback for Net.await(task, callback)";
+        return Encode::undefined();
+    }
+
+    QJSValue taskJsValue(scope.engine, task->asReturnedValue());
+    QJSValue callbackJsValue(scope.engine, callback->asReturnedValue());
+
+    if(!taskJsValue.isQObject()) {
+        qWarning() << "Invalid task object passed to Net.await(task, callback)";
+        return Encode::undefined();
+    }
+
+    QObject* qObject = taskJsValue.toQObject();
+    NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
+
+    if(!netValue) {
+        qWarning() << "Invalid task object passed to Net.await(task, callback)";
+        return Encode::undefined();
+    }
+
+    // Send the method to .NET, await the task, and call the callback.
+    awaitTask(netValue->getNetReference(), QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)));
+
     return Encode::undefined();
 }
 
