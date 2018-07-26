@@ -24,6 +24,10 @@ void NetObject::method_gccollect(const BuiltinFunction *, Scope &scope, CallData
     scope.result = QV4::Encode::undefined();
 }
 
+void NetObject::method_await(const BuiltinFunction *, Scope &scope, CallData *callData) {
+    scope.result = QV4::Encode::undefined();
+}
+
 #else
 
 ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
@@ -39,22 +43,6 @@ ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *
 
 ReturnedValue NetObject::method_await(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
     QV4::Scope scope(b);
-    //QV4::ScopedValue task(scope, argv[0]);
-
-
-
-    //QV4::ScopedValue callback(scope, argv[1]);
-
-
-    //QJSValue taskJsValue(scope.engine, task->asReturnedValue());
-
-    //QSharedPointer<NetVariant> = QSharedPointer<NetVariant>(taskVariant);
-    //taskVariant.setVariant(QJSValue(scope.engine, task->asReturnedValue()).toVariant());
-
-    //QJSValue retval(scope.engine, callback->asReturnedValue());
-
-
-
     return Encode::undefined();
 }
 
