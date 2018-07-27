@@ -58,43 +58,13 @@ QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> param
         }
     }
 
-    QJSValue methodResult = _jsValue.call(jsValueList);
-    QSharedPointer<NetVariant> result;
+    return NetVariant::fromQJSValue(_jsValue.call(jsValueList));
+}
 
-    if(methodResult.isNull() || methodResult.isUndefined()) {
-        // Do nothing, return null;
-    }
-    else if(methodResult.isQObject()) {
-        QObject* qObject = methodResult.toQObject();
-        NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
-        if(!netValue) {
-            qWarning() << "Return type must be a JS type/object, or a .NET object.";
-        } else {
-            result = QSharedPointer<NetVariant>(new NetVariant());
-            result->setNetReference(netValue->getNetReference());
-        }
-    }
-    else if(methodResult.isObject()) {
-        result = QSharedPointer<NetVariant>(new NetVariant());
-        result->setJsValue(QSharedPointer<NetJSValue>(new NetJSValue(methodResult)));
-    }
-    else if(methodResult.isQObject()) {
-        QObject* qObject = methodResult.toQObject();
-        NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
-        if(!netValue) {
-            qWarning() << "Return type must be a JS type/object, or a .NET object.";
-        } else {
-            result = QSharedPointer<NetVariant>(new NetVariant());
-            result->setNetReference(netValue->getNetReference());
-        }
-    }
-    else {
-        result = QSharedPointer<NetVariant>(new NetVariant());
-        QVariant variant = methodResult.toVariant();
-        result->setVariant(variant);
-    }
-
-    return result;
+QSharedPointer<NetVariant> NetJSValue::getProperty(QString propertyName)
+{
+    QJSValue property = _jsValue.property(propertyName);
+    return NetVariant::fromQJSValue(property);
 }
 
 extern "C" {
@@ -117,6 +87,14 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValu
         return new NetVariantContainer{result};
     }
     return nullptr;
+}
+
+Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName) {
+    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString::fromUtf16((const char16_t*)propertyName));
+    if(result == nullptr) {
+        return nullptr;
+    }
+    return new NetVariantContainer{result};
 }
 
 }

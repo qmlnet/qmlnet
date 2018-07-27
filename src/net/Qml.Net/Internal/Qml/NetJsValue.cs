@@ -53,6 +53,16 @@ namespace Qml.Net.Internal.Qml
             
             return returnValue;
         }
+
+        public NetVariant GetProperty(string propertyName)
+        {
+            var result = Interop.NetJsValue.GetProperty(Handle, propertyName);
+            if (result == IntPtr.Zero)
+            {
+                return null;
+            }
+            return new NetVariant(result);
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -100,6 +110,22 @@ namespace Qml.Net.Internal.Qml
                 
                 return true;
             }
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                var property = _jsValue.GetProperty(binder.Name);
+                if (property == null)
+                {
+                    result = null;
+                }
+                else
+                {
+                    object unpacked = null;
+                    Helpers.Unpackvalue(ref unpacked, property);
+                    result = unpacked;
+                }
+                return true;
+            }
         }
     }
 
@@ -119,5 +145,7 @@ namespace Qml.Net.Internal.Qml
         bool IsCallable(IntPtr jsValue);
         [NativeSymbol(Entrypoint = "net_js_value_call")]
         IntPtr Call(IntPtr jsValue, IntPtr parameters);
+        [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
+        IntPtr GetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
     }
 }

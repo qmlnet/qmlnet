@@ -267,5 +267,41 @@ namespace Qml.Net.Tests.Qml
             results[3].Should().BeAssignableTo<INetJsValue>().And.Subject.As<INetJsValue>().IsCallable.Should().BeTrue();
             results[4].Should().BeSameAs(testObject);
         }
+
+        [Fact]
+        public void Can_read_properties_from_js_object()
+        {
+            var testObject = new JsValueTests.JsTestsQml.TestObject();
+            dynamic result = null;
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(jsValue =>
+                {
+                    result = jsValue;
+                }));
+            Mock.Setup(x => x.GetTestObject()).Returns(testObject);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    JsTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var netObject = test.GetTestObject()
+                            test.Method({
+                                test1: 34,
+                                test2: 'test3',
+                                test3: netObject
+                            })
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(1));
+            Mock.Verify(x => x.GetTestObject(), Times.Exactly(1));
+            ((object) result.nonExistant).Should().BeNull();
+            ((int) result.test1).Should().Be(34);
+            ((string) result.test2).Should().Be("test3");
+            ((object)result.test3).Should().BeSameAs(testObject);
+        }
     }
 }

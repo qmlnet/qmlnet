@@ -1,4 +1,6 @@
 #include <QmlNet/qml/NetVariant.h>
+#include <QmlNet/qml/NetValue.h>
+#include <QmlNet/qml/NetJsValue.h>
 #include <QDateTime>
 #include <QDebug>
 
@@ -211,6 +213,34 @@ void NetVariant::clear()
     variant.clear();
 }
 
+QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
+{
+    QSharedPointer<NetVariant> result;
+    if(qJsValue.isNull() || qJsValue.isUndefined()) {
+        // Nothing!
+    }
+    else if(qJsValue.isQObject()) {
+        QObject* qObject = qJsValue.toQObject();
+        NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
+        if(!netValue) {
+            qWarning() << "Return type must be a JS type/object, or a .NET object.";
+        } else {
+            result = QSharedPointer<NetVariant>(new NetVariant());
+            result->setNetReference(netValue->getNetReference());
+        }
+    }
+    else if(qJsValue.isObject()) {
+        result = QSharedPointer<NetVariant>(new NetVariant());
+        result->setJsValue(QSharedPointer<NetJSValue>(new NetJSValue(qJsValue)));
+    }
+    else {
+        result = QSharedPointer<NetVariant>(new NetVariant());
+        QVariant variant = qJsValue.toVariant();
+        result->setVariant(variant);
+    }
+    return result;
+}
+
 
 void NetVariant::clearNetReference()
 {
@@ -264,8 +294,8 @@ Q_DECL_EXPORT void net_variant_setNetReference(NetVariantContainer* container, N
 
 Q_DECL_EXPORT NetReferenceContainer* net_variant_getNetReference(NetVariantContainer* container) {
     QSharedPointer<NetReference> instance = container->variant->getNetReference();
-    if(instance == NULL) {
-        return NULL;
+    if(instance == nullptr) {
+        return nullptr;
     }
     NetReferenceContainer* result = new NetReferenceContainer();
     result->instance = instance;

@@ -5,6 +5,7 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QVariant>
 #include <QDateTime>
+#include <QJSValue>
 
 class NetVariant
 {
@@ -33,6 +34,7 @@ public:
     QVariant getVariant();
     void setVariant(QVariant variant);
     void clear();
+    static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
 private:
     void clearNetReference();
     QVariant variant;
