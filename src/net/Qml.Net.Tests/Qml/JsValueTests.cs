@@ -290,7 +290,10 @@ namespace Qml.Net.Tests.Qml
                             test.Method({
                                 test1: 34,
                                 test2: 'test3',
-                                test3: netObject
+                                test3: netObject,
+                                test4: {
+                                    test5: 'test5'
+                                }
                             })
                         }
                     }
@@ -302,6 +305,7 @@ namespace Qml.Net.Tests.Qml
             ((int) result.test1).Should().Be(34);
             ((string) result.test2).Should().Be("test3");
             ((object)result.test3).Should().BeSameAs(testObject);
+            ((string) result.test4.test5).Should().Be("test5");
         }
     }
 }
