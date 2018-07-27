@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using FluentAssertions.Common;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -26,12 +27,17 @@ namespace Qml.Net.Tests.Qml
             {
                 
             }
-
+            
             public virtual void CallMethodWithJsValue(INetJsValue value, INetJsValue method)
             {
                 method.Call(value);
             }
 
+            public virtual TestObject GetTestObject()
+            {
+                return null;
+            }
+            
             public class TestObject
             {
                 public int CalledCount { get; set; }
@@ -207,6 +213,56 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.CallMethodWithJsValue(It.IsAny<INetJsValue>(), It.IsAny<INetJsValue>()), Times.Once);
             Mock.Verify(x => x.MethodWithParameters("test1", 4), Times.Once);
+        }
+
+        [Fact]
+        public void Can_get_return_value_from_js_function()
+        {
+            var testObject = new JsTestsQml.TestObject();
+            var results = new List<object>();
+            Mock.Setup(x => x.GetTestObject()).Returns(testObject);
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<INetJsValue>(jsValue =>
+                {
+                    results.Add(jsValue.Call());
+                }));
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    JsTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var jsObject = {
+                            }
+                            test.Method(function() {
+                                return 'test'
+                            })
+                            test.Method(function() {
+                                return 32
+                            })
+                            test.Method(function() {
+                                return jsObject
+                            })
+                            test.Method(function() {
+                                return function() {}
+                            })
+                            var netObject = test.GetTestObject()
+                            test.Method(function() {
+                                return netObject
+                            })
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(5));
+            Mock.Verify(x => x.GetTestObject(), Times.Once);
+            results.Should().HaveCount(5);
+            results[0].Should().Be("test");
+            results[1].Should().Be(32);
+            results[2].Should().BeAssignableTo<INetJsValue>().And.Subject.As<INetJsValue>().IsCallable.Should().BeFalse();
+            results[3].Should().BeAssignableTo<INetJsValue>().And.Subject.As<INetJsValue>().IsCallable.Should().BeTrue();
+            results[4].Should().BeSameAs(testObject);
         }
     }
 }

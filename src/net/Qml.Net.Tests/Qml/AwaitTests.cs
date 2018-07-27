@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Moq;
 using Qml.Net.Internal.Qml;
 using Xunit;
@@ -10,11 +8,6 @@ namespace Qml.Net.Tests.Qml
 {
     public class AwaitTests : BaseQmlTests<AwaitTests.AwaitTestsQml>
     {
-        public AwaitTests()
-        {
-            
-        }
-        
         public class AwaitTestsQml
         {
             public virtual Task TestAsync()

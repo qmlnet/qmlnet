@@ -37,11 +37,20 @@ namespace Qml.Net.Internal.Qml
                 }
             }
             
-            Call(variants);
+            var result = Call(variants);
             
             variants?.Dispose();
+
+            if (result == null)
+            {
+                return null;
+            }
             
-            return null;
+            object returnValue = null;
+            Helpers.Unpackvalue(ref returnValue, result);
+            result.Dispose();
+            
+            return returnValue;
         }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
