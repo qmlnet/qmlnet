@@ -61,14 +61,15 @@ public class QmlType
     /// <summary>
     /// Async methods can be invoked with continuations happening on Qt's main thread.
     /// </summary>
-    public async Task TestAsync()
+    public async Task<string> TestAsync()
     {
-        Console.WriteLine("Hello from UI thread!");
+        // On the UI thread
         await Task.Run(() =>
         {
-            Console.WriteLine("Hello from background thread!");
+            // On the background thread
         });
-        Console.WriteLine("Welcome back to the UI thread!");
+        // On the UI thread
+        return "async result!"
     }
     
     /// <summary>
@@ -120,12 +121,20 @@ ApplicationWindow {
           })
           test.StringProperty = "New value!"
           
-          // We can return .NET types (even ones not registered with Qml).
+          // We can return .NET types (even ones not registered with Qml)
           var netObject = test.CreateNetObject();
           
           // All properties/methods/signals can be invoked on "netObject"
           // We can also pass the .NET object back to .NET
           netObject.TestMethod(netObject)
+          
+          // We can invoke async tasks that have continuation on the UI thread
+          var task = netObject.TestAsync()
+          // And we can await the task
+          Net.await(task, function(result) {
+              // With the result!
+              console.log(result)
+          })
           
           // We can trigger signals from .NET
           test.CustomSignal.connect(function(message) {
