@@ -35,6 +35,7 @@ public:
     void setVariant(QVariant variant);
     void clear();
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
+    QJSValue toQJSValue(QJSEngine* jsEngine);
 private:
     void clearNetReference();
     QVariant variant;

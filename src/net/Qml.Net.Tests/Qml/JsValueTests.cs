@@ -18,6 +18,11 @@ namespace Qml.Net.Tests.Qml
 
             }
 
+            public virtual void Method(dynamic value1, dynamic value2)
+            {
+                
+            }
+
             public virtual void MethodWithoutParams()
             {
                 
@@ -306,6 +311,56 @@ namespace Qml.Net.Tests.Qml
             ((string) result.test2).Should().Be("test3");
             ((object)result.test3).Should().BeSameAs(testObject);
             ((string) result.test4.test5).Should().Be("test5");
+        }
+
+        [Fact]
+        public void Can_set_properties()
+        {
+            var testObject = new JsValueTests.JsTestsQml.TestObject();
+            dynamic result = null;
+            Mock.Setup(x => x.GetTestObject()).Returns(testObject);
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>(), It.IsAny<INetJsValue>()))
+                .Callback(new Action<dynamic, dynamic>((source, destination) =>
+                {
+                    destination.dest1 = source.source1;
+                    destination.dest2 = source.source2;
+                    destination.dest3 = source.source3;
+                    destination.dest4 = source.source4;
+                }));
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
+                .Callback(new Action<dynamic>(value => { result = value; }));
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    JsTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var netObject = test.GetTestObject()
+                            var source = {
+                                source1: 123,
+                                source2: 'value',
+                                source3: netObject,
+                                source4: {
+                                }
+                            }
+                            var destination = {
+                            }
+                            test.Method(source, destination)
+                            test.Method(destination)
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(1));
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>(), It.IsAny<INetJsValue>()), Times.Exactly(1));
+            Mock.Verify(x => x.GetTestObject(), Times.Exactly(1));
+            ((object) result).Should().NotBeNull();
+            ((int) result.dest1).Should().Be(123);
+            ((string) result.dest2).Should().Be("value");
+            ((object) result.dest3).Should().BeSameAs(testObject);
+            ((object) result.dest4).Should().BeAssignableTo<INetJsValue>();
         }
     }
 }

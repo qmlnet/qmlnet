@@ -36,25 +36,7 @@ QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> param
     if(parameters != nullptr) {
         for(int x = 0; x < parameters->count(); x++) {
             QSharedPointer<NetVariant> netVariant = parameters->get(x);
-            switch(netVariant->getVariantType()) {
-            case NetVariantTypeEnum_Object: {
-                QSharedPointer<NetReference> netReference = netVariant->getNetReference();
-                NetValue* netValue = NetValue::forInstance(netReference);
-                jsValueList.append(engine->jsEngine()->newQObject(netValue));
-                break;
-            }
-            case NetVariantTypeEnum_JSValue: {
-                QSharedPointer<NetJSValue> netJsValue = netVariant->getJsValue();
-                jsValueList.append(netJsValue->getJsValue());
-                break;
-            }
-            default: {
-                QVariant qVariant = parameters->get(x)->getVariant();
-                jsValueList.append(engine->jsEngine()->toScriptValue<QVariant>(qVariant));
-                break;
-            }
-            }
-
+            jsValueList.append(netVariant->toQJSValue(engine->jsEngine()));
         }
     }
 
@@ -65,6 +47,16 @@ QSharedPointer<NetVariant> NetJSValue::getProperty(QString propertyName)
 {
     QJSValue property = _jsValue.property(propertyName);
     return NetVariant::fromQJSValue(property);
+}
+
+void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> variant)
+{
+    QJSValue value = QJSValue::NullValue;
+    if(variant != nullptr) {
+        QV4::ExecutionEngine* engine = QJSValuePrivate::engine(&_jsValue);
+        value = variant->toQJSValue(engine->jsEngine());
+    }
+    _jsValue.setProperty(propertyName, value);
 }
 
 extern "C" {
@@ -95,6 +87,14 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer*
         return nullptr;
     }
     return new NetVariantContainer{result};
+}
+
+Q_DECL_EXPORT void net_js_value_setProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName, NetVariantContainer* valueContainer) {
+    QSharedPointer<NetVariant> value;
+    if(valueContainer != nullptr) {
+        value = valueContainer->variant;
+    }
+    jsValueContainer->jsValue->setProperty(QString::fromUtf16((const char16_t*)propertyName), value);
 }
 
 }

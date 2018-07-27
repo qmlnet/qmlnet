@@ -17,6 +17,7 @@ public:
     bool isCallable();
     QSharedPointer<NetVariant> call(QSharedPointer<NetVariantList> parameters);
     QSharedPointer<NetVariant> getProperty(QString propertyName);
+    void setProperty(QString propertyName, QSharedPointer<NetVariant> variant);
 private:
     QJSValue _jsValue;
 };

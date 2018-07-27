@@ -63,6 +63,11 @@ namespace Qml.Net.Internal.Qml
             }
             return new NetVariant(result);
         }
+
+        public void SetProperty(string propertyName, NetVariant value)
+        {
+            Interop.NetJsValue.SetProperty(Handle, propertyName, value?.Handle ?? IntPtr.Zero);
+        }
         
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
@@ -126,6 +131,24 @@ namespace Qml.Net.Internal.Qml
                 }
                 return true;
             }
+
+            public override bool TrySetMember(SetMemberBinder binder, object value)
+            {
+                if (value == null)
+                {
+                    _jsValue.SetProperty(binder.Name, null);
+                }
+                else
+                {
+                    using (var variant = new NetVariant())
+                    {
+                        Helpers.PackValue(value, variant);
+                        _jsValue.SetProperty(binder.Name, variant);
+                    }
+                }
+
+                return true;
+            }
         }
     }
 
@@ -147,5 +170,7 @@ namespace Qml.Net.Internal.Qml
         IntPtr Call(IntPtr jsValue, IntPtr parameters);
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
         IntPtr GetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
+        [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
+        void SetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr value);
     }
 }

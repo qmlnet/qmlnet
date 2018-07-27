@@ -3,6 +3,7 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QDateTime>
 #include <QDebug>
+#include <QJSEngine>
 
 struct NetReferenceQmlContainer
 {
@@ -239,6 +240,22 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
         result->setVariant(variant);
     }
     return result;
+}
+
+QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine)
+{
+    switch(getVariantType()) {
+    case NetVariantTypeEnum_Object: {
+        NetValue* netValue = NetValue::forInstance(getNetReference());
+        return jsEngine->newQObject(netValue);
+    }
+    case NetVariantTypeEnum_JSValue: {
+        return getJsValue()->getJsValue();
+    }
+    default: {
+        return jsEngine->toScriptValue<QVariant>(getVariant());
+    }
+    }
 }
 
 
