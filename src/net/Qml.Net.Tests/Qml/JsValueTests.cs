@@ -13,7 +13,7 @@ namespace Qml.Net.Tests.Qml
     {
         public class JsTestsQml
         {
-            public virtual void Method(INetJsValue value)
+            public virtual void Method(dynamic value)
             {
 
             }
@@ -54,7 +54,7 @@ namespace Qml.Net.Tests.Qml
         {
             INetJsValue jsValue = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
-                .Callback(new Action<INetJsValue>(x => jsValue = x));
+                .Callback(new Action<dynamic>(x => jsValue = x));
             
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
@@ -78,7 +78,10 @@ namespace Qml.Net.Tests.Qml
         {
             INetJsValue jsValue = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
-                .Callback(new Action<INetJsValue>(x => jsValue = x));
+                .Callback(new Action<dynamic>(x =>
+                {
+                    jsValue = x;
+                }));
             
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
@@ -102,9 +105,9 @@ namespace Qml.Net.Tests.Qml
         {
             object result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
-                .Callback(new Action<INetJsValue>(x =>
+                .Callback(new Action<dynamic>(x =>
                 {
-                    result = x.Call();
+                    result = x();
                 }));
             Mock.Setup(x => x.MethodWithoutParams());
             
@@ -132,9 +135,9 @@ namespace Qml.Net.Tests.Qml
         {
             object result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
-                .Callback(new Action<INetJsValue>(x =>
+                .Callback(new Action<dynamic>(x =>
                 {
-                    result = x.Call("test1", 4);
+                    result = x("test1", 4);
                 }));
             Mock.Setup(x => x.MethodWithParameters("test1", 4));
             
@@ -162,9 +165,9 @@ namespace Qml.Net.Tests.Qml
         {
             var testObject = new JsValueTests.JsTestsQml.TestObject();
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
-                .Callback(new Action<INetJsValue>(x =>
+                .Callback(new Action<dynamic>(x =>
                 {
-                    x.Call(testObject);
+                    x(testObject);
                 }));
             
             NetTestHelper.RunQml(qmlApplicationEngine,
@@ -221,9 +224,9 @@ namespace Qml.Net.Tests.Qml
             var testObject = new JsTestsQml.TestObject();
             var results = new List<object>();
             Mock.Setup(x => x.GetTestObject()).Returns(testObject);
-            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<INetJsValue>(jsValue =>
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(jsValue =>
                 {
-                    results.Add(jsValue.Call());
+                    results.Add((object)jsValue());
                 }));
             
             NetTestHelper.RunQml(qmlApplicationEngine,

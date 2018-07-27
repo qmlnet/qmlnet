@@ -36,7 +36,7 @@ namespace Qml.Net.Internal
                 else if(type == typeof(DateTime))
                     destination.DateTime = (DateTime)source;
                 else if (typeof(INetJsValue).IsAssignableFrom(type))
-                    destination.JsValue = (NetJsValue)source;
+                    destination.JsValue = ((NetJsValue.NetJsValueDynamic) source).JsValue;
                 else
                 {
                     destination.Instance = NetReference.CreateForObject(source);
@@ -76,7 +76,7 @@ namespace Qml.Net.Internal
                     destination = source.Instance.Instance;
                     break;
                 case NetVariantType.JsValue:
-                    destination = source.JsValue;
+                    destination = source.JsValue.AsDynamic();
                     break;
                 default:
                     throw new Exception("Unsupported variant type.");

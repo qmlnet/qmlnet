@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Dynamic;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Qml
 {
-    internal class NetJsValue : BaseDisposable, INetJsValue
+    internal class NetJsValue : BaseDisposable
     {
         public NetJsValue(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
@@ -57,9 +58,52 @@ namespace Qml.Net.Internal.Qml
         {
             Interop.NetVariant.Destroy(ptr);
         }
+
+        public dynamic AsDynamic()
+        {
+            return new NetJsValueDynamic(this);
+        }
+
+        internal class NetJsValueDynamic : DynamicObject, INetJsValue
+        {
+            readonly NetJsValue _jsValue;
+
+            public NetJsValueDynamic(NetJsValue jsValue)
+            {
+                _jsValue = jsValue;
+            }
+
+            public void Dispose()
+            {
+                _jsValue.Dispose();
+            }
+
+            public NetJsValue JsValue => _jsValue;
+            
+            public bool IsCallable => _jsValue.IsCallable;
+            
+            public object Call(params object[] parameters)
+            {
+                return _jsValue.Call(parameters);
+            }
+
+            public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
+            {
+                result = null;
+                
+                if (!IsCallable)
+                {
+                    return false;
+                }
+
+                result = Call(args);
+                
+                return true;
+            }
+        }
     }
 
-    public interface INetJsValue
+    public interface INetJsValue : IDisposable
     {
         bool IsCallable { get; }
 
