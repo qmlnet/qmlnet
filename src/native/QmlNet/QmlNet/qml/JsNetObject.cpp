@@ -1,6 +1,8 @@
 #include <QmlNet/qml/JsNetObject.h>
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/qml/NetValue.h>
+#include <QmlNet/types/NetTypeManager.h>
+#include <private/qv4qobjectwrapper_p.h>
 #include <QDebug>
 
 using namespace QV4;
@@ -12,6 +14,7 @@ void Heap::NetObject::init() {
     ScopedObject o(scope, this);
     o->defineDefaultProperty(QStringLiteral("gcCollect"), QV4::NetObject::method_gccollect);
     o->defineDefaultProperty(QStringLiteral("await"), QV4::NetObject::method_await);
+    o->defineDefaultProperty(QStringLiteral("cancelTokenSource"), QV4::NetObject::method_cancelTokenSource);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
@@ -59,6 +62,24 @@ void NetObject::method_await(const BuiltinFunction *, Scope &scope, CallData *ca
 
     // Send the method to .NET, await the task, and call the callback.
     awaitTask(netValue->getNetReference(), QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)));
+}
+
+void NetObject::method_cancelTokenSource(const BuiltinFunction *, Scope &scope, CallData *callData) {
+    Q_UNUSED(callData);
+    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo("System.Threading.CancellationTokenSource");
+    if(typeInfo == nullptr) {
+        qWarning() << "Couldn't get cancellation token type for platform, please file a bug";
+        scope.result = QV4::Encode::undefined();
+        return;
+    }
+    QSharedPointer<NetReference> netReference = instantiateType(typeInfo);
+    if(netReference == nullptr) {
+        qWarning() << "Couldn't create cancellation token for platform, please file a bug";
+        scope.result = QV4::Encode::undefined();
+        return;
+    }
+    NetValue* netValue = NetValue::forInstance(netReference);
+    scope.result = QV4::QObjectWrapper::wrap(scope.engine, netValue);
 }
 
 #else
@@ -115,6 +136,22 @@ ReturnedValue NetObject::method_await(const FunctionObject *b, const Value *this
     awaitTask(netValue->getNetReference(), QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)));
 
     return Encode::undefined();
+}
+
+ReturnedValue NetObject::method_cancelTokenSource(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
+    QV4::Scope scope(b);
+    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo("System.Threading.CancellationTokenSource");
+    if(typeInfo == nullptr) {
+        qWarning() << "Couldn't get cancellation token type for platform, please file a bug";
+        return Encode::undefined();
+    }
+    QSharedPointer<NetReference> netReference = instantiateType(typeInfo);
+    if(netReference == nullptr) {
+        qWarning() << "Couldn't create cancellation token for platform, please file a bug";
+        return Encode::undefined();
+    }
+    NetValue* netValue = NetValue::forInstance(netReference);
+    return QV4::QObjectWrapper::wrap(scope.engine, netValue);
 }
 
 #endif
