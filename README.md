@@ -178,7 +178,6 @@ dotnet add package Qml.Net
 - [ ] Compiling Qml resource files and bundling them within .NET.
 - [ ] Passing dynamic javascript objects to .NET as ```dynamic```. They will be either a live mutable instance, or as a JSON serialized snapshot of the object.
 - [ ] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
-- [ ] Cancellable async tasks.
 - [ ] .NET Events to signals
 - [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
 - [ ] General perf improvements (particularly with reflection).
