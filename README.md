@@ -171,7 +171,7 @@ dotnet add package Qml.Net
 - [x] Reading/setting properties on .NET objects.
 - [x] Invoking methods on .NET obejcts.
 - [x] Declaring and activating signals on .NET objects.
-- [x] ```async``` and ```await``` (no return types yet).
+- [x] ```async``` and ```await``` with support for awaiting and getting the result from Qml.
 
 # Not implemented (but planned)
 
