@@ -10,9 +10,16 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual char Property { get; set; }
 
+            public virtual char? Nullable { get; set; }
+            
             public virtual void MethodParameter(char value)
             {
 
+            }
+
+            public virtual void MethodParameterNullable(char? value)
+            {
+                
             }
 
             public virtual char MethodReturn()
@@ -120,6 +127,50 @@ namespace Qml.Net.Tests.Qml
                 ");
 
             Mock.Verify(x => x.MethodParameter(It.IsIn('Ώ')), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_read_nullable_char_no_value()
+        {
+            Mock.Setup(x => x.Nullable).Returns((char?)null);
+            Mock.Setup(x => x.MethodParameterNullable(It.Is<char?>(y => y == null)));
+
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    CharTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.MethodParameterNullable(test.Nullable)
+                        }
+                    }
+                ");
+
+            Mock.VerifyGet(x => x.Nullable, Times.Once);
+            Mock.Verify(x => x.MethodParameterNullable(It.Is<char?>(y => y == null)), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_read_nullable_char_with_value()
+        {
+            Mock.Setup(x => x.Nullable).Returns('t');
+            Mock.Setup(x => x.MethodParameterNullable(It.Is<char>(y => y == 't')));
+
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    CharTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.MethodParameterNullable(test.Nullable)
+                        }
+                    }
+                ");
+
+            Mock.VerifyGet(x => x.Nullable, Times.Once);
+            Mock.Verify(x => x.MethodParameterNullable(It.Is<char?>(y => y == 't')), Times.Once);
         }
     }
 }

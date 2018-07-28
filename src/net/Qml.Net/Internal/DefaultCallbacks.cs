@@ -2,6 +2,8 @@
 using Qml.Net.Internal.Types;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -27,23 +29,7 @@ namespace Qml.Net.Internal
 
                 type.ClassName = typeInfo.Name;
 
-                if (typeInfo == typeof(bool))
-                    type.PrefVariantType = NetVariantType.Bool;
-                else if (typeInfo == typeof(char))
-                    type.PrefVariantType = NetVariantType.Char;
-                else if (typeInfo == typeof(int))
-                    type.PrefVariantType = NetVariantType.Int;
-                else if (typeInfo == typeof(uint))
-                    type.PrefVariantType = NetVariantType.UInt;
-                else if (typeInfo == typeof(double))
-                    type.PrefVariantType = NetVariantType.Double;
-                else if (typeInfo == typeof(string))
-                    type.PrefVariantType = NetVariantType.String;
-                else if (typeInfo == typeof(DateTime))
-                    type.PrefVariantType = NetVariantType.DateTime;
-                else
-                    type.PrefVariantType = NetVariantType.Object;
-                
+                type.PrefVariantType = GetPrefVariantType(typeInfo);
                 // All the methods/properties/signals are later populated when needed.
             }
         }
@@ -368,6 +354,34 @@ namespace Qml.Net.Internal
                     throw new InvalidOperationException("Attempted to await on a .NET object that wasn't a Task.");
                 }
             }
+        }
+
+        private NetVariantType GetPrefVariantType(Type typeInfo)
+        {
+            if (typeInfo == typeof(bool))
+                return NetVariantType.Bool;
+            if (typeInfo == typeof(char))
+                return NetVariantType.Char;
+            if (typeInfo == typeof(int))
+                return NetVariantType.Int;
+            if (typeInfo == typeof(uint))
+                return NetVariantType.UInt;
+            if (typeInfo == typeof(double))
+                return NetVariantType.Double;
+            if (typeInfo == typeof(string))
+                return NetVariantType.String;
+            if (typeInfo == typeof(DateTime))
+                return NetVariantType.DateTime;
+
+            if (typeInfo.IsGenericType &&
+                typeInfo.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                // ReSharper disable TailRecursiveCall
+                return GetPrefVariantType(typeInfo.GetGenericArguments()[0]);
+                // ReSharper restore TailRecursiveCall
+            }
+            
+            return NetVariantType.Object;
         }
     }
 }
