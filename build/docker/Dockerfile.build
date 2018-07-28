@@ -7,7 +7,8 @@ RUN apt-get install -y qt5-default \
     qtdeclarative5-qtquick2-plugin \
     qml-module-qtquick-layouts \
     qml-module-qtquick-controls2 \
-    qml-module-qtquick-window2
+    qml-module-qtquick-window2 \
+    qtquickcontrols2-5-dev
 
 RUN mkdir /work
 WORKDIR /work
