@@ -13,8 +13,13 @@ namespace Qml.Net.Internal
         
         static Interop()
         {
-            System.Environment.SetEnvironmentVariable("DYLD_LIBRARY_PATH", "/Users/pknopf/git/net-core-qml/src/native/build-QmlNet-Desktop_Qt_5_11_1_clang_64bit-Debug");
-            var interop = NativeLibraryBuilder.Default.ActivateInterface<ICombined>("QmlNet");
+            var qmlNetLibName = System.Environment.GetEnvironmentVariable("QML_NET_LIB_NAME");
+            if (string.IsNullOrEmpty(qmlNetLibName))
+            {
+                qmlNetLibName = "QmlNet";
+            }
+            
+            var interop = NativeLibraryBuilder.Default.ActivateInterface<ICombined>(qmlNetLibName);
 
             Callbacks = interop;
             NetTypeInfo = interop;
