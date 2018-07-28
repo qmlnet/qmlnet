@@ -10,9 +10,16 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual bool Property { get; set; }
 
+            public virtual bool? Nullable { get; set; }
+            
             public virtual void MethodParameter(bool value)
             {
 
+            }
+
+            public virtual void MethodParameterNullable(bool? value)
+            {
+                
             }
 
             public virtual bool MethodReturn()
@@ -97,6 +104,50 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifyGet(x => x.Property, Times.Once);
             Mock.Verify(x => x.MethodParameter(It.Is<bool>(y => y)));
+        }
+        
+        [Fact]
+        public void Can_read_nullable_bool_no_value()
+        {
+            Mock.Setup(x => x.Nullable).Returns((bool?)null);
+            Mock.Setup(x => x.MethodParameterNullable(It.Is<bool?>(y => y == null)));
+
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    BoolTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.MethodParameterNullable(test.Nullable)
+                        }
+                    }
+                ");
+
+            Mock.VerifyGet(x => x.Nullable, Times.Once);
+            Mock.Verify(x => x.MethodParameterNullable(It.Is<bool?>(y => y == null)), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_read_nullable_bool_with_value()
+        {
+            Mock.Setup(x => x.Nullable).Returns(true);
+            Mock.Setup(x => x.MethodParameterNullable(It.Is<bool?>(y => y == true)));
+
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    BoolTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.MethodParameterNullable(test.Nullable)
+                        }
+                    }
+                ");
+
+            Mock.VerifyGet(x => x.Nullable, Times.Once);
+            Mock.Verify(x => x.MethodParameterNullable(It.Is<bool?>(y => y == true)), Times.Once);
         }
     }
 }
