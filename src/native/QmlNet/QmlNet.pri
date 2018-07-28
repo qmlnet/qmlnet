@@ -1,3 +1,4 @@
+QT += gui qml qml-private core-private quickcontrols2
 
 INCLUDEPATH += $$PWD
 

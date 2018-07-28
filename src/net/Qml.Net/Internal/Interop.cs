@@ -36,6 +36,7 @@ namespace Qml.Net.Internal
             QResource = interop;
             NetDelegate = interop;
             NetJsValue = interop;
+            QQuickStyle = interop;
 
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
@@ -60,7 +61,8 @@ namespace Qml.Net.Internal
             INetSignalInfoInterop,
             IQResourceInterop,
             INetDelegateInterop,
-            INetJsValueInterop
+            INetJsValueInterop,
+            IQQuickStyleInterop
         {
 
         }
@@ -94,5 +96,7 @@ namespace Qml.Net.Internal
         public static INetDelegateInterop NetDelegate { get; }
         
         public static INetJsValueInterop NetJsValue { get; }
+        
+        public static IQQuickStyleInterop QQuickStyle { get; }
     }
 }
