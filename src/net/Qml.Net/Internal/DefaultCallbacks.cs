@@ -370,7 +370,7 @@ namespace Qml.Net.Internal
                 return NetVariantType.Double;
             if (typeInfo == typeof(string))
                 return NetVariantType.String;
-            if (typeInfo == typeof(DateTime) || typeInfo == typeof(DateTimeOffset))
+            if (typeInfo == typeof(DateTimeOffset))
                 return NetVariantType.DateTime;
 
             if (typeInfo.IsGenericType &&
