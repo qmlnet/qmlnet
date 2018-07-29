@@ -21,13 +21,13 @@ Supported platforms/runtimes:
 **Define a .NET type (POCO)**
 
 ```c#
-[Signal("CustomSignal", NetVariantType.String)] // You can define signals that Qml can listen to.
+[Signal("customSignal", NetVariantType.String)] // You can define signals that Qml can listen to.
 public class QmlType
 {
     /// <summary>
     /// Properties are exposed to Qml.
     /// </summary>
-    [NotifySignal("StringPropertyChanged")] // For Qml binding/MVVM.
+    [NotifySignal("stringPropertyChanged")] // For Qml binding/MVVM.
     public string StringProperty { get; set; }
 
     /// <summary>
@@ -77,7 +77,7 @@ public class QmlType
     /// </summary>
     public void ActivateCustomSignal(string message)
     {
-        this.ActivateSignal("CustomSignal", message)
+        this.ActivateSignal("customSignal", message)
     }
 }
 ```
@@ -115,21 +115,21 @@ ApplicationWindow {
       id: test
       Component.onCompleted: function() {
           // We can read/set properties
-          console.log(test.StringProperty)
-          test.StringPropertyChanged.connect(function() {
+          console.log(test.stringProperty)
+          test.stringPropertyChanged.connect(function() {
               console.log("The property was changed!")
           })
-          test.StringProperty = "New value!"
+          test.stringProperty = "New value!"
           
           // We can return .NET types (even ones not registered with Qml)
-          var netObject = test.CreateNetObject();
+          var netObject = test.createNetObject();
           
           // All properties/methods/signals can be invoked on "netObject"
           // We can also pass the .NET object back to .NET
-          netObject.TestMethod(netObject)
+          netObject.testMethod(netObject)
           
           // We can invoke async tasks that have continuation on the UI thread
-          var task = netObject.TestAsync()
+          var task = netObject.testAsync()
           // And we can await the task
           Net.await(task, function(result) {
               // With the result!
@@ -137,10 +137,10 @@ ApplicationWindow {
           })
           
           // We can trigger signals from .NET
-          test.CustomSignal.connect(function(message) {
+          test.customSignal.connect(function(message) {
               console.log("message: " + message)
           })
-          test.ActivateCustomSignal("test message!")
+          test.activateCustomSignal("test message!")
       }
       function testHandler(message) {
           console.log("Message - " message)
@@ -172,13 +172,12 @@ dotnet add package Qml.Net
 - [x] Invoking methods on .NET obejcts.
 - [x] Declaring and activating signals on .NET objects.
 - [x] ```async``` and ```await``` with support for awaiting and getting the result from Qml.
+- [x] Passing dynamic javascript objects to .NET as ```dynamic```.
 
 # Not implemented (but planned)
 
 - [ ] Compiling Qml resource files and bundling them within .NET.
-- [ ] Passing dynamic javascript objects to .NET as ```dynamic```. They will be either a live mutable instance, or as a JSON serialized snapshot of the object.
 - [ ] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 - [ ] .NET Events to signals
 - [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
 - [ ] General perf improvements (particularly with reflection).
-- [ ] NuGet/MyGet feed.
