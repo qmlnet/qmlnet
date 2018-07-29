@@ -84,11 +84,11 @@ namespace Qml.Net.Tests.Qml
                 ViewModelContainer {
                     id: viewModelContainer
                     Component.onCompleted: function() {
-                        var vm = viewModelContainer.ViewModel
-                        vm.StringPropertyChanged.connect(function() {
-                            viewModelContainer.TestResult = true
+                        var vm = viewModelContainer.viewModel
+                        vm.stringPropertyChanged.connect(function() {
+                            viewModelContainer.testResult = true
                         })
-                        viewModelContainer.ChangeStringPropertyTo('new value')
+                        viewModelContainer.changeStringPropertyTo('new value')
                     }
                 }
             ");
@@ -114,18 +114,18 @@ namespace Qml.Net.Tests.Qml
                         running: false
                         interval: 1000
 			            onTriggered: {
-                            viewModelContainer.TestResult = true;
-                            viewModelContainer.ChangeStringPropertyTo('new value')
-                            tc.Quit()
+                            viewModelContainer.testResult = true;
+                            viewModelContainer.changeStringPropertyTo('new value')
+                            tc.quit()
 			            }
                     }
 
                     ViewModelContainer {
                         id: viewModelContainer
                         Component.onCompleted: function() {
-                            var vm = viewModelContainer.ViewModel
-                            vm.StringPropertyChanged.connect(function() {
-                                viewModelContainer.TestResult = false
+                            var vm = viewModelContainer.viewModel
+                            vm.stringPropertyChanged.connect(function() {
+                                viewModelContainer.testResult = false
                             })
                             vm = null
                             gc()

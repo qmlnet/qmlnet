@@ -22,26 +22,18 @@ QSharedPointer<NetReference> NetValue::getNetReference()
 
 bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments)
 {
-    // Build the signature so we can look it up.
-    // Perf?
-    QString signature = signalName;
-    signature.append("(");
-    if(arguments != nullptr) {
-        for(int argumentIndex = 0; argumentIndex <= arguments->count() - 1; argumentIndex++)
-        {
-            if(argumentIndex > 0) {
-                signature.append(",");
-            }
-            signature.append("QVariant");
+    int signalMethodIndex = -1;
+    for(int x = 0; valueMeta->methodCount(); x++) {
+        QByteArray methodName = valueMeta->method(x).name();
+        if(signalName.compare(methodName) == 0) {
+            signalMethodIndex = x;
+            break;
         }
     }
-    signature.append(")");
-    QByteArray normalizedSignalSignature = QMetaObject::normalizedSignature(signature.toLatin1().data());
-    int signalMethodIndex = valueMeta->indexOfMethod(normalizedSignalSignature);
 
     // If signal not found, dump the registered signals for debugging.
     if(signalMethodIndex < 0) {
-        qDebug("Signal not found: %s", qPrintable(normalizedSignalSignature));
+        qDebug("Signal not found: %s", qPrintable(signalName));
         qDebug("Current signals:");
         for (int i = 0; i < metaObject()->methodCount(); i++) {
             QMetaMethod method = metaObject()->method(i);
@@ -60,7 +52,7 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
         for(int x = 0 ; x < arguments->count(); x++) {
             QSharedPointer<QVariant> variant = QSharedPointer<QVariant>(new QVariant(arguments->get(x)->getVariant()));
             variantArgs.append(variant);
-            voidArgs.push_back((void *)variant.data());
+            voidArgs.push_back(static_cast<void*>(variant.data()));
         }
     }
     void** argsPointer = nullptr;

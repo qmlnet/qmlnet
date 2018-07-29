@@ -209,7 +209,7 @@ namespace Qml.Net.Tests.Types
             type.PropertyCount.Should().Be(1);
             type.GetProperty(0).Name.Should().Be("Property");
             type.GetProperty(0).NotifySignal.Should().NotBeNull();
-            type.GetProperty(0).NotifySignal.Name.Should().Be("PropertyChanged");
+            type.GetProperty(0).NotifySignal.Name.Should().Be("propertyChanged");
         }
 
         public class TestType11

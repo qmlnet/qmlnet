@@ -68,7 +68,7 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Method(function(){})
+                            test.method(function(){})
                         }
                     }
                 ");
@@ -95,7 +95,7 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Method({})
+                            test.method({})
                         }
                     }
                 ");
@@ -123,8 +123,8 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Method(function() {
-                                test.MethodWithoutParams()
+                            test.method(function() {
+                                test.methodWithoutParams()
                             })
                         }
                     }
@@ -153,8 +153,8 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Method(function(param1, param2) {
-                                test.MethodWithParameters(param1, param2)
+                            test.method(function(param1, param2) {
+                                test.methodWithParameters(param1, param2)
                             })
                         }
                     }
@@ -182,9 +182,9 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Method(function(param1) {
-                                param1.TestMethod()
-                                param1.TestMethod()
+                            test.method(function(param1) {
+                                param1.testMethod()
+                                param1.testMethod()
                             })
                         }
                     }
@@ -211,9 +211,9 @@ namespace Qml.Net.Tests.Qml
                                 testProperty1: 'test1',
                                 testProperty2: 4
                             }
-                            test.CallMethodWithJsValue(o,
+                            test.callMethodWithJsValue(o,
                                 function(passedIn) {
-                                    test.MethodWithParameters(passedIn.testProperty1, passedIn.testProperty2)
+                                    test.methodWithParameters(passedIn.testProperty1, passedIn.testProperty2)
                                 })
                         }
                     }
@@ -243,20 +243,20 @@ namespace Qml.Net.Tests.Qml
                         Component.onCompleted: function() {
                             var jsObject = {
                             }
-                            test.Method(function() {
+                            test.method(function() {
                                 return 'test'
                             })
-                            test.Method(function() {
+                            test.method(function() {
                                 return 32
                             })
-                            test.Method(function() {
+                            test.method(function() {
                                 return jsObject
                             })
-                            test.Method(function() {
+                            test.method(function() {
                                 return function() {}
                             })
-                            var netObject = test.GetTestObject()
-                            test.Method(function() {
+                            var netObject = test.getTestObject()
+                            test.method(function() {
                                 return netObject
                             })
                         }
@@ -291,8 +291,8 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var netObject = test.GetTestObject()
-                            test.Method({
+                            var netObject = test.getTestObject()
+                            test.method({
                                 test1: 34,
                                 test2: 'test3',
                                 test3: netObject,
@@ -337,7 +337,7 @@ namespace Qml.Net.Tests.Qml
                     JsTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var netObject = test.GetTestObject()
+                            var netObject = test.getTestObject()
                             var source = {
                                 source1: 123,
                                 source2: 'value',
@@ -347,8 +347,8 @@ namespace Qml.Net.Tests.Qml
                             }
                             var destination = {
                             }
-                            test.Method(source, destination)
-                            test.Method(destination)
+                            test.method(source, destination)
+                            test.method(destination)
                         }
                     }
                 ");

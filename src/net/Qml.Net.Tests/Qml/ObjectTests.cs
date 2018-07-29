@@ -51,8 +51,8 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance = test.TestMethodReturn()
-                            instance.TestMethod()
+                            var instance = test.testMethodReturn()
+                            instance.testMethod()
                         }
                     }
                 ");
@@ -74,8 +74,8 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance = test.TestMethodReturn()
-                            test.TestMethodParameter(instance)
+                            var instance = test.testMethodReturn()
+                            test.testMethodParameter(instance)
                         }
                     }
                 ");
@@ -97,7 +97,7 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Overload()
+                            test.overload()
                         }
                     }
                 ");
@@ -112,7 +112,7 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Overload('test')
+                            test.overload('test')
                         }
                     }
                 ");

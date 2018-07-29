@@ -33,7 +33,7 @@ namespace Qml.Net.Tests.Qml
                     StringTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");
@@ -54,7 +54,7 @@ namespace Qml.Net.Tests.Qml
                     StringTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");
@@ -75,7 +75,7 @@ namespace Qml.Net.Tests.Qml
                     StringTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");
@@ -96,7 +96,7 @@ namespace Qml.Net.Tests.Qml
                     StringTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");

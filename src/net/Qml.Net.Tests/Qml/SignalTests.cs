@@ -55,9 +55,9 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance = test.GetSignalObject()
+                            var instance = test.getSignalObject()
                             instance.testSignal.connect(function() {
-                                test.SignalRaised = true
+                                test.signalRaised = true
                             })
                             instance.testSignal()
                         }
@@ -82,10 +82,10 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance = test.GetSignalObject()
+                            var instance = test.getSignalObject()
                             instance.testSignalWithArgs1.connect(function(arg1, arg2) {
-                                test.SignalRaised = true
-                                test.MethodWithArgs(arg1, arg2)
+                                test.signalRaised = true
+                                test.methodWithArgs(arg1, arg2)
                             })
                             instance.testSignalWithArgs1('arg1', 3)
                         }
@@ -110,11 +110,11 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance1 = test.GetSignalObject()
+                            var instance1 = test.getSignalObject()
                             instance1.testSignal.connect(function() {
-                                test.SignalRaised = true
+                                test.signalRaised = true
                             })
-                            var instance2 = test.GetSignalObject()
+                            var instance2 = test.getSignalObject()
                             instance2.testSignal()
                         }
                     }
@@ -141,11 +141,11 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance1 = test.GetSignalObject()
+                            var instance1 = test.getSignalObject()
                             instance1.testSignal.connect(function() {
-                                test.SignalRaised = true
+                                test.signalRaised = true
                             })
-                            test.TestMethod()
+                            test.testMethod()
                         }
                     }
                 ");
@@ -172,12 +172,12 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance1 = test.GetSignalObject()
+                            var instance1 = test.getSignalObject()
                             instance1.testSignalWithArgs1.connect(function(arg1, arg2) {
-                                test.SignalRaised = true
-                                test.MethodWithArgs(arg1, arg2)
+                                test.signalRaised = true
+                                test.methodWithArgs(arg1, arg2)
                             })
-                            test.TestMethod()
+                            test.testMethod()
                         }
                     }
                 ");
@@ -221,7 +221,7 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance = test.GetSignalObject()
+                            var instance = test.getSignalObject()
                             instance.testSignalWithArgs1('from qml', 2)
                         }
                     }
@@ -248,8 +248,8 @@ namespace Qml.Net.Tests.Qml
                     ObjectTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var instance = test.GetSignalObject()
-                            test.TestMethod()
+                            var instance = test.getSignalObject()
+                            test.testMethod()
                             instance.testSignalWithArgs1('from qml', 3)
                         }
                     }

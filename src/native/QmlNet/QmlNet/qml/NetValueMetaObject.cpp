@@ -36,7 +36,11 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
     {
         QSharedPointer<NetPropertyInfo> propertyInfo = typeInfo->getProperty(index);
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
-        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->getPropertyName().toLatin1(),
+        QString propertyName = propertyInfo->getPropertyName();
+        if(propertyName.at(0).isUpper()) {
+            propertyName.replace(0,1, propertyName.at(0).toLower());
+        }
+        QMetaPropertyBuilder propb = mob.addProperty(propertyName.toLatin1(),
             NetMetaValueQmlType(propertyType->getPrefVariantType()),
             index);
         QSharedPointer<NetSignalInfo> notifySignal = propertyInfo->getNotifySignal();
@@ -137,7 +141,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         }
 
         idx -= offset;
-        if(idx < (int)instance->getTypeInfo()->getSignalCount()) {
+        if(idx < instance->getTypeInfo()->getSignalCount()) {
             // This is a signal call, activate it!
             activate(value, idx + offset, a);
             return -1;

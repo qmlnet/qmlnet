@@ -65,12 +65,12 @@ namespace Qml.Net.Tests.Qml
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter
-                                var instance2 = test.Parameter
+                                var instance1 = test.parameter
+                                var instance2 = test.parameter
 
-                                test.TestResult = instance1.IsSame(instance2)
+                                test.testResult = instance1.isSame(instance2)
 
-                                tc.Quit()
+                                tc.quit()
                             }
                         }
                     }
@@ -96,12 +96,12 @@ namespace Qml.Net.Tests.Qml
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter;
-                                var instance2 = test.Parameter2;
+                                var instance1 = test.parameter;
+                                var instance2 = test.parameter2;
 
-                                test.TestResult = instance1.IsSame(instance2);
+                                test.testResult = instance1.isSame(instance2);
 
-                                tc.Quit()
+                                tc.quit()
                             }
                         }
                     }
@@ -128,17 +128,17 @@ namespace Qml.Net.Tests.Qml
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter;
-                                var instance2 = test.Parameter;
+                                var instance1 = test.parameter;
+                                var instance2 = test.parameter;
 
                                 //deref Parameter
                                 instance2 = null;
                             
                                 gc();
 
-                                test.TestResult = test.CheckIsParameterAlive();
+                                test.testResult = test.checkIsParameterAlive();
 
-                                tc.Quit()
+                                tc.quit()
                             }
                         }
                     }
@@ -165,8 +165,8 @@ namespace Qml.Net.Tests.Qml
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter;
-                                var instance2 = test.Parameter;
+                                var instance1 = test.parameter;
+                                var instance2 = test.parameter;
 
                                 //deref Parameter
                                 instance1 = null;
@@ -174,9 +174,9 @@ namespace Qml.Net.Tests.Qml
                             
                                 gc();
 
-                                test.TestResult = test.CheckIsParameterAlive();
+                                test.testResult = test.checkIsParameterAlive();
 
-                                tc.Quit()
+                                tc.quit()
                             }
                         }
                     }
@@ -205,22 +205,22 @@ namespace Qml.Net.Tests.Qml
                             running: false
                             interval: 1000
 			                onTriggered: {
-                                test.TestResult = test.CheckIsParameterAlive();
+                                test.testResult = test.checkIsParameterAlive();
 
-                                tc.Quit()
+                                tc.quit()
 			                }
                         }
 
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter
-                                var instance2 = test.Parameter
+                                var instance1 = test.parameter
+                                var instance2 = test.parameter
 
                                 //deref Parameter
                                 instance1 = null
                                 instance2 = null
-                                test.ReleaseNetReferenceParameter()
+                                test.releaseNetReferenceParameter()
                             
                                 gc()
                                 Net.gcCollect(2)
@@ -254,18 +254,18 @@ namespace Qml.Net.Tests.Qml
                             running: false
                             interval: 1000
 			                onTriggered: {
-                                test.TestResult = test.CheckIsParameterAlive();
+                                test.testResult = test.checkIsParameterAlive();
 
-                                tc.Quit()
+                                tc.quit()
 			                }
                         }
 
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                var instance1 = test.Parameter
+                                var instance1 = test.parameter
 
-                                test.ReleaseNetReferenceParameter()
+                                test.releaseNetReferenceParameter()
                                 Net.gcCollect(2)
 
                                 checkAndQuitTimer.running = true
@@ -298,19 +298,19 @@ namespace Qml.Net.Tests.Qml
                             running: false
                             interval: 1000
 			                onTriggered: {
-                                test.TestResult = test.CheckIsParameterAlive();
+                                test.testResult = test.checkIsParameterAlive();
 
-                                tc.Quit()
+                                tc.quit()
 			                }
                         }
 
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
-                                instanceRef = test.Parameter
-                                var instance2 = test.Parameter
+                                instanceRef = test.parameter
+                                var instance2 = test.parameter
 
-                                test.ReleaseNetReferenceParameter()
+                                test.releaseNetReferenceParameter()
 
                                 //release second QML ref
                                 instance2 = null

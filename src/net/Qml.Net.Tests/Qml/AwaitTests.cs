@@ -49,9 +49,9 @@ namespace Qml.Net.Tests.Qml
                     AwaitTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var task = test.TestAsync()
+                            var task = test.testAsync()
                             Net.await(task, function() {
-                                test.TestMethod()
+                                test.testMethod()
                             })
                         }
                     }
@@ -83,9 +83,9 @@ namespace Qml.Net.Tests.Qml
                     AwaitTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var task = test.TestAsync()
+                            var task = test.testAsync()
                             Net.await(task, function(result) {
-                                test.TestMethodWithArg(result)
+                                test.testMethodWithArg(result)
                             })
                         }
                     }

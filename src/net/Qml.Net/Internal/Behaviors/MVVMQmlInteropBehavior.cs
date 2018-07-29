@@ -44,17 +44,21 @@ namespace Qml.Net.Internal.Behaviors
         private void PropertyChangedHandler(object sender, PropertyChangedEventArgs e)
         {
             //fire signal according to the property that got changed 
-            string signalName = null;
-            signalName = CalculateSignalSignatureFromPropertyName(e.PropertyName);
+            var signalName = CalculateSignalSignatureFromPropertyName(e.PropertyName);
             if (signalName != null)
             {
-                Signals.ActivateSignal(sender, signalName);
+                sender.ActivateSignal(signalName);
             }
         }
 
         private string CalculateSignalSignatureFromPropertyName(string propertyName)
         {
-            return $"{propertyName}Changed";
+            var result = $"{propertyName}Changed";
+            if (!char.IsLower(result[0]))
+            {
+                return char.ToLower(result[0]) + result.Substring(1);
+            }
+            return result;
         }
 
         public void OnNetTypeInfoCreated(NetTypeInfo netTypeInfo, Type forType)

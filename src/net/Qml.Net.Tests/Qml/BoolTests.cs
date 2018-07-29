@@ -38,7 +38,7 @@ namespace Qml.Net.Tests.Qml
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = true
+                            test.property = true
                         }
                     }
                 ");
@@ -56,7 +56,7 @@ namespace Qml.Net.Tests.Qml
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = false
+                            test.property = false
                         }
                     }
                 ");
@@ -76,7 +76,7 @@ namespace Qml.Net.Tests.Qml
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameter(test.Property)
+                            test.methodParameter(test.property)
                         }
                     }
                 ");
@@ -97,7 +97,7 @@ namespace Qml.Net.Tests.Qml
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameter(test.Property)
+                            test.methodParameter(test.property)
                         }
                     }
                 ");
@@ -119,7 +119,7 @@ namespace Qml.Net.Tests.Qml
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameterNullable(test.Nullable)
+                            test.methodParameterNullable(test.nullable)
                         }
                     }
                 ");
@@ -141,7 +141,7 @@ namespace Qml.Net.Tests.Qml
                     BoolTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameterNullable(test.Nullable)
+                            test.methodParameterNullable(test.nullable)
                         }
                     }
                 ");

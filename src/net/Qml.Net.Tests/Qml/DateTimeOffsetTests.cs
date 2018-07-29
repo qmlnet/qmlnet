@@ -40,7 +40,7 @@ namespace Qml.Net.Tests.Qml
                 DateTimeOffsetTestsQml {
                     id: test
                     Component.onCompleted: function() {
-                        test.Property = test.Property
+                        test.property = test.property
                     }
                 }
             ");
@@ -65,8 +65,8 @@ namespace Qml.Net.Tests.Qml
                     DateTimeOffsetTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var v = test.Nullable
-                            test.Nullable = v
+                            var v = test.nullable
+                            test.nullable = v
                         }
                     }
                 ");
@@ -88,8 +88,8 @@ namespace Qml.Net.Tests.Qml
                     DateTimeOffsetTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            var v = test.Nullable
-                            test.Nullable = v
+                            var v = test.nullable
+                            test.nullable = v
                         }
                     }
                 ");

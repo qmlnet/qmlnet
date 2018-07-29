@@ -74,6 +74,16 @@ namespace Qml.Net.Internal
                 
                 foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
                 {
+                    if (string.IsNullOrEmpty(signalAttribute.Name))
+                    {
+                        throw new InvalidOperationException($"Signal name was null for {typeInfo.Name}");
+                    }
+
+                    if (!char.IsLower(signalAttribute.Name[0]))
+                    {
+                        throw new InvalidOperationException($"Signal {signalAttribute.Name} for {typeInfo.Name} must begin with a lower case letter.");
+                    }
+                    
                     var signal = new NetSignalInfo(type, signalAttribute.Name);
                     foreach (var parameter in signalAttribute.Parameters)
                     {
@@ -95,6 +105,7 @@ namespace Qml.Net.Internal
                         if (string.IsNullOrEmpty(name))
                         {
                             name = $"{propertyInfo.Name}Changed";
+                            name = char.ToLower(name[0]) + name.Substring(1);
                         }
                         
                         if (signals.ContainsKey(name))
@@ -109,6 +120,11 @@ namespace Qml.Net.Internal
                         }
                         else
                         {
+                            if (!char.IsLower(name[0]))
+                            {
+                                throw new InvalidOperationException($"Signal {name} for {typeInfo.Name} must begin with a lower case letter.");
+                            }
+                            
                             notifySignal = new NetSignalInfo(type, name);
                             type.AddSignal(notifySignal);
                         }

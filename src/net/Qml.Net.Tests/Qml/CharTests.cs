@@ -40,7 +40,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");
@@ -61,7 +61,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");
@@ -82,7 +82,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.Property = test.Property
+                            test.property = test.property
                         }
                     }
                 ");
@@ -101,7 +101,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameter(""Ώ"")
+                            test.methodParameter(""Ώ"")
                         }
                     }
                 ");
@@ -121,7 +121,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameter(test.MethodReturn())
+                            test.methodParameter(test.methodReturn())
                         }
                     }
                 ");
@@ -142,7 +142,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameterNullable(test.Nullable)
+                            test.methodParameterNullable(test.nullable)
                         }
                     }
                 ");
@@ -164,7 +164,7 @@ namespace Qml.Net.Tests.Qml
                     CharTestsQml {
                         id: test
                         Component.onCompleted: function() {
-                            test.MethodParameterNullable(test.Nullable)
+                            test.methodParameterNullable(test.nullable)
                         }
                     }
                 ");
