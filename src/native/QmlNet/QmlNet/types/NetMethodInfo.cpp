@@ -1,4 +1,5 @@
 #include <QmlNet/types/NetMethodInfo.h>
+#include <QmlNet/qml/NetValueMetaObjectPacker.h>
 #include <iostream>
 
 NetMethodInfoArguement::NetMethodInfoArguement(QString name,
@@ -52,10 +53,12 @@ QString NetMethodInfo::getSignature() {
     if(_parameters.size() > 0) {
         for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
         {
+            QSharedPointer<NetMethodInfoArguement> parameter = _parameters.at(parameterIndex);
+            QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
             if(parameterIndex > 0) {
                 signature.append(",");
             }
-            signature.append("QVariant");
+            signature.append(NetMetaValueQmlType(parameterType->getPrefVariantType()));
         }
     }
 

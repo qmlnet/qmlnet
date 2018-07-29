@@ -1,4 +1,5 @@
 #include <QmlNet/qml/NetValueMetaObject.h>
+#include <QmlNet/qml/NetValueMetaObjectPacker.h>
 #include <QmlNet/types/NetTypeInfo.h>
 #include <QmlNet/types/NetMethodInfo.h>
 #include <QmlNet/types/NetPropertyInfo.h>
@@ -7,194 +8,6 @@
 #include <QQmlEngine>
 #include <QDebug>
 #include <private/qmetaobjectbuilder_p.h>
-
-void metaPackValue(QSharedPointer<NetVariant> source, QVariant* destination) {
-    switch(source->getVariantType()) {
-    case NetVariantTypeEnum_Invalid:
-        destination->clear();
-        break;
-    case NetVariantTypeEnum_Bool:
-        destination->setValue(source->getBool());
-        break;
-    case NetVariantTypeEnum_Char:
-        destination->setValue(source->getChar());
-        break;
-    case NetVariantTypeEnum_Int:
-        destination->setValue(source->getInt());
-        break;
-    case NetVariantTypeEnum_UInt:
-        destination->setValue(source->getUInt());
-        break;
-    case NetVariantTypeEnum_Double:
-        destination->setValue(source->getDouble());
-        break;
-    case NetVariantTypeEnum_String:
-        destination->setValue(source->getString());
-        break;
-    case NetVariantTypeEnum_DateTime:
-        destination->setValue(source->getDateTime());
-        break;
-    case NetVariantTypeEnum_Object:
-    {
-        QSharedPointer<NetReference> newInstance = source->getNetReference();
-        NetValue* netValue = NetValue::forInstance(newInstance);
-        destination->setValue(netValue);
-        break;
-    }
-    default:
-        qDebug() << "Unsupported variant type: " << source->getVariantType();
-        break;
-    }
-}
-
-void metaUnpackValue(QSharedPointer<NetVariant> destination, QVariant* source, NetVariantTypeEnum prefType) {
-    bool ok = false;
-
-    if(source->isNull()) {
-        destination->clear();
-        return;
-    }
-
-    switch(prefType) {
-    case NetVariantTypeEnum_Bool:
-        destination->setBool(source->toBool());
-        return;
-    case NetVariantTypeEnum_Char: {
-        QString v = source->toString();
-        if(v.isNull() || v.isEmpty()) {
-            qDebug() << "Can't set empty string to char, setting to null.";
-            destination->setChar(QChar::Null);
-        } else {
-            if(v.length() == 1) {
-                destination->setChar(v.at(0));
-            } else {
-                qDebug() << "Can't set string to char that has more than one character.";
-                destination->setChar(QChar::Null);
-            }
-        }
-        return;
-    }
-    case NetVariantTypeEnum_Int:
-    {
-        int result = source->toInt(&ok);
-        if(ok) {
-            destination->setInt(result);
-            return;
-        }
-        break;
-    }
-    case NetVariantTypeEnum_UInt:
-    {
-        unsigned int result = source->toUInt(&ok);
-        if(ok) {
-            destination->setUInt(result);
-            return;
-        }
-        break;
-    }
-    case NetVariantTypeEnum_Double:
-    {
-        double result = source->toDouble(&ok);
-        if(ok) {
-            destination->setDouble(result);
-            return;
-        }
-    }
-    case NetVariantTypeEnum_String:
-    {
-        QString stringResult = source->toString();
-        destination->setString(&stringResult);
-        return;
-    }
-    case NetVariantTypeEnum_DateTime:
-    {
-        QDateTime dateTimeResult = source->toDateTime();
-        if(!dateTimeResult.isValid()) {
-            qDebug() << "Invalid date time";
-            break;
-        }
-        if(dateTimeResult.isNull()) {
-            destination->clear();
-            break;
-        }
-        destination->setDateTime(dateTimeResult);
-        return;
-    }
-    case NetVariantTypeEnum_Object:
-    {
-        if (source->type() == static_cast<QVariant::Type>(QMetaType::QObjectStar)) {
-
-            QObject* value = source->value<QObject*>();
-            NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
-            if(netValue) {
-                destination->setNetReference(netValue->getNetReference());
-                return;
-            }
-        }
-        break;
-    }
-    case NetVariantTypeEnum_JSValue:
-    {
-        if(source->userType() == qMetaTypeId<QJSValue>()) {
-            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(source->value<QJSValue>()));
-            destination->setJsValue(netJsValue);
-            return;
-        } else {
-            // TODO: Try to convert other types to JS Value.
-        }
-        break;
-    }
-    default:
-        break;
-    }
-
-    switch(source->type()) {
-    case QVariant::Invalid:
-        destination->clear();
-        break;
-    case QVariant::Bool:
-        destination->setBool(source->value<bool>());
-        break;
-    case QVariant::Char:
-        destination->setChar(source->toChar());
-        break;
-    case QVariant::Int:
-        destination->setInt(source->value<int>());
-        break;
-    case QVariant::UInt:
-        destination->setUInt(source->value<unsigned int>());
-        break;
-    case QVariant::Double:
-        destination->setDouble(source->value<double>());
-        break;
-    case QVariant::String:
-    {
-        QString stringValue = source->toString();
-        destination->setString(&stringValue);
-        break;
-    }
-    case QVariant::DateTime:
-    {
-        QDateTime dateTimeValue = source->toDateTime();
-        destination->setDateTime(dateTimeValue);
-        break;
-    }
-    default:
-
-        if(source->userType() == qMetaTypeId<QJSValue>()) {
-            // TODO: Either serialize this type to a string, to be deserialized in .NET, or
-            // pass raw value to .NET to be dynamically invoked (using dynamic).
-            // See qtdeclarative\src\plugins\qmltooling\qmldbg_debugger\qqmlenginedebugservice.cpp:184
-            // for serialization methods.
-            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(source->value<QJSValue>()));
-            destination->setJsValue(netJsValue);
-            break;
-        }
-
-        qDebug() << "Unsupported variant type: " << source->type();
-        break;
-    }
-}
 
 QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
 {
@@ -227,11 +40,12 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
         for(uint index = 0; index <= typeInfo->getPropertyCount() - 1; index++)
         {
             QSharedPointer<NetPropertyInfo> propertyInfo = typeInfo->getProperty(index);
+            QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
             QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->getPropertyName().toLatin1(),
-                                                         "QVariant",
-                                                         index);
+                NetMetaValueQmlType(propertyType->getPrefVariantType()),
+                index);
             QSharedPointer<NetSignalInfo> notifySignal = propertyInfo->getNotifySignal();
-            if(notifySignal != NULL) {
+            if(notifySignal != nullptr) {
                 // The signal was previously registered, find the index.
                 for(uint signalIndex = 0; signalIndex <= typeInfo->getSignalCount() - 1; signalIndex++)
                 {
@@ -253,8 +67,9 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
             QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(index);
             QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
             QString signature = methodInfo->getSignature();
-            if(returnType != NULL) {
-                mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()), "QVariant");
+            if(returnType != nullptr) {
+                mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()),
+                    NetMetaValueQmlType(returnType->getPrefVariantType()));
             } else {
                 mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
             }
@@ -300,11 +115,12 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         }
 
         QSharedPointer<NetPropertyInfo> propertyInfo = instance->getTypeInfo()->getProperty(idx - offset);
+        QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
         readProperty(propertyInfo, instance, result);
 
-        metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
+        NetMetaValuePack(propertyType->getPrefVariantType(), result, a[0]);
     }
         break;
     case WriteProperty:
@@ -315,9 +131,10 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         }
 
         QSharedPointer<NetPropertyInfo> propertyInfo = instance->getTypeInfo()->getProperty(idx - offset);
+        QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
-        metaUnpackValue(newValue, reinterpret_cast<QVariant*>(a[0]), propertyInfo->getReturnType()->getPrefVariantType());
+        NetMetaValueUnpack(propertyType->getPrefVariantType(), newValue, a[0]);
 
         writeProperty(propertyInfo, instance, newValue);
     }
@@ -348,22 +165,23 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 for(uint index = 0; index <= methodInfo->getParameterCount() - 1; index++)
                 {
                     QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
-
+                    QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
                     QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
-                    metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), parameter->getType()->getPrefVariantType());
+                    NetMetaValueUnpack(parameterType->getPrefVariantType(), netVariant, a[index + 1]);
                     parameters->add(netVariant);
                 }
             }
 
             QSharedPointer<NetVariant> result;
-            if(methodInfo->getReturnType() != NULL) {
+            QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
+            if(returnType != nullptr) {
                 result = QSharedPointer<NetVariant>(new NetVariant());
             }
 
             invokeNetMethod(methodInfo, instance, parameters, result);
 
-            if(result != NULL) {
-                metaPackValue(result, reinterpret_cast<QVariant*>(a[0]));
+            if(result != nullptr) {
+                NetMetaValuePack(returnType->getPrefVariantType(), result, a[0]);
             }
 
             return -1;
@@ -384,7 +202,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                     NetVariantTypeEnum parameterType = signalInfo->getParameter(index);
 
                     QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
-                    metaUnpackValue(netVariant, reinterpret_cast<QVariant*>(a[index + 1]), parameterType);
+                    NetMetaValueUnpack(parameterType, netVariant, a[index + 1]);
                     parameters->add(netVariant);
                 }
             }

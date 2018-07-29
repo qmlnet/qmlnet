@@ -1,0 +1,37 @@
+#ifndef NETVALUEMETAOBJECTPACKER_H
+#define NETVALUEMETAOBJECTPACKER_H
+
+#include <QmlNet.h>
+#include <QSharedPointer>
+#include <QMap>
+
+class NetVariant;
+
+class NetValueTypePacker
+{
+public:
+    NetValueTypePacker() {}
+    virtual ~NetValueTypePacker() {}
+    virtual const char* getQmlType();
+    virtual void pack(QSharedPointer<NetVariant> source, void* destination);
+    virtual void unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum prefType);
+};
+
+#define NetMetaValuePack(type, source, destination) \
+    NetValueMetaObjectPacker::getInstance()->getPacker(type)->pack(source, destination)
+#define NetMetaValueUnpack(type, destination, source) \
+    NetValueMetaObjectPacker::getInstance()->getPacker(type)->unpack(destination, source, type)
+#define NetMetaValueQmlType(type) \
+    NetValueMetaObjectPacker::getInstance()->getPacker(type)->getQmlType()
+
+class NetValueMetaObjectPacker
+{
+public:
+    NetValueMetaObjectPacker();
+    static NetValueMetaObjectPacker* getInstance();
+    NetValueTypePacker* getPacker(NetVariantTypeEnum variantType);
+private:
+    QMap<NetVariantTypeEnum, NetValueTypePacker*> packers;
+};
+
+#endif // NETVALUEMETAOBJECTPACKER_H
