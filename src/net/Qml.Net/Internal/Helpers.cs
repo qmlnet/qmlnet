@@ -35,6 +35,8 @@ namespace Qml.Net.Internal
                     destination.String = (string)source;
                 else if(type == typeof(DateTime))
                     destination.DateTime = (DateTime)source;
+                else if (type == typeof(DateTimeOffset))
+                    destination.DateTime = ((DateTimeOffset) source).DateTime;
                 else if (typeof(INetJsValue).IsAssignableFrom(type))
                     destination.JsValue = ((NetJsValue.NetJsValueDynamic) source).JsValue;
                 else

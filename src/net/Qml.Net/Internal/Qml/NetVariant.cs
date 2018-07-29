@@ -81,7 +81,7 @@ namespace Qml.Net.Internal.Qml
                     dateTime.Hour,
                     dateTime.Minute,
                     dateTime.Second,
-                    dateTime.Minute,
+                    dateTime.Msec,
                     TimeSpan.FromSeconds(dateTime.OffsetSeconds));
             }
             set
