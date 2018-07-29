@@ -23,69 +23,59 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
     mob.setFlags(QMetaObjectBuilder::DynamicMetaObject);
 
     // register all the signals for the type
-
-    if(typeInfo->getSignalCount() > 0) {
-        for(uint index = 0; index <= typeInfo->getSignalCount() - 1; index++)
-        {
-            QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
-            QString signature = signalInfo->getSignature();
-            mob.addSignal(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
-        }
+    for(int index = 0; index <= typeInfo->getSignalCount() - 1; index++)
+    {
+        QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
+        QString signature = signalInfo->getSignature();
+        mob.addSignal(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
     }
 
     // NOTE: It is important to register properties after the signals (before methods)
     // because of the assumptions we make about getting the "notifySignal" by index.
-
-    if(typeInfo->getPropertyCount() > 0) {
-        for(uint index = 0; index <= typeInfo->getPropertyCount() - 1; index++)
-        {
-            QSharedPointer<NetPropertyInfo> propertyInfo = typeInfo->getProperty(index);
-            QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
-            QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->getPropertyName().toLatin1(),
-                NetMetaValueQmlType(propertyType->getPrefVariantType()),
-                index);
-            QSharedPointer<NetSignalInfo> notifySignal = propertyInfo->getNotifySignal();
-            if(notifySignal != nullptr) {
-                // The signal was previously registered, find the index.
-                for(uint signalIndex = 0; signalIndex <= typeInfo->getSignalCount() - 1; signalIndex++)
-                {
-                    if(typeInfo->getSignal(signalIndex) == notifySignal) {
-                        QMetaMethodBuilder notifySignalBuilder = mob.method(signalIndex);
-                        propb.setNotifySignal(notifySignalBuilder);
-                        break;
-                    }
+    for(int index = 0; index <= typeInfo->getPropertyCount() - 1; index++)
+    {
+        QSharedPointer<NetPropertyInfo> propertyInfo = typeInfo->getProperty(index);
+        QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
+        QMetaPropertyBuilder propb = mob.addProperty(propertyInfo->getPropertyName().toLatin1(),
+            NetMetaValueQmlType(propertyType->getPrefVariantType()),
+            index);
+        QSharedPointer<NetSignalInfo> notifySignal = propertyInfo->getNotifySignal();
+        if(notifySignal != nullptr) {
+            // The signal was previously registered, find the index.
+            for(int signalIndex = 0; signalIndex <= typeInfo->getSignalCount() - 1; signalIndex++)
+            {
+                if(typeInfo->getSignal(signalIndex) == notifySignal) {
+                    QMetaMethodBuilder notifySignalBuilder = mob.method(signalIndex);
+                    propb.setNotifySignal(notifySignalBuilder);
+                    break;
                 }
             }
-            propb.setWritable(propertyInfo->canWrite());
-            propb.setReadable(propertyInfo->canRead());
         }
+        propb.setWritable(propertyInfo->canWrite());
+        propb.setReadable(propertyInfo->canRead());
     }
 
-    if(typeInfo->getMethodCount() > 0) {
-        for(uint index = 0; index <= typeInfo->getMethodCount() - 1; index++)
-        {
-            QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(index);
-            QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
-            QString signature = methodInfo->getSignature();
-            if(returnType != nullptr) {
-                mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()),
-                    NetMetaValueQmlType(returnType->getPrefVariantType()));
-            } else {
-                mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
-            }
+    for(int index = 0; index <= typeInfo->getMethodCount() - 1; index++)
+    {
+        QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(index);
+        QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
+        QString signature = methodInfo->getSignature();
+        if(returnType != nullptr) {
+            mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()),
+                NetMetaValueQmlType(returnType->getPrefVariantType()));
+        } else {
+            mob.addMethod(QMetaObject::normalizedSignature(signature.toLocal8Bit().constData()));
         }
     }
 
     // For every signal that was added, add an associated slot
     // so that we can auto-hook the slot to each signal so that
     // we can raise .NET-attached delegates.
-    if(typeInfo->getSignalCount() > 0) {
-        for(uint index = 0; index <= typeInfo->getSignalCount() - 1; index++)
-        {
-            QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
-            QString signature = signalInfo->getSlotSignature();
-            mob.addSlot(signature.toLatin1().data());
-        }
+    for(int index = 0; index <= typeInfo->getSignalCount() - 1; index++)
+    {
+        QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(index);
+        QString signature = signalInfo->getSlotSignature();
+        mob.addSlot(signature.toLatin1().data());
     }
 
     QMetaObject *mo = mob.toMetaObject();
@@ -155,21 +145,19 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
         idx -= instance->getTypeInfo()->getSignalCount();
 
-        if(idx < (int)instance->getTypeInfo()->getMethodCount()) {
+        if(idx < instance->getTypeInfo()->getMethodCount()) {
             // This is a method call!
 
             QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx);
             QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
 
-            if(methodInfo->getParameterCount() > 0) {
-                for(uint index = 0; index <= methodInfo->getParameterCount() - 1; index++)
-                {
-                    QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
-                    QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
-                    QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
-                    NetMetaValueUnpack(parameterType->getPrefVariantType(), netVariant, a[index + 1]);
-                    parameters->add(netVariant);
-                }
+            for(int index = 0; index <= methodInfo->getParameterCount() - 1; index++)
+            {
+                QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
+                QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
+                QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
+                NetMetaValueUnpack(parameterType->getPrefVariantType(), netVariant, a[index + 1]);
+                parameters->add(netVariant);
             }
 
             QSharedPointer<NetVariant> result;
@@ -197,7 +185,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
             if(signalInfo->getParameterCount() > 0) {
                 parameters = QSharedPointer<NetVariantList>(new NetVariantList());
-                for(uint index = 0; index <= signalInfo->getParameterCount() - 1; index++)
+                for(int index = 0; index <= signalInfo->getParameterCount() - 1; index++)
                 {
                     NetVariantTypeEnum parameterType = signalInfo->getParameter(index);
 

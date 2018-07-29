@@ -26,7 +26,7 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
     // Perf?
     QString signature = signalName;
     signature.append("(");
-    if(arguments != NULL) {
+    if(arguments != nullptr) {
         for(int argumentIndex = 0; argumentIndex <= arguments->count() - 1; argumentIndex++)
         {
             if(argumentIndex > 0) {
@@ -55,8 +55,8 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
     // Build the types needed to activate the signal
     QList<QSharedPointer<QVariant>> variantArgs;
     std::vector<void*> voidArgs;
-    voidArgs.push_back(NULL); // For the return type, which is nothing for signals.
-    if(arguments != NULL) {
+    voidArgs.push_back(nullptr); // For the return type, which is nothing for signals.
+    if(arguments != nullptr) {
         for(int x = 0 ; x < arguments->count(); x++) {
             QSharedPointer<QVariant> variant = QSharedPointer<QVariant>(new QVariant(arguments->get(x)->getVariant()));
             variantArgs.append(variant);
@@ -95,25 +95,25 @@ NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
 {
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
-    if(instance->getTypeInfo()->getSignalCount() > 0) {
-        // Auto wire up all of our signal handlers that will invoke .NET delegates.
-        for(uint index = 0; index <= instance->getTypeInfo()->getSignalCount() - 1; index++)
-        {
-            QSharedPointer<NetSignalInfo> signalInfo = instance->getTypeInfo()->getSignal(index);
 
-            QString signalSig = signalInfo->getSignature();
-            QString slotSig = signalInfo->getSlotSignature();
+    // Auto wire up all of our signal handlers that will invoke .NET delegates.
+    for(int index = 0; index <= instance->getTypeInfo()->getSignalCount() - 1; index++)
+    {
+        QSharedPointer<NetSignalInfo> signalInfo = instance->getTypeInfo()->getSignal(index);
 
-            int signalIndex = valueMeta->indexOfSignal(signalSig.toLatin1().data());
-            int slotIndex = valueMeta->indexOfSlot(slotSig.toLatin1().data());
+        QString signalSig = signalInfo->getSignature();
+        QString slotSig = signalInfo->getSlotSignature();
 
-            QMetaMethod signalMethod = valueMeta->method(signalIndex);
-            QMetaMethod slotMethod = valueMeta->method(slotIndex);
+        int signalIndex = valueMeta->indexOfSignal(signalSig.toLatin1().data());
+        int slotIndex = valueMeta->indexOfSlot(slotSig.toLatin1().data());
 
-            QObject::connect(this, signalMethod,
-                             this, slotMethod);
-        }
+        QMetaMethod signalMethod = valueMeta->method(signalIndex);
+        QMetaMethod slotMethod = valueMeta->method(slotIndex);
+
+        QObject::connect(this, signalMethod,
+                         this, slotMethod);
     }
+
     objectIdNetValuesMap[instance->getObjectId()] = this;
 }
 

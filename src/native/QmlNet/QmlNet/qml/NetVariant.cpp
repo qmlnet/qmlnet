@@ -302,8 +302,8 @@ Q_DECL_EXPORT NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer*
 }
 
 Q_DECL_EXPORT void net_variant_setNetReference(NetVariantContainer* container, NetReferenceContainer* instanceContainer) {
-    if(instanceContainer == NULL) {
-        container->variant->setNetReference(NULL);
+    if(instanceContainer == nullptr) {
+        container->variant->setNetReference(nullptr);
     } else {
         container->variant->setNetReference(instanceContainer->instance);
     }
@@ -360,8 +360,8 @@ Q_DECL_EXPORT double net_variant_getDouble(NetVariantContainer* container) {
 }
 
 Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, LPWSTR value) {
-    if(value == NULL) {
-        container->variant->setString(NULL);
+    if(value == nullptr) {
+        container->variant->setString(nullptr);
     } else {
         QString temp = QString::fromUtf16((const char16_t*)value);
         container->variant->setString(&temp);
@@ -371,13 +371,13 @@ Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, LPWSTR 
 Q_DECL_EXPORT LPWSTR net_variant_getString(NetVariantContainer* container) {
     QString string = container->variant->getString();
     if(string.isNull()) {
-        return NULL;
+        return nullptr;
     }
     return (LPWSTR)string.utf16();
 }
 
 Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* value) {
-    if(value == NULL || value->isNull) {
+    if(value == nullptr || value->isNull) {
         QDateTime dt;
         container->variant->setDateTime(dt);
     } else {

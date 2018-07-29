@@ -25,7 +25,7 @@ public:
 };
 
 template <int N>
-QSharedPointer<NetTypeInfo> NetValueType<N>::typeInfo = NULL;
+QSharedPointer<NetTypeInfo> NetValueType<N>::typeInfo = nullptr;
 template <int N>
 QMetaObject NetValueType<N>::staticMetaObject = QMetaObject();
 

@@ -54,7 +54,7 @@ Q_DECL_EXPORT bool net_instance_activateSignal(NetReferenceContainer* container,
     QString signalNameString = QString::fromUtf16((const char16_t*)signalName);
 
     QSharedPointer<NetVariantList> parameters;
-    if(parametersContainer != NULL) {
+    if(parametersContainer != nullptr) {
         parameters = parametersContainer->list;
     }
 

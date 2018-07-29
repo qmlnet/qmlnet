@@ -62,7 +62,7 @@ Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContaine
                                                NetSignalInfoContainer* notifySignalContainer) {
     NetPropertyInfoContainer* result = new NetPropertyInfoContainer();
     QSharedPointer<NetSignalInfo> notifySignal;
-    if(notifySignalContainer != NULL) {
+    if(notifySignalContainer != nullptr) {
         notifySignal = notifySignalContainer->signal;
     }
     NetPropertyInfo* instance = new NetPropertyInfo(parentTypeContainer->netTypeInfo,
@@ -106,8 +106,8 @@ Q_DECL_EXPORT bool property_info_canWrite(NetPropertyInfoContainer* container) {
 
 Q_DECL_EXPORT NetSignalInfoContainer* property_info_getNotifySignal(NetPropertyInfoContainer* container) {
     QSharedPointer<NetSignalInfo> notifySignal = container->property->getNotifySignal();
-    if(notifySignal == NULL) {
-        return NULL;
+    if(notifySignal == nullptr) {
+        return nullptr;
     }
     return new NetSignalInfoContainer{notifySignal};
 }

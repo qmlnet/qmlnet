@@ -10,7 +10,7 @@ Q_DECL_EXPORT void net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEng
     component.setData(qmlString.toUtf8(), QUrl());
     QObject *object = component.create();
 
-    if(object == NULL) {
+    if(object == nullptr) {
         qWarning() << "Couldn't create qml object.";
         return;
     }

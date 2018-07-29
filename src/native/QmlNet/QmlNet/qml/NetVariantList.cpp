@@ -19,8 +19,8 @@ void NetVariantList::add(QSharedPointer<NetVariant> variant) {
 }
 
 QSharedPointer<NetVariant> NetVariantList::get(int index) {
-    if(index < 0) return QSharedPointer<NetVariant>(NULL);
-    if(index >= variants.length()) return QSharedPointer<NetVariant>(NULL);
+    if(index < 0) return QSharedPointer<NetVariant>(nullptr);
+    if(index >= variants.length()) return QSharedPointer<NetVariant>(nullptr);
     return variants.at(index);
 }
 
@@ -54,7 +54,7 @@ Q_DECL_EXPORT void net_variant_list_add(NetVariantListContainer* container, NetV
 
 Q_DECL_EXPORT NetVariantContainer* net_variant_list_get(NetVariantListContainer* container, int index){
     QSharedPointer<NetVariant> variant = container->list->get(index);
-    if(variant == NULL) return NULL;
+    if(variant == nullptr) return nullptr;
     NetVariantContainer* result = new NetVariantContainer();
     result->variant = variant;
     return result;

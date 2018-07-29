@@ -28,9 +28,9 @@ namespace Qml.Net.Internal.Types
             Interop.NetSignalInfo.AddParameter(Handle, type);
         }
 
-        public uint ParameterCount => Interop.NetSignalInfo.GetParameterCount(Handle);
+        public int ParameterCount => Interop.NetSignalInfo.GetParameterCount(Handle);
 
-        public NetVariantType GetParameter(uint index)
+        public NetVariantType GetParameter(int index)
         {
             return Interop.NetSignalInfo.GetParameter(Handle, index);
         }
@@ -57,8 +57,8 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "signal_info_addParameter")]
         void AddParameter(IntPtr signal, NetVariantType type);
         [NativeSymbol(Entrypoint = "signal_info_getParameterCount")]
-        uint GetParameterCount(IntPtr signal);
+        int GetParameterCount(IntPtr signal);
         [NativeSymbol(Entrypoint = "signal_info_getParameter")]
-        NetVariantType GetParameter(IntPtr signal, uint index);
+        NetVariantType GetParameter(IntPtr signal, int index);
     }
 }

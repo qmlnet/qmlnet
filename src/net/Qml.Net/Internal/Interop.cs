@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
@@ -13,6 +14,10 @@ namespace Qml.Net.Internal
         
         static Interop()
         {
+            Environment.SetEnvironmentVariable("QML_NET_LIB_NAME", "AbraQmlNet");
+            Environment.SetEnvironmentVariable("DYLD_LIBRARY_PATH", "/Users/pknopf/git/x3/app/src/build-Abra-Desktop_Qt_5_10_1_clang_64bit2-Debug");
+
+            
             var qmlNetLibName = System.Environment.GetEnvironmentVariable("QML_NET_LIB_NAME");
             if (string.IsNullOrEmpty(qmlNetLibName))
             {

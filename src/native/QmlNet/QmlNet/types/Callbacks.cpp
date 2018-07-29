@@ -62,7 +62,7 @@ QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type) {
 
     QSharedPointer<NetReference> result;
 
-    if(resultContainer != NULL) {
+    if(resultContainer != nullptr) {
         result = resultContainer->instance;
         // Special care is given here. .NET
         // has given us a container that it will NOT delete itself.
@@ -162,9 +162,9 @@ Q_DECL_EXPORT void type_info_callbacks_readProperty(NetPropertyInfoContainer* pr
     // will delete them.
     NetPropertyInfoContainer* propertyCopy = new NetPropertyInfoContainer{property->property};
     NetReferenceContainer* targetCopy = new NetReferenceContainer{target->instance};
-    NetVariantContainer* resultCopy = NULL;
+    NetVariantContainer* resultCopy = nullptr;
 
-    if(result != NULL) {
+    if(result != nullptr) {
         resultCopy = new NetVariantContainer{result->variant};
     }
 
@@ -176,9 +176,9 @@ Q_DECL_EXPORT void type_info_callbacks_writeProperty(NetPropertyInfoContainer* p
     // will delete them.
     NetPropertyInfoContainer* propertyCopy = new NetPropertyInfoContainer{property->property};
     NetReferenceContainer* targetCopy = new NetReferenceContainer{target->instance};
-    NetVariantContainer* valueCopy = NULL;
+    NetVariantContainer* valueCopy = nullptr;
 
-    if(value != NULL) {
+    if(value != nullptr) {
         valueCopy = new NetVariantContainer{value->variant};
     }
 
@@ -191,13 +191,13 @@ Q_DECL_EXPORT void type_info_callbacks_invokeMethod(NetMethodInfoContainer* meth
 
     NetMethodInfoContainer* methodCopy = new NetMethodInfoContainer{method->method};
     NetReferenceContainer* targetCopy = new NetReferenceContainer{target->instance};
-    NetVariantListContainer* parametersCopy = NULL;
-    NetVariantContainer* resultCopy = NULL;
+    NetVariantListContainer* parametersCopy = nullptr;
+    NetVariantContainer* resultCopy = nullptr;
 
-    if(parameters != NULL) {
+    if(parameters != nullptr) {
         parametersCopy = new NetVariantListContainer{parameters->list};
     }
-    if(result != NULL) {
+    if(result != nullptr) {
         resultCopy = new NetVariantContainer{result->variant};
     }
 

@@ -28,8 +28,8 @@ extern "C" {
 
 Q_DECL_EXPORT NetTypeInfoContainer* type_manager_getTypeInfo(LPWSTR fullTypeName) {
     QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo(QString::fromUtf16((const char16_t*)fullTypeName));
-    if(typeInfo == NULL) {
-        return NULL;
+    if(typeInfo == nullptr) {
+        return nullptr;
     }
     NetTypeInfoContainer* container = new NetTypeInfoContainer();
     container->netTypeInfo = typeInfo;

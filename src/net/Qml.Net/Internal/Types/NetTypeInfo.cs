@@ -37,9 +37,9 @@ namespace Qml.Net.Internal.Types
             Interop.NetTypeInfo.AddMethod(Handle, methodInfo.Handle);
         }
 
-        public uint MethodCount => Interop.NetTypeInfo.GetMethodCount(Handle);
+        public int MethodCount => Interop.NetTypeInfo.GetMethodCount(Handle);
 
-        public NetMethodInfo GetMethod(uint index)
+        public NetMethodInfo GetMethod(int index)
         {
             var result = Interop.NetTypeInfo.GetMethodInfo(Handle, index);
             if (result == IntPtr.Zero) return null;
@@ -51,9 +51,9 @@ namespace Qml.Net.Internal.Types
             Interop.NetTypeInfo.AddProperty(Handle, property.Handle);
         }
 
-        public uint PropertyCount => Interop.NetTypeInfo.GetPropertyCount(Handle);
+        public int PropertyCount => Interop.NetTypeInfo.GetPropertyCount(Handle);
 
-        public NetPropertyInfo GetProperty(uint index)
+        public NetPropertyInfo GetProperty(int index)
         {
             var result = Interop.NetTypeInfo.GetProperty(Handle, index);
             if (result == IntPtr.Zero) return null;
@@ -65,9 +65,9 @@ namespace Qml.Net.Internal.Types
             Interop.NetTypeInfo.AddSignal(Handle, signal.Handle);
         }
 
-        public uint SignalCount => Interop.NetTypeInfo.GetSignalCount(Handle);
+        public int SignalCount => Interop.NetTypeInfo.GetSignalCount(Handle);
 
-        public NetSignalInfo GetSignal(uint index)
+        public NetSignalInfo GetSignal(int index)
         {
             var result = Interop.NetTypeInfo.GetSignal(Handle, index);
             if (result == IntPtr.Zero) return null;
@@ -112,23 +112,23 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
         void AddMethod(IntPtr typeInfo, IntPtr methodInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodCount")]
-        uint GetMethodCount(IntPtr typeInfo);
+        int GetMethodCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
-        IntPtr GetMethodInfo(IntPtr typeInfo, uint index);
+        IntPtr GetMethodInfo(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_addProperty")]
         void AddProperty(IntPtr typeInfo, IntPtr property);
         [NativeSymbol(Entrypoint = "type_info_getPropertyCount")]
-        uint GetPropertyCount(IntPtr typeInfo);
+        int GetPropertyCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getProperty")]
-        IntPtr GetProperty(IntPtr typeInfo, uint index);
+        IntPtr GetProperty(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_addSignal")]
         void AddSignal(IntPtr typeInfo, IntPtr signal);
         [NativeSymbol(Entrypoint = "type_info_getSignalCount")]
-        uint GetSignalCount(IntPtr typeInfo);
+        int GetSignalCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getSignal")]
-        IntPtr GetSignal(IntPtr typeInfo, uint index);
+        IntPtr GetSignal(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_isLoaded")]
         bool IsLoaded(IntPtr typeInfo);

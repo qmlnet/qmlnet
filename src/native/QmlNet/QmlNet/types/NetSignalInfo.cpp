@@ -19,12 +19,13 @@ void NetSignalInfo::addParameter(NetVariantTypeEnum type) {
     _parameters.append(type);
 }
 
-uint NetSignalInfo::getParameterCount() {
+int NetSignalInfo::getParameterCount() {
     return _parameters.size();
 }
 
-NetVariantTypeEnum NetSignalInfo::getParameter(uint index) {
-    if(index >= (uint)_parameters.length()) return NetVariantTypeEnum_Invalid;
+NetVariantTypeEnum NetSignalInfo::getParameter(int index) {
+    if(index < 0) return NetVariantTypeEnum_Invalid;
+    if(index >= _parameters.length()) return NetVariantTypeEnum_Invalid;
     return _parameters.at(index);
 }
 
@@ -33,14 +34,12 @@ QString NetSignalInfo::getSignature() {
 
     signature.append("(");
 
-    if(_parameters.size() > 0) {
-        for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
-        {
-            if(parameterIndex > 0) {
-                signature.append(",");
-            }
-            signature.append("QVariant");
+    for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
+    {
+        if(parameterIndex > 0) {
+            signature.append(",");
         }
+        signature.append("QVariant");
     }
 
     signature.append(")");
@@ -95,11 +94,11 @@ Q_DECL_EXPORT void signal_info_addParameter(NetSignalInfoContainer* container, N
     container->signal->addParameter(type);
 }
 
-Q_DECL_EXPORT uint signal_info_getParameterCount(NetSignalInfoContainer* container) {
+Q_DECL_EXPORT int signal_info_getParameterCount(NetSignalInfoContainer* container) {
     return container->signal->getParameterCount();
 }
 
-Q_DECL_EXPORT NetVariantTypeEnum signal_info_getParameter(NetSignalInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetVariantTypeEnum signal_info_getParameter(NetSignalInfoContainer* container, int index) {
     return container->signal->getParameter(index);
 }
 

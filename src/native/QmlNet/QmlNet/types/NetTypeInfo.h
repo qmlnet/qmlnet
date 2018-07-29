@@ -25,16 +25,16 @@ public:
     void setPrefVariantType(NetVariantTypeEnum variantType);
 
     void addMethod(QSharedPointer<NetMethodInfo> methodInfo);
-    uint getMethodCount();
-    QSharedPointer<NetMethodInfo> getMethodInfo(uint index);
+    int getMethodCount();
+    QSharedPointer<NetMethodInfo> getMethodInfo(int index);
 
     void addProperty(QSharedPointer<NetPropertyInfo> property);
-    uint getPropertyCount();
-    QSharedPointer<NetPropertyInfo> getProperty(uint index);
+    int getPropertyCount();
+    QSharedPointer<NetPropertyInfo> getProperty(int index);
 
     void addSignal(QSharedPointer<NetSignalInfo> signal);
-    uint getSignalCount();
-    QSharedPointer<NetSignalInfo> getSignal(uint index);
+    int getSignalCount();
+    QSharedPointer<NetSignalInfo> getSignal(int index);
 
     bool isLoaded();
     bool isLoading();

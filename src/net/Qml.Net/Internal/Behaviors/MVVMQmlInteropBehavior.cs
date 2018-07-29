@@ -63,14 +63,14 @@ namespace Qml.Net.Internal.Behaviors
             {
                 return;
             }
-            for (uint i = 0; i < netTypeInfo.PropertyCount; i++)
+            for (var i = 0; i < netTypeInfo.PropertyCount; i++)
             {
-                uint? existingSignalIndex = null;
+                int? existingSignalIndex = null;
 
                 var property = netTypeInfo.GetProperty(i);
                 var signalName = CalculateSignalSignatureFromPropertyName(property.Name);
                 //check if this signal already has been registered
-                for(uint signalIndex = 0; signalIndex < netTypeInfo.SignalCount; signalIndex++)
+                for(var signalIndex = 0; signalIndex < netTypeInfo.SignalCount; signalIndex++)
                 {
                     var signal = netTypeInfo.GetSignal(signalIndex);
                     if(string.Equals(signalName, signal.Name))

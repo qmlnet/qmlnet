@@ -5,7 +5,7 @@
 #include <QmlNet/types/Callbacks.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
-    metaObject(NULL),
+    metaObject(nullptr),
     _fullTypeName(fullTypeName),
     _variantType(NetVariantTypeEnum_Invalid),
     _lazyLoaded(false),
@@ -42,12 +42,13 @@ void NetTypeInfo::addMethod(QSharedPointer<NetMethodInfo> methodInfo) {
     _methods.append(methodInfo);
 }
 
-uint NetTypeInfo::getMethodCount() {
+int NetTypeInfo::getMethodCount() {
     return _methods.size();
 }
 
-QSharedPointer<NetMethodInfo> NetTypeInfo::getMethodInfo(uint index) {
-    if(index >= (uint)_methods.length()) return QSharedPointer<NetMethodInfo>(NULL);
+QSharedPointer<NetMethodInfo> NetTypeInfo::getMethodInfo(int index) {
+    if(index < 0) return QSharedPointer<NetMethodInfo>(nullptr);
+    if(index >= _methods.length()) return QSharedPointer<NetMethodInfo>(nullptr);
     return _methods.at(index);
 }
 
@@ -55,12 +56,13 @@ void NetTypeInfo::addProperty(QSharedPointer<NetPropertyInfo> property) {
     _properties.append(property);
 }
 
-uint NetTypeInfo::getPropertyCount() {
+int NetTypeInfo::getPropertyCount() {
     return _properties.size();
 }
 
-QSharedPointer<NetPropertyInfo> NetTypeInfo::getProperty(uint index) {
-    if(index >= (uint)_properties.length()) return QSharedPointer<NetPropertyInfo>(NULL);
+QSharedPointer<NetPropertyInfo> NetTypeInfo::getProperty(int index) {
+    if(index < 0) return QSharedPointer<NetPropertyInfo>(nullptr);
+    if(index >= _properties.length()) return QSharedPointer<NetPropertyInfo>(nullptr);
     return _properties.at(index);
 }
 
@@ -68,12 +70,13 @@ void NetTypeInfo::addSignal(QSharedPointer<NetSignalInfo> signal) {
     _signals.append(signal);
 }
 
-uint NetTypeInfo::getSignalCount() {
+int NetTypeInfo::getSignalCount() {
     return _signals.size();
 }
 
-QSharedPointer<NetSignalInfo> NetTypeInfo::getSignal(uint index) {
-    if(index >= (uint)_signals.size()) return QSharedPointer<NetSignalInfo>(NULL);
+QSharedPointer<NetSignalInfo> NetTypeInfo::getSignal(int index) {
+    if(index < 0) return QSharedPointer<NetSignalInfo>(nullptr);
+    if(index >= _signals.size()) return QSharedPointer<NetSignalInfo>(nullptr);
     return _signals.at(index);
 }
 
@@ -109,7 +112,7 @@ Q_DECL_EXPORT NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
 
 Q_DECL_EXPORT void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
     delete netTypeInfo;
-    netTypeInfo = NULL;
+    netTypeInfo = nullptr;
 }
 
 Q_DECL_EXPORT LPWSTR type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
@@ -136,14 +139,14 @@ Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMet
     netTypeInfo->netTypeInfo->addMethod(methodInfo->method);
 }
 
-Q_DECL_EXPORT uint type_info_getMethodCount(NetTypeInfoContainer* container) {
+Q_DECL_EXPORT int type_info_getMethodCount(NetTypeInfoContainer* container) {
     return container->netTypeInfo->getMethodCount();
 }
 
-Q_DECL_EXPORT NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container, int index) {
     QSharedPointer<NetMethodInfo> methodInfo = container->netTypeInfo->getMethodInfo(index);
-    if(methodInfo == NULL) {
-        return NULL;
+    if(methodInfo == nullptr) {
+        return nullptr;
     }
     NetMethodInfoContainer* result = new NetMethodInfoContainer();
     result->method = methodInfo;
@@ -154,14 +157,14 @@ Q_DECL_EXPORT void type_info_addProperty(NetTypeInfoContainer* container, NetPro
     container->netTypeInfo->addProperty(propertyContainer->property);
 }
 
-Q_DECL_EXPORT uint type_info_getPropertyCount(NetTypeInfoContainer* container) {
+Q_DECL_EXPORT int type_info_getPropertyCount(NetTypeInfoContainer* container) {
     return container->netTypeInfo->getPropertyCount();
 }
 
-Q_DECL_EXPORT NetPropertyInfoContainer* type_info_getProperty(NetTypeInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetPropertyInfoContainer* type_info_getProperty(NetTypeInfoContainer* container, int index) {
     QSharedPointer<NetPropertyInfo> property = container->netTypeInfo->getProperty(index);
-    if(property == NULL) {
-        return NULL;
+    if(property == nullptr) {
+        return nullptr;
     }
     NetPropertyInfoContainer* result = new NetPropertyInfoContainer();
     result->property = property;
@@ -172,14 +175,14 @@ Q_DECL_EXPORT void type_info_addSignal(NetTypeInfoContainer* container, NetSigna
     container->netTypeInfo->addSignal(signalContainer->signal);
 }
 
-Q_DECL_EXPORT uint type_info_getSignalCount(NetTypeInfoContainer* container) {
+Q_DECL_EXPORT int type_info_getSignalCount(NetTypeInfoContainer* container) {
     return container->netTypeInfo->getSignalCount();
 }
 
-Q_DECL_EXPORT NetSignalInfoContainer* type_info_getSignal(NetTypeInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetSignalInfoContainer* type_info_getSignal(NetTypeInfoContainer* container, int index) {
     QSharedPointer<NetSignalInfo> signal = container->netTypeInfo->getSignal(index);
-    if(signal == NULL) {
-        return NULL;
+    if(signal == nullptr) {
+        return nullptr;
     }
     NetSignalInfoContainer* result = new NetSignalInfoContainer();
     result->signal = signal;

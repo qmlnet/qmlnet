@@ -48,9 +48,9 @@ namespace Qml.Net.Internal.Types
             Interop.NetMethodInfo.AddParameter(Handle, name, type.Handle);
         }
 
-        public uint ParameterCount => Interop.NetMethodInfo.GetParameterCount(Handle);
+        public int ParameterCount => Interop.NetMethodInfo.GetParameterCount(Handle);
 
-        public NetMethodInfoParameter GetParameter(uint index)
+        public NetMethodInfoParameter GetParameter(int index)
         {
             var result = Interop.NetMethodInfo.GetParameter(Handle, index);
             if (result == IntPtr.Zero) return null;
@@ -63,7 +63,7 @@ namespace Qml.Net.Internal.Types
             var count = ParameterCount;
             for (var x = 0; x < count; x++)
             {
-                result.Add(GetParameter((uint)x));
+                result.Add(GetParameter(x));
             }
             return result;
         }
@@ -122,8 +122,8 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
         void AddParameter(IntPtr method, [MarshalAs(UnmanagedType.LPWStr)]string name, IntPtr type);
         [NativeSymbol(Entrypoint = "method_info_getParameterCount")]
-        uint GetParameterCount(IntPtr method);
+        int GetParameterCount(IntPtr method);
         [NativeSymbol(Entrypoint = "method_info_getParameter")]
-        IntPtr GetParameter(IntPtr method, uint index);
+        IntPtr GetParameter(IntPtr method, int index);
     }
 }

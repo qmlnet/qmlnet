@@ -27,8 +27,8 @@ public:
     QSharedPointer<NetTypeInfo> getReturnType();
 
     void addParameter(QString name, QSharedPointer<NetTypeInfo> typeInfo);
-    uint getParameterCount();
-    QSharedPointer<NetMethodInfoArguement> getParameter(uint index);
+    int getParameterCount();
+    QSharedPointer<NetMethodInfoArguement> getParameter(int index);
 
     QString getSignature();
 

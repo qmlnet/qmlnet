@@ -36,12 +36,13 @@ void NetMethodInfo::addParameter(QString name, QSharedPointer<NetTypeInfo> typeI
     _parameters.append(QSharedPointer<NetMethodInfoArguement>(new NetMethodInfoArguement(name, typeInfo)));
 }
 
-uint NetMethodInfo::getParameterCount() {
+int NetMethodInfo::getParameterCount() {
     return _parameters.size();
 }
 
-QSharedPointer<NetMethodInfoArguement> NetMethodInfo::getParameter(uint index) {
-    if(index >= (uint)_parameters.length()) return QSharedPointer<NetMethodInfoArguement>(NULL);
+QSharedPointer<NetMethodInfoArguement> NetMethodInfo::getParameter(int index) {
+    if(index < 0) return QSharedPointer<NetMethodInfoArguement>(nullptr);
+    if(index >= _parameters.length()) return QSharedPointer<NetMethodInfoArguement>(nullptr);
     return _parameters.at(index);
 }
 
@@ -50,16 +51,14 @@ QString NetMethodInfo::getSignature() {
 
     signature.append("(");
 
-    if(_parameters.size() > 0) {
-        for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
-        {
-            QSharedPointer<NetMethodInfoArguement> parameter = _parameters.at(parameterIndex);
-            QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
-            if(parameterIndex > 0) {
-                signature.append(",");
-            }
-            signature.append(NetMetaValueQmlType(parameterType->getPrefVariantType()));
+    for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
+    {
+        QSharedPointer<NetMethodInfoArguement> parameter = _parameters.at(parameterIndex);
+        QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
+        if(parameterIndex > 0) {
+            signature.append(",");
         }
+        signature.append(NetMetaValueQmlType(parameterType->getPrefVariantType()));
     }
 
     signature.append(")");
@@ -87,12 +86,12 @@ Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* p
     NetMethodInfoContainer* result = new NetMethodInfoContainer();
 
     QSharedPointer<NetTypeInfo> parentType;
-    if(parentTypeContainer != NULL) {
+    if(parentTypeContainer != nullptr) {
         parentType = parentTypeContainer->netTypeInfo;
     }
 
     QSharedPointer<NetTypeInfo> returnType;
-    if(returnTypeContainer != NULL) {
+    if(returnTypeContainer != nullptr) {
         returnType = returnTypeContainer->netTypeInfo;
     }
 
@@ -111,8 +110,8 @@ Q_DECL_EXPORT LPWSTR method_info_getMethodName(NetMethodInfoContainer* container
 
 Q_DECL_EXPORT NetTypeInfoContainer* method_info_getReturnType(NetMethodInfoContainer* container) {
     QSharedPointer<NetTypeInfo> returnType = container->method->getReturnType();
-    if(returnType == NULL) {
-        return NULL;
+    if(returnType == nullptr) {
+        return nullptr;
     }
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
     result->netTypeInfo = returnType;
@@ -123,14 +122,14 @@ Q_DECL_EXPORT void method_info_addParameter(NetMethodInfoContainer* container, L
     container->method->addParameter(QString::fromUtf16((const char16_t*)name), typeInfoContainer->netTypeInfo);
 }
 
-Q_DECL_EXPORT uint method_info_getParameterCount(NetMethodInfoContainer* container) {
+Q_DECL_EXPORT int method_info_getParameterCount(NetMethodInfoContainer* container) {
     return container->method->getParameterCount();
 }
 
-Q_DECL_EXPORT NetMethodInfoArguementContainer* method_info_getParameter(NetMethodInfoContainer* container, uint index) {
+Q_DECL_EXPORT NetMethodInfoArguementContainer* method_info_getParameter(NetMethodInfoContainer* container, int index) {
     QSharedPointer<NetMethodInfoArguement> parameter = container->method->getParameter(index);
-    if(parameter == NULL) {
-        return NULL;
+    if(parameter == nullptr) {
+        return nullptr;
     }
     NetMethodInfoArguementContainer* result = new NetMethodInfoArguementContainer();
     result->methodArguement = parameter;
