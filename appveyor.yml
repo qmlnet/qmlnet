@@ -1,3 +1,5 @@
 build_script:
   - cmd: git submodule update --init
   - cmd: build/appveyor.bat
+after_build:
+  - ps: Get-ChildItem output\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }

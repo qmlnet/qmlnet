@@ -19,3 +19,24 @@ include(QmlNet.pri)
 
 target.path = $$(PREFIX)
 INSTALLS += target
+
+win32 {
+    qtlibs.path = $$(PREFIX)
+    qtlibs.files = $$[QT_INSTALL_BINS]/Qt5Core.dll \
+        $$[QT_INSTALL_BINS]/Qt5Gui.dll \
+        $$[QT_INSTALL_BINS]/Qt5Network.dll \
+        $$[QT_INSTALL_BINS]/Qt5Qml.dll \
+        $$[QT_INSTALL_BINS]/Qt5Quick.dll \
+        $$[QT_INSTALL_BINS]/Qt5QuickControls2.dll \
+        $$[QT_INSTALL_BINS]/Qt5QuickTemplates2.dll
+    INSTALLS += qtlibs
+
+    qtplugins.path = $$(PREFIX)/plugins
+    qtplugins.files = $$[QT_INSTALL_PLUGINS]/*
+    INSTALLS += qtplugins
+
+    qtqml.path = $$(PREFIX)/qml
+    qtqml.files = $$[QT_INSTALL_QML]/*
+    INSTALLS += qtqml
+}
+

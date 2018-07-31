@@ -5,6 +5,8 @@ using static Build.Buildary.Path;
 using static Build.Buildary.Shell;
 using static Build.Buildary.Runner;
 using static Build.Buildary.Runtime;
+using static Build.Buildary.Log;
+using static Build.Buildary.File;
 
 namespace Build
 {
@@ -31,6 +33,28 @@ namespace Build
                 if (IsWindows())
                 {
                     RunShell($"{ExpandPath("./src/native/build.bat")}");
+
+                    // The windows build currently brings in all the .dll's for packaging.
+                    // However, it also brings in the *d.dll/*.pdb files. Let's remove them.
+                    foreach(var file in GetFiles(ExpandPath("./src/native/output/"), recursive: true))
+                    {
+                        if (file.EndsWith("d.dll"))
+                        {
+                            if(FileExists(file.Substring(0, file.Length - 5) + ".dll"))
+                            {
+                                // This is a debug dll.
+                                DeleteFile(file);
+                            }
+                        }
+                        else if (file.EndsWith(".pdb"))
+                        {
+                            DeleteFile(file);
+                        }
+                        else if (file.EndsWith("*.qmlc"))
+                        {
+                            DeleteFile(file);
+                        }
+                    }
                 }
                 else
                 {
@@ -49,11 +73,16 @@ namespace Build
             {
                 // Deploy our nuget packages.
                 RunShell($"dotnet pack {ExpandPath("src/net/Qml.Net.sln")} --output {ExpandPath("./output")} {commandBuildArgs}");
+                if (IsWindows())
+                {
+                    // Deploy our windows Binaries NuGet package.
+                    RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.WindowsBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgs}");
+                }
             });
             
             Add("default", DependsOn("clean", "build"));
 
-            Add("ci", DependsOn("build", "test"));
+            Add("ci", DependsOn("build", "test", "deploy"));
 
             return Run(options);
         }

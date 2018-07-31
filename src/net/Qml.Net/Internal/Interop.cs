@@ -1,4 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
@@ -13,13 +16,37 @@ namespace Qml.Net.Internal
         
         static Interop()
         {
-            var qmlNetLibName = System.Environment.GetEnvironmentVariable("QML_NET_LIB_NAME");
-            if (string.IsNullOrEmpty(qmlNetLibName))
+            string pluginsDirectory = null;
+            string qmlDirectory = null;
+
+            ILibraryPathResolver pathResolver = 
+                (ILibraryPathResolver)Activator.CreateInstance(Type.GetType("AdvancedDLSupport.DynamicLinkLibraryPathResolver, AdvancedDLSupport"), new object[] { true }); ;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                qmlNetLibName = "QmlNet";
+                // This custom path resolver attempts to do a DllImport to get the path that .NET decides.
+                // It may load a special dll from a NuGet package.
+                pathResolver = new DllImportLibraryPathResolver(pathResolver);
+                var resolveResult = ((DllImportLibraryPathResolver)pathResolver).Resolve("QmlNet");
+                if(resolveResult.IsSuccess)
+                {
+                    var directory = Path.GetDirectoryName(resolveResult.Path);
+                    // If this library as a plugins/qml directory below it, set it.
+                    var potentialPlugisDirectory = Path.Combine(directory, "plugins");
+                    if (Directory.Exists(potentialPlugisDirectory))
+                    {
+                        pluginsDirectory = potentialPlugisDirectory;
+                    }
+                    var potentialQmlDirectory = Path.Combine(directory, "qml");
+                    if(Directory.Exists(potentialQmlDirectory))
+                    {
+                        qmlDirectory = potentialQmlDirectory;
+                    }
+                }
             }
             
-            var interop = NativeLibraryBuilder.Default.ActivateInterface<ICombined>(qmlNetLibName);
+            var builder = new NativeLibraryBuilder(pathResolver: pathResolver);
+            
+            var interop = builder.ActivateInterface<ICombined>("QmlNet");
 
             Callbacks = interop;
             NetTypeInfo = interop;
@@ -37,6 +64,16 @@ namespace Qml.Net.Internal
             NetDelegate = interop;
             NetJsValue = interop;
             QQuickStyle = interop;
+            QtInterop = interop;
+            
+            if(!string.IsNullOrEmpty(pluginsDirectory))
+            {
+                Qt.PutEnv("QT_PLUGIN_PATH", pluginsDirectory);
+            }
+            if(!string.IsNullOrEmpty(qmlDirectory))
+            {
+                Qt.PutEnv("QML2_IMPORT_PATH", qmlDirectory);
+            }
 
             var cb = DefaultCallbacks.Callbacks();
             Callbacks.RegisterCallbacks(ref cb);
@@ -62,7 +99,8 @@ namespace Qml.Net.Internal
             IQResourceInterop,
             INetDelegateInterop,
             INetJsValueInterop,
-            IQQuickStyleInterop
+            IQQuickStyleInterop,
+            IQtInterop
         {
 
         }
@@ -98,5 +136,7 @@ namespace Qml.Net.Internal
         public static INetJsValueInterop NetJsValue { get; }
         
         public static IQQuickStyleInterop QQuickStyle { get; }
+
+        public static IQtInterop QtInterop { get; }
     }
 }
