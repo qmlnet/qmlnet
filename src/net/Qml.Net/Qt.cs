@@ -16,15 +16,15 @@ namespace Qml.Net
 
         public static string GetEnv(string name)
         {
-            return Interop.QtInterop.GetEnv(name);
-        }
+            return Utilities.ContainerToString(Interop.QtInterop.GetEnv(name));
+        } 
     }
 
     internal interface IQtInterop
     {
         [NativeSymbol(Entrypoint = "qt_putenv")]
-        bool PutEnv([MarshalAs(UnmanagedType.LPStr)]string name, [MarshalAs(UnmanagedType.LPStr)]string value);
+        bool PutEnv([MarshalAs(UnmanagedType.LPStr), CallerFree]string name, [MarshalAs(UnmanagedType.LPStr), CallerFree]string value);
         [NativeSymbol(Entrypoint = "qt_getenv")]
-        [return: MarshalAs(UnmanagedType.LPStr)] string GetEnv(string name);
+        IntPtr GetEnv(string name);
     }
 }
