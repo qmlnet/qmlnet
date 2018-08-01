@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 
 namespace Qml.Net.Internal
 {
-    internal class DllImportLibraryPathResolver : ILibraryPathResolver
+    internal class WindowsDllImportLibraryPathResolver : ILibraryPathResolver
     {
         ILibraryPathResolver _original;
 
-        public DllImportLibraryPathResolver(ILibraryPathResolver original)
+        public WindowsDllImportLibraryPathResolver(ILibraryPathResolver original)
         {
             _original = original;
         }

@@ -43,4 +43,18 @@ win32 {
 macx {
     # See here: https://stackoverflow.com/questions/51638447/c-sharp-pinvoke-returning-invalid-wrong-bool-value-only-when-native-code-compil
     CONFIG += debug
+
+    qtlibs.path = $$(PREFIX)/lib
+    qtlibs.files = $$[QT_INSTALL_LIBS]/*
+    INSTALLS += qtlibs
+
+    qtplugins.path = $$(PREFIX)/plugins
+    qtplugins.files = $$[QT_INSTALL_PLUGINS]/*
+    INSTALLS += qtplugins
+
+    qtqml.path = $$(PREFIX)/qml
+    qtqml.files = $$[QT_INSTALL_QML]/*
+    INSTALLS += qtqml
+
+    QMAKE_RPATHDIR += @loader_path/lib
 }

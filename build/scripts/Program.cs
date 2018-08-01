@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using static Bullseye.Targets;
 using static Build.Buildary.Directory;
@@ -70,6 +71,89 @@ namespace Build
                 else
                 {
                     RunShell("src/native/build.sh");
+
+                    if (IsOSX())
+                    {
+                        // We deploy the entire Qt framework. Let's trim it down.
+                        foreach(var directory in GetDirecories(ExpandPath("./src/native/output"), recursive:true))
+                        {
+                            if (!DirectoryExists(directory))
+                            {
+                                continue;
+                            }
+                            
+                            var directoryName = Path.GetFileName(directory);
+                            if (directoryName == "Headers")
+                            {
+                                DeleteDirectory(directory);
+                                continue;
+                            }
+                            
+                            if (directoryName.EndsWith(".dSYM"))
+                            {
+                                DeleteDirectory(directory);
+                                continue;
+                            }
+
+                            if (directory == "cmake")
+                            {
+                                DeleteDirectory(directory);
+                                continue;
+                            }
+
+                            if (directory == "pkgconfig")
+                            {
+                                DeleteDirectory(directory);
+                            }
+                        }
+
+                        foreach (var file in GetFiles(ExpandPath("./src/native/output"), recursive:true))
+                        {
+                            var extension = Path.GetExtension(file);
+                            var fileName = Path.GetFileNameWithoutExtension(file);
+                            
+                            if (fileName.EndsWith("_debug"))
+                            {
+                                DeleteFile(file);
+                                continue;
+                            }
+                            
+                            if (extension == ".prl")
+                            {
+                                DeleteFile(file);
+                                continue;
+                            }
+                            
+                            if (extension == ".plist")
+                            {
+                                DeleteFile(file);
+                                continue;
+                            }
+
+                            if (extension == ".qmlc")
+                            {
+                                DeleteFile(file);
+                                continue;
+                            }
+
+                            if (extension == ".cmake")
+                            {
+                                DeleteFile(file);
+                                continue;
+                            }
+
+                            if (extension == ".a")
+                            {
+                                DeleteFile(file);
+                                continue;
+                            }
+
+                            if (extension == ".la")
+                            {
+                                DeleteFile(file);
+                            }
+                        }
+                    }
                 }
             });
 
@@ -86,8 +170,13 @@ namespace Build
                 RunShell($"dotnet pack {ExpandPath("src/net/Qml.Net.sln")} --output {ExpandPath("./output")} {commandBuildArgs}");
                 if (IsWindows())
                 {
-                    // Deploy our windows Binaries NuGet package.
+                    // Deploy our Windows binaries NuGet package.
                     RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.WindowsBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgs}");
+                }
+                if (IsOSX())
+                {
+                    // Deploy our OSX binaries NuGet package.
+                    RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.OSXBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgs}");
                 }
             });
             
