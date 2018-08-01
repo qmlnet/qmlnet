@@ -4,7 +4,7 @@ set -ex
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 QT_DIR=$SCRIPT_DIR/Qt
 
-if [ ! -e $QT_DIR ]; then
+if [ ! -e $QT_DIR/5.11.1 ]; then
 
     # Checkout some helper scripts for installing Qt in ci.
     if [ ! -e $SCRIPT_DIR/qtci ]; then
