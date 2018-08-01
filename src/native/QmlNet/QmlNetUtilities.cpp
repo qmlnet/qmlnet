@@ -2,7 +2,7 @@
 
 extern "C" {
 
-QmlNetStringContainer* createString(QString& value)
+Q_DECL_EXPORT QmlNetStringContainer* createString(QString& value)
 {
     if(value.isNull()) {
         return nullptr;
@@ -15,7 +15,7 @@ QmlNetStringContainer* createString(QString& value)
     return result;
 }
 
-void freeString(QmlNetStringContainer* container)
+Q_DECL_EXPORT void freeString(QmlNetStringContainer* container)
 {
     if(container) {
         if(container->container) {
