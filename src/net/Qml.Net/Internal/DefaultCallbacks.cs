@@ -163,7 +163,7 @@ namespace Qml.Net.Internal
         {
             try
             {
-                var typeName = Interop.NetTypeInfo.GetFullTypeName(type);
+                var typeName = Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(type));
                 var typeInfo = Type.GetType(typeName);
                 if(typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
             

@@ -68,15 +68,15 @@ namespace Qml.Net
         void Destroy(IntPtr engine);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_load")]
-        int Load(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+        int Load(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string path);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_loadData")]
-        int LoadData(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+        int LoadData(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string path);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
-        int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
+        int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string qmlName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
-        void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
+        void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string path);
     }
 }

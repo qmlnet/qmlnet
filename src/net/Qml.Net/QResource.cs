@@ -14,6 +14,6 @@ namespace Qml.Net
     internal interface IQResourceInterop
     {
         [NativeSymbol(Entrypoint = "qresource_registerResource")]
-        bool RegisterResource([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
+        bool RegisterResource([MarshalAs(UnmanagedType.LPWStr), CallerFree]string rccFileName, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string resourceRoot);
     }
 }

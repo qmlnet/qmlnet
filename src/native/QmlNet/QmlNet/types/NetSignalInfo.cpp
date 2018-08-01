@@ -1,6 +1,6 @@
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNet/qml/NetValueMetaObjectPacker.h>
-#include <iostream>
+#include <QmlNetUtilities.h>
 
 NetSignalInfo::NetSignalInfo(QSharedPointer<NetTypeInfo> parentType, QString name) :
     _parentType(parentType),
@@ -98,9 +98,10 @@ Q_DECL_EXPORT NetTypeInfoContainer* signal_info_getParentType(NetSignalInfoConta
     return result;
 }
 
-Q_DECL_EXPORT LPWSTR signal_info_getName(NetSignalInfoContainer* container)
+Q_DECL_EXPORT QmlNetStringContainer* signal_info_getName(NetSignalInfoContainer* container)
 {
-    return (LPWSTR)container->signal->getName().utf16();
+    QString result = container->signal->getName();
+    return createString(result);
 }
 
 Q_DECL_EXPORT void signal_info_addParameter(NetSignalInfoContainer* container, NetVariantTypeEnum type)

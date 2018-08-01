@@ -1,6 +1,7 @@
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetJsValue.h>
+#include <QmlNetUtilities.h>
 #include <QDateTime>
 #include <QDebug>
 #include <QJSEngine>
@@ -368,12 +369,12 @@ Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, LPWSTR 
     }
 }
 
-Q_DECL_EXPORT LPWSTR net_variant_getString(NetVariantContainer* container) {
+Q_DECL_EXPORT QmlNetStringContainer* net_variant_getString(NetVariantContainer* container) {
     QString string = container->variant->getString();
     if(string.isNull()) {
         return nullptr;
     }
-    return (LPWSTR)string.utf16();
+    return createString(string);
 }
 
 Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* value) {

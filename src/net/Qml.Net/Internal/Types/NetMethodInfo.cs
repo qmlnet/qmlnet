@@ -31,7 +31,7 @@ namespace Qml.Net.Internal.Types
                 returnTypeInfo?.Handle ?? IntPtr.Zero);
         }
 
-        public string MethodName => Interop.NetMethodInfo.GetMethodName(Handle);
+        public string MethodName => Utilities.ContainerToString(Interop.NetMethodInfo.GetMethodName(Handle));
 
         public NetTypeInfo ReturnType
         {
@@ -82,7 +82,7 @@ namespace Qml.Net.Internal.Types
             
         }
 
-        public string Name => Interop.NetMethodInfo.GetParameterName(Handle);
+        public string Name => Utilities.ContainerToString(Interop.NetMethodInfo.GetParameterName(Handle));
 
         public NetTypeInfo Type
         {
@@ -105,22 +105,22 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "method_info_parameter_destroy")]
         void DestroyParameter(IntPtr parameter);
         [NativeSymbol(Entrypoint = "method_info_parameter_getName")]
-        [return: MarshalAs(UnmanagedType.LPWStr)]string GetParameterName(IntPtr methodParameter);
+        IntPtr GetParameterName(IntPtr methodParameter);
         [NativeSymbol(Entrypoint = "method_info_parameter_getType")]
         IntPtr GetParameterType(IntPtr methodParameter);
         
         [NativeSymbol(Entrypoint = "method_info_create")]
-        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string methodName, IntPtr returnTypeInfo);
+        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName, IntPtr returnTypeInfo);
         [NativeSymbol(Entrypoint = "method_info_destroy")]
         void Destroy(IntPtr methodInfo);
 
         [NativeSymbol(Entrypoint = "method_info_getMethodName")]
-        [return: MarshalAs(UnmanagedType.LPWStr)]string GetMethodName(IntPtr method);
+        IntPtr GetMethodName(IntPtr method);
         [NativeSymbol(Entrypoint = "method_info_getReturnType")]
         IntPtr GetReturnType(IntPtr method);
         
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
-        void AddParameter(IntPtr method, [MarshalAs(UnmanagedType.LPWStr)]string name, IntPtr type);
+        void AddParameter(IntPtr method, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string name, IntPtr type);
         [NativeSymbol(Entrypoint = "method_info_getParameterCount")]
         int GetParameterCount(IntPtr method);
         [NativeSymbol(Entrypoint = "method_info_getParameter")]

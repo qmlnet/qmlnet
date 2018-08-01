@@ -15,6 +15,6 @@ namespace Qml.Net.Internal.Qml
     internal interface INetTestHelperInterop
     {
         [NativeSymbol(Entrypoint = "net_test_helper_runQml")]
-        void RunQml(IntPtr qmlEngine, [MarshalAs(UnmanagedType.LPWStr)]string qml);
+        void RunQml(IntPtr qmlEngine, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string qml);
     }
 }

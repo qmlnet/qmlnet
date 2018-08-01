@@ -169,8 +169,8 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_js_value_call")]
         IntPtr Call(IntPtr jsValue, IntPtr parameters);
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
-        IntPtr GetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
+        IntPtr GetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName);
         [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
-        void SetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr value);
+        void SetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName, IntPtr value);
     }
 }

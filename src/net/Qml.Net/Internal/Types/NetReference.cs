@@ -116,7 +116,7 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "net_instance_getObjectId")]
         UInt64 GetObjectId(IntPtr instance);
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
-        bool ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
+        bool ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string signalName, IntPtr variants);
     }
 
     internal static class ObjectIdReferenceTracker

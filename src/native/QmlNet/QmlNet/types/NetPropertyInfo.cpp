@@ -1,5 +1,6 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
+#include <QmlNetUtilities.h>
 
 NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
         QString name,
@@ -86,8 +87,9 @@ Q_DECL_EXPORT NetTypeInfoContainer* property_info_getParentType(NetPropertyInfoC
 }
 
 
-Q_DECL_EXPORT LPWSTR property_info_getPropertyName(NetPropertyInfoContainer* container) {
-    return (LPWSTR)container->property->getPropertyName().utf16();
+Q_DECL_EXPORT QmlNetStringContainer* property_info_getPropertyName(NetPropertyInfoContainer* container) {
+    QString result = container->property->getPropertyName();
+    return createString(result);
 }
 
 Q_DECL_EXPORT NetTypeInfoContainer* property_info_getReturnType(NetPropertyInfoContainer* container) {

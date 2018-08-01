@@ -61,9 +61,9 @@ namespace Qml.Net.Internal.Qml
             set => Interop.NetVariant.SetDouble(Handle, value);
         }
         
-        public string String 
+        public string String
         {
-            get => Interop.NetVariant.GetString(Handle);
+            get => Utilities.ContainerToString(Interop.NetVariant.GetString(Handle));
             set => Interop.NetVariant.SetString(Handle, value);
         }
         
@@ -170,9 +170,9 @@ namespace Qml.Net.Internal.Qml
         double GetDouble(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setString")]
-        void SetString(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr)]string value);
+        void SetString(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string value);
         [NativeSymbol(Entrypoint = "net_variant_getString")]
-        [return:MarshalAs(UnmanagedType.LPWStr)]string GetString(IntPtr variant);
+        IntPtr GetString(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
         void SetDateTime(IntPtr variant, ref DateTimeContainer dateTime);

@@ -18,11 +18,11 @@ namespace Qml.Net.Internal.Types
             
         }
 
-        public string FullTypeName => Interop.NetTypeInfo.GetFullTypeName(Handle);
+        public string FullTypeName => Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(Handle));
 
         public string ClassName
         {
-            get => Interop.NetTypeInfo.GetClassName(Handle);
+            get => Utilities.ContainerToString(Interop.NetTypeInfo.GetClassName(Handle));
             set => Interop.NetTypeInfo.SetClassName(Handle, value);
         }
 
@@ -92,17 +92,17 @@ namespace Qml.Net.Internal.Types
     internal interface INetTypeInfoInterop
     {
         [NativeSymbol(Entrypoint = "type_info_create")]
-        IntPtr Create([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
+        IntPtr Create([MarshalAs(UnmanagedType.LPWStr), CallerFree]string fullTypeName);
         [NativeSymbol(Entrypoint = "type_info_destroy")]
         void Destroy(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_getFullTypeName")]
-        [return: MarshalAs(UnmanagedType.LPWStr)]string GetFullTypeName(IntPtr netTypeInfo);
+        IntPtr GetFullTypeName(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_setClassName")]
-        void SetClassName(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string className);
+        void SetClassName(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string className);
         [NativeSymbol(Entrypoint = "type_info_getClassName")]
-        [return: MarshalAs(UnmanagedType.LPWStr)]string GetClassName(IntPtr netTypeInfo);
+        IntPtr GetClassName(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_setPrefVariantType")]
         void SetPrefVariantType(IntPtr netTypeInfo, NetVariantType variantType);

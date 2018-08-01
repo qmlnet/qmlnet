@@ -46,7 +46,7 @@ namespace Qml.Net.Internal.Types
 
         public NetTypeInfo ParentType => new NetTypeInfo(Interop.NetPropertyInfo.GetParentType(Handle));
 
-        public string Name => Interop.NetPropertyInfo.GetPropertyName(Handle);
+        public string Name => Utilities.ContainerToString(Interop.NetPropertyInfo.GetPropertyName(Handle));
         
         public NetTypeInfo ReturnType => new NetTypeInfo(Interop.NetPropertyInfo.GetReturnType(Handle));
 
@@ -77,7 +77,7 @@ namespace Qml.Net.Internal.Types
     {
         [NativeSymbol(Entrypoint = "property_info_create")]
         IntPtr Create(IntPtr parentType,
-            [MarshalAs(UnmanagedType.LPWStr)]string methodName,
+            [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName,
             IntPtr returnType,
             bool canRead,
             bool canWrite,
@@ -89,7 +89,7 @@ namespace Qml.Net.Internal.Types
         IntPtr GetParentType(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getPropertyName")]
-        [return:MarshalAs(UnmanagedType.LPWStr)]string GetPropertyName(IntPtr property);
+        IntPtr GetPropertyName(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getReturnType")]
         IntPtr GetReturnType(IntPtr property);

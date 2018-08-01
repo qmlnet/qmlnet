@@ -1,6 +1,6 @@
 #include <QmlNet/types/NetMethodInfo.h>
 #include <QmlNet/qml/NetValueMetaObjectPacker.h>
-#include <iostream>
+#include <QmlNetUtilities.h>
 
 NetMethodInfoArguement::NetMethodInfoArguement(QString name,
                                                QSharedPointer<NetTypeInfo> type) :
@@ -87,9 +87,10 @@ Q_DECL_EXPORT void method_info_parameter_destroy(NetMethodInfoArguementContainer
     delete container;
 }
 
-Q_DECL_EXPORT LPWSTR method_info_parameter_getName(NetMethodInfoArguementContainer* container)
+Q_DECL_EXPORT QmlNetStringContainer* method_info_parameter_getName(NetMethodInfoArguementContainer* container)
 {
-    return (LPWSTR)container->methodArguement->getName().utf16();
+    QString result = container->methodArguement->getName();
+    return createString(result);
 }
 
 Q_DECL_EXPORT NetTypeInfoContainer* method_info_parameter_getType(NetMethodInfoArguementContainer* container)
@@ -123,9 +124,10 @@ Q_DECL_EXPORT void method_info_destroy(NetMethodInfoContainer* container)
     delete container;
 }
 
-Q_DECL_EXPORT LPWSTR method_info_getMethodName(NetMethodInfoContainer* container)
+Q_DECL_EXPORT QmlNetStringContainer* method_info_getMethodName(NetMethodInfoContainer* container)
 {
-    return (LPWSTR)container->method->getMethodName().utf16();
+    QString methodName = container->method->getMethodName();
+    return createString(methodName);
 }
 
 Q_DECL_EXPORT NetTypeInfoContainer* method_info_getReturnType(NetMethodInfoContainer* container)

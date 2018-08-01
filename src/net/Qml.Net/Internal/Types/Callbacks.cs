@@ -28,7 +28,7 @@ namespace Qml.Net.Internal.Types
         void RegisterCallbacks(ref Callbacks callbacks);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_isTypeValid")]
-        bool IsTypeValid([MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        bool IsTypeValid([MarshalAs(UnmanagedType.LPWStr), CallerFree]string typeName);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetReferenceGCHandle")]
         void ReleaseNetReference(UInt64 objectId);
@@ -220,7 +220,7 @@ namespace Qml.Net.Internal.Types
         }
 
         private bool RaiseNetSignals(IntPtr target,
-            [MarshalAs(UnmanagedType.LPWStr)] string signalName,
+            string signalName,
             IntPtr parameters)
         {
             return _callbacks.RaiseNetSignals(target, signalName, parameters);

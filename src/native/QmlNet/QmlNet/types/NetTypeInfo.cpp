@@ -3,6 +3,7 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNetUtilities.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
@@ -115,12 +116,14 @@ Q_DECL_EXPORT void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
     netTypeInfo = nullptr;
 }
 
-Q_DECL_EXPORT LPWSTR type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
-    return (LPWSTR)netTypeInfo->netTypeInfo->getFullTypeName().utf16();
+Q_DECL_EXPORT QmlNetStringContainer* type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
+    QString result = netTypeInfo->netTypeInfo->getFullTypeName();
+    return createString(result);
 }
 
-Q_DECL_EXPORT LPWSTR type_info_getClassName(NetTypeInfoContainer* netTypeInfo) {
-    return (LPWSTR)netTypeInfo->netTypeInfo->getClassName().utf16();
+Q_DECL_EXPORT QmlNetStringContainer* type_info_getClassName(NetTypeInfoContainer* netTypeInfo) {
+    QString result = netTypeInfo->netTypeInfo->getClassName();
+    return createString(result);
 }
 
 Q_DECL_EXPORT void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {

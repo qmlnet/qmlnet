@@ -15,6 +15,6 @@ namespace Qml.Net
     internal interface IQQuickStyleInterop
     {
         [NativeSymbol(Entrypoint = "qquickstyle_setStyle")]
-        void SetStyle([MarshalAs(UnmanagedType.LPWStr)]string style);
+        void SetStyle([MarshalAs(UnmanagedType.LPWStr), CallerFree]string style);
     }
 }

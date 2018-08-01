@@ -26,6 +26,6 @@ namespace Qml.Net.Internal.Types
     internal interface INetTypeManagerInterop
     {
         [NativeSymbol(Entrypoint = "type_manager_getTypeInfo")]
-        IntPtr GetTypeInfo([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
+        IntPtr GetTypeInfo([MarshalAs(UnmanagedType.LPWStr), CallerFree]string fullTypeName);
     }
 }
