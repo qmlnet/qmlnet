@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using static Bullseye.Targets;
 using static Build.Buildary.Directory;
@@ -25,7 +26,17 @@ namespace Build
             
             Add("test", () =>
             {
-                RunShell($"dotnet test src/net/Qml.Net.Tests/ {commandBuildArgs}");
+                if (IsOSX())
+                {
+                    // OSX prevent's DYLD_LIBRARY_PATH from being sent to
+                    // child shells. We must manually send it.
+                    var ldLibraryPath = Environment.GetEnvironmentVariable("DYLD_LIBRARY_PATH");
+                    RunShell($"DYLD_LIBRARY_PATH={ldLibraryPath} dotnet test src/net/Qml.Net.Tests/ {commandBuildArgs}");
+                }
+                else
+                {
+                    RunShell($"dotnet test src/net/Qml.Net.Tests/ {commandBuildArgs}");
+                }
             });
 
             Add("build-native", () =>

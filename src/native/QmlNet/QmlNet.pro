@@ -40,3 +40,7 @@ win32 {
     INSTALLS += qtqml
 }
 
+macx {
+    # See here: https://stackoverflow.com/questions/51638447/c-sharp-pinvoke-returning-invalid-wrong-bool-value-only-when-native-code-compil
+    CONFIG += debug
+}

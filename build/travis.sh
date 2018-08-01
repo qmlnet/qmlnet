@@ -3,12 +3,17 @@ set -e
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-$SCRIPT_DIR/docker/build-linux-ci.sh
+if [ "$TRAVIS_OS_NAME" == "linux" ]; then
 
-docker run -it --rm \
-    -v $SCRIPT_DIR/../:/work \
-    -w /work \
-    -e LD_LIBRARY_PATH=/work/src/native/output \
-    -e QT_QPA_PLATFORM=offscreen \
-    net-core-qml-linux-ci \
-    ./build.sh ci
+$SCRIPT_DIR/travis.linux.sh
+
+elif [ "$TRAVIS_OS_NAME" == "osx" ]; then
+
+$SCRIPT_DIR/travis.osx.sh
+
+else
+
+echo "Unsupported os."
+exit 1
+
+fi

@@ -1,4 +1,17 @@
-sudo: required
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      services: docker
+    - os: osx
+      osx_image: xcode9.4
+      language: csharp
+      mono: none
+      dotnet: 2.1.302
+cache:
+    directories:
+     - build/Qt
 if: tag IS blank
 services:
   - docker
