@@ -9,18 +9,18 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: viewModel.BorderColor
+        color: viewModel.borderColor
     }
 
     Image {
         anchors.fill: parent
-        anchors.topMargin: viewModel.BorderWidth
-        anchors.bottomMargin: viewModel.BorderWidth
-        anchors.leftMargin: viewModel.BorderWidth
-        anchors.rightMargin: viewModel.BorderWidth
+        anchors.topMargin: viewModel.borderWidth
+        anchors.bottomMargin: viewModel.borderWidth
+        anchors.leftMargin: viewModel.borderWidth
+        anchors.rightMargin: viewModel.borderWidth
         fillMode: Image.PreserveAspectFit
         id: imgPhoto
-        source: viewModel.ImageUri
+        source: viewModel.imageUri
         visible: false
     }
 

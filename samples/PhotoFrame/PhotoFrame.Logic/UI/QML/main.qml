@@ -33,8 +33,8 @@ ApplicationWindow {
 
     ParallelAnimation {
         id: animMoveUp
-        PropertyAnimation { target: animator.secondaryLoader; properties: "y"; to: -height; duration: appModel.AnimationDurationMs }
-        PropertyAnimation { target: animator.mainLoader; properties: "y"; to: 0; duration: appModel.AnimationDurationMs }
+        PropertyAnimation { target: animator.secondaryLoader; properties: "y"; to: -height; duration: appModel.animationDurationMs }
+        PropertyAnimation { target: animator.mainLoader; properties: "y"; to: 0; duration: appModel.animationDurationMs }
         onRunningChanged: {
             if(!running) {
                 animator.endAnimation(animMoveUp);
@@ -44,8 +44,8 @@ ApplicationWindow {
 
     ParallelAnimation {
         id: animMoveRight
-        PropertyAnimation { target: animator.secondaryLoader; properties: "x"; to: width; duration: appModel.AnimationDurationMs }
-        PropertyAnimation { target: animator.mainLoader; properties: "x"; to: 0; duration: appModel.AnimationDurationMs }
+        PropertyAnimation { target: animator.secondaryLoader; properties: "x"; to: width; duration: appModel.animationDurationMs }
+        PropertyAnimation { target: animator.mainLoader; properties: "x"; to: 0; duration: appModel.animationDurationMs }
         onRunningChanged: {
             if(!running) {
                 animator.endAnimation(animMoveRight);
@@ -55,9 +55,9 @@ ApplicationWindow {
 
     ParallelAnimation {
         id: animMoveRightAndRotate
-        PropertyAnimation { target: animator.secondaryLoader; properties: "x"; to: width; duration: appModel.AnimationDurationMs }
-        PropertyAnimation { target: animator.mainLoader; properties: "x"; to: 0; duration: appModel.AnimationDurationMs }
-        RotationAnimation { targets: [animator.secondaryLoader, animator.mainLoader]; from: 0; to: 360; duration: appModel.AnimationDurationMs }
+        PropertyAnimation { target: animator.secondaryLoader; properties: "x"; to: width; duration: appModel.animationDurationMs }
+        PropertyAnimation { target: animator.mainLoader; properties: "x"; to: 0; duration: appModel.animationDurationMs }
+        RotationAnimation { targets: [animator.secondaryLoader, animator.mainLoader]; from: 0; to: 360; duration: appModel.animationDurationMs }
         onRunningChanged: {
             if(!running) {
                 animator.endAnimation(animMoveRightAndRotate);
@@ -67,8 +67,8 @@ ApplicationWindow {
 
     SequentialAnimation {
         id: animFade
-        NumberAnimation { target: animator.secondaryLoader; properties: "opacity"; to: 0; duration: appModel.AnimationDurationMs / 2 }
-        NumberAnimation { target: animator.mainLoader; properties: "opacity"; to: 1; duration: appModel.AnimationDurationMs / 2 }
+        NumberAnimation { target: animator.secondaryLoader; properties: "opacity"; to: 0; duration: appModel.animationDurationMs / 2 }
+        NumberAnimation { target: animator.mainLoader; properties: "opacity"; to: 1; duration: appModel.animationDurationMs / 2 }
         onRunningChanged: {
             if(!running) {
                 animator.endAnimation(animFade);
@@ -78,8 +78,8 @@ ApplicationWindow {
 
     SequentialAnimation {
         id: animScale
-        NumberAnimation { target: animator.secondaryLoader; properties: "scale"; to: 0; duration: appModel.AnimationDurationMs / 2 }
-        NumberAnimation { target: animator.mainLoader; properties: "scale"; to: 1; duration: appModel.AnimationDurationMs / 2 }
+        NumberAnimation { target: animator.secondaryLoader; properties: "scale"; to: 0; duration: appModel.animationDurationMs / 2 }
+        NumberAnimation { target: animator.mainLoader; properties: "scale"; to: 1; duration: appModel.animationDurationMs / 2 }
         onRunningChanged: {
             if(!running) {
                 animator.endAnimation(animScale);
@@ -202,29 +202,29 @@ ApplicationWindow {
     }
 
 	function updateViewData(){
-        if(animator.mainLoader.source !== appModel.CurrentViewSwitchInfo.ViewResourceId) {
-            var switchType = appModel.CurrentViewSwitchInfo.SwitchTypeString;
+        if(animator.mainLoader.source !== appModel.currentViewSwitchInfo.viewResourceId) {
+            var switchType = appModel.currentViewSwitchInfo.switchTypeString;
             switch(switchType) {
             case "Fade":
-                animator.switchViewFade(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewFade(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             case "Vertical":
-                animator.switchViewVertical(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewVertical(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             case "Horizontal":
-                animator.switchViewHorizontal(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewHorizontal(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             case "RotateAndMove":
-                animator.switchViewRotateAndMove(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewRotateAndMove(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             case "Scale":
-                animator.switchViewScale(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewScale(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             case "None":
-                animator.switchViewHard(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewHard(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             default:
-                animator.switchViewHard(appModel.CurrentViewSwitchInfo.ViewResourceId, appModel.CurrentViewSwitchInfo.ViewModel);
+                animator.switchViewHard(appModel.currentViewSwitchInfo.viewResourceId, appModel.currentViewSwitchInfo.viewModel);
                 break;
             }
         }
@@ -233,7 +233,7 @@ ApplicationWindow {
     AppModel {
 		id: appModel
         Component.onCompleted: {
-            appModel.CurrentViewSwitchInfoChanged.connect(updateViewData)
+            appModel.currentViewSwitchInfoChanged.connect(updateViewData)
         }
     }
 
@@ -263,7 +263,7 @@ ApplicationWindow {
         height: parent.height
         width: parent.width
         x: 0
-		visible: appModel.ShowDebugInfo
+		visible: appModel.showDebugInfo
 
 		Rectangle {
              id: viewName
@@ -277,7 +277,7 @@ ApplicationWindow {
              Text {
                  anchors.centerIn: parent
                  id: txtViewName
-                 text: appModel.CurrentViewName
+                 text: appModel.currentViewName
                  font.pointSize: 8
                  color: "white"
              }
@@ -305,7 +305,7 @@ ApplicationWindow {
              Text {
                  anchors.centerIn: parent
                  id: txtSwitchType
-                 text: appModel.CurrentSwitchTypeName
+                 text: appModel.currentSwitchTypeName
                  font.pointSize: 8
                  color: "white"
              }
@@ -333,7 +333,7 @@ ApplicationWindow {
              Text {
                  anchors.centerIn: parent
                  id: txtMemoryUsage
-                 text: appModel.CurrentlyUsedMBString
+                 text: appModel.currentlyUsedMBString
                  font.pointSize: 10
                  color: "white"
              }
@@ -361,7 +361,7 @@ ApplicationWindow {
              Text {
                  anchors.centerIn: parent
                  id: txtCountDown
-                 text: appModel.TimerValue
+                 text: appModel.timerValue
                  font.pointSize: 16
                  color: "white"
              }

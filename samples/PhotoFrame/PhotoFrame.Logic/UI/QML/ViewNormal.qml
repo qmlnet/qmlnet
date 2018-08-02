@@ -9,6 +9,6 @@ Item {
         anchors.fill: parent
         fillMode: Image.PreserveAspectFit
         id: imgPhoto
-        source: viewModel.ImageUri
+        source: viewModel.imageUri
     }
 }
