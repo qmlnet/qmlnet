@@ -167,6 +167,14 @@ dotnet add package Qml.Net.WindowsBinaries
 
 The ```Qml.Net.WindowsBinaries``` contains an entire portable Qt install, for Windows (64-bit only).
 
+### OSX
+
+```bash
+dotnet add package Qml.Net.OSXBinaries
+```
+
+The ```Qml.Net.OSXBinaries``` contains an entire portable Qt install, for OSX (64-bit only).
+
 ### Other platforms
 
 Currently, native NuGet packages are not shipped for Linux/OSX. You have to build the ```QmlNet``` project manually.
