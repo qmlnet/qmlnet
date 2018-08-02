@@ -10,15 +10,15 @@ Item {
         anchors.fill: parent
         fillMode: Image.PreserveAspectFit
         id: imgPhoto
-        source: viewModel.ImageUri
+        source: viewModel.imageUri
 		visible: false
     }
 
 	Colorize {
         anchors.fill: imgPhoto
         source: imgPhoto
-        hue: viewModel.Hue
-        saturation: viewModel.Saturation
-        lightness: viewModel.Lightness
+        hue: viewModel.hue
+        saturation: viewModel.saturation
+        lightness: viewModel.lightness
 	}
 }
