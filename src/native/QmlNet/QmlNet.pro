@@ -58,3 +58,19 @@ macx {
 
     QMAKE_RPATHDIR += @loader_path/lib
 }
+
+unix:!macx {
+    qtlibs.path = $$(PREFIX)/lib
+    qtlibs.files = $$[QT_INSTALL_LIBS]/*
+    INSTALLS += qtlibs
+
+    qtplugins.path = $$(PREFIX)/plugins
+    qtplugins.files = $$[QT_INSTALL_PLUGINS]/*
+    INSTALLS += qtplugins
+
+    qtqml.path = $$(PREFIX)/qml
+    qtqml.files = $$[QT_INSTALL_QML]/*
+    INSTALLS += qtqml
+
+    QMAKE_RPATHDIR = $ORIGIN/lib
+}

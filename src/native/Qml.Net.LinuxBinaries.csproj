@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../build/common.props" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\net\Qml.Net\Qml.Net.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="output/**/*">
+      <PackagePath>runtimes/linux-x64/native/</PackagePath>
+      <Pack>true</Pack>
+    </Content>
+  </ItemGroup>
+</Project>

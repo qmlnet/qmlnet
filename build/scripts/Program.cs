@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static Bullseye.Targets;
 using static Build.Buildary.Directory;
@@ -154,6 +156,73 @@ namespace Build
                             }
                         }
                     }
+
+                    if (IsLinux())
+                    {
+                        // First get a list of all dependencies from every .so files.
+                        var linkedFiles = new List<string>();
+                        foreach(var file in GetFiles(ExpandPath("./src/native/output"), pattern:"*.so*", recursive:true))
+                        {
+                            var lddOutput = ReadShell($"ldd {file}");
+                            foreach (var _line in lddOutput.Split(Environment.NewLine))
+                            {
+                                var line = _line.TrimStart('\t').TrimStart('\n');
+                                var match = Regex.Match(line, @"(.*) =>.*");
+                                if (match.Success)
+                                {
+                                    var linkedFile = match.Groups[1].Value;
+                                    if(!linkedFiles.Contains(linkedFile))
+                                    {
+                                        linkedFiles.Add(linkedFile);
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Let's remove any file from lib/ that isn't linked against anything.
+                        foreach(var file in GetFiles(ExpandPath("./src/native/output/lib"), recursive:true))
+                        {
+                            var fileName = Path.GetFileName(file);
+                            if (!linkedFiles.Contains(fileName))
+                            {
+                                DeleteFile(file);
+                            }
+                        }
+
+                        foreach (var directory in GetDirecories(ExpandPath("./src/native/output"), recursive: true))
+                        {
+                            if (!DirectoryExists(directory))
+                            {
+                                continue;
+                            }
+                            
+                            var directoryName = Path.GetFileName(directory);
+                            if (directoryName == "cmake")
+                            {
+                                DeleteDirectory(directory);
+                                continue;
+                            }
+
+                            if (directoryName == "pkgconfig")
+                            {
+                                DeleteDirectory(directory);
+                                continue;
+                            }
+                            
+                            Info(directory);
+                        }
+                        
+                        foreach (var file in GetFiles(ExpandPath("./src/native/output"), recursive: true))
+                        {
+                            var fileName = Path.GetFileName(file);
+                            var fileExtension = Path.GetExtension(fileName);
+                            
+                            if (fileExtension == ".qmlc")
+                            {
+                                DeleteFile(file);
+                            }
+                        }
+                    }
                 }
             });
 
@@ -177,6 +246,12 @@ namespace Build
                 {
                     // Deploy our OSX binaries NuGet package.
                     RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.OSXBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgs}");
+                }
+
+                if (IsLinux())
+                {
+                    // Deploy our Linux binaries NuGet package.
+                    RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.LinuxBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgs}");
                 }
             });
             

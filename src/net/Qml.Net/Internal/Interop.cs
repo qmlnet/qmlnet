@@ -31,9 +31,13 @@ namespace Qml.Net.Internal
                     // It may load a special dll from a NuGet package.
                     pathResolver = new WindowsDllImportLibraryPathResolver(pathResolver);
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
                     pathResolver = new MacDllImportLibraryPathResolver(pathResolver);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    pathResolver = new LinuxDllImportLibraryPathResolver(pathResolver);
                 }
 
                 var resolveResult = pathResolver.Resolve("QmlNet");
