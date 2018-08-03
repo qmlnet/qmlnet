@@ -16,6 +16,32 @@ Supported platforms/runtimes:
   * OSX
   * Windows
 
+# Getting started
+
+```bash
+dotnet add package Qml.Net
+```
+
+**Windows**
+
+```bash
+dotnet add package Qml.Net.WindowsBinaries
+```
+
+**OSX**
+
+```bash
+dotnet add package Qml.Net.OSXBinaries
+```
+
+**Linux**
+
+```bash
+dotnet add package Qml.Net.LinuxBinaries
+```
+
+Checkout the [examples](https://github.com/pauldotknopf/Qml.Net.Examples) for some inspiration.
+
 ## The idea
 
 **Define a .NET type (POCO)**
@@ -147,30 +173,6 @@ ApplicationWindow {
       }
     }
 }
-```
-
-# Getting started
-
-```bash
-dotnet add package Qml.Net
-```
-
-**Windows**
-
-```bash
-dotnet add package Qml.Net.WindowsBinaries
-```
-
-**OSX**
-
-```bash
-dotnet add package Qml.Net.OSXBinaries
-```
-
-**Linux**
-
-```bash
-dotnet add package Qml.Net.LinuxBinaries
 ```
 
 # Currently implemented
