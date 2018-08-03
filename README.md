@@ -155,19 +155,19 @@ ApplicationWindow {
 dotnet add package Qml.Net
 ```
 
-## Windows
+**Windows**
 
 ```bash
 dotnet add package Qml.Net.WindowsBinaries
 ```
 
-## OSX
+**OSX**
 
 ```bash
 dotnet add package Qml.Net.OSXBinaries
 ```
 
-## Linux
+**Linux**
 
 ```bash
 dotnet add package Qml.Net.LinuxBinaries
