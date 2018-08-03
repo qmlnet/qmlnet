@@ -42,7 +42,7 @@ dotnet add package Qml.Net.LinuxBinaries
 
 Checkout the [examples](https://github.com/pauldotknopf/Qml.Net.Examples) for some inspiration.
 
-## The idea
+# Quick overview
 
 **Define a .NET type (POCO)**
 
