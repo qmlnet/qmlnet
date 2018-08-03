@@ -151,39 +151,27 @@ ApplicationWindow {
 
 # Getting started
 
-## Step 1: Install NuGet package
-
 ```bash
 dotnet add package Qml.Net
 ```
 
-## Step 2: Setup native binaries
-
-### Windows
+## Windows
 
 ```bash
 dotnet add package Qml.Net.WindowsBinaries
 ```
 
-The ```Qml.Net.WindowsBinaries``` contains an entire portable Qt install, for Windows (64-bit only).
-
-### OSX
+## OSX
 
 ```bash
 dotnet add package Qml.Net.OSXBinaries
 ```
 
-The ```Qml.Net.OSXBinaries``` contains an entire portable Qt install, for OSX (64-bit only).
+## Linux
 
-### Other platforms
-
-Currently, native NuGet packages are not shipped for Linux/OSX. You have to build the ```QmlNet``` project manually.
-
-1. Install Qt (at least 5.9) and Qt Creator.
-2. Build and deploy ```src/native/QmlNet/QmlNet.pro```.
-3. Massage your ```PATH```/```LD_LIBRARY_PATH```/```DYLD_LIBRARY_PATH``` to contain the path that you've deployed the native ```QmlNet``` library.
-
-*There is an on-going effort to make native ```Qml.Net.OSXBinaries``` and ```Qml.Net.LinuxBinaries``` NuGet packages. See here: (https://github.com/pauldotknopf/Qml.Net/issues/33)*
+```bash
+dotnet add package Qml.Net.LinuxBinaries
+```
 
 # Currently implemented
 
