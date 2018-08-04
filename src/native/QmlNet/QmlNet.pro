@@ -17,7 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include(QmlNet.pri)
 
-target.path = $$(PREFIX)
+target.path = $$(PREFIX)/
 INSTALLS += target
 
 CONFIG(install-qt-libs) {
