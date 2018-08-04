@@ -343,26 +343,45 @@ namespace Qml.Net.Internal
             }
         }
 
-        public async Task AwaitTask(IntPtr t, IntPtr c)
+        public async Task AwaitTask(IntPtr t, IntPtr sc, IntPtr fc)
         {
             using (var target = new NetReference(t))
-            using(var callback = new NetJsValue(c))
+            using(var successCallback = new NetJsValue(sc))
+            using(var failureCallback = fc != IntPtr.Zero ? new NetJsValue(fc) : null)
             {
                 var taskObject = target.Instance;
                 if (taskObject is Task task)
                 {
-                    await task;
-                    
+                    try
+                    {
+                        await task;
+                    }
+                    catch (Exception ex)
+                    {
+                        // The task throw an exception.
+                        // Invoke our failure callback.
+                        if (failureCallback == null)
+                        {
+                            // The caller didn't want to listen to failures.
+                            // Just throw it and let "TaskScheduler.UnobservedTaskException"
+                            // handle it.
+                            throw;
+                        }
+
+                        failureCallback.Call(ex);
+                        return;
+                    }
+
                     try
                     {
                         var result = (object)((dynamic)task).Result;
-                        callback.Call(result);
+                        successCallback.Call(result);
                     }
                     catch (RuntimeBinderException)
                     {
                         // No "Result" property, a task with no callbacks.
                         // TODO: Find a better way to handle this than catching an exception.
-                        callback.Call();
+                        successCallback.Call();
                     }
                 }
                 else

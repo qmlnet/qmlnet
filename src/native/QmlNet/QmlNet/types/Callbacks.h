@@ -33,6 +33,6 @@ void gcCollect(int generation);
 
 bool raiseNetSignals(QSharedPointer<NetReference> target, QString signalName, QSharedPointer<NetVariantList> parameters);
 
-void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> callback);
+void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> successCallback, QSharedPointer<NetJSValue> failureCallback);
 
 #endif // NET_TYPE_INFO_MANAGER_H

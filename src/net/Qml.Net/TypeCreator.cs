@@ -20,5 +20,25 @@ namespace Qml.Net
             }
             return Activator.CreateInstance(type);
         }
+
+        public static ITypeCreator FromDelegate(Func<Type, object> func)
+        {
+            return new DelegateTypeCreator(func);
+        }
+
+        class DelegateTypeCreator : ITypeCreator
+        {
+            private readonly Func<Type, object> _func;
+
+            public DelegateTypeCreator(Func<Type, object> func)
+            {
+                _func = func;
+            }
+            
+            public object Create(Type type)
+            {
+                return _func(type);
+            }
+        }
     }
 }

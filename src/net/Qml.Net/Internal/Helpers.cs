@@ -8,7 +8,14 @@ namespace Qml.Net.Internal
     {
         public static bool IsPrimitive(Type type)
         {
-            if (type.Namespace == "System") return true;
+            if (type.Namespace == "System")
+            {
+                if (type.Name == "Exception")
+                {
+                    return false;
+                }
+                return true;
+            }
             return false;
         }
         
