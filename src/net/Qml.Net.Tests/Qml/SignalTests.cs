@@ -31,6 +31,47 @@ namespace Qml.Net.Tests.Qml
             {
                 
             }
+
+            private string _someStringPropertyValue = "";
+
+            [NotifySignal]
+            public string SomeStringProperty
+            {
+                get => _someStringPropertyValue;
+                set {
+                    if (_someStringPropertyValue == value) 
+                        return;
+                    _someStringPropertyValue = value;
+                    this.ActivateNotifySignal();
+                }
+            }
+
+            private int _someIntPropertyValue = 0;
+            
+            [NotifySignal("someWeirdSignalName")]
+            public int SomeIntProperty
+            {
+                get => _someIntPropertyValue;
+                set {
+                    if (_someIntPropertyValue == value) 
+                        return;
+                    _someIntPropertyValue = value;
+                    this.ActivateNotifySignal();
+                }
+            }
+            
+            private bool _someBoolPropertyValue = false;
+            
+            public bool SomeBoolProperty
+            {
+                get => _someBoolPropertyValue;
+                set {
+                    if (_someBoolPropertyValue == value) 
+                        return;
+                    _someBoolPropertyValue = value;
+                    this.ActivateNotifySignal();
+                }
+            }
         }
 
         [Signal("testSignal")]
@@ -151,6 +192,75 @@ namespace Qml.Net.Tests.Qml
                 ");
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
+        }
+        
+        [Fact]
+        public void Can_raise_changed_default_signal_from_net()
+        {
+            Mock.Setup(x => x.SignalRaised).Returns(false);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.someStringPropertyChanged.connect(function() {
+                                test.signalRaised = true
+                            })
+                            test.someStringProperty = 'NewValue'
+                        }
+                    }
+                ");
+
+            Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
+        }
+        
+        [Fact]
+        public void Can_raise_changed_custom_signal_from_net()
+        {
+            Mock.Setup(x => x.SignalRaised).Returns(false);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.someWeirdSignalName.connect(function() {
+                                test.signalRaised = true
+                            })
+                            test.someIntProperty = 1
+                        }
+                    }
+                ");
+
+            Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
+        }
+
+        [Fact]
+        public void Can_not_raise_invalid_changed_signal_from_net()
+        {
+            Mock.Setup(x => x.SignalRaised).Returns(false);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.someBoolPropertyChanged.connect(function() {
+                                test.signalRaised = true
+                            })
+                            test.someBoolProperty = true
+                        }
+                    }
+                ");
+
+            Mock.VerifySet(x => x.SignalRaised = true, Times.Never);
         }
         
         [Fact]
