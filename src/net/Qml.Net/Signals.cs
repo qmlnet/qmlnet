@@ -1,4 +1,7 @@
-﻿using Qml.Net.Internal;
+﻿using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Qml.Net.Internal;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net
@@ -32,6 +35,35 @@ namespace Qml.Net
             }
             
             return true;
+        }
+
+        /// <summary>
+        /// Activates the signal that has been attached to the given property using NotifySignalAttribute
+        /// </summary>
+        /// <param name="instance">object instance having the property the changed signal has to be activated for</param>
+        /// <param name="propertyName">
+        ///     name of the property. Gets automatically filled with the caller member name.
+        ///     So calling it directly out of the property that is tied to the signal doesn't need to set this parameter explicitly.</param>
+        /// <returns>true when the signal has been activated, otherwise false</returns>
+        public static bool ActivateNotifySignal(this object instance, [CallerMemberName] string propertyName = "")
+        {
+            if (instance == null)
+                return false;
+            var propertyInfo =
+                instance.GetType().GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
+            if (propertyInfo == null)
+                return false;
+            var notifySignalAttributes = propertyInfo.GetCustomAttributes().OfType<NotifySignalAttribute>();
+            var notifySignalAttribute = notifySignalAttributes.FirstOrDefault();
+            if (notifySignalAttribute == null)
+                return false;
+            var signalName = notifySignalAttribute.Name;
+            if (string.IsNullOrEmpty(signalName))
+            {
+                signalName = $"{propertyInfo.Name}Changed";
+                signalName = char.ToLower(signalName[0]) + signalName.Substring(1);
+            }
+            return ActivateSignal(instance, signalName);
         }
 
         public static void AttachToSignal(this object instance, string signalName, System.Delegate del)
