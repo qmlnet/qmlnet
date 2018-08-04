@@ -11,7 +11,7 @@ typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetReference
 typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
 typedef void (*gcCollectCb)(int maxGeneration);
 typedef bool (*raiseNetSignalsCb)(NetReferenceContainer* target, LPWCSTR signalName, NetVariantListContainer* parameters);
-typedef void (*awaitTaskCb)(NetReferenceContainer* target, NetJSValueContainer* callback);
+typedef void (*awaitTaskCb)(NetReferenceContainer* target, NetJSValueContainer* successCallback, NetJSValueContainer* failureCallback);
 
 struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
@@ -126,10 +126,14 @@ bool raiseNetSignals(QSharedPointer<NetReference> target, QString signalName, QS
     return sharedCallbacks.raiseNetSignals(targetContainer, (LPWCSTR)signalName.utf16(), parametersContainer);
 }
 
-void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> callback) {
+void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> successCallback, QSharedPointer<NetJSValue> failureCallback) {
     NetReferenceContainer* targetContainer = new NetReferenceContainer{target};
-    NetJSValueContainer* callbackContainer = new NetJSValueContainer{callback};
-    sharedCallbacks.awaitTask(targetContainer, callbackContainer);
+    NetJSValueContainer* sucessCallbackContainer = new NetJSValueContainer{successCallback};
+    NetJSValueContainer* failureCallbackContainer = nullptr;
+    if(failureCallback != nullptr) {
+        failureCallbackContainer = new NetJSValueContainer{failureCallback};
+    }
+    sharedCallbacks.awaitTask(targetContainer, sucessCallbackContainer, failureCallbackContainer);
 }
 
 extern "C" {

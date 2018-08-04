@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Qml.Net.Internal.Qml;
@@ -92,6 +93,45 @@ namespace Qml.Net.Tests.Qml
                 ");
 
                 Mock.Verify(x => x.TestMethodWithArg("testt"), Times.Once);
+            }
+            finally
+            {
+                SynchronizationContext.SetSynchronizationContext(oldContext);
+            }
+        }
+
+        [Fact]
+        public void Can_listen_to_exception_throw()
+        {
+            var oldContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(new NoAsyncSynchronizationContext());
+
+            try
+            {
+                Mock.Setup(x => x.TestAsync()).Returns(Task.FromException<Exception>(new Exception("throw this")));
+                Mock.Setup(x => x.TestMethodWithArg("throw this"));
+                Mock.Setup(x => x.TestMethodWithArg("success"));
+
+                NetTestHelper.RunQml(qmlApplicationEngine,
+                    @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    AwaitTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            var task = test.testAsync('throw this')
+                            Net.await(task, function(result) {
+                                test.testMethodWithArg('success')
+                            },
+                            function(ex) {
+                                test.testMethodWithArg(ex.message)
+                            })
+                        }
+                    }
+                ");
+
+                Mock.Verify(x => x.TestMethodWithArg("throw this"), Times.Once);
+                Mock.Verify(x => x.TestMethodWithArg("success"), Times.Never);
             }
             finally
             {

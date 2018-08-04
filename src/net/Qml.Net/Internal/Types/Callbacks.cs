@@ -73,7 +73,7 @@ namespace Qml.Net.Internal.Types
 
         bool RaiseNetSignals(IntPtr target, string signalName, IntPtr parameters);
 
-        Task AwaitTask(IntPtr target, IntPtr callback);
+        Task AwaitTask(IntPtr target, IntPtr succesCallback, IntPtr failureCallback);
     }
     
     internal class CallbacksImpl
@@ -126,7 +126,7 @@ namespace Qml.Net.Internal.Types
         delegate bool RaiseNetSignalsDelegate(IntPtr target, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr parameters);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void AwaitTaskDelegate(IntPtr target, IntPtr callback);
+        delegate void AwaitTaskDelegate(IntPtr target, IntPtr successCallback, IntPtr failureCallback);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -226,9 +226,9 @@ namespace Qml.Net.Internal.Types
             return _callbacks.RaiseNetSignals(target, signalName, parameters);
         }
 
-        private void AwaitTask(IntPtr target, IntPtr callback)
+        private void AwaitTask(IntPtr target, IntPtr succesCallback, IntPtr failureCallback)
         {
-            _callbacks.AwaitTask(target, callback);
+            _callbacks.AwaitTask(target, succesCallback, failureCallback);
         }
 
         public Callbacks Callbacks()

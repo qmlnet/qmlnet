@@ -31,26 +31,32 @@ void NetObject::method_gccollect(const BuiltinFunction *, Scope &scope, CallData
 void NetObject::method_await(const BuiltinFunction *, Scope &scope, CallData *callData) {
     scope.result = QV4::Encode::undefined();
 
-    if (callData->argc != 2) {
+    if (callData->argc != 2 && callData->argc != 3) {
         qWarning() << "Invalid number of parameters passed to Net.await(task, callback)";
         return;
     }
 
     ScopedValue task(scope, callData->args[0]);
-    ScopedValue callback(scope, callData->args[1]);
+    ScopedValue successCallback(scope, callData->args[1]);
+    ScopedValue failureCallback(scope);
+
+    if(callData->argc == 3) {
+        failureCallback = ScopedValue(scope, callData->args[2]);
+    }
 
     if(task->isNullOrUndefined()) {
         qWarning() << "No task for Net.await(task, callback)";
         return;
     }
 
-    if(callback->isNullOrUndefined()) {
+    if(successCallback->isNullOrUndefined()) {
         qWarning() << "No callback for Net.await(task, callback)";
         return;
     }
 
     QJSValue taskJsValue(scope.engine, task->asReturnedValue());
-    QJSValue callbackJsValue(scope.engine, callback->asReturnedValue());
+    QJSValue callbackJsValue(scope.engine, successCallback->asReturnedValue());
+    QJSValue failureJsValue(scope.engine, failureCallback->asReturnedValue());
 
     QObject* qObject = taskJsValue.toQObject();
     NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
@@ -61,7 +67,11 @@ void NetObject::method_await(const BuiltinFunction *, Scope &scope, CallData *ca
     }
 
     // Send the method to .NET, await the task, and call the callback.
-    awaitTask(netValue->getNetReference(), QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)));
+    awaitTask(netValue->getNetReference(),
+              QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)),
+              failureJsValue.isNull()
+                ? QSharedPointer<NetJSValue>(nullptr)
+                : QSharedPointer<NetJSValue>(new NetJSValue(failureJsValue)));
 }
 
 void NetObject::method_cancelTokenSource(const BuiltinFunction *, Scope &scope, CallData *callData) {
@@ -98,29 +108,46 @@ ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *
 ReturnedValue NetObject::method_await(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
     QV4::Scope scope(b);
 
-    if(argc != 2) {
+    if(argc != 2 && argc != 3) {
         qWarning() << "Invalid number of parameters passed to Net.await(task, callback)";
         return Encode::undefined();
     }
 
     QV4::ScopedValue task(scope, argv[0]);
-    QV4::ScopedValue callback(scope, argv[1]);
+    QV4::ScopedValue successCallback(scope, argv[1]);
+    QV4::ScopedValue failureCallback(scope, Encode::null());
+
+    if(argc == 3) {
+        // We are passing in a failure callback
+        failureCallback = argv[2];
+    }
 
     if(task->isNullOrUndefined()) {
         qWarning() << "No task for Net.await(task, callback)";
         return Encode::undefined();
     }
 
-    if(callback->isNullOrUndefined()) {
+    if(successCallback->isNullOrUndefined()) {
         qWarning() << "No callback for Net.await(task, callback)";
         return Encode::undefined();
     }
 
     QJSValue taskJsValue(scope.engine, task->asReturnedValue());
-    QJSValue callbackJsValue(scope.engine, callback->asReturnedValue());
+    QJSValue successCallbackJsValue(scope.engine, successCallback->asReturnedValue());
+    QJSValue failureCallbackJsValue(scope.engine, failureCallback->asReturnedValue());
 
     if(!taskJsValue.isQObject()) {
         qWarning() << "Invalid task object passed to Net.await(task, callback)";
+        return Encode::undefined();
+    }
+
+    if(!successCallbackJsValue.isCallable()) {
+        qWarning() << "Invalid function passed for success callback";
+        return Encode::undefined();
+    }
+
+    if(!failureCallbackJsValue.isNull() && !failureCallbackJsValue.isCallable()) {
+        qWarning() << "Invalid function passed for failure callback";
         return Encode::undefined();
     }
 
@@ -133,7 +160,11 @@ ReturnedValue NetObject::method_await(const FunctionObject *b, const Value *this
     }
 
     // Send the method to .NET, await the task, and call the callback.
-    awaitTask(netValue->getNetReference(), QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)));
+    awaitTask(netValue->getNetReference(),
+              QSharedPointer<NetJSValue>(new NetJSValue(successCallbackJsValue)),
+              failureCallbackJsValue.isNull()
+                ? QSharedPointer<NetJSValue>(nullptr)
+                : QSharedPointer<NetJSValue>(new NetJSValue(failureCallbackJsValue)));
 
     return Encode::undefined();
 }
