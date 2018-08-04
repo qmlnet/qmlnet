@@ -1,4 +1,5 @@
-﻿using Qml.Net.Internal;
+﻿using System.Runtime.CompilerServices;
+using Qml.Net.Internal;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net
@@ -32,6 +33,13 @@ namespace Qml.Net
             }
             
             return true;
+        }
+
+        public static bool ActivatePropertyChangedSignal(this object instance, [CallerMemberName] string propertyName = "")
+        {
+            var signalName = $"{propertyName}Changed";
+            signalName = char.ToLower(signalName[0]) + signalName.Substring(1);
+            return ActivateSignal(instance, signalName);
         }
 
         public static void AttachToSignal(this object instance, string signalName, System.Delegate del)
