@@ -31,6 +31,20 @@ namespace Qml.Net.Tests.Qml
             {
                 
             }
+
+            private string _somePropertyValue = "";
+
+            [NotifySignal]
+            public string SomeProperty
+            {
+                get => _somePropertyValue;
+                set {
+                    if (_somePropertyValue == value) 
+                        return;
+                    _somePropertyValue = value;
+                    this.ActivatePropertyChangedSignal();
+                }
+            }
         }
 
         [Signal("testSignal")]
@@ -146,6 +160,29 @@ namespace Qml.Net.Tests.Qml
                                 test.signalRaised = true
                             })
                             test.testMethod()
+                        }
+                    }
+                ");
+
+            Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
+        }
+        
+        [Fact]
+        public void Can_raise_changed_signal_from_net()
+        {
+            Mock.Setup(x => x.SignalRaised).Returns(false);
+            
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    ObjectTestsQml {
+                        id: test
+                        Component.onCompleted: function() {
+                            test.somePropertyChanged.connect(function() {
+                                test.signalRaised = true
+                            })
+                            test.someProperty = 'NewValue'
                         }
                     }
                 ");
