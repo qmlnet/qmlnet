@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Xunit;
 using FluentAssertions;
-using Qml.Net.Internal;
-using Qml.Net.Internal.Behaviors;
 using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Tests.Qml
@@ -25,7 +20,17 @@ namespace Qml.Net.Tests.Qml
             ViewModel.IntProperty = newValue;
         }
 
-        public bool? TestResult { get; set; }
+        public void ChangeCustomIntPropertyTo(int newValue)
+        {
+            ViewModel.CustomIntProperty = newValue;
+        }
+
+        public void ChangeCustomMvvmStyleIntPropertyTo(int newValue)
+        {
+            ViewModel.CustomMvvmStyleIntProperty = newValue;
+        }
+
+        public bool? TestResult { get; set; } = false;
     }
 
     public class ViewModel : INotifyPropertyChanged
@@ -49,18 +54,51 @@ namespace Qml.Net.Tests.Qml
             }
         }
 
-        private int _intProperty = 0;
+        private int _intProperty;
         public int IntProperty
         {
-            get
-            {
-                return _intProperty;
-            }
+            get => _intProperty;
             set
             {
                 if (!Equals(value, _intProperty))
                 {
                     _intProperty = value;
+                    FirePropertyChanged();
+                }
+            }
+        }
+        
+        private int _customIntProperty;
+        [NotifySignal("customIntPropertyChangedSignal")]
+        public int CustomIntProperty
+        {
+            get
+            {
+                return _customIntProperty;
+            }
+            set
+            {
+                if (!Equals(value, _customIntProperty))
+                {
+                    _customIntProperty = value;
+                    FirePropertyChanged();
+                }
+            }
+        }
+        
+        private int _customMvvmStyleIntProperty;
+        [NotifySignal]
+        public int CustomMvvmStyleIntProperty
+        {
+            get
+            {
+                return _customMvvmStyleIntProperty;
+            }
+            set
+            {
+                if (!Equals(value, _customMvvmStyleIntProperty))
+                {
+                    _customMvvmStyleIntProperty = value;
                     FirePropertyChanged();
                 }
             }
@@ -72,7 +110,7 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public class MVVMInteropBehaviorTests : BaseQmlMVVMTestsWithInstance<ViewModelContainer>
+    public class MvvmInteropBehaviorTests : BaseQmlMvvmTestsWithInstance<ViewModelContainer>
     {
         [Fact]
         public void Does_register_property_changed_signal()
@@ -137,6 +175,50 @@ namespace Qml.Net.Tests.Qml
             ");
 
             ExecApplicationWithTimeout(3000).Should().Be(0);
+
+            Instance.TestResult.Should().Be(true);
+        }
+        
+        [Fact]
+        public void Does_not_interfer_with_completely_custom_notify_signals()
+        {
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                import QtQuick 2.0
+                import tests 1.0
+                ViewModelContainer {
+                    id: viewModelContainer
+                    Component.onCompleted: function() {
+                        var vm = viewModelContainer.viewModel
+                        vm.customIntPropertyChangedSignal.connect(function() {
+                            viewModelContainer.testResult = true
+                        })
+                        viewModelContainer.changeCustomIntPropertyTo(3)
+                    }
+                }
+            ");
+
+            Instance.TestResult.Should().Be(true);
+        }
+        
+        [Fact]
+        public void Does_not_interfer_with_custom_notify_signals()
+        {
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                import QtQuick 2.0
+                import tests 1.0
+                ViewModelContainer {
+                    id: viewModelContainer
+                    Component.onCompleted: function() {
+                        var vm = viewModelContainer.viewModel
+                        vm.customMvvmStyleIntPropertyChanged.connect(function() {
+                            viewModelContainer.testResult = true
+                        })
+                        viewModelContainer.changeCustomMvvmStyleIntPropertyTo(3)
+                    }
+                }
+            ");
 
             Instance.TestResult.Should().Be(true);
         }
