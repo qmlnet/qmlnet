@@ -119,14 +119,14 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public abstract class BaseQmlMVVMTestsWithInstance<T> : BaseQmlTests where T : class, new()
+    public abstract class BaseQmlMvvmTestsWithInstance<T> : BaseQmlTests where T : class, new()
     {
         protected readonly T Instance;
 
-        protected BaseQmlMVVMTestsWithInstance()
+        protected BaseQmlMvvmTestsWithInstance()
         {
             InteropBehaviors.ClearQmlInteropBehaviors();
-            InteropBehaviors.RegisterQmlInteropBehavior(new MVVMQmlInteropBehavior());
+            InteropBehaviors.RegisterQmlInteropBehavior(new MvvmQmlInteropBehavior());
 
             RegisterType<T>();
             Instance = new T();
