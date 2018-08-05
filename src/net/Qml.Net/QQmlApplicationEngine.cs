@@ -46,7 +46,7 @@ namespace Qml.Net
         /// </summary>
         public static void ActivateMVVMBehavior()
         {
-            InteropBehaviors.RegisterQmlInteropBehavior(new MVVMQmlInteropBehavior(), false);
+            InteropBehaviors.RegisterQmlInteropBehavior(new MvvmQmlInteropBehavior(), false);
         }
 
         public void AddImportPath(string path)
