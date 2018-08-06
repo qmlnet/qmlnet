@@ -61,16 +61,10 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
                 .Callback(new Action<dynamic>(x => jsValue = x));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.method(function(){})
-                        }
-                    }
+                    test.method(function(){})
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
@@ -88,16 +82,10 @@ namespace Qml.Net.Tests.Qml
                     jsValue = x;
                 }));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.method({})
-                        }
-                    }
+                    test.method({})
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
@@ -116,18 +104,12 @@ namespace Qml.Net.Tests.Qml
                 }));
             Mock.Setup(x => x.MethodWithoutParams());
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.method(function() {
-                                test.methodWithoutParams()
-                            })
-                        }
-                    }
+                    test.method(function() {
+                        test.methodWithoutParams()
+                    })
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
@@ -146,18 +128,12 @@ namespace Qml.Net.Tests.Qml
                 }));
             Mock.Setup(x => x.MethodWithParameters("test1", 4));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.method(function(param1, param2) {
-                                test.methodWithParameters(param1, param2)
-                            })
-                        }
-                    }
+                    test.method(function(param1, param2) {
+                        test.methodWithParameters(param1, param2)
+                    })
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
@@ -175,19 +151,13 @@ namespace Qml.Net.Tests.Qml
                     x(testObject);
                 }));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.method(function(param1) {
-                                param1.testMethod()
-                                param1.testMethod()
-                            })
-                        }
-                    }
+                    test.method(function(param1) {
+                        param1.testMethod()
+                        param1.testMethod()
+                    })
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
@@ -200,23 +170,17 @@ namespace Qml.Net.Tests.Qml
             Mock.CallBase = true;
             Mock.Setup(x => x.MethodWithParameters("test1", 4));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var o = {
-                                testProperty1: 'test1',
-                                testProperty2: 4
-                            }
-                            test.callMethodWithJsValue(o,
-                                function(passedIn) {
-                                    test.methodWithParameters(passedIn.testProperty1, passedIn.testProperty2)
-                                })
-                        }
+                    var o = {
+                        testProperty1: 'test1',
+                        testProperty2: 4
                     }
+                    test.callMethodWithJsValue(o,
+                        function(passedIn) {
+                            test.methodWithParameters(passedIn.testProperty1, passedIn.testProperty2)
+                        })
                 ");
 
             Mock.Verify(x => x.CallMethodWithJsValue(It.IsAny<INetJsValue>(), It.IsAny<INetJsValue>()), Times.Once);
@@ -234,33 +198,27 @@ namespace Qml.Net.Tests.Qml
                     results.Add((object)jsValue());
                 }));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var jsObject = {
-                            }
-                            test.method(function() {
-                                return 'test'
-                            })
-                            test.method(function() {
-                                return 32
-                            })
-                            test.method(function() {
-                                return jsObject
-                            })
-                            test.method(function() {
-                                return function() {}
-                            })
-                            var netObject = test.getTestObject()
-                            test.method(function() {
-                                return netObject
-                            })
-                        }
+                    var jsObject = {
                     }
+                    test.method(function() {
+                        return 'test'
+                    })
+                    test.method(function() {
+                        return 32
+                    })
+                    test.method(function() {
+                        return jsObject
+                    })
+                    test.method(function() {
+                        return function() {}
+                    })
+                    var netObject = test.getTestObject()
+                    test.method(function() {
+                        return netObject
+                    })
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(5));
@@ -284,24 +242,18 @@ namespace Qml.Net.Tests.Qml
                 }));
             Mock.Setup(x => x.GetTestObject()).Returns(testObject);
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var netObject = test.getTestObject()
-                            test.method({
-                                test1: 34,
-                                test2: 'test3',
-                                test3: netObject,
-                                test4: {
-                                    test5: 'test5'
-                                }
-                            })
+                    var netObject = test.getTestObject()
+                    test.method({
+                        test1: 34,
+                        test2: 'test3',
+                        test3: netObject,
+                        test4: {
+                            test5: 'test5'
                         }
-                    }
+                    })
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(1));
@@ -330,27 +282,21 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
                 .Callback(new Action<dynamic>(value => { result = value; }));
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    JsTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var netObject = test.getTestObject()
-                            var source = {
-                                source1: 123,
-                                source2: 'value',
-                                source3: netObject,
-                                source4: {
-                                }
-                            }
-                            var destination = {
-                            }
-                            test.method(source, destination)
-                            test.method(destination)
+                    var netObject = test.getTestObject()
+                    var source = {
+                        source1: 123,
+                        source2: 'value',
+                        source3: netObject,
+                        source4: {
                         }
                     }
+                    var destination = {
+                    }
+                    test.method(source, destination)
+                    test.method(destination)
                 ");
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(1));
