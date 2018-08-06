@@ -30,6 +30,11 @@ namespace Qml.Net.Tests.Qml
             ViewModel.CustomMvvmStyleIntProperty = newValue;
         }
 
+        public void ChangeNotifyOnlyIntPropertyTo(int newValue)
+        {
+            ViewModel.NotifyOnlyIntProperty = newValue;
+        }
+        
         public void ChangeCustomNotifyOnlyIntPropertyTo(int newValue)
         {
             ViewModel.CustomNotifyOnlyIntProperty = newValue;
@@ -109,8 +114,26 @@ namespace Qml.Net.Tests.Qml
             }
         }
         
-        private int _customNotifyOnlyIntProperty;
+        private int _notifyOnlyIntProperty;
         [NotifySignal]
+        public int NotifyOnlyIntProperty
+        {
+            get
+            {
+                return _notifyOnlyIntProperty;
+            }
+            set
+            {
+                if (!Equals(value, _notifyOnlyIntProperty))
+                {
+                    _notifyOnlyIntProperty = value;
+                    this.ActivateNotifySignal();
+                }
+            }
+        }
+        
+        private int _customNotifyOnlyIntProperty;
+        [NotifySignal("customNotifyIntPropertyChangedSignal")]
         public int CustomNotifyOnlyIntProperty
         {
             get
@@ -257,7 +280,29 @@ namespace Qml.Net.Tests.Qml
                     id: viewModelContainer
                     Component.onCompleted: function() {
                         var vm = viewModelContainer.viewModel
-                        vm.customNotifyOnlyIntPropertyChanged.connect(function() {
+                        vm.notifyOnlyIntPropertyChanged.connect(function() {
+                            viewModelContainer.testResult = true
+                        })
+                        viewModelContainer.changeNotifyOnlyIntPropertyTo(3)
+                    }
+                }
+            ");
+
+            Instance.TestResult.Should().Be(true);
+        }
+        
+        [Fact]
+        public void Does_not_interfer_with_properties_only_using_custom_notify_signals()
+        {
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                import QtQuick 2.0
+                import tests 1.0
+                ViewModelContainer {
+                    id: viewModelContainer
+                    Component.onCompleted: function() {
+                        var vm = viewModelContainer.viewModel
+                        vm.customNotifyIntPropertyChangedSignal.connect(function() {
                             viewModelContainer.testResult = true
                         })
                         viewModelContainer.changeCustomNotifyOnlyIntPropertyTo(3)
