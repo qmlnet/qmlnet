@@ -21,17 +21,11 @@ namespace Qml.Net.Tests.Qml
             Mock.SetupGet(x => x.Property).Returns(value);
             Mock.SetupSet(x => x.Property = value);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                import QtQuick 2.0
-                import tests 1.0
-                DateTimeTestsQml {
-                    id: test
-                    Component.onCompleted: function() {
-                        test.property = test.property
-                    }
-                }
-            ");
+                    test.property = test.property
+                ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
             Mock.VerifySet(x => x.Property = value, Times.Once);
@@ -44,17 +38,11 @@ namespace Qml.Net.Tests.Qml
             Mock.SetupGet(x => x.Nullable).Returns(value);
             Mock.SetupSet(x => x.Nullable = value);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    DateTimeTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var v = test.nullable
-                            test.nullable = v
-                        }
-                    }
+                    var v = test.nullable
+                    test.nullable = v
                 ");
 
             Mock.VerifyGet(x => x.Nullable, Times.Once);
@@ -67,17 +55,11 @@ namespace Qml.Net.Tests.Qml
             Mock.SetupGet(x => x.Nullable).Returns((DateTime?)null);
             Mock.SetupSet(x => x.Nullable = null);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    DateTimeTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var v = test.nullable
-                            test.nullable = v
-                        }
-                    }
+                    var v = test.nullable
+                    test.nullable = v
                 ");
 
             Mock.VerifyGet(x => x.Nullable, Times.Once);
