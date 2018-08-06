@@ -4,7 +4,7 @@
 A Qml integration with .NET
 
 [![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat-square&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
-[![Build status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=master)](https://travis-ci.com/pauldotknopf/Qml.Net) [![Build status](https://ci.appveyor.com/api/projects/status/0ob29turkjslh61j/branch/master?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qml-net)
+[![Build status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=develop)](https://travis-ci.com/pauldotknopf/Qml.Net) [![Build status](https://ci.appveyor.com/api/projects/status/0ob29turkjslh61j/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qml-net)
 
 Supported platforms/runtimes:
 * Runtimes:
