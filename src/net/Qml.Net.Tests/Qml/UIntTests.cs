@@ -25,7 +25,7 @@ namespace Qml.Net.Tests.Qml
         public void Can_read_write_int_min_value()
         {
             Mock.Setup(x => x.Property).Returns(uint.MinValue);
-            RunQmlTest<UIntTestsQml>(
+            RunQmlTest(
                 "test",
                 @"
                     test.property = test.property
@@ -40,7 +40,7 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns(uint.MaxValue);
 
-            RunQmlTest<UIntTestsQml>(
+            RunQmlTest(
                 "test",
                 @"
                     test.property = test.property
@@ -53,7 +53,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_call_method_with_parameter()
         {
-            RunQmlTest<UIntTestsQml>(
+            RunQmlTest(
                 "test",
                 @"
                     test.methodParameter(3)
@@ -67,7 +67,7 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.MethodReturn()).Returns(uint.MaxValue);
 
-            RunQmlTest<UIntTestsQml>(
+            RunQmlTest(
                 "test",
                 @"
                     test.methodParameter(test.methodReturn())
