@@ -1,0 +1,5 @@
+tag-prefix: 'v'
+mode: ContinuousDeployment
+branches:
+  master:
+    mode: ContinuousDelivery
