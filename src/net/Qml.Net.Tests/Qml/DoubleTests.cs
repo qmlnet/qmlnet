@@ -26,16 +26,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns(double.MinValue);
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    DoubleTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -47,16 +41,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns(double.MaxValue);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    DoubleTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -66,16 +54,10 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_call_method_with_parameter()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    DoubleTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameter(3)
-                        }
-                    }
+                    test.methodParameter(3)
                 ");
 
             Mock.Verify(x => x.MethodParameter(It.Is<double>(y => y == 3D)), Times.Once);
@@ -86,16 +68,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.MethodReturn()).Returns(double.MaxValue);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    DoubleTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameter(test.methodReturn())
-                        }
-                    }
+                    test.methodParameter(test.methodReturn())
                 ");
 
             Mock.Verify(x => x.MethodParameter(It.Is<double>(y => y == double.MaxValue)), Times.Once);
