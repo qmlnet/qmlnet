@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Moq;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Behaviors;
+using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -72,6 +73,24 @@ namespace Qml.Net.Tests.Qml
             var result = _coreApplication.Exec();
             cts.Cancel();
             return result;
+        }
+
+        protected void RunQmlTest<TQmlRegistered>(string instanceId, string componentOnCompletedCode)
+        {
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                string.Format(@"
+                import QtQuick 2.0
+                import tests 1.0
+                {0} {{
+                    id: {1}
+                    Component.onCompleted: function() {{
+                        {2}
+                    }}
+                }}
+            ", 
+            typeof(TQmlRegistered).Name, 
+            instanceId,
+            componentOnCompletedCode));
         }
 
         public override void Dispose()
