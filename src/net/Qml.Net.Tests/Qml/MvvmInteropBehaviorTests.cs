@@ -35,7 +35,7 @@ namespace Qml.Net.Tests.Qml
             ViewModel.CustomNotifyOnlyIntProperty = newValue;
         }
 
-        public bool? TestResult { get; set; } = false;
+        public bool? TestResult { get; set; } = null;
     }
 
     public class ViewModel : INotifyPropertyChanged
