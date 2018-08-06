@@ -1,5 +1,9 @@
-build_script:
+install:
+  - choco install gitversion.portable -pre -y
+before_build:
+  - cmd: gitversion > version.json
   - cmd: git submodule update --init
+build_script:
   - cmd: build/appveyor.bat
 after_build:
   - ps: Get-ChildItem output\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
