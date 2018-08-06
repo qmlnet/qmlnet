@@ -30,6 +30,11 @@ namespace Qml.Net.Tests.Qml
             ViewModel.CustomMvvmStyleIntProperty = newValue;
         }
 
+        public void ChangeCustomNotifyOnlyIntPropertyTo(int newValue)
+        {
+            ViewModel.CustomNotifyOnlyIntProperty = newValue;
+        }
+
         public bool? TestResult { get; set; } = false;
     }
 
@@ -100,6 +105,24 @@ namespace Qml.Net.Tests.Qml
                 {
                     _customMvvmStyleIntProperty = value;
                     FirePropertyChanged();
+                }
+            }
+        }
+        
+        private int _customNotifyOnlyIntProperty;
+        [NotifySignal]
+        public int CustomNotifyOnlyIntProperty
+        {
+            get
+            {
+                return _customNotifyOnlyIntProperty;
+            }
+            set
+            {
+                if (!Equals(value, _customNotifyOnlyIntProperty))
+                {
+                    _customNotifyOnlyIntProperty = value;
+                    this.ActivateNotifySignal();
                 }
             }
         }
@@ -180,7 +203,7 @@ namespace Qml.Net.Tests.Qml
         }
         
         [Fact]
-        public void Does_not_interfer_with_completely_custom_notify_signals()
+        public void Does_play_nicely_with_completely_custom_notify_signals()
         {
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
@@ -202,7 +225,7 @@ namespace Qml.Net.Tests.Qml
         }
         
         [Fact]
-        public void Does_not_interfer_with_custom_notify_signals()
+        public void Does_play_nicely_with_custom_notify_signals()
         {
             NetTestHelper.RunQml(qmlApplicationEngine,
                 @"
@@ -216,6 +239,28 @@ namespace Qml.Net.Tests.Qml
                             viewModelContainer.testResult = true
                         })
                         viewModelContainer.changeCustomMvvmStyleIntPropertyTo(3)
+                    }
+                }
+            ");
+
+            Instance.TestResult.Should().Be(true);
+        }
+        
+        [Fact]
+        public void Does_not_interfer_with_properties_only_using_notify_signals()
+        {
+            NetTestHelper.RunQml(qmlApplicationEngine,
+                @"
+                import QtQuick 2.0
+                import tests 1.0
+                ViewModelContainer {
+                    id: viewModelContainer
+                    Component.onCompleted: function() {
+                        var vm = viewModelContainer.viewModel
+                        vm.customNotifyOnlyIntPropertyChanged.connect(function() {
+                            viewModelContainer.testResult = true
+                        })
+                        viewModelContainer.changeCustomNotifyOnlyIntPropertyTo(3)
                     }
                 }
             ");
