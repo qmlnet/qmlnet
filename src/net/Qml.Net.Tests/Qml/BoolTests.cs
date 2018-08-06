@@ -31,16 +31,10 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_write_property_true()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    BoolTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = true
-                        }
-                    }
+                    test.property = true
                 ");
             
             Mock.VerifySet(x => x.Property = true, Times.Once);
@@ -49,16 +43,10 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_write_property_false()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    BoolTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = false
-                        }
-                    }
+                    test.property = false
                 ");
 
             Mock.VerifySet(x => x.Property = false, Times.Once);
@@ -69,16 +57,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns(false);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    BoolTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameter(test.property)
-                        }
-                    }
+                    test.methodParameter(test.property)
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -90,16 +72,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns(true);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    BoolTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameter(test.property)
-                        }
-                    }
+                    test.methodParameter(test.property)
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -112,16 +88,10 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Nullable).Returns((bool?)null);
             Mock.Setup(x => x.MethodParameterNullable(It.Is<bool?>(y => y == null)));
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    BoolTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameterNullable(test.nullable)
-                        }
-                    }
+                    test.methodParameterNullable(test.nullable)
                 ");
 
             Mock.VerifyGet(x => x.Nullable, Times.Once);
@@ -134,16 +104,10 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Nullable).Returns(true);
             Mock.Setup(x => x.MethodParameterNullable(It.Is<bool?>(y => y == true)));
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    BoolTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameterNullable(test.nullable)
-                        }
-                    }
+                    test.methodParameterNullable(test.nullable)
                 ");
 
             Mock.VerifyGet(x => x.Nullable, Times.Once);
