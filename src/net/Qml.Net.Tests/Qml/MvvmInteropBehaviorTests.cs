@@ -161,7 +161,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Does_register_property_changed_signal()
         {
-            RunQmlTest<ViewModelContainer>(
+            RunQmlTest(
                 "viewModelContainer",
                 @"
                     var vm = viewModelContainer.viewModel
@@ -222,7 +222,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Does_play_nicely_with_completely_custom_notify_signals()
         {
-            RunQmlTest<ViewModelContainer>(
+            RunQmlTest(
                 "viewModelContainer",
                 @"
                     var vm = viewModelContainer.viewModel
@@ -238,7 +238,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Does_play_nicely_with_custom_notify_signals()
         {
-            RunQmlTest<ViewModelContainer>(
+            RunQmlTest(
                 "viewModelContainer",
                 @"
                     var vm = viewModelContainer.viewModel
@@ -254,7 +254,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Does_not_interfer_with_properties_only_using_notify_signals()
         {
-            RunQmlTest<ViewModelContainer>(
+            RunQmlTest(
                 "viewModelContainer",
                 @"
                     var vm = viewModelContainer.viewModel
@@ -270,7 +270,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Does_not_interfer_with_properties_only_using_custom_notify_signals()
         {
-            RunQmlTest<ViewModelContainer>(
+            RunQmlTest(
                 "viewModelContainer",
                 @"
                     var vm = viewModelContainer.viewModel

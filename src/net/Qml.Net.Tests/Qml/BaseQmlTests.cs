@@ -27,7 +27,7 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public abstract class BaseQmlTests : BaseTests
+    public abstract class AbstractBaseQmlTests<TTypeToRegister> : BaseTests
     {
         private readonly QGuiApplication _coreApplication;
         protected readonly QQmlApplicationEngine qmlApplicationEngine;
@@ -36,7 +36,7 @@ namespace Qml.Net.Tests.Qml
         readonly List<Type> _registeredTypes = new List<Type>();
         static bool _testContextRegistered = false;
 
-        protected BaseQmlTests()
+        protected AbstractBaseQmlTests()
         {
             _coreApplication = new QGuiApplication(new []{ "-platform", "offscreen" });
             qmlApplicationEngine = new QQmlApplicationEngine();
@@ -75,7 +75,7 @@ namespace Qml.Net.Tests.Qml
             return result;
         }
 
-        protected void RunQmlTest<TQmlRegistered>(string instanceId, string componentOnCompletedCode)
+        protected void RunQmlTest(string instanceId, string componentOnCompletedCode)
         {
             NetTestHelper.RunQml(qmlApplicationEngine,
                 string.Format(@"
@@ -88,7 +88,7 @@ namespace Qml.Net.Tests.Qml
                     }}
                 }}
             ", 
-            typeof(TQmlRegistered).Name, 
+            typeof(TTypeToRegister).Name, 
             instanceId,
             componentOnCompletedCode));
         }
@@ -104,7 +104,7 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public abstract class BaseQmlTests<T> : BaseQmlTests where T:class
+    public abstract class BaseQmlTests<T> : AbstractBaseQmlTests<T> where T:class
     {
         protected readonly Mock<T> Mock;
 
@@ -114,14 +114,9 @@ namespace Qml.Net.Tests.Qml
             Mock = new Mock<T>();
             TypeCreator.SetInstance(typeof(T), Mock.Object);
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
     }
 
-    public abstract class BaseQmlTestsWithInstance<T> : BaseQmlTests where T : class, new()
+    public abstract class BaseQmlTestsWithInstance<T> : AbstractBaseQmlTests<T> where T : class, new()
     {
         protected readonly T Instance;
 
@@ -131,14 +126,9 @@ namespace Qml.Net.Tests.Qml
             Instance = new T();
             TypeCreator.SetInstance(typeof(T), Instance);
         }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
     }
 
-    public abstract class BaseQmlMvvmTestsWithInstance<T> : BaseQmlTests where T : class, new()
+    public abstract class BaseQmlMvvmTestsWithInstance<T> : AbstractBaseQmlTests<T> where T : class, new()
     {
         protected readonly T Instance;
 
@@ -155,7 +145,6 @@ namespace Qml.Net.Tests.Qml
         public override void Dispose()
         {
             InteropBehaviors.ClearQmlInteropBehaviors();
-            base.Dispose();
         }
     }
 }
