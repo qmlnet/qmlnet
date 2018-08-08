@@ -3,6 +3,7 @@ install:
 before_build:
   - cmd: gitversion > version.json
   - cmd: gitversion /showconfig
+  - cmd: gitversion /version
   - cmd: git submodule update --init
 build_script:
   - cmd: build/appveyor.bat
