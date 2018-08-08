@@ -145,6 +145,7 @@ namespace Qml.Net.Tests.Qml
         public override void Dispose()
         {
             InteropBehaviors.ClearQmlInteropBehaviors();
+            base.Dispose();
         }
     }
 }
