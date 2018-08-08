@@ -2,6 +2,7 @@ install:
   - choco install gitversion.portable -pre -y --version 4.0.0-beta0012
 before_build:
   - cmd: gitversion > version.json
+  - cmd: gitversion /showconfig
   - cmd: git submodule update --init
 build_script:
   - cmd: build/appveyor.bat
