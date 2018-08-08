@@ -1,5 +1,5 @@
 install:
-  - choco install gitversion.portable -pre -y
+  - choco install gitversion.portable -pre -y --version 4.0.0-beta0012
 before_build:
   - cmd: gitversion > version.json
   - cmd: git submodule update --init
