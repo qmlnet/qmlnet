@@ -18,12 +18,12 @@ namespace PhotoFrame.Logic.BL
         IFrameConfig _FrameConfig;
 
         private PhotoDatabase _PhotosDatabase;
-        private UIDispatchDelegate _UiDispatchDelegate;
+        private UiDispatchDelegate _UiDispatchDelegate;
 
         public event EventHandler<CurrentPhotoChangedEventArgs> CurrentPhotoChanged;
         public event EventHandler<TimerValueChangedEventArgs> TimerValueChanged;
 
-        public FrameController(IFrameConfig frameConfig, UIDispatchDelegate uiDispatchDelegate)
+        public FrameController(IFrameConfig frameConfig, UiDispatchDelegate uiDispatchDelegate)
         {
             _FrameConfig = frameConfig;
             _UiDispatchDelegate = uiDispatchDelegate;
