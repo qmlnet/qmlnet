@@ -1,107 +1,96 @@
 ﻿using PhotoFrame.Logic.Config;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace PhotoFrame.Logic.BL
 {
     public class FrameController : IFrameController
     {
-        private Random _Random;
-        private Timer _PhotoSwitchTimer;
-        private TimeSpan _TimerValue = TimeSpan.Zero;
+        private readonly Random _random;
+        private readonly Timer _photoSwitchTimer;
+        private TimeSpan _timerValue = TimeSpan.Zero;
 
-        IFrameConfig _FrameConfig;
+        readonly IFrameConfig _frameConfig;
 
-        private PhotoDatabase _PhotosDatabase;
-        private UiDispatchDelegate _UiDispatchDelegate;
+        private readonly PhotoDatabase _photosDatabase;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly UiDispatchDelegate _uiDispatchDelegate;
 
         public event EventHandler<CurrentPhotoChangedEventArgs> CurrentPhotoChanged;
         public event EventHandler<TimerValueChangedEventArgs> TimerValueChanged;
 
         public FrameController(IFrameConfig frameConfig, UiDispatchDelegate uiDispatchDelegate)
         {
-            _FrameConfig = frameConfig;
-            _UiDispatchDelegate = uiDispatchDelegate;
+            _frameConfig = frameConfig;
+            _uiDispatchDelegate = uiDispatchDelegate;
 
-            _PhotosDatabase = new PhotoDatabase(_FrameConfig.PhotosPath);
-            _PhotosDatabase.PhotosListChanged += (s, e) => 
+            _photosDatabase = new PhotoDatabase(_frameConfig.PhotosPath);
+            _photosDatabase.PhotosListChanged += (s, e) => 
             {
                 string nextPhoto = CalculateNextPhoto();
-                _UiDispatchDelegate.Invoke(() => 
+                _uiDispatchDelegate.Invoke(() => 
                 {
                     CurrentPhoto = nextPhoto;
                 });
             };
 
-            _Random = new Random(DateTime.Now.Millisecond);
+            _random = new Random(DateTime.Now.Millisecond);
 
-            _CurrentPhoto = CalculateNextPhoto();
+            _currentPhoto = CalculateNextPhoto();
 
-            _PhotoSwitchTimer = new Timer(
-                new TimerCallback(o => 
+            _photoSwitchTimer = new Timer(
+                o => 
                 {
-                    if (_TimerValue >= _FrameConfig.PhotoShowTime)
+                    if (_timerValue >= _frameConfig.PhotoShowTime)
                     {
-                        _TimerValue = TimeSpan.Zero;
+                        _timerValue = TimeSpan.Zero;
                         CurrentPhoto = CalculateNextPhoto();
                         RaiseTimerValueChanged();
                     }
                     else
                     {
-                        _TimerValue = _TimerValue.Add(TimeSpan.FromSeconds(1));
+                        _timerValue = _timerValue.Add(TimeSpan.FromSeconds(1));
                         RaiseTimerValueChanged();
                     }
-                }));
+                });
         }
 
         public void Start()
         {
-            _TimerValue = TimeSpan.Zero;
-            _PhotoSwitchTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
+            _timerValue = TimeSpan.Zero;
+            _photoSwitchTimer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
         public void Stop()
         {
-            _PhotoSwitchTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            _photoSwitchTimer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        private string _CurrentPhoto;
+        private string _currentPhoto;
         public string CurrentPhoto
         {
-            get
-            {
-                return _CurrentPhoto;
-            }
+            get => _currentPhoto;
             private set
             {
                 //if(!string.Equals(_CurrentPhoto, value))
                 //{
-                    _CurrentPhoto = value;
+                    _currentPhoto = value;
                     RaiseCurrentPhotoChanged();
                 //}
             }
         }
 
-        public int TimerValue
-        {
-            get
-            {
-                return (int)Math.Round(_FrameConfig.PhotoShowTime.TotalSeconds - _TimerValue.TotalSeconds);
-            }
-        }
+        public int TimerValue => (int)Math.Round(_frameConfig.PhotoShowTime.TotalSeconds - _timerValue.TotalSeconds);
 
-        private bool _IsInitialViewSwitchType = true;
+        private bool _isInitialViewSwitchType = true;
 
         public Color GetNextBorderColor()
         {
             Random r = new Random(DateTime.Now.Millisecond);
-            int colorIndex = r.Next(_FrameConfig.BorderColors.Count);
-            var borderColor = _FrameConfig.BorderColors[colorIndex];
+            int colorIndex = r.Next(_frameConfig.BorderColors.Count);
+            var borderColor = _frameConfig.BorderColors[colorIndex];
             return borderColor;
         }
 
@@ -113,12 +102,9 @@ namespace PhotoFrame.Logic.BL
 
         public ViewSwitchType GetNextViewSwitchType()
         {
-            if(_IsInitialViewSwitchType)
-            {
-                _IsInitialViewSwitchType = false;
-                return ViewSwitchType.None;
-            }
-            return GetRandomEnumValue<ViewSwitchType>(ViewSwitchType.None);
+            if (!_isInitialViewSwitchType) return GetRandomEnumValue(ViewSwitchType.None);
+            _isInitialViewSwitchType = false;
+            return ViewSwitchType.None;
         }
 
         public ViewType GetNextViewType()
@@ -128,15 +114,16 @@ namespace PhotoFrame.Logic.BL
 
         private string CalculateNextPhoto()
         {
-            var photos = _PhotosDatabase.PhotoFiles.Where(pe => !pe.HasBeenShownInThisSession);
-            if(!photos.Any())
+            var photos = _photosDatabase.PhotoFiles.Where(pe => !pe.HasBeenShownInThisSession);
+            var photoEntries = photos.ToList();
+            if(!photoEntries.Any())
             {
-                _PhotosDatabase.ResetSession();
-                photos = _PhotosDatabase.PhotoFiles.Where(pe => !pe.HasBeenShownInThisSession);
+                _photosDatabase.ResetSession();
+                 photoEntries = _photosDatabase.PhotoFiles.Where(pe => !pe.HasBeenShownInThisSession).ToList();
             }
-            int photoIndex = _Random.Next(photos.Count());
-            Console.Out.WriteLine($"Next Photo. Got {photos.Count()} remaining photos. Choosing Index {photoIndex}");
-            var photoEntry = photos.ElementAt(photoIndex);
+            var photoIndex = _random.Next(photoEntries.Count());
+            Console.Out.WriteLine($"Next Photo. Got {photoEntries.Count()} remaining photos. Choosing Index {photoIndex}");
+            var photoEntry = photoEntries.ElementAt(photoIndex);
             photoEntry.HasBeenShownInThisSession = true;
             return Utils.GetQmlRelativePath(photoEntry.FilePath);
         }
@@ -154,9 +141,10 @@ namespace PhotoFrame.Logic.BL
         private TEnum GetRandomEnumValue<TEnum>(params TEnum[] valuesToExclude) where TEnum : struct
         {
             var enumNames = Enum.GetNames(typeof(TEnum)).AsEnumerable();
-            enumNames = enumNames.Where(en => !valuesToExclude.Any(vte => vte.ToString() == en));
-            int index = _Random.Next(0, enumNames.Count());
-            Enum.TryParse<TEnum>(enumNames.ElementAt(index), out TEnum val);
+            enumNames = enumNames.Where(en => valuesToExclude.All(vte => vte.ToString() != en));
+            var enumerableNames = enumNames.ToList();
+            var index = _random.Next(0, enumerableNames.Count);
+            Enum.TryParse(enumerableNames.ElementAt(index), out TEnum val);
             return val;
         }
     }

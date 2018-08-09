@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PhotoFrame.Logic.BL
+﻿namespace PhotoFrame.Logic.BL
 {
     public enum ViewSwitchType
     {
+        // ReSharper disable UnusedMember.Global
         Horizontal,
         Vertical,
         Fade,
         RotateAndMove,
         Scale,
         None
+        // ReSharper restore UnusedMember.Global
     }
 }

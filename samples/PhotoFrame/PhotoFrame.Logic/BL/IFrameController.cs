@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace PhotoFrame.Logic.BL
 {
@@ -17,9 +15,9 @@ namespace PhotoFrame.Logic.BL
             Lightness = lightness;
         }
 
-        public double Hue { get; set; }
-        public double Saturation { get; set; }
-        public double Lightness { get; set; }
+        public double Hue { get; }
+        public double Saturation { get; }
+        public double Lightness { get; }
     }
 
     public interface IFrameController
