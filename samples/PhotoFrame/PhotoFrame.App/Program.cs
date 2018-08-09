@@ -28,13 +28,13 @@ namespace PhotoFrame.App
             using (var app = new QGuiApplication(args))
             {
                 _App = app;
-                AppModel.UIDispatch += (a) => _App.Dispatch(a);
+                AppModel.UiDispatch += (a) => _App.Dispatch(a);
                 QQmlApplicationEngine.ActivateMVVMBehavior();
                 using (var engine = new QQmlApplicationEngine())
                 {
                     QQmlApplicationEngine.RegisterType<AppModel>("app", 1, 1);
 
-                    var assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).AbsolutePath);
+                    var assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);
                     var mainQmlPath = Path.Combine(assemblyDir, "UI", "QML", "main.qml");
                     engine.Load(mainQmlPath);
                     int result = app.Exec();
@@ -60,7 +60,7 @@ namespace PhotoFrame.App
                 Console.WriteLine($"Used memory: {usedMBString}");
                 _App?.Dispatch(() => 
                 {
-                    AppModel.Instance.CurrentlyUsedMBString = usedMBString;
+                    AppModel.Instance.CurrentlyUsedMbString = usedMBString;
                 });
                 
             }

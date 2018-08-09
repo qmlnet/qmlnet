@@ -3,191 +3,151 @@ using PhotoFrame.Logic.Config;
 using PhotoFrame.Logic.UI.ViewModels;
 using PhotoFrame.Logic.UI.Views;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Linq;
 
 namespace PhotoFrame.Logic
 {
     public class AppModel : IAppModel, INotifyPropertyChanged
     {
-        public static UIDispatchDelegate UIDispatch { get; set; }
+        public static UiDispatchDelegate UiDispatch { get; set; }
 
-        private static AppModel _Instance = null;
-        public static AppModel Instance {
-            get
-            {
-                if(_Instance == null)
-                {
-                    _Instance = new AppModel();
-                }
-                return _Instance;
-            }
-        }
+        private static AppModel _instance;
+        public static AppModel Instance => _instance ?? (_instance = new AppModel());
 
-        public static bool HasInstance
-        {
-            get
-            {
-                return _Instance != null;
-            }
-        }
+        public static bool HasInstance => _instance != null;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ViewSwitchInfo _CurrentViewSwitchInfo;
+        private ViewSwitchInfo _currentViewSwitchInfo;
+        
+        // ReSharper disable once MemberCanBePrivate.Global
         public ViewSwitchInfo CurrentViewSwitchInfo
         {
-            get
-            {
-                return _CurrentViewSwitchInfo;
-            }
+            // ReSharper disable once UnusedMember.Global
+            get => _currentViewSwitchInfo;
             private set
             {
-                if(!object.Equals(_CurrentViewSwitchInfo, value))
-                {
-                    _CurrentViewSwitchInfo = value;
-                    RaiseNotifyPropertyChanged();
-                    RaiseNotifyPropertyChanged("CurrentViewName");
-                    RaiseNotifyPropertyChanged("CurrentSwitchTypeName");
-                }
+                if (Equals(_currentViewSwitchInfo, value)) return;
+                _currentViewSwitchInfo = value;
+                RaiseNotifyPropertyChanged();
+                RaiseNotifyPropertyChanged(nameof(CurrentViewName));
+                RaiseNotifyPropertyChanged(nameof(CurrentSwitchTypeName));
             }
         }
 
-        public string CurrentViewName
-        {
-            get
-            {
-                return _CurrentViewSwitchInfo?.ViewResourceId.Split('/').LastOrDefault()?.Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Replace(".qml", "");
-            }
-        }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string CurrentViewName => _currentViewSwitchInfo?.ViewResourceId.Split('/').LastOrDefault()?.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Replace(".qml", "");
 
-        public string CurrentSwitchTypeName
-        {
-            get
-            {
-                return _CurrentViewSwitchInfo?.SwitchType.ToString();
-            }
-        }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string CurrentSwitchTypeName => _currentViewSwitchInfo?.SwitchType.ToString();
 
-        private int _AnimationDurationMs = 500;
+        private int _animationDurationMs = 500;
+        // ReSharper disable once UnusedMember.Global
         public int AnimationDurationMs
         {
-            get
-            {
-                return _AnimationDurationMs;
-            }
+            get => _animationDurationMs;
             set
             {
-                if(_AnimationDurationMs != value)
-                {
-                    _AnimationDurationMs = value;
-                    RaiseNotifyPropertyChanged();
-                }
+                if (_animationDurationMs == value) return;
+                _animationDurationMs = value;
+                RaiseNotifyPropertyChanged();
             }
         }
 
-        private int _TimerValue;
+        private int _timerValue;
+        // ReSharper disable once MemberCanBePrivate.Global
         public int TimerValue
         {
-            get
-            {
-                return _TimerValue;
-            }
+            // ReSharper disable once UnusedMember.Global
+            get => _timerValue;
             set
             {
-                if(value != _TimerValue)
-                {
-                    _TimerValue = value;
-                    RaiseNotifyPropertyChanged();
-                }
+                if (value == _timerValue) return;
+                _timerValue = value;
+                RaiseNotifyPropertyChanged();
             }
         }
 
-        private string _CurrentlyUsedMBString = "";
-        public string CurrentlyUsedMBString
+        private string _currentlyUsedMbString = "";
+        public string CurrentlyUsedMbString
         {
-            get
-            {
-                return _CurrentlyUsedMBString;
-            }
+            // ReSharper disable once UnusedMember.Global
+            get => _currentlyUsedMbString;
             set
             {
-                if(_CurrentlyUsedMBString != value)
-                {
-                    _CurrentlyUsedMBString = value;
-                    RaiseNotifyPropertyChanged();
-                }
+                if (_currentlyUsedMbString == value) return;
+                _currentlyUsedMbString = value;
+                RaiseNotifyPropertyChanged();
             }
         }
 
-        private bool _ShowDebugInfo = false;
+        private bool _showDebugInfo;
+        // ReSharper disable once MemberCanBePrivate.Global
         public bool ShowDebugInfo
         {
-            get
-            {
-                return _ShowDebugInfo;
-            }
+            // ReSharper disable once UnusedMember.Global
+            get => _showDebugInfo;
             set
             {
-                if(_ShowDebugInfo != value)
-                {
-                    _ShowDebugInfo = value;
-                    RaiseNotifyPropertyChanged();
-                }
+                if (_showDebugInfo == value) return;
+                _showDebugInfo = value;
+                RaiseNotifyPropertyChanged();
             }
         }
 
-        private IFrameController _FrameController;
-        private IViewManager _ViewManager;
+        private IFrameController _frameController;
+        private IViewManager _viewManager;
 
-        private IView _CurrentView = null;
-        private IFrameConfig _FrameConfig;
+        private IView _currentView;
+        private readonly IFrameConfig _frameConfig;
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public AppModel()
         {
-            if(_Instance != null)
+            if(_instance != null)
             {
-                _CurrentViewSwitchInfo = _Instance._CurrentViewSwitchInfo;
+                _currentViewSwitchInfo = _instance._currentViewSwitchInfo;
             }
-            _Instance = this;
-            string wd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            _FrameConfig = new FrameJsonConfig(Path.Combine(wd, "PhotoFrameConfig.json"));
-            _FrameConfig.FrameConfigChanged += (s, e) =>
+            _instance = this;
+            var wd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if(wd == null)
+                throw new NullReferenceException();
+            _frameConfig = new FrameJsonConfig(Path.Combine(wd, "PhotoFrameConfig.json"));
+            _frameConfig.FrameConfigChanged += (s, e) =>
             {
-                InitAppWithConfig(_FrameConfig);
+                InitAppWithConfig(_frameConfig);
             };
-            InitAppWithConfig(_FrameConfig);
+            InitAppWithConfig(_frameConfig);
         }
 
         private void InitAppWithConfig(IFrameConfig frameConfig)
         {
-            if(_FrameController != null)
+            if(_frameController != null)
             {
-                _FrameController.Stop();
+                _frameController.Stop();
             }
-            _FrameController = new FrameController(frameConfig, new UIDispatchDelegate((a) => UIDispatch.Invoke(a)));
-            _ViewManager = new ViewManager(this, _FrameController, frameConfig);
+            _frameController = new FrameController(frameConfig, a => UiDispatch.Invoke(a));
+            _viewManager = new ViewManager(this, _frameController, frameConfig);
 
-            ShowDebugInfo = _FrameConfig.ShowDebugInfo;
+            ShowDebugInfo = _frameConfig.ShowDebugInfo;
 
-            _FrameController.CurrentPhotoChanged += (s, e) =>
+            _frameController.CurrentPhotoChanged += (s, e) =>
             {
                 CreateAndShowNewView();
             };
 
             CreateAndShowNewView();
 
-            _FrameController.TimerValueChanged += (s, e) =>
+            _frameController.TimerValueChanged += (s, e) =>
             {
-                TimerValue = _FrameController.TimerValue;
+                TimerValue = _frameController.TimerValue;
             };
 
-            _FrameController.Start();
+            _frameController.Start();
         }
 
         public void SwitchToView(ViewSwitchInfo switchInfo)
@@ -197,14 +157,14 @@ namespace PhotoFrame.Logic
 
         private void CreateAndShowNewView()
         {
-            var viewType = _FrameController.GetNextViewType();
-            var switchType = _FrameController.GetNextViewSwitchType();
-            if(_CurrentView != null)
+            var viewType = _frameController.GetNextViewType();
+            var switchType = _frameController.GetNextViewSwitchType();
+            if(_currentView != null)
             {
-                _CurrentView.Deactivate();
+                _currentView.Deactivate();
             }
-            _CurrentView = _ViewManager.CreateView(viewType);
-            _CurrentView.Activate(switchType);
+            _currentView = _viewManager.CreateView(viewType);
+            _currentView.Activate(switchType);
         }
 
         private void RaiseNotifyPropertyChanged([CallerMemberName]string memberName = "")
