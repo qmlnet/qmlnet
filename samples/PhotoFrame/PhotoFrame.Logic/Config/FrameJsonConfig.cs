@@ -6,18 +6,22 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace PhotoFrame.Logic.Config
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class FrameConfig
     {
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
+        // ReSharper disable CollectionNeverUpdated.Global
         public List<string> BorderColors { get; set; }
         public uint BorderWidth { get; set; }
         public uint PhotoShowTimeSeconds { get; set; }
         public string PhotosPath { get; set; }
         public bool ShowDebugInfo { get; set; }
+        // ReSharper restore CollectionNeverUpdated.Global
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
     }
 
     public class FrameJsonConfig : IFrameConfig
@@ -28,7 +32,7 @@ namespace PhotoFrame.Logic.Config
         {
             get
             {
-                return _RawConfig
+                return _rawConfig
                     .BorderColors
                     .Select(cs =>
                     {
@@ -48,102 +52,80 @@ namespace PhotoFrame.Logic.Config
             }
         }
 
-        public uint BorderWidth
-        {
-            get
-            {
-                return _RawConfig.BorderWidth;
-            }
-        }
+        public uint BorderWidth => _rawConfig.BorderWidth;
 
-        public TimeSpan PhotoShowTime
-        {
-            get
-            {
-                return TimeSpan.FromSeconds(_RawConfig.PhotoShowTimeSeconds);
-            }
-        }
+        public TimeSpan PhotoShowTime => TimeSpan.FromSeconds(_rawConfig.PhotoShowTimeSeconds);
 
         public string PhotosPath
         {
             get
             {
-                var rawPath = _RawConfig.PhotosPath;
-                if(Path.DirectorySeparatorChar == '/')
-                {
-                    rawPath = rawPath.Replace('\\', '/');
-                }
-                else
-                {
-                    rawPath = rawPath.Replace('/', '\\');
-                }
+                var rawPath = _rawConfig.PhotosPath;
+                rawPath = Path.DirectorySeparatorChar == '/' ? rawPath.Replace('\\', '/') : rawPath.Replace('/', '\\');
                 if (Path.IsPathRooted(rawPath))
                 {
                     return rawPath;
                 }
                 var wd = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                if(wd == null)
+                    throw new NullReferenceException();
                 return Path.Combine(wd, rawPath);
             }
         }
 
-        public bool ShowDebugInfo
-        {
-            get
-            {
-                return _RawConfig.ShowDebugInfo;
-            }
-        }
+        public bool ShowDebugInfo => _rawConfig.ShowDebugInfo;
 
-        private string _JsonFilePath;
-        private FrameConfig _RawConfig = null;
-        private FileSystemWatcher _ConfigWatcher;
+        private readonly string _jsonFilePath;
+        private FrameConfig _rawConfig;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly FileSystemWatcher _configWatcher;
 
         public FrameJsonConfig(string jsonFilePath)
         {
-            _JsonFilePath = jsonFilePath;
+            _jsonFilePath = jsonFilePath;
 
             LoadConfig();
 
-            var directory = Path.GetDirectoryName(_JsonFilePath);
-            var fileName = Path.GetFileName(_JsonFilePath);
-
-            _ConfigWatcher = new FileSystemWatcher(directory);
-            _ConfigWatcher.Changed += (s, e) =>
+            var directory = Path.GetDirectoryName(_jsonFilePath);
+            if(directory == null)
+                throw new NullReferenceException();
+            
+            _configWatcher = new FileSystemWatcher(directory);
+            _configWatcher.Changed += (s, e) =>
             {
-                if (string.Equals(e.FullPath, _JsonFilePath))
+                if (string.Equals(e.FullPath, _jsonFilePath))
                 {
                     LoadConfig();
                 }
             };
-            _ConfigWatcher.NotifyFilter = NotifyFilters.LastWrite;
-            _ConfigWatcher.EnableRaisingEvents = true;
+            _configWatcher.NotifyFilter = NotifyFilters.LastWrite;
+            _configWatcher.EnableRaisingEvents = true;
         }
 
         private void LoadConfig()
         {
-            string json = "";
             int tries = 10;
             while (tries > 0)
             {
                 try
                 {
-                    using (var reader = new StreamReader(_JsonFilePath))
+                    string json;
+                    using (var reader = new StreamReader(_jsonFilePath))
                     {
                         json = reader.ReadToEnd();
                     }
-                    _RawConfig = JsonConvert.DeserializeObject<FrameConfig>(json);
+                    _rawConfig = JsonConvert.DeserializeObject<FrameConfig>(json);
                     RaiseFrameConfigChanged();
                     break;
                 }
-                catch(Exception e)
+                catch(Exception)
                 {
                     tries--;
                     if(tries <= 0)
                     {
-                        throw e;
+                        throw;
                     }
                     Thread.Sleep(100);
-                    continue;
                 }
             }
         }

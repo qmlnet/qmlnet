@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
 using System.Threading;
 
@@ -17,21 +16,12 @@ namespace PhotoFrame.Logic.BL
             HasBeenShownInThisSession = hasBeenShownInThisSession;
         }
 
-        public string FilePath { get; private set; }
+        public string FilePath { get; }
         public bool HasBeenShownInThisSession { get; set; }
 
         public override bool Equals(object obj)
         {
-            if(obj == null)
-            {
-                return false;
-            }
-            var castedObj = obj as PhotoEntry;
-            if(castedObj == null)
-            {
-                return false;
-            }
-            return Equals(castedObj);
+            return obj is PhotoEntry castedObj && Equals(castedObj);
         }
 
         public bool Equals(PhotoEntry other)
@@ -45,19 +35,19 @@ namespace PhotoFrame.Logic.BL
         {
             var hashCode = -167777169;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(FilePath);
-            hashCode = hashCode * -1521134295 + HasBeenShownInThisSession.GetHashCode();
             return hashCode;
         }
     }
 
     public class PhotoDatabase
     {
-        private string _PhotosDirectoryPath;
-        private List<PhotoEntry> _PhotosEntries;
+        private readonly string _photosDirectoryPath;
+        private List<PhotoEntry> _photosEntries;
 
-        private Timer _UpdateTimer;
+        private readonly Timer _updateTimer;
 
-        private FileSystemWatcher _FileSystemWatcher;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly FileSystemWatcher _fileSystemWatcher;
 
         private bool IsStopped { get; set; }
 
@@ -65,32 +55,28 @@ namespace PhotoFrame.Logic.BL
 
         public PhotoDatabase(string photosDirectoryPath)
         {
-            _UpdateTimer = new Timer(new TimerCallback(o => UpdateDatabase()));
-            _PhotosDirectoryPath = photosDirectoryPath;
+            _updateTimer = new Timer(o => UpdateDatabase());
+            _photosDirectoryPath = photosDirectoryPath;
             UpdateDatabase();
-            _FileSystemWatcher = new FileSystemWatcher(photosDirectoryPath);
-            _FileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite
-                                            | NotifyFilters.FileName 
-                                            | NotifyFilters.DirectoryName;
-            _FileSystemWatcher.Changed += (s, e) => WaitAndUpdateDatabase();
-            _FileSystemWatcher.Created += (s, e) => WaitAndUpdateDatabase();
-            _FileSystemWatcher.Deleted += (s, e) => WaitAndUpdateDatabase();
-            _FileSystemWatcher.Renamed += (s, e) => WaitAndUpdateDatabase();
-
-            _FileSystemWatcher.EnableRaisingEvents = true;
-        }
-
-        public IReadOnlyList<PhotoEntry> PhotoFiles
-        {
-            get
+            _fileSystemWatcher = new FileSystemWatcher(photosDirectoryPath)
             {
-                return _PhotosEntries.AsReadOnly();
-            }
+                NotifyFilter = NotifyFilters.LastWrite
+                               | NotifyFilters.FileName
+                               | NotifyFilters.DirectoryName
+            };
+            _fileSystemWatcher.Changed += (s, e) => WaitAndUpdateDatabase();
+            _fileSystemWatcher.Created += (s, e) => WaitAndUpdateDatabase();
+            _fileSystemWatcher.Deleted += (s, e) => WaitAndUpdateDatabase();
+            _fileSystemWatcher.Renamed += (s, e) => WaitAndUpdateDatabase();
+
+            _fileSystemWatcher.EnableRaisingEvents = true;
         }
+
+        public IReadOnlyList<PhotoEntry> PhotoFiles => _photosEntries.AsReadOnly();
 
         public void ResetSession()
         {
-            _PhotosEntries.ForEach(pe => pe.HasBeenShownInThisSession = false);
+            _photosEntries.ForEach(pe => pe.HasBeenShownInThisSession = false);
         }
 
         public void Stop()
@@ -100,7 +86,7 @@ namespace PhotoFrame.Logic.BL
 
         private void WaitAndUpdateDatabase()
         {
-            _UpdateTimer.Change((int)TimeSpan.FromSeconds(2).TotalMilliseconds, Timeout.Infinite);
+            _updateTimer.Change((int)TimeSpan.FromSeconds(2).TotalMilliseconds, Timeout.Infinite);
         }
 
         private void UpdateDatabase()
@@ -109,7 +95,7 @@ namespace PhotoFrame.Logic.BL
             {
                 return;
             }
-            var di = new DirectoryInfo(_PhotosDirectoryPath);
+            var di = new DirectoryInfo(_photosDirectoryPath);
             var newList = di.EnumerateFiles("*.*")
                 .Where(fi => 
                     string.Equals(fi.Extension, ".jpg", StringComparison.InvariantCultureIgnoreCase)
@@ -117,9 +103,9 @@ namespace PhotoFrame.Logic.BL
                 .OrderBy(fi => fi.Name)
                 .Select(fi => new PhotoEntry(fi.FullName, false))
                 .ToList();
-            if(!AreListsEqual(newList, _PhotosEntries))
+            if(!AreListsEqual(newList, _photosEntries))
             {
-                _PhotosEntries = newList;
+                _photosEntries = newList;
                 RaisePhotosListChanged();
             }
         }
@@ -140,7 +126,7 @@ namespace PhotoFrame.Logic.BL
             }
             for (int i = 0; i < listOne.Count - 1; i++)
             {
-                if(!object.Equals(listOne[i], listTwo[i]))
+                if(!Equals(listOne[i], listTwo[i]))
                 {
                     return false;
                 }
