@@ -6,17 +6,17 @@ namespace PhotoFrame.Logic.UI.Views
 {
     public abstract class ViewBase : IView
     {
-        private string _Uri;
+        private readonly string _uri;
 
-        protected IAppModel AppModel { get; }
+        private IAppModel AppModel { get; }
         protected IFrameController FrameController { get; }
         protected IFrameConfig FrameConfig { get; }
 
         public IViewModel ViewModel { get; private set; }
 
-        public ViewBase(string uri, IAppModel appModel, IFrameController frameController, IFrameConfig frameConfig)
+        protected ViewBase(string uri, IAppModel appModel, IFrameController frameController, IFrameConfig frameConfig)
         {
-            _Uri = uri;
+            _uri = uri;
             AppModel = appModel;
             FrameController = frameController;
             FrameConfig = frameConfig;
@@ -25,7 +25,7 @@ namespace PhotoFrame.Logic.UI.Views
         public void Activate(ViewSwitchType switchType)
         {
             ViewModel = CreateViewModel();
-            AppModel.SwitchToView(new ViewSwitchInfo(_Uri, ViewModel, switchType));
+            AppModel.SwitchToView(new ViewSwitchInfo(_uri, ViewModel, switchType));
         }
 
         public void Deactivate()

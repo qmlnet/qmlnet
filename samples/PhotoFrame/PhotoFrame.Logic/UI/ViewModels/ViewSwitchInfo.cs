@@ -1,7 +1,4 @@
 ﻿using PhotoFrame.Logic.BL;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PhotoFrame.Logic.UI.ViewModels
 {
@@ -14,9 +11,13 @@ namespace PhotoFrame.Logic.UI.ViewModels
             SwitchType = switchType;
         }
 
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         public string ViewResourceId { get; private set; }
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         public IViewModel ViewModel { get; private set; }
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         public ViewSwitchType SwitchType { get; private set; }
+        // ReSharper disable once UnusedMember.Global
         public string SwitchTypeString => SwitchType.ToString();
     }
 }

@@ -1,8 +1,5 @@
 ﻿using PhotoFrame.Logic.BL;
 using PhotoFrame.Logic.Config;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PhotoFrame.Logic.UI.ViewModels
 {

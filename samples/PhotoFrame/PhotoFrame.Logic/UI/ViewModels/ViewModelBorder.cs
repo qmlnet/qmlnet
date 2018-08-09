@@ -1,9 +1,6 @@
 ﻿using PhotoFrame.Logic.BL;
 using PhotoFrame.Logic.Config;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace PhotoFrame.Logic.UI.ViewModels
 {
@@ -22,7 +19,7 @@ namespace PhotoFrame.Logic.UI.ViewModels
 
         private string ColorToString(Color color)
         {
-            return $"#{color.R.ToString("x2")}{color.G.ToString("x2")}{color.B.ToString("x2")}";
+            return $"#{color.R:x2}{color.G:x2}{color.B:x2}";
         }
     }
 }
