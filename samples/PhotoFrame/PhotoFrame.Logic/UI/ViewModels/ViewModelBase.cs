@@ -1,10 +1,8 @@
 ﻿using PhotoFrame.Logic.BL;
 using PhotoFrame.Logic.Config;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace PhotoFrame.Logic.UI.ViewModels
 {
@@ -12,24 +10,20 @@ namespace PhotoFrame.Logic.UI.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected IFrameController FrameController { get; }
-        protected IFrameConfig FrameConfig;
+        protected readonly IFrameConfig FrameConfig;
         
+        // ReSharper disable once MemberCanBePrivate.Global
         public bool IsStopped { get; private set; }
 
-        private string _ImageUri = "";
+        private string _imageUri = "";
         public string ImageUri
         {
-            get
-            {
-                return _ImageUri;
-            }
+            get => _imageUri;
             private set
             {
-                if(!string.Equals(_ImageUri, value))
-                {
-                    _ImageUri = value;
-                    RaisePropertyChanged();
-                }
+                if (string.Equals(_imageUri, value)) return;
+                _imageUri = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -39,16 +33,16 @@ namespace PhotoFrame.Logic.UI.ViewModels
             FrameController.CurrentPhotoChanged -= FrameController_CurrentPhotoChanged;
         }
 
-        private static int _Counter = 0;
+        private static int _counter;
 
-        public ViewModelBase(IFrameController frameController, IFrameConfig config)
+        protected ViewModelBase(IFrameController frameController, IFrameConfig config)
         {
             FrameController = frameController;
             FrameConfig = config;
             ImageUri = frameController.CurrentPhoto;
             FrameController.CurrentPhotoChanged += FrameController_CurrentPhotoChanged;
-            _Counter++;
-            Console.WriteLine($"Number of ViewModels: {_Counter}");
+            _counter++;
+            Console.WriteLine($"Number of ViewModels: {_counter}");
         }
 
         private void FrameController_CurrentPhotoChanged(object sender, CurrentPhotoChangedEventArgs e)
@@ -61,8 +55,8 @@ namespace PhotoFrame.Logic.UI.ViewModels
 
         ~ViewModelBase()
         {
-            _Counter--;
-            Console.WriteLine($"Number of ViewModels: {_Counter}");
+            _counter--;
+            Console.WriteLine($"Number of ViewModels: {_counter}");
         }
 
         protected void RaisePropertyChanged([CallerMemberName]string propertyName = "")

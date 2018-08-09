@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PhotoFrame.Logic.BL;
+﻿using PhotoFrame.Logic.BL;
 using PhotoFrame.Logic.Config;
 using PhotoFrame.Logic.UI.ViewModels;
 
