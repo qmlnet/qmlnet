@@ -111,14 +111,14 @@ public class QmlType
 **Register your new type with Qml.**
 
 ```c#
-using (var app = new QGuiApplication(r))
+using (var app = new QGuiApplication(args))
 {
     using (var engine = new QQmlApplicationEngine())
     {
         // Register our new type to be used in Qml
         QQmlApplicationEngine.RegisterType<QmlType>("test", 1, 1);
-        engine.loadFile("main.qml");
-        return app.exec();
+        engine.Load("main.qml");
+        return app.Exec();
     }
 }
 ```
