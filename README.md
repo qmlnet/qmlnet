@@ -192,3 +192,4 @@ ApplicationWindow {
 - [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
 - [ ] General perf improvements (particularly with reflection).
 - [ ] Qml debugger for VS and VS Code.
+- [ ] Yocto meta-layer for .NET Core and Qml.Net (for embedded Linux development).
