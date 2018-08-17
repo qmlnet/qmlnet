@@ -20,6 +20,7 @@ namespace Qml.Net.Internal.Types
         public IntPtr GCCollect;
         public IntPtr RaseNetSignals;
         public IntPtr AwaitTask;
+        public IntPtr Serialize;
     }
 
     internal interface ICallbacksIterop
@@ -74,6 +75,8 @@ namespace Qml.Net.Internal.Types
         bool RaiseNetSignals(IntPtr target, string signalName, IntPtr parameters);
 
         Task AwaitTask(IntPtr target, IntPtr succesCallback, IntPtr failureCallback);
+        
+        bool Serialize(IntPtr instance, IntPtr result);
     }
     
     internal class CallbacksImpl
@@ -91,6 +94,7 @@ namespace Qml.Net.Internal.Types
         GCCollectDelegate _gcCollectDelegate;
         RaiseNetSignalsDelegate _raiseNetSignalsDelegate;
         AwaitTaskDelegate _awaitTaskDelegate;
+        SerializeDelegate _serializeDelegate;
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
@@ -127,6 +131,9 @@ namespace Qml.Net.Internal.Types
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void AwaitTaskDelegate(IntPtr target, IntPtr successCallback, IntPtr failureCallback);
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate bool SerializeDelegate(IntPtr instance, IntPtr result);
         
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -167,6 +174,9 @@ namespace Qml.Net.Internal.Types
 
             _awaitTaskDelegate = AwaitTask;
             GCHandle.Alloc(_awaitTaskDelegate);
+
+            _serializeDelegate = Serialize;
+            GCHandle.Alloc(_serializeDelegate);
         }
 
         private bool IsTypeValid(string typeName)
@@ -231,6 +241,11 @@ namespace Qml.Net.Internal.Types
             _callbacks.AwaitTask(target, succesCallback, failureCallback);
         }
 
+        private bool Serialize(IntPtr instance, IntPtr result)
+        {
+            return _callbacks.Serialize(instance, result);
+        }
+
         public Callbacks Callbacks()
         {
             return new Callbacks
@@ -246,7 +261,8 @@ namespace Qml.Net.Internal.Types
                 InvokeMethod = Marshal.GetFunctionPointerForDelegate(_invokeMethodDelegate),
                 GCCollect = Marshal.GetFunctionPointerForDelegate(_gcCollectDelegate),
                 RaseNetSignals = Marshal.GetFunctionPointerForDelegate(_raiseNetSignalsDelegate),
-                AwaitTask = Marshal.GetFunctionPointerForDelegate(_awaitTaskDelegate)
+                AwaitTask = Marshal.GetFunctionPointerForDelegate(_awaitTaskDelegate),
+                Serialize = Marshal.GetFunctionPointerForDelegate(_serializeDelegate)
             };
         }
     }

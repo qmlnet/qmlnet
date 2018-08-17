@@ -391,6 +391,25 @@ namespace Qml.Net.Internal
             }
         }
 
+        public bool Serialize(IntPtr i, IntPtr r)
+        {
+            using (var instance = new NetReference(i))
+            using (var result = new NetVariant(r))
+            {
+                try
+                {
+                    result.String = Serializer.Current.Serialize(instance.Instance);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Propagate this error to the user.
+                    Console.Error.WriteLine($"Error serializing .NET object: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+        
         private NetVariantType GetPrefVariantType(Type typeInfo)
         {
             if (typeInfo == typeof(bool))

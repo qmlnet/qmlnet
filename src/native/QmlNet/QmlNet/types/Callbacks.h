@@ -35,4 +35,6 @@ bool raiseNetSignals(QSharedPointer<NetReference> target, QString signalName, QS
 
 void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> successCallback, QSharedPointer<NetJSValue> failureCallback);
 
+bool serializeNetToString(QSharedPointer<NetReference> instance, QSharedPointer<NetVariant> result);
+
 #endif // NET_TYPE_INFO_MANAGER_H

@@ -15,6 +15,7 @@ void Heap::NetObject::init() {
     o->defineDefaultProperty(QStringLiteral("gcCollect"), QV4::NetObject::method_gccollect);
     o->defineDefaultProperty(QStringLiteral("await"), QV4::NetObject::method_await);
     o->defineDefaultProperty(QStringLiteral("cancelTokenSource"), QV4::NetObject::method_cancelTokenSource);
+    o->defineDefaultProperty(QStringLiteral("serialize"), QV4::NetObject::method_serialize);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
@@ -90,6 +91,34 @@ void NetObject::method_cancelTokenSource(const BuiltinFunction *, Scope &scope, 
     }
     NetValue* netValue = NetValue::forInstance(netReference);
     scope.result = QV4::QObjectWrapper::wrap(scope.engine, netValue);
+}
+
+void NetObject::method_serialize(const BuiltinFunction *, Scope &scope, CallData *callData)
+{
+    qDebug("TESTdd");
+
+    if(callData->argc != 1) {
+        THROW_GENERIC_ERROR("Net.serialize(): Missing instance parameter");
+    }
+
+    ScopedValue instance(scope, callData->args[0]);
+    if(instance->isNullOrUndefined()) {
+        THROW_GENERIC_ERROR("Net.serialize(): Instance parameter must not be null or undefined");
+    }
+
+    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
+    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
+    if(value->getVariantType() != NetVariantTypeEnum_Object) {
+        THROW_GENERIC_ERROR("Net.serialize(): Parameter is not a .NET object");
+    }
+
+    QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
+    bool serializationResult = serializeNetToString(value->getNetReference(), result);
+    if(!serializationResult) {
+        THROW_GENERIC_ERROR("Net.serialize(): Could not serialize object.");
+    }
+
+    scope.result = scope.engine->newString(result->getString());
 }
 
 #else
@@ -183,6 +212,30 @@ ReturnedValue NetObject::method_cancelTokenSource(const FunctionObject *b, const
     }
     NetValue* netValue = NetValue::forInstance(netReference);
     return QV4::QObjectWrapper::wrap(scope.engine, netValue);
+}
+
+ReturnedValue NetObject::method_serialize(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+{
+    QV4::Scope scope(b);
+    if(argc != 1) {
+        THROW_GENERIC_ERROR("Net.serialize(): Missing instance parameter");
+    }
+    QV4::ScopedValue instance(scope, argv[0]);
+    if(instance->isNullOrUndefined()) {
+        THROW_GENERIC_ERROR("Net.serialize(): Instance parameter must not be null or undefined");
+    }
+    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
+    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
+    if(value->getVariantType() != NetVariantTypeEnum_Object) {
+        THROW_GENERIC_ERROR("Net.serialize(): Parameter is not a .NET object");
+    }
+    QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
+    bool serializationResult = serializeNetToString(value->getNetReference(), result);
+    if(!serializationResult) {
+        THROW_GENERIC_ERROR("Net.serialize(): Could not serialize object.");
+    }
+
+    return Encode(scope.engine->newString(result->getString()));
 }
 
 #endif
