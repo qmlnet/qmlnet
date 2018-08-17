@@ -6,6 +6,7 @@
 
 class NetTypeInfo;
 class NetReference;
+class NetVariant;
 
 class NetTypeArrayFacade
 {
@@ -14,6 +15,8 @@ public:
     virtual ~NetTypeArrayFacade() {}
     static QSharedPointer<NetTypeArrayFacade> fromType(QSharedPointer<NetTypeInfo> type);
     virtual int getLength(QSharedPointer<NetReference> reference);
+    virtual QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, int index);
+    virtual void setIndexed(QSharedPointer<NetReference> reference, int index, QSharedPointer<NetVariant> value);
 };
 
 #endif // NETTYPEARRAYFACADE_H
