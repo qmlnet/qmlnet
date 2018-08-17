@@ -95,8 +95,6 @@ void NetObject::method_cancelTokenSource(const BuiltinFunction *, Scope &scope, 
 
 void NetObject::method_serialize(const BuiltinFunction *, Scope &scope, CallData *callData)
 {
-    qDebug("TESTdd");
-
     if(callData->argc != 1) {
         THROW_GENERIC_ERROR("Net.serialize(): Missing instance parameter");
     }
