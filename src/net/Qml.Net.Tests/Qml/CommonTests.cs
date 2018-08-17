@@ -10,13 +10,11 @@ namespace Qml.Net.Tests.Qml
         public void Can_put_and_get_env()
         {
             var envName = Guid.NewGuid().ToString().Replace("-", "");
-            Qt.GetEnv(envName).Should().BeNull();
-            Qt.PutEnv(envName, "");
-            Qt.GetEnv(envName).Should().BeEmpty();
+            Qt.GetEnv(envName).Should().BeNullOrEmpty();
             Qt.PutEnv(envName, "TEST");
             Qt.GetEnv(envName).Should().Be("TEST");
             Qt.PutEnv(envName, null);
-            Qt.GetEnv(envName).Should().BeNull();
+            Qt.GetEnv(envName).Should().BeNullOrEmpty();
         }
 
         [Fact]
