@@ -32,6 +32,12 @@ namespace Qml.Net.Internal.Types
             set => Interop.NetTypeInfo.SetPrefVariantType(Handle, value);
         }
 
+        public bool IsArray
+        {
+            get => Interop.NetTypeInfo.GetIsArray(Handle);
+            set => Interop.NetTypeInfo.SetIsArray(Handle, value);
+        }
+        
         public void AddMethod(NetMethodInfo methodInfo)
         {
             Interop.NetTypeInfo.AddMethod(Handle, methodInfo.Handle);
@@ -127,6 +133,11 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_getPrefVariantType")]
         NetVariantType GetPrefVariantType(IntPtr netTypeInfo);
 
+        [NativeSymbol(Entrypoint = "type_info_setIsArray")]
+        bool GetIsArray(IntPtr netTypeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getIsArray")]
+        void SetIsArray(IntPtr netTypeInfo, bool isArray);
+        
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
         void AddMethod(IntPtr typeInfo, IntPtr methodInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodCount")]

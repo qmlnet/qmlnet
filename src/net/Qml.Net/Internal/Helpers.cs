@@ -8,6 +8,11 @@ namespace Qml.Net.Internal
     {
         public static bool IsPrimitive(Type type)
         {
+            if (type.IsArray)
+            {
+                return false;
+            }
+            
             if (type.Namespace == "System")
             {
                 if (type.Name == "Exception")
@@ -16,6 +21,7 @@ namespace Qml.Net.Internal
                 }
                 return true;
             }
+            
             return false;
         }
         

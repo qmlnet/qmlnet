@@ -24,6 +24,9 @@ public:
     NetVariantTypeEnum getPrefVariantType();
     void setPrefVariantType(NetVariantTypeEnum variantType);
 
+    bool isArray();
+    void setIsArray(bool isArray);
+
     void addMethod(QSharedPointer<NetMethodInfo> methodInfo);
     int getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(int index);
@@ -52,6 +55,7 @@ private:
     QString _fullTypeName;
     QString _className;
     NetVariantTypeEnum _variantType;
+    bool _isArray;
     QList<QSharedPointer<NetMethodInfo>> _methods;
     QList<QSharedPointer<NetMethodInfo>> _methodsLocal;
     QList<QSharedPointer<NetMethodInfo>> _methodsStatic;
