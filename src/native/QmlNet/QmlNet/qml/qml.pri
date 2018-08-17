@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/NetJsValue.h \
     $$PWD/QQuickStyle.h \
     $$PWD/NetValueMetaObjectPacker.h \
-    $$PWD/QCommon.h
+    $$PWD/QCommon.h \
+    $$PWD/JsNetArray.h
 
 SOURCES += \
     $$PWD/QGuiApplication.cpp \
@@ -28,4 +29,5 @@ SOURCES += \
     $$PWD/NetJsValue.cpp \
     $$PWD/QQuickStyle.cpp \
     $$PWD/NetValueMetaObjectPacker.cpp \
-    $$PWD/QCommon.cpp
+    $$PWD/QCommon.cpp \
+    $$PWD/JsNetArray.cpp
