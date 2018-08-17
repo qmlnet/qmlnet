@@ -12,9 +12,13 @@ public:
     NetTypeArrayFacade_Array(QSharedPointer<NetTypeInfo> type);
     bool isIncomplete();
     int getLength(QSharedPointer<NetReference> reference);
+    QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, int index);
+    void setIndexed(QSharedPointer<NetReference> reference, int index, QSharedPointer<NetVariant> value);
 private:
     bool _isIncomplete;
     QSharedPointer<NetPropertyInfo> _lengthProperty;
+    QSharedPointer<NetMethodInfo> _getIndexed;
+    QSharedPointer<NetMethodInfo> _setIndexed;
 };
 
 #endif // NETTYPEARRAYFACADEARRAY_H

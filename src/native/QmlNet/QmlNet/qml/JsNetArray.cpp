@@ -68,33 +68,13 @@ ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProper
     }
 
     NetValue* netValue = reinterpret_cast<NetValue*>(wrapper->d()->object());
-    QSharedPointer<NetTypeInfo> typeInfo = netValue->getNetReference()->getTypeInfo();
+    QSharedPointer<NetTypeArrayFacade> arrayFacade = netValue->getNetReference()->getTypeInfo()->getArrayFacade();
 
-    QSharedPointer<NetMethodInfo> getMethod;
-    for(int x = 0; x < typeInfo->getMethodCount(); x++) {
-        QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(x);
-        if(methodInfo->getMethodName().compare("Get") == 0) {
-            getMethod = methodInfo;
-            break;
-        }
+    if(arrayFacade == nullptr) {
+        THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
     }
 
-    if(getMethod == nullptr) {
-        THROW_GENERIC_ERROR("Couldn't find the Get method for the .NET array");
-    }
-
-    QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
-    QSharedPointer<NetVariant> parameter = QSharedPointer<NetVariant>(new NetVariant());
-    parameter->setInt(static_cast<int>(index));
-    parameters->add(parameter);
-    QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    invokeNetMethod(getMethod, netValue->getNetReference(), parameters, result);
-
+    QSharedPointer<NetVariant> result = arrayFacade->getIndexed(netValue->getNetReference(), static_cast<int>(index));
     QJSValue resultJsValue = result->toQJSValue(scope.engine->jsEngine());
-
-    if(resultJsValue.isNull() || resultJsValue.isUndefined()) {
-        THROW_GENERIC_ERROR("Couldn't find the Get method for the .NET array");
-    }
-
     return scope.engine->fromVariant(resultJsValue.toVariant());
 }

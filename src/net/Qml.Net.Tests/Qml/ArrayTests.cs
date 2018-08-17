@@ -35,5 +35,23 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.GetArray(), Times.Once);
             Mock.Verify(x => x.Test(3), Times.Once);
         }
+        
+        [Fact]
+        public void Can_get_indexed()
+        {
+            var array = new[] {3, 4, 6};
+            Mock.Setup(x => x.GetArray()).Returns(array);
+            Mock.Setup(x => x.Test(4));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var array = Net.toJsArray(test.getArray())
+                    test.test(array[1])
+                ");
+            
+            Mock.Verify(x => x.GetArray(), Times.Once);
+            Mock.Verify(x => x.Test(4), Times.Once);
+        }
     }
 }

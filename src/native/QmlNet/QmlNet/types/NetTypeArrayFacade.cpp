@@ -25,3 +25,13 @@ int NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
 {
     return 0;
 }
+
+QSharedPointer<NetVariant> NetTypeArrayFacade::getIndexed(QSharedPointer<NetReference>, int)
+{
+    return nullptr;
+}
+
+void NetTypeArrayFacade::setIndexed(QSharedPointer<NetReference>, int, QSharedPointer<NetVariant>)
+{
+
+}
