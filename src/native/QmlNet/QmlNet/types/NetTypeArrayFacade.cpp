@@ -1,0 +1,27 @@
+#include <QmlNet/types/NetTypeArrayFacade.h>
+#include <QmlNet/types/NetTypeArrayFacadeArray.h>
+#include <QmlNet/types/NetTypeInfo.h>
+
+NetTypeArrayFacade::NetTypeArrayFacade()
+{
+
+}
+
+QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(QSharedPointer<NetTypeInfo> type)
+{
+    if(type->isArray()) {
+        QSharedPointer<NetTypeArrayFacade_Array> facade = QSharedPointer<NetTypeArrayFacade_Array>(new NetTypeArrayFacade_Array(type));
+        if(facade->isIncomplete()) {
+            return nullptr;
+        }
+        return facade.dynamicCast<NetTypeArrayFacade>();
+    }
+
+    return nullptr;
+}
+
+
+int NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
+{
+    return 0;
+}
