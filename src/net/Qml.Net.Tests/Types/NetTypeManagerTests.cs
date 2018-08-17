@@ -264,5 +264,21 @@ namespace Qml.Net.Tests.Types
             type.GetLocalMethod(0).MethodName.Should().Be("LocalMethod");
             type.GetStaticMethod(0).MethodName.Should().Be("StaticMethod");
         }
+
+        public class TestType12
+        {
+            public string[] Property { get; set; }
+        }
+        
+        [Fact]
+        public void Can_detect_array_type()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType12>();
+            type.EnsureLoaded();
+            var property = type.GetProperty(0);
+            var returnType = property.ReturnType;
+            returnType.EnsureLoaded();
+            returnType.IsArray.Should().BeTrue();
+        }
     }
 }

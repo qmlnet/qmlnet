@@ -9,6 +9,7 @@ NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
     _fullTypeName(fullTypeName),
     _variantType(NetVariantTypeEnum_Invalid),
+    _isArray(false),
     _lazyLoaded(false),
     _isLoading(false) {
 
@@ -37,6 +38,16 @@ NetVariantTypeEnum NetTypeInfo::getPrefVariantType() {
 
 void NetTypeInfo::setPrefVariantType(NetVariantTypeEnum variantType) {
     _variantType = variantType;
+}
+
+bool NetTypeInfo::isArray()
+{
+    return _isArray;
+}
+
+void NetTypeInfo::setIsArray(bool isArray)
+{
+    _isArray = isArray;
 }
 
 void NetTypeInfo::addMethod(QSharedPointer<NetMethodInfo> methodInfo) {
@@ -165,6 +176,16 @@ Q_DECL_EXPORT NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContain
 
 Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantTypeEnum variantType) {
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
+}
+
+Q_DECL_EXPORT bool type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
+{
+    return netTypeInfo->netTypeInfo->isArray();
+}
+
+Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, bool isArray)
+{
+    netTypeInfo->netTypeInfo->setIsArray(isArray);
 }
 
 Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
