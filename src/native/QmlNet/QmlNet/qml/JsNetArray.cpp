@@ -78,3 +78,28 @@ ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProper
     QJSValue resultJsValue = result->toQJSValue(scope.engine->jsEngine());
     return scope.engine->fromVariant(resultJsValue.toVariant());
 }
+
+bool NetArray::putIndexed(Managed *m, uint index, const Value &value)
+{
+    const NetArray *netArray = static_cast<const NetArray*>(m);
+    Scope scope(netArray->engine());
+    QV4::ScopedValue valueScope(scope, value);
+    QJSValue valueJsValue(scope.engine, valueScope->asReturnedValue());
+
+    QV4::Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
+    if (!wrapper) {
+        THROW_GENERIC_ERROR("No reference to the wrapped QObject exists.");
+    }
+
+    NetValue* netValue = reinterpret_cast<NetValue*>(wrapper->d()->object());
+    QSharedPointer<NetTypeArrayFacade> arrayFacade = netValue->getNetReference()->getTypeInfo()->getArrayFacade();
+
+    if(arrayFacade == nullptr) {
+        THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
+    }
+
+    arrayFacade->setIndexed(netValue->getNetReference(),
+                            static_cast<int>(index),
+                            NetVariant::fromQJSValue(valueJsValue));
+    return Encode::undefined();
+}
