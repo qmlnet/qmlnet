@@ -19,6 +19,10 @@ namespace Qml.Net.Internal
                 {
                     return false;
                 }
+                if (type.Name == "Array")
+                {
+                    return false;
+                }
                 return true;
             }
             

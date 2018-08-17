@@ -3,6 +3,7 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNetUtilities.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
@@ -10,6 +11,7 @@ NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _fullTypeName(fullTypeName),
     _variantType(NetVariantTypeEnum_Invalid),
     _isArray(false),
+    _arrayFacadeLoaded(false),
     _lazyLoaded(false),
     _isLoading(false) {
 
@@ -119,6 +121,17 @@ QSharedPointer<NetSignalInfo> NetTypeInfo::getSignal(int index) {
     if(index < 0) return QSharedPointer<NetSignalInfo>(nullptr);
     if(index >= _signals.size()) return QSharedPointer<NetSignalInfo>(nullptr);
     return _signals.at(index);
+}
+
+QSharedPointer<NetTypeArrayFacade> NetTypeInfo::getArrayFacade()
+{
+    if(_arrayFacadeLoaded) {
+        return _arrayFacade;
+    }
+    ensureLoaded();
+    _arrayFacade = NetTypeArrayFacade::fromType(sharedFromThis());
+    _arrayFacadeLoaded = true;
+    return _arrayFacade;
 }
 
 bool NetTypeInfo::isLoaded() {

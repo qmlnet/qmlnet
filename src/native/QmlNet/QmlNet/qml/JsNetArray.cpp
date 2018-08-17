@@ -1,6 +1,7 @@
 #include <QmlNet/qml/JsNetArray.h>
 #include <QmlNet/types/NetMethodInfo.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QVariant>
 #include <private/qv4qobjectwrapper_p.h>
 
@@ -37,7 +38,21 @@ ReturnedValue NetArray::create(ExecutionEngine *engine, NetValue* netValue)
 ReturnedValue NetArray::method_length(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
 {
     Scope scope(b);
-    return Encode(scope.engine->newNumberObject(1));
+
+    Scoped<QV4::NetArray> netArray(scope, thisObject->as<QV4::NetArray>());
+    Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
+    if (!wrapper) {
+        THROW_GENERIC_ERROR("No reference to the wrapped QObject exists.");
+    }
+
+    NetValue* netValue = reinterpret_cast<NetValue*>(wrapper->d()->object());
+    QSharedPointer<NetTypeArrayFacade> arrayFacade = netValue->getNetReference()->getTypeInfo()->getArrayFacade();
+
+    if(arrayFacade == nullptr) {
+        THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
+    }
+
+    return Encode(scope.engine->newNumberObject(arrayFacade->getLength(netValue->getNetReference())));
 }
 
 ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProperty)
@@ -46,8 +61,6 @@ ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProper
     Scope scope(netArray->engine());
     if(hasProperty)
         *hasProperty = true;
-
-    // Find the "Get" method for this type.
 
     QV4::Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
     if (!wrapper) {

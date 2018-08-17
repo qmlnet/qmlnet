@@ -10,6 +10,7 @@
 class NetMethodInfo;
 class NetPropertyInfo;
 class NetSignalInfo;
+class NetTypeArrayFacade;
 
 class NetTypeInfo : public QEnableSharedFromThis<NetTypeInfo> {
 public:
@@ -45,6 +46,8 @@ public:
     int getSignalCount();
     QSharedPointer<NetSignalInfo> getSignal(int index);
 
+    QSharedPointer<NetTypeArrayFacade> getArrayFacade();
+
     bool isLoaded();
     bool isLoading();
     void ensureLoaded();
@@ -61,6 +64,8 @@ private:
     QList<QSharedPointer<NetMethodInfo>> _methodsStatic;
     QList<QSharedPointer<NetPropertyInfo>> _properties;
     QList<QSharedPointer<NetSignalInfo>> _signals;
+    QSharedPointer<NetTypeArrayFacade> _arrayFacade;
+    bool _arrayFacadeLoaded;
     bool _lazyLoaded;
     bool _isLoading;
 };
