@@ -52,7 +52,7 @@ ReturnedValue NetArray::method_length(const FunctionObject *b, const Value *this
         THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
     }
 
-    return Encode(scope.engine->newNumberObject(arrayFacade->getLength(netValue->getNetReference())));
+    return Encode(arrayFacade->getLength(netValue->getNetReference()));
 }
 
 ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProperty)
