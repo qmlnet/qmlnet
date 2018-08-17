@@ -17,7 +17,12 @@ namespace Qml.Net
         public static string GetEnv(string name)
         {
             return Utilities.ContainerToString(Interop.QtInterop.GetEnv(name));
-        } 
+        }
+
+        public static Version GetQtVersion()
+        {
+            return Version.Parse(Utilities.ContainerToString(Interop.QtInterop.QtVersion()));
+        }
     }
 
     internal interface IQtInterop
@@ -26,5 +31,7 @@ namespace Qml.Net
         bool PutEnv([MarshalAs(UnmanagedType.LPStr), CallerFree]string name, [MarshalAs(UnmanagedType.LPStr), CallerFree]string value);
         [NativeSymbol(Entrypoint = "qt_getenv")]
         IntPtr GetEnv(string name);
+        [NativeSymbol(Entrypoint = "qt_version")]
+        IntPtr QtVersion();
     }
 }
