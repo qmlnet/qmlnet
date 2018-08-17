@@ -1,6 +1,7 @@
 #include <QmlNet/qml/JsNetObject.h>
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/qml/NetValue.h>
+#include <QmlNet/qml/JsNetArray.h>
 #include <QmlNet/types/NetTypeManager.h>
 #include <private/qv4qobjectwrapper_p.h>
 #include <QDebug>
@@ -16,6 +17,7 @@ void Heap::NetObject::init() {
     o->defineDefaultProperty(QStringLiteral("await"), QV4::NetObject::method_await);
     o->defineDefaultProperty(QStringLiteral("cancelTokenSource"), QV4::NetObject::method_cancelTokenSource);
     o->defineDefaultProperty(QStringLiteral("serialize"), QV4::NetObject::method_serialize);
+    o->defineDefaultProperty(QStringLiteral("toJsArray"), QV4::NetObject::method_toJsArray);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
@@ -117,6 +119,11 @@ void NetObject::method_serialize(const BuiltinFunction *, Scope &scope, CallData
     }
 
     scope.result = scope.engine->newString(result->getString());
+}
+
+void NetObject::method_toJsArray(const BuiltinFunction *, Scope &scope, CallData *callData)
+{
+    THROW_GENERIC_ERROR("Net.toJsArray(): Not currently implemented in <5.11");
 }
 
 #else
@@ -234,6 +241,30 @@ ReturnedValue NetObject::method_serialize(const FunctionObject *b, const Value *
     }
 
     return Encode(scope.engine->newString(result->getString()));
+}
+
+ReturnedValue NetObject::method_toJsArray(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+{
+    QV4::Scope scope(b);
+    if(argc != 1) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Missing instance parameter");
+    }
+    QV4::ScopedValue instance(scope, argv[0]);
+    if(instance->isNullOrUndefined()) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Instance parameter must not be null or undefined");
+    }
+    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
+    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
+    if(value->getVariantType() != NetVariantTypeEnum_Object) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a .NET object");
+    }
+
+    QSharedPointer<NetReference> netReference = value->getNetReference();
+    if(!netReference->getTypeInfo()->isArray()) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a .NET array");
+    }
+
+    return NetArray::create(scope.engine, NetValue::forInstance(netReference));
 }
 
 #endif
