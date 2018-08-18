@@ -46,6 +46,24 @@ namespace Qml.Net.Internal.Types
             return new NetMethodInfo(result);
         }
         
+        public int LocalMethodCount => Interop.NetTypeInfo.GetLocalMethodCount(Handle);
+
+        public NetMethodInfo GetLocalMethod(int index)
+        {
+            var result = Interop.NetTypeInfo.GetLocalMethodInfo(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfo(result);
+        }
+        
+        public int StaticMethodCount => Interop.NetTypeInfo.GetStaticMethodCount(Handle);
+
+        public NetMethodInfo GetStaticMethod(int index)
+        {
+            var result = Interop.NetTypeInfo.GetStaticMethodInfo(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfo(result);
+        }
+        
         public void AddProperty(NetPropertyInfo property)
         {
             Interop.NetTypeInfo.AddProperty(Handle, property.Handle);
@@ -115,6 +133,16 @@ namespace Qml.Net.Internal.Types
         int GetMethodCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
         IntPtr GetMethodInfo(IntPtr typeInfo, int index);
+        
+        [NativeSymbol(Entrypoint = "type_info_getLocalMethodCount")]
+        int GetLocalMethodCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getLocalMethodInfo")]
+        IntPtr GetLocalMethodInfo(IntPtr typeInfo, int index);
+        
+        [NativeSymbol(Entrypoint = "type_info_getStaticMethodCount")]
+        int GetStaticMethodCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getStaticMethodInfo")]
+        IntPtr GetStaticMethodInfo(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_addProperty")]
         void AddProperty(IntPtr typeInfo, IntPtr property);

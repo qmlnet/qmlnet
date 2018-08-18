@@ -243,18 +243,26 @@ namespace Qml.Net.Tests.Types
 
         public class TestType12
         {
-            public void Method()
+            public void LocalMethod()
+            {
+                
+            }
+
+            public static void StaticMethod()
             {
                 
             }
         }
 
         [Fact]
-        public void Can_detect_non_static_methods()
+        public void Can_detect_static_methods()
         {
             var type = NetTypeManager.GetTypeInfo<TestType12>();
             type.EnsureLoaded();
-            type.GetMethod(0).IsStatic.Should().BeFalse();
+            type.MethodCount.Should().Be(2);
+            type.LocalMethodCount.Should().Be(1);
+            type.GetLocalMethod(0).MethodName.Should().Be("LocalMethod");
+            type.GetStaticMethod(0).MethodName.Should().Be("StaticMethod");
         }
     }
 }

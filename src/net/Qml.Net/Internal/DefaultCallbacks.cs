@@ -47,7 +47,7 @@ namespace Qml.Net.Internal
                 // Don't grab properties and methods for system-level types.
                 if (Helpers.IsPrimitive(typeInfo)) return;
 
-                foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+                foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
                     if (Helpers.IsPrimitive(methodInfo.DeclaringType)) continue;
@@ -60,7 +60,7 @@ namespace Qml.Net.Internal
                             NetTypeManager.GetTypeInfo(methodInfo.ReturnParameter.ParameterType);
                     }
 
-                    var method = new NetMethodInfo(type, methodInfo.Name, returnType, false);
+                    var method = new NetMethodInfo(type, methodInfo.Name, returnType, methodInfo.IsStatic);
 
                     foreach (var parameter in methodInfo.GetParameters())
                     {

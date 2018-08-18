@@ -28,6 +28,12 @@ public:
     int getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(int index);
 
+    int getLocalMethodCount();
+    QSharedPointer<NetMethodInfo> getLocalMethodInfo(int index);
+
+    int getStaticMethodCount();
+    QSharedPointer<NetMethodInfo> getStaticMethodInfo(int index);
+
     void addProperty(QSharedPointer<NetPropertyInfo> property);
     int getPropertyCount();
     QSharedPointer<NetPropertyInfo> getProperty(int index);
@@ -47,6 +53,8 @@ private:
     QString _className;
     NetVariantTypeEnum _variantType;
     QList<QSharedPointer<NetMethodInfo>> _methods;
+    QList<QSharedPointer<NetMethodInfo>> _methodsLocal;
+    QList<QSharedPointer<NetMethodInfo>> _methodsStatic;
     QList<QSharedPointer<NetPropertyInfo>> _properties;
     QList<QSharedPointer<NetSignalInfo>> _signals;
     bool _lazyLoaded;
