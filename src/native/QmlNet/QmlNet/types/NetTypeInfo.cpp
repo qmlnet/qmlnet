@@ -11,6 +11,7 @@ NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _fullTypeName(fullTypeName),
     _variantType(NetVariantTypeEnum_Invalid),
     _isArray(false),
+    _isList(false),
     _arrayFacadeLoaded(false),
     _lazyLoaded(false),
     _isLoading(false) {
@@ -50,6 +51,16 @@ bool NetTypeInfo::isArray()
 void NetTypeInfo::setIsArray(bool isArray)
 {
     _isArray = isArray;
+}
+
+bool NetTypeInfo::isList()
+{
+    return _isList;
+}
+
+void NetTypeInfo::setIsList(bool isList)
+{
+    _isList = isList;
 }
 
 void NetTypeInfo::addMethod(QSharedPointer<NetMethodInfo> methodInfo) {
@@ -199,6 +210,16 @@ Q_DECL_EXPORT bool type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
 Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, bool isArray)
 {
     netTypeInfo->netTypeInfo->setIsArray(isArray);
+}
+
+Q_DECL_EXPORT bool type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
+{
+    return netTypeInfo->netTypeInfo->isList();
+}
+
+Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, bool isList)
+{
+    netTypeInfo->netTypeInfo->setIsList(isList);
 }
 
 Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {

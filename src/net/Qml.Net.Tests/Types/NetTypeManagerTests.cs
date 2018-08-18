@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Qml.Net.Internal.Types;
 using Xunit;
@@ -279,6 +280,31 @@ namespace Qml.Net.Tests.Types
             var returnType = property.ReturnType;
             returnType.EnsureLoaded();
             returnType.IsArray.Should().BeTrue();
+            returnType.IsList.Should().BeFalse();
+        }
+
+        public class TestType14
+        {
+            public List<int> Prop1 { get; set; }
+            
+            public System.Collections.ArrayList Prop2 { get; set; }
+        }
+
+        [Fact]
+        public void Can_detect_list_type()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType14>();
+            type.EnsureLoaded();
+            for (var x = 0; x < type.PropertyCount; x++)
+            {
+                var property = type.GetProperty(x);
+                if (property.Name == "Prop1" || property.Name == "Prop2")
+                {
+                    property.ReturnType.EnsureLoaded();
+                    property.ReturnType.IsList.Should().BeTrue();
+                    property.ReturnType.IsArray.Should().BeFalse();
+                }
+            }
         }
     }
 }
