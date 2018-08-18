@@ -22,12 +22,15 @@ NetTypeArrayFacade_List::NetTypeArrayFacade_List(QSharedPointer<NetTypeInfo> typ
         QSharedPointer<NetMethodInfo> method = type->getLocalMethodInfo(x);
         if(method->getMethodName().compare("RemoveAt") == 0) {
             _removeAtMethod = method;
+        } else if(method->getMethodName().compare("Add") == 0) {
+            _addMethod = method;
         }
     }
 
     if(_lengthProperty == nullptr ||
         _itemProperty == nullptr ||
-        _removeAtMethod == nullptr) {
+        _removeAtMethod == nullptr ||
+        _addMethod == nullptr) {
         _isIncomplete = true;
         return;
     }
@@ -64,6 +67,13 @@ void NetTypeArrayFacade_List::setIndexed(QSharedPointer<NetReference> reference,
     QSharedPointer<NetVariant> indexParameter = QSharedPointer<NetVariant>(new NetVariant());
     indexParameter->setInt(static_cast<int>(index));
     writeProperty(_itemProperty, reference, indexParameter, value);
+}
+
+void NetTypeArrayFacade_List::push(QSharedPointer<NetReference> reference, QSharedPointer<NetVariant> value)
+{
+    QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
+    parameters->add(value);
+    invokeNetMethod(_addMethod, reference, parameters, nullptr);
 }
 
 QSharedPointer<NetVariant> NetTypeArrayFacade_List::pop(QSharedPointer<NetReference> reference)
