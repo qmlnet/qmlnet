@@ -20,6 +20,7 @@ void Heap::NetArray::init()
     o->defineAccessorProperty(QStringLiteral("length"), QV4::NetArray::method_length, nullptr);
     o->defineDefaultProperty(QStringLiteral("push"), QV4::NetArray::method_push);
     o->defineDefaultProperty(QStringLiteral("pop"), QV4::NetArray::method_push);
+    o->defineDefaultProperty(QStringLiteral("forEach"), QV4::NetArray::method_forEach);
     object = scope.engine->memoryManager->m_persistentValues->allocate();
 }
 
@@ -103,6 +104,35 @@ ReturnedValue NetArray::method_pop(const FunctionObject *b, const Value *thisObj
     }
 
     THROW_GENERIC_ERROR("TODO");
+}
+
+ReturnedValue NetArray::method_forEach(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+{
+    Scope scope(b);
+    ScopedObject instance(scope, thisObject->toObject(scope.engine));
+    if (!instance)
+        RETURN_UNDEFINED();
+
+    uint len = instance->getLength();
+
+    if (!argc || !argv->isFunctionObject())
+        THROW_TYPE_ERROR();
+    const FunctionObject *callback = static_cast<const FunctionObject *>(argv);
+
+    ScopedValue that(scope, argc > 1 ? argv[1] : Primitive::undefinedValue());
+    Value *arguments = scope.alloc(3);
+
+    for (uint k = 0; k < len; ++k) {
+        bool exists;
+        arguments[0] = instance->getIndexed(k, &exists);
+        if (!exists)
+            continue;
+
+        arguments[1] = Primitive::fromDouble(k);
+        arguments[2] = instance;
+        callback->call(that, arguments, 3);
+    }
+    RETURN_UNDEFINED();
 }
 
 ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProperty)
