@@ -1,6 +1,7 @@
 ﻿using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Diagnostics.CodeAnalysis;
@@ -48,6 +49,19 @@ namespace Qml.Net.Internal
                 if (Helpers.IsPrimitive(typeInfo)) return;
 
                 type.IsArray = typeInfo.IsArray;
+
+                if (typeof(IList).IsAssignableFrom(typeInfo))
+                {
+                    type.IsList = true;
+                }
+
+                if (typeInfo.IsGenericType)
+                {
+                    if(typeof(IList<>).IsAssignableFrom(typeInfo.GetGenericTypeDefinition()))
+                    {
+                        type.IsList = true;
+                    }
+                }
                 
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {

@@ -28,6 +28,9 @@ public:
     bool isArray();
     void setIsArray(bool isArray);
 
+    bool isList();
+    void setIsList(bool isList);
+
     void addMethod(QSharedPointer<NetMethodInfo> methodInfo);
     int getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(int index);
@@ -59,6 +62,7 @@ private:
     QString _className;
     NetVariantTypeEnum _variantType;
     bool _isArray;
+    bool _isList;
     QList<QSharedPointer<NetMethodInfo>> _methods;
     QList<QSharedPointer<NetMethodInfo>> _methodsLocal;
     QList<QSharedPointer<NetMethodInfo>> _methodsStatic;
