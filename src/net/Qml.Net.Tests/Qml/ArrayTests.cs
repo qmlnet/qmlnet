@@ -234,6 +234,43 @@ namespace Qml.Net.Tests.Qml
                 Mock.Verify(x => x.Test("undefined"), Times.Once);
                 list.Count.Should().Be(0);
             }
+            
+            [Fact]
+            public void Can_push()
+            {
+                var list = new List<int>{3, 4, 6};
+                Mock.Setup(x => x.GetList()).Returns(list);
+                
+                RunQmlTest(
+                    "test",
+                    @"
+                        var array = Net.toJsArray(test.getList())
+                        test.test(array.push(34))
+                    ");
+                
+                Mock.Verify(x => x.GetList(), Times.Once);
+                Mock.Verify(x => x.Test(4), Times.Once);
+                list.Count.Should().Be(4);
+                list[3].Should().Be(34);
+                
+                Mock.Reset();
+                
+                list = new List<int>{3, 4, 6};
+                Mock.Setup(x => x.GetList()).Returns(list);
+                
+                RunQmlTest(
+                    "test",
+                    @"
+                        var array = Net.toJsArray(test.getList())
+                        test.test(array.push(34,45))
+                    ");
+                
+                Mock.Verify(x => x.GetList(), Times.Once);
+                Mock.Verify(x => x.Test(5), Times.Once);
+                list.Count.Should().Be(5);
+                list[3].Should().Be(34);
+                list[4].Should().Be(45);
+            }
         }
     }
 }

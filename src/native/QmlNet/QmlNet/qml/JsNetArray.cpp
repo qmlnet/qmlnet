@@ -62,6 +62,7 @@ ReturnedValue NetArray::method_push(const FunctionObject *b, const Value *thisOb
 {
     Scope scope(b);
 
+    ScopedObject instance(scope, thisObject->toObject(scope.engine));
     Scoped<QV4::NetArray> netArray(scope, thisObject->as<QV4::NetArray>());
     Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
     if (!wrapper) {
@@ -79,7 +80,13 @@ ReturnedValue NetArray::method_push(const FunctionObject *b, const Value *thisOb
         THROW_GENERIC_ERROR("Can't modify a fixed .NET list type.");
     }
 
-    THROW_GENERIC_ERROR("TODO");
+    for (int i = 0, ei = argc; i < ei; ++i) {
+        QV4::ScopedValue valueScope(scope, argv[i]);
+        QJSValue valueJsValue(scope.engine, valueScope->asReturnedValue());
+        arrayFacade->push(netValue->getNetReference(), NetVariant::fromQJSValue(valueJsValue));
+    }
+
+    return Encode(instance->getLength());
 }
 
 ReturnedValue NetArray::method_pop(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)

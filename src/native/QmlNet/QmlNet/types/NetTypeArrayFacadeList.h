@@ -15,6 +15,7 @@ public:
     uint getLength(QSharedPointer<NetReference> reference);
     QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, uint index);
     void setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value);
+    void push(QSharedPointer<NetReference> reference, QSharedPointer<NetVariant> value);
     QSharedPointer<NetVariant> pop(QSharedPointer<NetReference> reference);
     void deleteAt(QSharedPointer<NetReference> reference, uint index);
 private:
@@ -22,6 +23,7 @@ private:
     QSharedPointer<NetPropertyInfo> _lengthProperty;
     QSharedPointer<NetPropertyInfo> _itemProperty;
     QSharedPointer<NetMethodInfo> _removeAtMethod;
+    QSharedPointer<NetMethodInfo> _addMethod;
 };
 
 #endif // NETTYPEARRAYFACADELIST_H
