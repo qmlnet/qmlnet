@@ -71,5 +71,26 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.GetArray(), Times.Once);
             array[2].Should().Be(234);
         }
+        
+        [Fact]
+        public void Can_forEach()
+        {
+            var array = new[] {3, 4, 7};
+            Mock.Setup(x => x.GetArray()).Returns(array);
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var array = Net.toJsArray(test.getArray())
+                    array.forEach(function(value) {
+                        test.test(value)
+                    })
+                ");
+            
+            Mock.Verify(x => x.GetArray(), Times.Once);
+            Mock.Verify(x => x.Test(3), Times.Once);
+            Mock.Verify(x => x.Test(4), Times.Once);
+            Mock.Verify(x => x.Test(7), Times.Once);
+        }
     }
 }

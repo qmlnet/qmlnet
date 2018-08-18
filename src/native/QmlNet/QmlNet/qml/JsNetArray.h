@@ -21,6 +21,8 @@ struct NetArray : Object
     V4_OBJECT2(NetArray, Object)
     V4_NEEDS_DESTROY
     Q_MANAGED_TYPE(ArrayObject)
+    V4_PROTOTYPE(arrayPrototype)
+
     static ReturnedValue create(ExecutionEngine *engine, NetValue* netValue);
 
     static ReturnedValue method_length(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);

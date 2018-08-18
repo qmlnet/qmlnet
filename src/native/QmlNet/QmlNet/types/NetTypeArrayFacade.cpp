@@ -21,7 +21,7 @@ QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(QSharedPointer<N
 }
 
 
-int NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
+uint NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
 {
     return 0;
 }

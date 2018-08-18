@@ -265,7 +265,7 @@ namespace Qml.Net.Tests.Types
             type.GetStaticMethod(0).MethodName.Should().Be("StaticMethod");
         }
 
-        public class TestType12
+        public class TestType13
         {
             public string[] Property { get; set; }
         }
@@ -273,7 +273,7 @@ namespace Qml.Net.Tests.Types
         [Fact]
         public void Can_detect_array_type()
         {
-            var type = NetTypeManager.GetTypeInfo<TestType12>();
+            var type = NetTypeManager.GetTypeInfo<TestType13>();
             type.EnsureLoaded();
             var property = type.GetProperty(0);
             var returnType = property.ReturnType;
