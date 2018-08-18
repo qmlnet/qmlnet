@@ -6,8 +6,8 @@ typedef void (*loadTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*releaseNetReferenceCb)(uint64_t objectId);
 typedef void (*releaseNetDelegateGCHandleCb)(NetGCHandle* handle);
 typedef NetReferenceContainer* (*instantiateTypeCb)(NetTypeInfoContainer* type);
-typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* result);
-typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* value);
+typedef void (*readPropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* indexParameter, NetVariantContainer* result);
+typedef void (*writePropertyCb)(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* indexParameter, NetVariantContainer* value);
 typedef void (*invokeMethodCb)(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result);
 typedef void (*gcCollectCb)(int maxGeneration);
 typedef bool (*raiseNetSignalsCb)(NetReferenceContainer* target, LPWCSTR signalName, NetVariantListContainer* parameters);
@@ -76,25 +76,33 @@ QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type) {
     return result;
 }
 
-void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> result) {
+void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> indexParameter, QSharedPointer<NetVariant> result) {
     NetPropertyInfoContainer* propertyContainer = new NetPropertyInfoContainer();
     propertyContainer->property = property;
     NetReferenceContainer* targetContainer = new NetReferenceContainer();
     targetContainer->instance = target;
+    NetVariantContainer* indexParameterContainer = nullptr;
+    if(indexParameter != nullptr) {
+        indexParameterContainer = new NetVariantContainer{indexParameter};
+    }
     NetVariantContainer* valueContainer = new NetVariantContainer();
     valueContainer->variant = result;
-    sharedCallbacks.readProperty(propertyContainer, targetContainer, valueContainer);
+    sharedCallbacks.readProperty(propertyContainer, targetContainer, indexParameterContainer, valueContainer);
     // The callbacks dispose of the types.
 }
 
-void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> value) {
+void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> indexParameter, QSharedPointer<NetVariant> value) {
     NetPropertyInfoContainer* propertyContainer = new NetPropertyInfoContainer();
     propertyContainer->property = property;
     NetReferenceContainer* targetContainer = new NetReferenceContainer();
     targetContainer->instance = target;
+    NetVariantContainer* indexParameterContainer = nullptr;
+    if(indexParameter != nullptr) {
+        indexParameterContainer = new NetVariantContainer{indexParameter};
+    }
     NetVariantContainer* resultContainer = new NetVariantContainer();
     resultContainer->variant = value;
-    sharedCallbacks.writeProperty(propertyContainer, targetContainer, resultContainer);
+    sharedCallbacks.writeProperty(propertyContainer, targetContainer, indexParameterContainer, resultContainer);
     // The callbacks dispose of the types.
 }
 
@@ -167,34 +175,6 @@ Q_DECL_EXPORT NetReferenceContainer* type_info_callbacks_instantiateType(NetType
     // will delete them.
     NetTypeInfoContainer* typeCopy = new NetTypeInfoContainer{type->netTypeInfo};
     return sharedCallbacks.instantiateType(typeCopy);
-}
-
-Q_DECL_EXPORT void type_info_callbacks_readProperty(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* result) {
-    // The parameters have to be copied to new containers, because the callback
-    // will delete them.
-    NetPropertyInfoContainer* propertyCopy = new NetPropertyInfoContainer{property->property};
-    NetReferenceContainer* targetCopy = new NetReferenceContainer{target->instance};
-    NetVariantContainer* resultCopy = nullptr;
-
-    if(result != nullptr) {
-        resultCopy = new NetVariantContainer{result->variant};
-    }
-
-    sharedCallbacks.readProperty(propertyCopy, targetCopy, resultCopy);
-}
-
-Q_DECL_EXPORT void type_info_callbacks_writeProperty(NetPropertyInfoContainer* property, NetReferenceContainer* target, NetVariantContainer* value) {
-    // The parameters have to be copied to new containers, because the callback
-    // will delete them.
-    NetPropertyInfoContainer* propertyCopy = new NetPropertyInfoContainer{property->property};
-    NetReferenceContainer* targetCopy = new NetReferenceContainer{target->instance};
-    NetVariantContainer* valueCopy = nullptr;
-
-    if(value != nullptr) {
-        valueCopy = new NetVariantContainer{value->variant};
-    }
-
-    sharedCallbacks.writeProperty(propertyCopy, targetCopy, valueCopy);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_invokeMethod(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result) {

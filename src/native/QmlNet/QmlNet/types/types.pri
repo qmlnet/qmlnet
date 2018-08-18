@@ -8,7 +8,8 @@ SOURCES += \
     $$PWD/NetSignalInfo.cpp \
     $$PWD/NetDelegate.cpp \
     $$PWD/NetTypeArrayFacade.cpp \
-    $$PWD/NetTypeArrayFacadeArray.cpp
+    $$PWD/NetTypeArrayFacadeArray.cpp \
+    $$PWD/NetTypeArrayFacadeList.cpp
 
 HEADERS += \
     $$PWD/NetTypeInfo.h \
@@ -20,4 +21,5 @@ HEADERS += \
     $$PWD/NetSignalInfo.h \
     $$PWD/NetDelegate.h \
     $$PWD/NetTypeArrayFacade.h \
-    $$PWD/NetTypeArrayFacadeArray.h
+    $$PWD/NetTypeArrayFacadeArray.h \
+    $$PWD/NetTypeArrayFacadeList.h
