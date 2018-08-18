@@ -18,6 +18,7 @@ void Heap::NetArray::init()
     QV4::ScopedObject o(scope, this);
     o->setArrayType(Heap::ArrayData::Custom);
     o->defineAccessorProperty(QStringLiteral("length"), QV4::NetArray::method_length, nullptr);
+    o->defineDefaultProperty(QStringLiteral("push"), QV4::NetArray::method_push);
     object = scope.engine->memoryManager->m_persistentValues->allocate();
 }
 
@@ -50,6 +51,30 @@ ReturnedValue NetArray::method_length(const FunctionObject *b, const Value *this
 
     if(arrayFacade == nullptr) {
         THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
+    }
+
+    return Encode(arrayFacade->getLength(netValue->getNetReference()));
+}
+
+ReturnedValue NetArray::method_push(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+{
+    Scope scope(b);
+
+    Scoped<QV4::NetArray> netArray(scope, thisObject->as<QV4::NetArray>());
+    Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
+    if (!wrapper) {
+        THROW_GENERIC_ERROR("No reference to the wrapped QObject exists.");
+    }
+
+    NetValue* netValue = reinterpret_cast<NetValue*>(wrapper->d()->object());
+    QSharedPointer<NetTypeArrayFacade> arrayFacade = netValue->getNetReference()->getTypeInfo()->getArrayFacade();
+
+    if(arrayFacade == nullptr) {
+        THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
+    }
+
+    if(arrayFacade->isFixed()) {
+        THROW_GENERIC_ERROR("Can't modify a fixed .NET list type.");
     }
 
     return Encode(arrayFacade->getLength(netValue->getNetReference()));

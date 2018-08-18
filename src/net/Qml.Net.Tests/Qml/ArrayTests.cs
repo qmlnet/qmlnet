@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -91,6 +92,28 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.Test(3), Times.Once);
             Mock.Verify(x => x.Test(4), Times.Once);
             Mock.Verify(x => x.Test(7), Times.Once);
+        }
+
+        [Fact]
+        public void Can_not_push_for_array()
+        {
+            var array = new[] {3, 4, 7};
+            Mock.Setup(x => x.GetArray()).Returns(array);
+            Mock.Setup(x => x.Test(It.IsAny<object>()));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var array = Net.toJsArray(test.getArray())
+                    try {
+                        array.push(23)
+                    } catch(err) {
+                        test.test(true)
+                    }
+                ");
+            
+            Mock.Verify(x => x.GetArray(), Times.Once);
+            Mock.Verify(x => x.Test(true), Times.Once);
         }
     }
 }
