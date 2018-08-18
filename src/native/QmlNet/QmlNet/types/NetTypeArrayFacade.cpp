@@ -20,6 +20,10 @@ QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(QSharedPointer<N
     return nullptr;
 }
 
+bool NetTypeArrayFacade::isFixed()
+{
+    return false;
+}
 
 uint NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
 {
@@ -32,6 +36,11 @@ QSharedPointer<NetVariant> NetTypeArrayFacade::getIndexed(QSharedPointer<NetRefe
 }
 
 void NetTypeArrayFacade::setIndexed(QSharedPointer<NetReference>, int, QSharedPointer<NetVariant>)
+{
+
+}
+
+void NetTypeArrayFacade::push(QSharedPointer<NetReference>, QSharedPointer<NetVariant>)
 {
 
 }

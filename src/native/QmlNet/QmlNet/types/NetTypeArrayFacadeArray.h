@@ -11,6 +11,7 @@ class NetTypeArrayFacade_Array : public NetTypeArrayFacade
 public:
     NetTypeArrayFacade_Array(QSharedPointer<NetTypeInfo> type);
     bool isIncomplete();
+    bool isFixed();
     uint getLength(QSharedPointer<NetReference> reference);
     QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, int index);
     void setIndexed(QSharedPointer<NetReference> reference, int index, QSharedPointer<NetVariant> value);

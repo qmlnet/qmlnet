@@ -38,6 +38,12 @@ bool NetTypeArrayFacade_Array::isIncomplete()
     return _isIncomplete;
 }
 
+bool NetTypeArrayFacade_Array::isFixed()
+{
+    // You can't change the size of an array.
+    return true;
+}
+
 uint NetTypeArrayFacade_Array::getLength(QSharedPointer<NetReference> reference)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
