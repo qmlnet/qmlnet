@@ -209,6 +209,31 @@ namespace Qml.Net.Tests.Qml
                 Mock.Verify(x => x.GetList(), Times.Once);
                 list[2].Should().Be(234);
             }
+
+            [Fact]
+            public void Can_pop()
+            {
+                var list = new List<int>{3, 4, 6};
+                Mock.Setup(x => x.GetList()).Returns(list);
+                
+                RunQmlTest(
+                    "test",
+                    @"
+                        var array = Net.toJsArray(test.getList())
+                        test.test(array.pop())
+                        test.test(array.pop())
+                        test.test(array.pop())
+                        var t = array.pop()
+                        test.test(typeof t)
+                    ");
+                
+                Mock.Verify(x => x.GetList(), Times.Once);
+                Mock.Verify(x => x.Test(6), Times.Once);
+                Mock.Verify(x => x.Test(4), Times.Once);
+                Mock.Verify(x => x.Test(3), Times.Once);
+                Mock.Verify(x => x.Test("undefined"), Times.Once);
+                list.Count.Should().Be(0);
+            }
         }
     }
 }

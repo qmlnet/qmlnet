@@ -51,7 +51,7 @@ uint NetTypeArrayFacade_Array::getLength(QSharedPointer<NetReference> reference)
     return static_cast<uint>(result->getInt());
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade_Array::getIndexed(QSharedPointer<NetReference> reference, int index)
+QSharedPointer<NetVariant> NetTypeArrayFacade_Array::getIndexed(QSharedPointer<NetReference> reference, uint index)
 {
     QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
     QSharedPointer<NetVariant> parameter = QSharedPointer<NetVariant>(new NetVariant());
@@ -62,7 +62,7 @@ QSharedPointer<NetVariant> NetTypeArrayFacade_Array::getIndexed(QSharedPointer<N
     return result;
 }
 
-void NetTypeArrayFacade_Array::setIndexed(QSharedPointer<NetReference> reference, int index, QSharedPointer<NetVariant> value)
+void NetTypeArrayFacade_Array::setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value)
 {
     QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
     QSharedPointer<NetVariant> parameter = QSharedPointer<NetVariant>(new NetVariant());

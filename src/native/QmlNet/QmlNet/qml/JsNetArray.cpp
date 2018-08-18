@@ -19,7 +19,7 @@ void Heap::NetArray::init()
     o->setArrayType(Heap::ArrayData::Custom);
     o->defineAccessorProperty(QStringLiteral("length"), QV4::NetArray::method_length, nullptr);
     o->defineDefaultProperty(QStringLiteral("push"), QV4::NetArray::method_push);
-    o->defineDefaultProperty(QStringLiteral("pop"), QV4::NetArray::method_push);
+    o->defineDefaultProperty(QStringLiteral("pop"), QV4::NetArray::method_pop);
     o->defineDefaultProperty(QStringLiteral("forEach"), QV4::NetArray::method_forEach);
     object = scope.engine->memoryManager->m_persistentValues->allocate();
 }
@@ -86,6 +86,7 @@ ReturnedValue NetArray::method_pop(const FunctionObject *b, const Value *thisObj
 {
     Scope scope(b);
 
+    ScopedObject instance(scope, thisObject->toObject(scope.engine));
     Scoped<QV4::NetArray> netArray(scope, thisObject->as<QV4::NetArray>());
     Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
     if (!wrapper) {
@@ -103,7 +104,17 @@ ReturnedValue NetArray::method_pop(const FunctionObject *b, const Value *thisObj
         THROW_GENERIC_ERROR("Can't modify a fixed .NET list type.");
     }
 
-    THROW_GENERIC_ERROR("TODO");
+    uint len = instance->getLength();
+    if(len == 0) {
+        RETURN_UNDEFINED();
+    }
+
+    QSharedPointer<NetVariant> result = arrayFacade->pop(netValue->getNetReference());
+    if(result == nullptr) {
+        return Encode::null();
+    }
+    QJSValue resultJsValue = result->toQJSValue(scope.engine->jsEngine());
+    return scope.engine->fromVariant(resultJsValue.toVariant());
 }
 
 ReturnedValue NetArray::method_forEach(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)

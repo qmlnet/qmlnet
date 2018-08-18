@@ -13,12 +13,15 @@ public:
     bool isIncomplete();
     bool isFixed();
     uint getLength(QSharedPointer<NetReference> reference);
-    QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, int index);
-    void setIndexed(QSharedPointer<NetReference> reference, int index, QSharedPointer<NetVariant> value);
+    QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, uint index);
+    void setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value);
+    QSharedPointer<NetVariant> pop(QSharedPointer<NetReference> reference);
+    void deleteAt(QSharedPointer<NetReference> reference, uint index);
 private:
     bool _isIncomplete;
     QSharedPointer<NetPropertyInfo> _lengthProperty;
     QSharedPointer<NetPropertyInfo> _itemProperty;
+    QSharedPointer<NetMethodInfo> _removeAtMethod;
 };
 
 #endif // NETTYPEARRAYFACADELIST_H
