@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -48,18 +49,22 @@ namespace Qml.Net.Internal
                 // Don't grab properties and methods for system-level types.
                 if (Helpers.IsPrimitive(typeInfo)) return;
 
-                type.IsArray = typeInfo.IsArray;
-
-                if (typeof(IList).IsAssignableFrom(typeInfo))
+                if (typeInfo.IsArray)
                 {
-                    type.IsList = true;
+                    type.IsArray = true;
                 }
-
-                if (typeInfo.IsGenericType)
+                else
                 {
-                    if(typeof(IList<>).IsAssignableFrom(typeInfo.GetGenericTypeDefinition()))
+                    if (typeof(IList).IsAssignableFrom(typeInfo))
                     {
                         type.IsList = true;
+                    }
+                    else if (typeInfo.IsGenericType)
+                    {
+                        if(typeof(IList<>).IsAssignableFrom(typeInfo.GetGenericTypeDefinition()))
+                        {
+                            type.IsList = true;
+                        }
                     }
                 }
                 
@@ -194,10 +199,11 @@ namespace Qml.Net.Internal
             }
         }
 
-        public void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
+        public void ReadProperty(IntPtr p, IntPtr t, IntPtr ip, IntPtr r)
         {
             using(var property = new NetPropertyInfo(p))
             using(var target = new NetReference(t))
+            using(var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using(var result = new NetVariant(r))
             {
                 var o = target.Instance;
@@ -208,14 +214,24 @@ namespace Qml.Net.Internal
                 if(propertInfo == null)
                     throw new InvalidOperationException($"Invalid property {property.Name}");
 
-                Helpers.PackValue(propertInfo.GetValue(o), result);
+                if (indexParameter != null)
+                {
+                    object indexParameterValue = null;
+                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
+                    Helpers.PackValue(propertInfo.GetValue(o, new[]{indexParameterValue}), result);
+                }
+                else
+                {
+                    Helpers.PackValue(propertInfo.GetValue(o), result);
+                }
             }
         }
 
-        public void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
+        public void WriteProperty(IntPtr p, IntPtr t, IntPtr ip, IntPtr v)
         {
             using (var property = new NetPropertyInfo(p))
             using (var target = new NetReference(t))
+            using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using (var value = new NetVariant(v))
             {
                 var o = target.Instance;
@@ -229,7 +245,16 @@ namespace Qml.Net.Internal
                 object newValue = null;
                 Helpers.Unpackvalue(ref newValue, value);
 
-                propertInfo.SetValue(o, newValue);
+                if (indexParameter != null)
+                {
+                    object indexParameterValue = null;
+                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
+                    propertInfo.SetValue(o, newValue, new[]{indexParameterValue});
+                }
+                else
+                {
+                    propertInfo.SetValue(o, newValue);
+                }
             }
         }
 

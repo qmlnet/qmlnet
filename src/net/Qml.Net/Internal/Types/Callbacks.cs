@@ -40,12 +40,6 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
         IntPtr InstantiateType(IntPtr type);
         
-        [NativeSymbol(Entrypoint = "type_info_callbacks_readProperty")]
-        void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
-
-        [NativeSymbol(Entrypoint = "type_info_callbacks_writeProperty")]
-        void WriteProperty(IntPtr property, IntPtr target, IntPtr value);
-
         [NativeSymbol(Entrypoint = "type_info_callbacks_invokeMethod")]
         void InvokeMethod(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
     }
@@ -64,9 +58,9 @@ namespace Qml.Net.Internal.Types
         
         IntPtr InstantiateType(IntPtr type);
 
-        void ReadProperty(IntPtr property, IntPtr target, IntPtr result);
+        void ReadProperty(IntPtr property, IntPtr target, IntPtr indexProperty, IntPtr result);
 
-        void WriteProperty(IntPtr property, IntPtr target, IntPtr value);
+        void WriteProperty(IntPtr property, IntPtr target, IntPtr indexProperty, IntPtr value);
 
         void InvokeMethod(IntPtr method, IntPtr target, IntPtr parameters, IntPtr result);
 
@@ -110,15 +104,15 @@ namespace Qml.Net.Internal.Types
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ReleaseNetDelegateGCHandleDelegate(IntPtr handle);
-
+        
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate IntPtr InstantiateTypeDelgate(IntPtr type);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void ReadPropertyDelegate(IntPtr property, IntPtr target, IntPtr result);
+        delegate void ReadPropertyDelegate(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr result);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate void WritePropertyDelegate(IntPtr property, IntPtr target, IntPtr value);
+        delegate void WritePropertyDelegate(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr value);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void InvokeMethodDelegate(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
@@ -209,14 +203,14 @@ namespace Qml.Net.Internal.Types
             return _callbacks.InstantiateType(type);
         }
         
-        private void ReadProperty(IntPtr property, IntPtr target, IntPtr result)
+        private void ReadProperty(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr result)
         {
-            _callbacks.ReadProperty(property, target, result);
+            _callbacks.ReadProperty(property, target, indexParameter, result);
         }
 
-        private void WriteProperty(IntPtr property, IntPtr target, IntPtr value)
+        private void WriteProperty(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr value)
         {
-            _callbacks.WriteProperty(property, target, value);
+            _callbacks.WriteProperty(property, target, indexParameter, value);
         }
 
         private void InvokeMethod(IntPtr method, IntPtr target, IntPtr variants, IntPtr result)

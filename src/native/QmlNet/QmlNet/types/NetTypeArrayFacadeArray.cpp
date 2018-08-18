@@ -47,7 +47,7 @@ bool NetTypeArrayFacade_Array::isFixed()
 uint NetTypeArrayFacade_Array::getLength(QSharedPointer<NetReference> reference)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    readProperty(_lengthProperty, reference, result);
+    readProperty(_lengthProperty, reference, nullptr, result);
     return static_cast<uint>(result->getInt());
 }
 

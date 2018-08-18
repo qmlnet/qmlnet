@@ -260,8 +260,8 @@ ReturnedValue NetObject::method_toJsArray(const FunctionObject *b, const Value *
     }
 
     QSharedPointer<NetReference> netReference = value->getNetReference();
-    if(!netReference->getTypeInfo()->isArray()) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a .NET array");
+    if(!netReference->getTypeInfo()->isArray() && !netReference->getTypeInfo()->isList()) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a type that can be wrapped on a JavaScript list.");
     }
 
     return NetArray::create(scope.engine, NetValue::forInstance(netReference));
