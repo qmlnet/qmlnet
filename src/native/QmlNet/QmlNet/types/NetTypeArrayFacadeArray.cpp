@@ -38,11 +38,11 @@ bool NetTypeArrayFacade_Array::isIncomplete()
     return _isIncomplete;
 }
 
-int NetTypeArrayFacade_Array::getLength(QSharedPointer<NetReference> reference)
+uint NetTypeArrayFacade_Array::getLength(QSharedPointer<NetReference> reference)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
     readProperty(_lengthProperty, reference, result);
-    return result->getInt();
+    return static_cast<uint>(result->getInt());
 }
 
 QSharedPointer<NetVariant> NetTypeArrayFacade_Array::getIndexed(QSharedPointer<NetReference> reference, int index)

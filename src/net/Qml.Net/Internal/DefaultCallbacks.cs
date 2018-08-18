@@ -49,7 +49,6 @@ namespace Qml.Net.Internal
 
                 type.IsArray = typeInfo.IsArray;
                 
-                foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance))
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
