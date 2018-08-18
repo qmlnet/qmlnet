@@ -39,17 +39,27 @@ uint NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
     return 0;
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade::getIndexed(QSharedPointer<NetReference>, int)
+QSharedPointer<NetVariant> NetTypeArrayFacade::getIndexed(QSharedPointer<NetReference>, uint)
 {
     return nullptr;
 }
 
-void NetTypeArrayFacade::setIndexed(QSharedPointer<NetReference>, int, QSharedPointer<NetVariant>)
+void NetTypeArrayFacade::setIndexed(QSharedPointer<NetReference>, uint, QSharedPointer<NetVariant>)
 {
 
 }
 
 void NetTypeArrayFacade::push(QSharedPointer<NetReference>, QSharedPointer<NetVariant>)
+{
+
+}
+
+QSharedPointer<NetVariant> NetTypeArrayFacade::pop(QSharedPointer<NetReference>)
+{
+    return nullptr;
+}
+
+void NetTypeArrayFacade::deleteAt(QSharedPointer<NetReference>, uint)
 {
 
 }

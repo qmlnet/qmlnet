@@ -18,8 +18,16 @@ NetTypeArrayFacade_List::NetTypeArrayFacade_List(QSharedPointer<NetTypeInfo> typ
         }
     }
 
+    for(int x = 0; x < type->getLocalMethodCount(); x++) {
+        QSharedPointer<NetMethodInfo> method = type->getLocalMethodInfo(x);
+        if(method->getMethodName().compare("RemoveAt") == 0) {
+            _removeAtMethod = method;
+        }
+    }
+
     if(_lengthProperty == nullptr ||
-        _itemProperty == nullptr) {
+        _itemProperty == nullptr ||
+        _removeAtMethod == nullptr) {
         _isIncomplete = true;
         return;
     }
@@ -42,7 +50,7 @@ uint NetTypeArrayFacade_List::getLength(QSharedPointer<NetReference> reference)
     return static_cast<uint>(result->getInt());
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade_List::getIndexed(QSharedPointer<NetReference> reference, int index)
+QSharedPointer<NetVariant> NetTypeArrayFacade_List::getIndexed(QSharedPointer<NetReference> reference, uint index)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
     QSharedPointer<NetVariant> indexParameter = QSharedPointer<NetVariant>(new NetVariant());
@@ -51,9 +59,26 @@ QSharedPointer<NetVariant> NetTypeArrayFacade_List::getIndexed(QSharedPointer<Ne
     return result;
 }
 
-void NetTypeArrayFacade_List::setIndexed(QSharedPointer<NetReference> reference, int index, QSharedPointer<NetVariant> value)
+void NetTypeArrayFacade_List::setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value)
 {
     QSharedPointer<NetVariant> indexParameter = QSharedPointer<NetVariant>(new NetVariant());
-    indexParameter->setInt(index);
+    indexParameter->setInt(static_cast<int>(index));
     writeProperty(_itemProperty, reference, indexParameter, value);
+}
+
+QSharedPointer<NetVariant> NetTypeArrayFacade_List::pop(QSharedPointer<NetReference> reference)
+{
+    uint length = getLength(reference);
+    QSharedPointer<NetVariant> item = getIndexed(reference, length - 1);
+    deleteAt(reference, length - 1);
+    return item;
+}
+
+void NetTypeArrayFacade_List::deleteAt(QSharedPointer<NetReference> reference, uint index)
+{
+    QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
+    QSharedPointer<NetVariant> parameter = QSharedPointer<NetVariant>(new NetVariant());
+    parameter->setInt(static_cast<int>(index));
+    parameters->add(parameter);
+    invokeNetMethod(_removeAtMethod, reference, parameters, nullptr);
 }
