@@ -60,7 +60,7 @@ namespace Qml.Net.Internal
                             NetTypeManager.GetTypeInfo(methodInfo.ReturnParameter.ParameterType);
                     }
 
-                    var method = new NetMethodInfo(type, methodInfo.Name, returnType);
+                    var method = new NetMethodInfo(type, methodInfo.Name, returnType, false);
 
                     foreach (var parameter in methodInfo.GetParameters())
                     {

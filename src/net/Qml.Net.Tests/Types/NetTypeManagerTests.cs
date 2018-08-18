@@ -240,5 +240,21 @@ namespace Qml.Net.Tests.Types
             method.ReturnType.MethodCount.Should().Be(0);
             method.ReturnType.IsLoaded.Should().BeTrue();
         }
+
+        public class TestType12
+        {
+            public void Method()
+            {
+                
+            }
+        }
+
+        [Fact]
+        public void Can_detect_non_static_methods()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType12>();
+            type.EnsureLoaded();
+            type.GetMethod(0).IsStatic.Should().BeFalse();
+        }
     }
 }

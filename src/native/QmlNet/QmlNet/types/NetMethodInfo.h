@@ -20,11 +20,14 @@ class NetMethodInfo {
 public:
     NetMethodInfo(QSharedPointer<NetTypeInfo> parentTypeInfo,
                   QString methodName,
-                  QSharedPointer<NetTypeInfo> returnType);
+                  QSharedPointer<NetTypeInfo> returnType,
+                  bool isStatic);
 
     QString getMethodName();
 
     QSharedPointer<NetTypeInfo> getReturnType();
+
+    bool isStatic();
 
     void addParameter(QString name, QSharedPointer<NetTypeInfo> typeInfo);
     int getParameterCount();
@@ -36,6 +39,7 @@ private:
     QSharedPointer<NetTypeInfo> _parentTypeInfo;
     QString _methodName;
     QSharedPointer<NetTypeInfo> _returnType;
+    bool _isStatic;
     QList<QSharedPointer<NetMethodInfoArguement>> _parameters;
 };
 
