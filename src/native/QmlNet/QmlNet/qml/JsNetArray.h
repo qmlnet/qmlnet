@@ -27,6 +27,7 @@ struct NetArray : Object
 
     static ReturnedValue method_length(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
     static ReturnedValue method_push(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
+    static ReturnedValue method_pop(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc);
     static ReturnedValue getIndexed(const Managed *m, uint index, bool *hasProperty);
     static bool putIndexed(Managed *m, uint index, const Value &value);
 };

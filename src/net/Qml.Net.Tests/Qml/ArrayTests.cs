@@ -115,5 +115,27 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.GetArray(), Times.Once);
             Mock.Verify(x => x.Test(true), Times.Once);
         }
+
+        [Fact]
+        public void Can_not_pop_for_array()
+        {
+            var array = new[] {3, 4, 7};
+            Mock.Setup(x => x.GetArray()).Returns(array);
+            Mock.Setup(x => x.Test(It.IsAny<object>()));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var array = Net.toJsArray(test.getArray())
+                    try {
+                        array.pop()
+                    } catch(err) {
+                        test.test(true)
+                    }
+                ");
+            
+            Mock.Verify(x => x.GetArray(), Times.Once);
+            Mock.Verify(x => x.Test(true), Times.Once);
+        }
     }
 }
