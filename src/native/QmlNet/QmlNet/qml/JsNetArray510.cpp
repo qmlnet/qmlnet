@@ -70,7 +70,22 @@ void NetArray::method_forEach(const BuiltinFunction *, Scope &scope, CallData *c
 
 ReturnedValue NetArray::getIndexed(const Managed *m, uint index, bool *hasProperty)
 {
-    return 0;
+    const NetArray *netArray = static_cast<const NetArray*>(m);
+    Scope scope(netArray->engine());
+    QV4::Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
+    NetValue* netValue = reinterpret_cast<NetValue*>(wrapper->d()->object());
+    QSharedPointer<NetTypeArrayFacade> arrayFacade = netValue->getNetReference()->getTypeInfo()->getArrayFacade();
+
+    if(hasProperty)
+        *hasProperty = true;
+
+    if(arrayFacade == nullptr) {
+        return scope.engine->throwError(QString::fromUtf8("The wrapped object can't be treated as an array."));
+    }
+
+    QSharedPointer<NetVariant> result = arrayFacade->getIndexed(netValue->getNetReference(), index);
+    QJSValue resultJsValue = result->toQJSValue(scope.engine->jsEngine());
+    return scope.engine->fromVariant(resultJsValue.toVariant());
 }
 
 bool NetArray::putIndexed(Managed *m, uint index, const Value &value)
