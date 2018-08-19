@@ -123,7 +123,25 @@ void NetObject::method_serialize(const BuiltinFunction *, Scope &scope, CallData
 
 void NetObject::method_toJsArray(const BuiltinFunction *, Scope &scope, CallData *callData)
 {
-    THROW_GENERIC_ERROR("Net.toJsArray(): Not currently implemented in <5.11");
+    if(callData->argc != 1) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Missing instance parameter");
+    }
+    QV4::ScopedValue instance(scope, callData->args[0]);
+    if(instance->isNullOrUndefined()) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Instance parameter must not be null or undefined");
+    }
+    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
+    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
+    if(value->getVariantType() != NetVariantTypeEnum_Object) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a .NET object");
+    }
+
+    QSharedPointer<NetReference> netReference = value->getNetReference();
+    if(!netReference->getTypeInfo()->isArray() && !netReference->getTypeInfo()->isList()) {
+        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a type that can be wrapped on a JavaScript list.");
+    }
+
+    scope.result = NetArray::create(scope.engine, NetValue::forInstance(netReference));
 }
 
 #else
