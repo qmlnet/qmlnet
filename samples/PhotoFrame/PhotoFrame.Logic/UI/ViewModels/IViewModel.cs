@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PhotoFrame.Logic.UI.ViewModels
+﻿namespace PhotoFrame.Logic.UI.ViewModels
 {
     /// <summary>
     /// Marker interface for view models

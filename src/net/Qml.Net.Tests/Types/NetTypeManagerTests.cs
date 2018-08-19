@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Qml.Net.Internal.Types;
 using Xunit;
@@ -239,6 +240,71 @@ namespace Qml.Net.Tests.Types
             method.ReturnType.EnsureLoaded();
             method.ReturnType.MethodCount.Should().Be(0);
             method.ReturnType.IsLoaded.Should().BeTrue();
+        }
+
+        public class TestType12
+        {
+            public void LocalMethod()
+            {
+                
+            }
+
+            public static void StaticMethod()
+            {
+                
+            }
+        }
+
+        [Fact]
+        public void Can_detect_static_methods()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType12>();
+            type.EnsureLoaded();
+            type.MethodCount.Should().Be(2);
+            type.LocalMethodCount.Should().Be(1);
+            type.GetLocalMethod(0).MethodName.Should().Be("LocalMethod");
+            type.GetStaticMethod(0).MethodName.Should().Be("StaticMethod");
+        }
+
+        public class TestType13
+        {
+            public string[] Property { get; set; }
+        }
+        
+        [Fact]
+        public void Can_detect_array_type()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType13>();
+            type.EnsureLoaded();
+            var property = type.GetProperty(0);
+            var returnType = property.ReturnType;
+            returnType.EnsureLoaded();
+            returnType.IsArray.Should().BeTrue();
+            returnType.IsList.Should().BeFalse();
+        }
+
+        public class TestType14
+        {
+            public List<int> Prop1 { get; set; }
+            
+            public System.Collections.ArrayList Prop2 { get; set; }
+        }
+
+        [Fact]
+        public void Can_detect_list_type()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType14>();
+            type.EnsureLoaded();
+            for (var x = 0; x < type.PropertyCount; x++)
+            {
+                var property = type.GetProperty(x);
+                if (property.Name == "Prop1" || property.Name == "Prop2")
+                {
+                    property.ReturnType.EnsureLoaded();
+                    property.ReturnType.IsList.Should().BeTrue();
+                    property.ReturnType.IsArray.Should().BeFalse();
+                }
+            }
         }
     }
 }

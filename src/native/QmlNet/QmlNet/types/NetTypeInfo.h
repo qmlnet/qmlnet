@@ -10,6 +10,7 @@
 class NetMethodInfo;
 class NetPropertyInfo;
 class NetSignalInfo;
+class NetTypeArrayFacade;
 
 class NetTypeInfo : public QEnableSharedFromThis<NetTypeInfo> {
 public:
@@ -24,9 +25,21 @@ public:
     NetVariantTypeEnum getPrefVariantType();
     void setPrefVariantType(NetVariantTypeEnum variantType);
 
+    bool isArray();
+    void setIsArray(bool isArray);
+
+    bool isList();
+    void setIsList(bool isList);
+
     void addMethod(QSharedPointer<NetMethodInfo> methodInfo);
     int getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(int index);
+
+    int getLocalMethodCount();
+    QSharedPointer<NetMethodInfo> getLocalMethodInfo(int index);
+
+    int getStaticMethodCount();
+    QSharedPointer<NetMethodInfo> getStaticMethodInfo(int index);
 
     void addProperty(QSharedPointer<NetPropertyInfo> property);
     int getPropertyCount();
@@ -35,6 +48,8 @@ public:
     void addSignal(QSharedPointer<NetSignalInfo> signal);
     int getSignalCount();
     QSharedPointer<NetSignalInfo> getSignal(int index);
+
+    QSharedPointer<NetTypeArrayFacade> getArrayFacade();
 
     bool isLoaded();
     bool isLoading();
@@ -46,9 +61,15 @@ private:
     QString _fullTypeName;
     QString _className;
     NetVariantTypeEnum _variantType;
+    bool _isArray;
+    bool _isList;
     QList<QSharedPointer<NetMethodInfo>> _methods;
+    QList<QSharedPointer<NetMethodInfo>> _methodsLocal;
+    QList<QSharedPointer<NetMethodInfo>> _methodsStatic;
     QList<QSharedPointer<NetPropertyInfo>> _properties;
     QList<QSharedPointer<NetSignalInfo>> _signals;
+    QSharedPointer<NetTypeArrayFacade> _arrayFacade;
+    bool _arrayFacadeLoaded;
     bool _lazyLoaded;
     bool _isLoading;
 };

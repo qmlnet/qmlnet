@@ -44,17 +44,11 @@ namespace Qml.Net.Tests.Qml
             var returnedType = new Mock<ObjectTestsQmlReturnType>();
             Mock.Setup(x => x.TestMethodReturn()).Returns(returnedType.Object);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    ObjectTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var instance = test.testMethodReturn()
-                            instance.testMethod()
-                        }
-                    }
+                    var instance = test.testMethodReturn()
+                    instance.testMethod()
                 ");
 
             returnedType.Verify(x => x.TestMethod(), Times.Once);
@@ -67,17 +61,11 @@ namespace Qml.Net.Tests.Qml
             var returnedType = new ObjectTestsQmlReturnType();
             Mock.Setup(x => x.TestMethodReturn()).Returns(returnedType);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    ObjectTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var instance = test.testMethodReturn()
-                            test.testMethodParameter(instance)
-                        }
-                    }
+                    var instance = test.testMethodReturn()
+                    test.testMethodParameter(instance)
                 ");
 
             Mock.Verify(x => x.TestMethodReturn(), Times.Once);
@@ -90,31 +78,19 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Overload());
             Mock.Setup(x => x.Overload(It.IsAny<string>()));
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    ObjectTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.overload()
-                        }
-                    }
+                    test.overload()
                 ");
             
             Mock.Verify(x => x.Overload(), Times.Once);
             Mock.Verify(x => x.Overload(It.IsAny<string>()), Times.Never);
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    ObjectTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.overload('test')
-                        }
-                    }
+                    test.overload('test')
                 ");
             
             Mock.Verify(x => x.Overload(), Times.Once);

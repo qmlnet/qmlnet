@@ -22,8 +22,8 @@ namespace Build
         {
             var options = ParseOptions<Options>(args);
             
-            var mygetApiKey = Environment.GetEnvironmentVariable("MYGET_NUGET_KEY");
-            var mygetSource = "https://www.myget.org/F/qmlnet/api/v2/package";
+            var nugetApiKey = Environment.GetEnvironmentVariable("PRIVATE_NUGET_KEY");
+            var nugetSource = "https://feeds.pknopf.com/nuget/qmlnet";
             var gitversion = GetGitVersion(ExpandPath("./"));
             var commandBuildArgs = $"--configuration {options.Configuration} /p:Platform=\"Any CPU\"";
             var commandBuildArgsWithVersion = commandBuildArgs;
@@ -283,9 +283,14 @@ namespace Build
             
             Add("publish", () =>
             {
+                if (string.IsNullOrEmpty(nugetApiKey))
+                {
+                    Info("Skipping publish, due to missing NuGet key...");
+                    return;
+                }
                 void Deploy(string package)
                 {
-                    RunShell($"dotnet nuget push -k {mygetApiKey} -s {mygetSource} {package}");
+                    RunShell($"dotnet nuget push -k {nugetApiKey} -s {nugetSource} {package}");
                 }
                 if (IsWindows())
                 {

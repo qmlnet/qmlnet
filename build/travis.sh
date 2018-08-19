@@ -4,8 +4,8 @@ set -e
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # Before we run the build, get gitversion and generate a version.json.
-nuget install GitVersion.CommandLine -Version 3.6.5
-mono ./GitVersion.CommandLine.3.6.5/tools/GitVersion.exe > version.json
+nuget install GitVersion.CommandLine -Version 4.0.0-beta0012
+mono ./GitVersion.CommandLine.4.0.0-beta0012/tools/GitVersion.exe > version.json
 
 if [ "$TRAVIS_OS_NAME" == "linux" ]; then
 

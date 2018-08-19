@@ -23,9 +23,9 @@ void loadTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
 QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type);
 
-void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> result);
+void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> indexParameter, QSharedPointer<NetVariant> result);
 
-void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> value);
+void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, QSharedPointer<NetVariant> indexParameter, QSharedPointer<NetVariant> value);
 
 void invokeNetMethod(QSharedPointer<NetMethodInfo> method, QSharedPointer<NetReference> target, QSharedPointer<NetVariantList> parameters, QSharedPointer<NetVariant> result);
 
@@ -34,5 +34,7 @@ void gcCollect(int generation);
 bool raiseNetSignals(QSharedPointer<NetReference> target, QString signalName, QSharedPointer<NetVariantList> parameters);
 
 void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> successCallback, QSharedPointer<NetJSValue> failureCallback);
+
+bool serializeNetToString(QSharedPointer<NetReference> instance, QSharedPointer<NetVariant> result);
 
 #endif // NET_TYPE_INFO_MANAGER_H

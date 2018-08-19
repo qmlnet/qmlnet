@@ -32,6 +32,18 @@ namespace Qml.Net.Internal.Types
             set => Interop.NetTypeInfo.SetPrefVariantType(Handle, value);
         }
 
+        public bool IsArray
+        {
+            get => Interop.NetTypeInfo.GetIsArray(Handle);
+            set => Interop.NetTypeInfo.SetIsArray(Handle, value);
+        }
+        
+        public bool IsList
+        {
+            get => Interop.NetTypeInfo.GetIsList(Handle);
+            set => Interop.NetTypeInfo.SetIsList(Handle, value);
+        }
+        
         public void AddMethod(NetMethodInfo methodInfo)
         {
             Interop.NetTypeInfo.AddMethod(Handle, methodInfo.Handle);
@@ -42,6 +54,24 @@ namespace Qml.Net.Internal.Types
         public NetMethodInfo GetMethod(int index)
         {
             var result = Interop.NetTypeInfo.GetMethodInfo(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfo(result);
+        }
+        
+        public int LocalMethodCount => Interop.NetTypeInfo.GetLocalMethodCount(Handle);
+
+        public NetMethodInfo GetLocalMethod(int index)
+        {
+            var result = Interop.NetTypeInfo.GetLocalMethodInfo(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfo(result);
+        }
+        
+        public int StaticMethodCount => Interop.NetTypeInfo.GetStaticMethodCount(Handle);
+
+        public NetMethodInfo GetStaticMethod(int index)
+        {
+            var result = Interop.NetTypeInfo.GetStaticMethodInfo(Handle, index);
             if (result == IntPtr.Zero) return null;
             return new NetMethodInfo(result);
         }
@@ -109,12 +139,32 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_getPrefVariantType")]
         NetVariantType GetPrefVariantType(IntPtr netTypeInfo);
 
+        [NativeSymbol(Entrypoint = "type_info_setIsArray")]
+        bool GetIsArray(IntPtr netTypeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getIsArray")]
+        void SetIsArray(IntPtr netTypeInfo, bool isArray);
+        
+        [NativeSymbol(Entrypoint = "type_info_setIsList")]
+        bool GetIsList(IntPtr netTypeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getIsList")]
+        void SetIsList(IntPtr netTypeInfo, bool isList);
+        
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
         void AddMethod(IntPtr typeInfo, IntPtr methodInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodCount")]
         int GetMethodCount(IntPtr typeInfo);
         [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
         IntPtr GetMethodInfo(IntPtr typeInfo, int index);
+        
+        [NativeSymbol(Entrypoint = "type_info_getLocalMethodCount")]
+        int GetLocalMethodCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getLocalMethodInfo")]
+        IntPtr GetLocalMethodInfo(IntPtr typeInfo, int index);
+        
+        [NativeSymbol(Entrypoint = "type_info_getStaticMethodCount")]
+        int GetStaticMethodCount(IntPtr typeInfo);
+        [NativeSymbol(Entrypoint = "type_info_getStaticMethodInfo")]
+        IntPtr GetStaticMethodInfo(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_addProperty")]
         void AddProperty(IntPtr typeInfo, IntPtr property);

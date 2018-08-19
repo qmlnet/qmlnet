@@ -9,19 +9,23 @@ namespace Qml.Net.Sandbox
 {
     class Program
     {
-        [Signal("testSignal", NetVariantType.String)]
         public class TestQmlImport
         {
-            public void Test(INetJsValue jsValue)
+            public TestObject GetObject()
             {
-                Console.WriteLine("In net method, invoking callback");
-                jsValue.Call();
+                return new TestObject
+                {
+                    Prop1 = "test1",
+                    Prop2 = 3
+                };
             }
+        }
 
-            public void AnotherMethod()
-            {
-                Console.WriteLine("Another method");
-            }
+        public class TestObject
+        {
+            public string Prop1 { get; set; }
+            
+            public int Prop2 { get; set; }
         }
 
         static int Main(string[] args)

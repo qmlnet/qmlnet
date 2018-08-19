@@ -1,8 +1,10 @@
 ﻿using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -47,7 +49,26 @@ namespace Qml.Net.Internal
                 // Don't grab properties and methods for system-level types.
                 if (Helpers.IsPrimitive(typeInfo)) return;
 
-                foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+                if (typeInfo.IsArray)
+                {
+                    type.IsArray = true;
+                }
+                else
+                {
+                    if (typeof(IList).IsAssignableFrom(typeInfo))
+                    {
+                        type.IsList = true;
+                    }
+                    else if (typeInfo.IsGenericType)
+                    {
+                        if(typeof(IList<>).IsAssignableFrom(typeInfo.GetGenericTypeDefinition()))
+                        {
+                            type.IsList = true;
+                        }
+                    }
+                }
+                
+                foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
                     if (Helpers.IsPrimitive(methodInfo.DeclaringType)) continue;
@@ -60,7 +81,7 @@ namespace Qml.Net.Internal
                             NetTypeManager.GetTypeInfo(methodInfo.ReturnParameter.ParameterType);
                     }
 
-                    var method = new NetMethodInfo(type, methodInfo.Name, returnType);
+                    var method = new NetMethodInfo(type, methodInfo.Name, returnType, methodInfo.IsStatic);
 
                     foreach (var parameter in methodInfo.GetParameters())
                     {
@@ -178,10 +199,11 @@ namespace Qml.Net.Internal
             }
         }
 
-        public void ReadProperty(IntPtr p, IntPtr t, IntPtr r)
+        public void ReadProperty(IntPtr p, IntPtr t, IntPtr ip, IntPtr r)
         {
             using(var property = new NetPropertyInfo(p))
             using(var target = new NetReference(t))
+            using(var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using(var result = new NetVariant(r))
             {
                 var o = target.Instance;
@@ -192,14 +214,24 @@ namespace Qml.Net.Internal
                 if(propertInfo == null)
                     throw new InvalidOperationException($"Invalid property {property.Name}");
 
-                Helpers.PackValue(propertInfo.GetValue(o), result);
+                if (indexParameter != null)
+                {
+                    object indexParameterValue = null;
+                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
+                    Helpers.PackValue(propertInfo.GetValue(o, new[]{indexParameterValue}), result);
+                }
+                else
+                {
+                    Helpers.PackValue(propertInfo.GetValue(o), result);
+                }
             }
         }
 
-        public void WriteProperty(IntPtr p, IntPtr t, IntPtr v)
+        public void WriteProperty(IntPtr p, IntPtr t, IntPtr ip, IntPtr v)
         {
             using (var property = new NetPropertyInfo(p))
             using (var target = new NetReference(t))
+            using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using (var value = new NetVariant(v))
             {
                 var o = target.Instance;
@@ -213,7 +245,16 @@ namespace Qml.Net.Internal
                 object newValue = null;
                 Helpers.Unpackvalue(ref newValue, value);
 
-                propertInfo.SetValue(o, newValue);
+                if (indexParameter != null)
+                {
+                    object indexParameterValue = null;
+                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
+                    propertInfo.SetValue(o, newValue, new[]{indexParameterValue});
+                }
+                else
+                {
+                    propertInfo.SetValue(o, newValue);
+                }
             }
         }
 
@@ -391,6 +432,25 @@ namespace Qml.Net.Internal
             }
         }
 
+        public bool Serialize(IntPtr i, IntPtr r)
+        {
+            using (var instance = new NetReference(i))
+            using (var result = new NetVariant(r))
+            {
+                try
+                {
+                    result.String = Serializer.Current.Serialize(instance.Instance);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // TODO: Propagate this error to the user.
+                    Console.Error.WriteLine($"Error serializing .NET object: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+        
         private NetVariantType GetPrefVariantType(Type typeInfo)
         {
             if (typeInfo == typeof(bool))

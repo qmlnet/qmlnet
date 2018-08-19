@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/NetJsValue.h \
     $$PWD/QQuickStyle.h \
     $$PWD/NetValueMetaObjectPacker.h \
-    $$PWD/QCommon.h
+    $$PWD/QCommon.h \
+    $$PWD/JsNetArray.h
 
 SOURCES += \
     $$PWD/QGuiApplication.cpp \
@@ -29,3 +30,11 @@ SOURCES += \
     $$PWD/QQuickStyle.cpp \
     $$PWD/NetValueMetaObjectPacker.cpp \
     $$PWD/QCommon.cpp
+
+versionAtLeast(QT_VERSION, 5.11.0) {
+    message('511')
+    SOURCES += $$PWD/JsNetArray511.cpp
+} else {
+    message('510')
+    SOURCES += $$PWD/JsNetArray510.cpp
+}

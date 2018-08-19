@@ -10,8 +10,9 @@ namespace Qml.Net.Internal.Types
     {
         public NetMethodInfo(NetTypeInfo parentTypeInfo,
             string methodName,
-            NetTypeInfo returnTypeInfo)
-            : this(Create(parentTypeInfo, methodName, returnTypeInfo))
+            NetTypeInfo returnTypeInfo,
+            bool isStatic)
+            : this(Create(parentTypeInfo, methodName, returnTypeInfo, isStatic))
         {
             
         }
@@ -24,11 +25,13 @@ namespace Qml.Net.Internal.Types
 
         private static IntPtr Create(NetTypeInfo parentTypeInfo,
             string methodName,
-            NetTypeInfo returnTypeInfo)
+            NetTypeInfo returnTypeInfo,
+            bool isStatic)
         {
             return Interop.NetMethodInfo.Create(parentTypeInfo?.Handle ?? IntPtr.Zero,
                 methodName,
-                returnTypeInfo?.Handle ?? IntPtr.Zero);
+                returnTypeInfo?.Handle ?? IntPtr.Zero,
+                isStatic);
         }
 
         public string MethodName => Utilities.ContainerToString(Interop.NetMethodInfo.GetMethodName(Handle));
@@ -42,6 +45,8 @@ namespace Qml.Net.Internal.Types
                 return new NetTypeInfo(result);
             }
         }
+
+        public bool IsStatic => Interop.NetMethodInfo.GetIsStatic(Handle);
 
         public void AddParameter(string name, NetTypeInfo type)
         {
@@ -110,7 +115,7 @@ namespace Qml.Net.Internal.Types
         IntPtr GetParameterType(IntPtr methodParameter);
         
         [NativeSymbol(Entrypoint = "method_info_create")]
-        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName, IntPtr returnTypeInfo);
+        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName, IntPtr returnTypeInfo, bool isStatic);
         [NativeSymbol(Entrypoint = "method_info_destroy")]
         void Destroy(IntPtr methodInfo);
 
@@ -118,6 +123,8 @@ namespace Qml.Net.Internal.Types
         IntPtr GetMethodName(IntPtr method);
         [NativeSymbol(Entrypoint = "method_info_getReturnType")]
         IntPtr GetReturnType(IntPtr method);
+        [NativeSymbol(Entrypoint = "method_info_isStatic")]
+        bool GetIsStatic(IntPtr method);
         
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
         void AddParameter(IntPtr method, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string name, IntPtr type);

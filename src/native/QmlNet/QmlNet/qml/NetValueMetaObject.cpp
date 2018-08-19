@@ -59,9 +59,9 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
         propb.setReadable(propertyInfo->canRead());
     }
 
-    for(int index = 0; index <= typeInfo->getMethodCount() - 1; index++)
+    for(int index = 0; index <= typeInfo->getLocalMethodCount() - 1; index++)
     {
-        QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getMethodInfo(index);
+        QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getLocalMethodInfo(index);
         QSharedPointer<NetTypeInfo> returnType = methodInfo->getReturnType();
         QString signature = methodInfo->getSignature();
         if(returnType != nullptr) {
@@ -112,7 +112,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-        readProperty(propertyInfo, instance, result);
+        readProperty(propertyInfo, instance, nullptr, result);
 
         NetMetaValuePack(propertyType->getPrefVariantType(), result, a[0]);
     }
@@ -130,7 +130,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
         NetMetaValueUnpack(propertyType->getPrefVariantType(), newValue, a[0]);
 
-        writeProperty(propertyInfo, instance, newValue);
+        writeProperty(propertyInfo, instance, nullptr, newValue);
     }
         break;
     case  InvokeMetaMethod:
@@ -149,10 +149,10 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 
         idx -= instance->getTypeInfo()->getSignalCount();
 
-        if(idx < instance->getTypeInfo()->getMethodCount()) {
+        if(idx < instance->getTypeInfo()->getLocalMethodCount()) {
             // This is a method call!
 
-            QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getMethodInfo(idx);
+            QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getLocalMethodInfo(idx);
             QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
 
             for(int index = 0; index <= methodInfo->getParameterCount() - 1; index++)
@@ -179,7 +179,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             return -1;
         }
 
-        idx -= instance->getTypeInfo()->getMethodCount();
+        idx -= instance->getTypeInfo()->getLocalMethodCount();
 
         {
             // This is a slot invocation, likely the built-in handlers that are used

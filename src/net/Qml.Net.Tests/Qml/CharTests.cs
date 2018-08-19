@@ -33,16 +33,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns((char)0);
             
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -54,16 +48,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns('T');
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -75,16 +63,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns('Ώ');
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -94,16 +76,10 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_set_method_parameter()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameter(""Ώ"")
-                        }
-                    }
+                    test.methodParameter(""Ώ"")
                 ");
 
             Mock.Verify(x => x.MethodParameter(It.IsIn('Ώ')), Times.Once);
@@ -114,16 +90,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.MethodReturn()).Returns('Ώ');
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameter(test.methodReturn())
-                        }
-                    }
+                    test.methodParameter(test.methodReturn())
                 ");
 
             Mock.Verify(x => x.MethodParameter(It.IsIn('Ώ')), Times.Once);
@@ -135,16 +105,10 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Nullable).Returns((char?)null);
             Mock.Setup(x => x.MethodParameterNullable(It.Is<char?>(y => y == null)));
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameterNullable(test.nullable)
-                        }
-                    }
+                    test.methodParameterNullable(test.nullable)
                 ");
 
             Mock.VerifyGet(x => x.Nullable, Times.Once);
@@ -157,16 +121,10 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.Nullable).Returns('t');
             Mock.Setup(x => x.MethodParameterNullable(It.Is<char>(y => y == 't')));
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    CharTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.methodParameterNullable(test.nullable)
-                        }
-                    }
+                    test.methodParameterNullable(test.nullable)
                 ");
 
             Mock.VerifyGet(x => x.Nullable, Times.Once);

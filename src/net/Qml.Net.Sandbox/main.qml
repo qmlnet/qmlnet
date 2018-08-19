@@ -10,14 +10,16 @@ ApplicationWindow {
     title: qsTr("Hello World")
 	Item {
 		Timer {
-			interval: 5000; running: true; repeat: true
+			interval: 1000; running: true; repeat: true
 			onTriggered: {
-			    console.log('calling function with callback')
-			    var task = test.Test(function() {
-			        console.log('in callback, going to call AnotherMethod')
-			        test.AnotherMethod()
-			        console.log('done calling AnotherMethod')
-			    })
+			    var netObject = test.getObject()
+			    var toJson = Net.serialize(netObject)
+			    console.log(toJson)
+			    console.log(typeof toJson)
+			    toJson = JSON.parse(toJson)
+			    console.log(toJson)
+                console.log(typeof toJson)
+			    console.log(toJson.prop1)
 			}
 		}
 	}

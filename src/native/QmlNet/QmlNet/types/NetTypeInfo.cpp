@@ -3,12 +3,16 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNetUtilities.h>
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
     _fullTypeName(fullTypeName),
     _variantType(NetVariantTypeEnum_Invalid),
+    _isArray(false),
+    _isList(false),
+    _arrayFacadeLoaded(false),
     _lazyLoaded(false),
     _isLoading(false) {
 
@@ -39,8 +43,33 @@ void NetTypeInfo::setPrefVariantType(NetVariantTypeEnum variantType) {
     _variantType = variantType;
 }
 
+bool NetTypeInfo::isArray()
+{
+    return _isArray;
+}
+
+void NetTypeInfo::setIsArray(bool isArray)
+{
+    _isArray = isArray;
+}
+
+bool NetTypeInfo::isList()
+{
+    return _isList;
+}
+
+void NetTypeInfo::setIsList(bool isList)
+{
+    _isList = isList;
+}
+
 void NetTypeInfo::addMethod(QSharedPointer<NetMethodInfo> methodInfo) {
     _methods.append(methodInfo);
+    if(methodInfo->isStatic()) {
+        _methodsStatic.append(methodInfo);
+    } else {
+        _methodsLocal.append(methodInfo);
+    }
 }
 
 int NetTypeInfo::getMethodCount() {
@@ -51,6 +80,30 @@ QSharedPointer<NetMethodInfo> NetTypeInfo::getMethodInfo(int index) {
     if(index < 0) return QSharedPointer<NetMethodInfo>(nullptr);
     if(index >= _methods.length()) return QSharedPointer<NetMethodInfo>(nullptr);
     return _methods.at(index);
+}
+
+int NetTypeInfo::getLocalMethodCount()
+{
+    return _methodsLocal.size();
+}
+
+QSharedPointer<NetMethodInfo> NetTypeInfo::getLocalMethodInfo(int index)
+{
+    if(index < 0) return QSharedPointer<NetMethodInfo>(nullptr);
+    if(index >= _methodsLocal.length()) return QSharedPointer<NetMethodInfo>(nullptr);
+    return _methodsLocal.at(index);
+}
+
+int NetTypeInfo::getStaticMethodCount()
+{
+    return _methodsStatic.size();
+}
+
+QSharedPointer<NetMethodInfo> NetTypeInfo::getStaticMethodInfo(int index)
+{
+    if(index < 0) return QSharedPointer<NetMethodInfo>(nullptr);
+    if(index >= _methodsStatic.length()) return QSharedPointer<NetMethodInfo>(nullptr);
+    return _methodsStatic.at(index);
 }
 
 void NetTypeInfo::addProperty(QSharedPointer<NetPropertyInfo> property) {
@@ -79,6 +132,17 @@ QSharedPointer<NetSignalInfo> NetTypeInfo::getSignal(int index) {
     if(index < 0) return QSharedPointer<NetSignalInfo>(nullptr);
     if(index >= _signals.size()) return QSharedPointer<NetSignalInfo>(nullptr);
     return _signals.at(index);
+}
+
+QSharedPointer<NetTypeArrayFacade> NetTypeInfo::getArrayFacade()
+{
+    if(_arrayFacadeLoaded) {
+        return _arrayFacade;
+    }
+    ensureLoaded();
+    _arrayFacade = NetTypeArrayFacade::fromType(sharedFromThis());
+    _arrayFacadeLoaded = true;
+    return _arrayFacade;
 }
 
 bool NetTypeInfo::isLoaded() {
@@ -138,6 +202,26 @@ Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInf
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
+Q_DECL_EXPORT bool type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
+{
+    return netTypeInfo->netTypeInfo->isArray();
+}
+
+Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, bool isArray)
+{
+    netTypeInfo->netTypeInfo->setIsArray(isArray);
+}
+
+Q_DECL_EXPORT bool type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
+{
+    return netTypeInfo->netTypeInfo->isList();
+}
+
+Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, bool isList)
+{
+    netTypeInfo->netTypeInfo->setIsList(isList);
+}
+
 Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
     netTypeInfo->netTypeInfo->addMethod(methodInfo->method);
 }
@@ -148,6 +232,36 @@ Q_DECL_EXPORT int type_info_getMethodCount(NetTypeInfoContainer* container) {
 
 Q_DECL_EXPORT NetMethodInfoContainer* type_info_getMethodInfo(NetTypeInfoContainer* container, int index) {
     QSharedPointer<NetMethodInfo> methodInfo = container->netTypeInfo->getMethodInfo(index);
+    if(methodInfo == nullptr) {
+        return nullptr;
+    }
+    NetMethodInfoContainer* result = new NetMethodInfoContainer();
+    result->method = methodInfo;
+    return result;
+}
+
+Q_DECL_EXPORT int type_info_getLocalMethodCount(NetTypeInfoContainer* container)
+{
+    return container->netTypeInfo->getLocalMethodCount();
+}
+
+Q_DECL_EXPORT NetMethodInfoContainer* type_info_getLocalMethodInfo(NetTypeInfoContainer* container, int index) {
+    QSharedPointer<NetMethodInfo> methodInfo = container->netTypeInfo->getLocalMethodInfo(index);
+    if(methodInfo == nullptr) {
+        return nullptr;
+    }
+    NetMethodInfoContainer* result = new NetMethodInfoContainer();
+    result->method = methodInfo;
+    return result;
+}
+
+Q_DECL_EXPORT int type_info_getStaticMethodCount(NetTypeInfoContainer* container)
+{
+    return container->netTypeInfo->getStaticMethodCount();
+}
+
+Q_DECL_EXPORT NetMethodInfoContainer* type_info_getStaticMethodInfo(NetTypeInfoContainer* container, int index) {
+    QSharedPointer<NetMethodInfo> methodInfo = container->netTypeInfo->getStaticMethodInfo(index);
     if(methodInfo == nullptr) {
         return nullptr;
     }

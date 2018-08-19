@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using PhotoFrame.Logic.BL;
 using PhotoFrame.Logic.Config;
 
@@ -8,15 +6,15 @@ namespace PhotoFrame.Logic.UI.Views
 {
     public class ViewManager : IViewManager
     {
-        private IAppModel _AppModel;
-        private IFrameController _FrameController;
-        private IFrameConfig _FrameConfig;
+        private readonly IAppModel _appModel;
+        private readonly IFrameController _frameController;
+        private readonly IFrameConfig _frameConfig;
 
         public ViewManager(IAppModel appModel, IFrameController frameController, IFrameConfig frameConfig)
         {
-            _AppModel = appModel;
-            _FrameController = frameController;
-            _FrameConfig = frameConfig;
+            _appModel = appModel;
+            _frameController = frameController;
+            _frameConfig = frameConfig;
         }
 
         public IView CreateView(ViewType viewType)
@@ -24,11 +22,11 @@ namespace PhotoFrame.Logic.UI.Views
             switch(viewType)
             {
                 case ViewType.Normal:
-                    return new ViewNormal(_AppModel, _FrameController, _FrameConfig);
+                    return new ViewNormal(_appModel, _frameController, _frameConfig);
                 case ViewType.Border:
-                    return new ViewBorder(_AppModel, _FrameController, _FrameConfig);
+                    return new ViewBorder(_appModel, _frameController, _frameConfig);
                 case ViewType.Colorized:
-                    return new ViewColorize(_AppModel, _FrameController, _FrameConfig);
+                    return new ViewColorize(_appModel, _frameController, _frameConfig);
                 default:
                     throw new NotSupportedException($"ViewType [{viewType}] not supported!");
             }

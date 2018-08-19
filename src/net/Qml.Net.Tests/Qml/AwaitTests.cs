@@ -43,20 +43,14 @@ namespace Qml.Net.Tests.Qml
                 Mock.Setup(x => x.TestAsync()).Returns(Task.CompletedTask);
                 Mock.Setup(x => x.TestMethod());
 
-                NetTestHelper.RunQml(qmlApplicationEngine,
+                RunQmlTest(
+                    "test",
                     @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    AwaitTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var task = test.testAsync()
-                            Net.await(task, function() {
-                                test.testMethod()
-                            })
-                        }
-                    }
-                ");
+                        var task = test.testAsync()
+                        Net.await(task, function() {
+                            test.testMethod()
+                        })
+                    ");
 
                 Mock.Verify(x => x.TestMethod(), Times.Once);
             }
@@ -77,20 +71,14 @@ namespace Qml.Net.Tests.Qml
                 Mock.Setup(x => x.TestAsync()).Returns(Task.FromResult("testt"));
                 Mock.Setup(x => x.TestMethodWithArg("testt"));
 
-                NetTestHelper.RunQml(qmlApplicationEngine,
+                RunQmlTest(
+                    "test",
                     @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    AwaitTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var task = test.testAsync()
-                            Net.await(task, function(result) {
-                                test.testMethodWithArg(result)
-                            })
-                        }
-                    }
-                ");
+                        var task = test.testAsync()
+                        Net.await(task, function(result) {
+                            test.testMethodWithArg(result)
+                        })
+                    ");
 
                 Mock.Verify(x => x.TestMethodWithArg("testt"), Times.Once);
             }
@@ -112,23 +100,17 @@ namespace Qml.Net.Tests.Qml
                 Mock.Setup(x => x.TestMethodWithArg("throw this"));
                 Mock.Setup(x => x.TestMethodWithArg("success"));
 
-                NetTestHelper.RunQml(qmlApplicationEngine,
+                RunQmlTest(
+                    "test",
                     @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    AwaitTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            var task = test.testAsync('throw this')
-                            Net.await(task, function(result) {
-                                test.testMethodWithArg('success')
-                            },
-                            function(ex) {
-                                test.testMethodWithArg(ex.message)
-                            })
-                        }
-                    }
-                ");
+                        var task = test.testAsync('throw this')
+                        Net.await(task, function(result) {
+                            test.testMethodWithArg('success')
+                        },
+                        function(ex) {
+                            test.testMethodWithArg(ex.message)
+                        })
+                    ");
 
                 Mock.Verify(x => x.TestMethodWithArg("throw this"), Times.Once);
                 Mock.Verify(x => x.TestMethodWithArg("success"), Times.Never);

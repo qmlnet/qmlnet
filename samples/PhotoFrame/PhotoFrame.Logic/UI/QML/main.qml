@@ -333,7 +333,7 @@ ApplicationWindow {
              Text {
                  anchors.centerIn: parent
                  id: txtMemoryUsage
-                 text: appModel.currentlyUsedMBString
+                 text: appModel.currentlyUsedMbString
                  font.pointSize: 10
                  color: "white"
              }

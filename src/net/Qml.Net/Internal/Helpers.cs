@@ -8,14 +8,24 @@ namespace Qml.Net.Internal
     {
         public static bool IsPrimitive(Type type)
         {
+            if (type.IsArray)
+            {
+                return false;
+            }
+            
             if (type.Namespace == "System")
             {
                 if (type.Name == "Exception")
                 {
                     return false;
                 }
+                if (type.Name == "Array")
+                {
+                    return false;
+                }
                 return true;
             }
+            
             return false;
         }
         

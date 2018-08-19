@@ -4,7 +4,7 @@
 A Qml integration with .NET
 
 [![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat-square&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
-[![Build status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=master)](https://travis-ci.com/pauldotknopf/Qml.Net) [![Build status](https://ci.appveyor.com/api/projects/status/0ob29turkjslh61j/branch/master?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qml-net)
+[![Build status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=develop)](https://travis-ci.com/pauldotknopf/Qml.Net) [![Build status](https://ci.appveyor.com/api/projects/status/0ob29turkjslh61j/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qml-net)
 
 Supported platforms/runtimes:
 * Runtimes:
@@ -111,14 +111,14 @@ public class QmlType
 **Register your new type with Qml.**
 
 ```c#
-using (var app = new QGuiApplication(r))
+using (var app = new QGuiApplication(args))
 {
     using (var engine = new QQmlApplicationEngine())
     {
         // Register our new type to be used in Qml
         QQmlApplicationEngine.RegisterType<QmlType>("test", 1, 1);
-        engine.loadFile("main.qml");
-        return app.exec();
+        engine.Load("main.qml");
+        return app.Exec();
     }
 }
 ```
@@ -192,3 +192,4 @@ ApplicationWindow {
 - [ ] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
 - [ ] General perf improvements (particularly with reflection).
 - [ ] Qml debugger for VS and VS Code.
+- [ ] Yocto meta-layer for .NET Core and Qml.Net (for embedded Linux development).

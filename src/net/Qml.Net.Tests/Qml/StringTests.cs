@@ -26,16 +26,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns((string)null);
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    StringTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -47,16 +41,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns("");
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    StringTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -68,16 +56,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns("test value");
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    StringTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);
@@ -89,16 +71,10 @@ namespace Qml.Net.Tests.Qml
         {
             Mock.Setup(x => x.Property).Returns("test Ώ value");
 
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            RunQmlTest(
+                "test",
                 @"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    StringTestsQml {
-                        id: test
-                        Component.onCompleted: function() {
-                            test.property = test.property
-                        }
-                    }
+                    test.property = test.property
                 ");
 
             Mock.VerifyGet(x => x.Property, Times.Once);

@@ -15,9 +15,9 @@ cache:
     directories:
      - build/Qt
 if: tag IS blank
+git:
+  depth: false
 services:
   - docker
-before_install:
-  - git fetch --unshallow || true
 script:
   - ./build/travis.sh
