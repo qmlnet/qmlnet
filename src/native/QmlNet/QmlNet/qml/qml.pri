@@ -29,5 +29,12 @@ SOURCES += \
     $$PWD/NetJsValue.cpp \
     $$PWD/QQuickStyle.cpp \
     $$PWD/NetValueMetaObjectPacker.cpp \
-    $$PWD/QCommon.cpp \
-    $$PWD/JsNetArray.cpp
+    $$PWD/QCommon.cpp
+
+versionAtLeast(QT_VERSION, 5.11.0) {
+    message('511')
+    SOURCES += $$PWD/JsNetArray511.cpp
+} else {
+    message('510')
+    SOURCES += $$PWD/JsNetArray510.cpp
+}
