@@ -199,5 +199,5 @@ bool NetArray::putIndexed(Managed *m, uint index, const Value &value)
     arrayFacade->setIndexed(netValue->getNetReference(),
                             index,
                             NetVariant::fromQJSValue(valueJsValue));
-    return Encode::undefined();
+    return true;
 }
