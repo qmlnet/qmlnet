@@ -40,7 +40,17 @@ ReturnedValue NetArray::create(ExecutionEngine *engine, NetValue* netValue)
 
 void NetArray::method_length(const BuiltinFunction *, Scope &scope, CallData *callData)
 {
-    scope.result = Encode(4);
+    ScopedObject instance(scope, callData->thisObject.toObject(scope.engine));
+    NetArray* netArray = instance->as<NetArray>();
+    Scoped<QV4::QObjectWrapper> wrapper(scope, netArray->d()->object);
+    NetValue* netValue = reinterpret_cast<NetValue*>(wrapper->d()->object());
+    QSharedPointer<NetTypeArrayFacade> arrayFacade = netValue->getNetReference()->getTypeInfo()->getArrayFacade();
+
+    if(arrayFacade == nullptr) {
+        THROW_GENERIC_ERROR("The wrapped object can't be treated as an array.");
+    }
+
+    scope.result = Encode(arrayFacade->getLength(netValue->getNetReference()));
 }
 
 void NetArray::method_push(const BuiltinFunction *, Scope &scope, CallData *callData)
