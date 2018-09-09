@@ -197,18 +197,6 @@ QSharedPointer<NetJSValue> NetVariant::getJsValue()
     return variant.value<NetJsValueQmlContainer>().jsValue;
 }
 
-QVariant NetVariant::getVariant()
-{
-    return variant;
-}
-
-void NetVariant::setVariant(QVariant v)
-{
-    clear();
-    variant = v;
-}
-
-
 void NetVariant::clear()
 {
     clearNetReference();
@@ -238,7 +226,7 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
     else {
         result = QSharedPointer<NetVariant>(new NetVariant());
         QVariant variant = qJsValue.toVariant();
-        result->setVariant(variant);
+        result->variant = variant;
     }
     return result;
 }
@@ -254,11 +242,27 @@ QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine)
         return getJsValue()->getJsValue();
     }
     default: {
-        return jsEngine->toScriptValue<QVariant>(getVariant());
+        return jsEngine->toScriptValue<QVariant>(toQVariant());
     }
     }
 }
 
+QVariant NetVariant::toQVariant()
+{
+    QVariant result;
+    switch(getVariantType()) {
+    case NetVariantTypeEnum_JSValue:
+        result = getJsValue()->getJsValue().toVariant();
+        break;
+    case NetVariantTypeEnum_Object:
+        result = QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
+        break;
+    default:
+        result = variant;
+        break;
+    }
+    return result;
+}
 
 void NetVariant::clearNetReference()
 {
