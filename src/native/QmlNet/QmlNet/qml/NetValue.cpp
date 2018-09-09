@@ -50,7 +50,7 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
     voidArgs.push_back(nullptr); // For the return type, which is nothing for signals.
     if(arguments != nullptr) {
         for(int x = 0 ; x < arguments->count(); x++) {
-            QSharedPointer<QVariant> variant = QSharedPointer<QVariant>(new QVariant(arguments->get(x)->getVariant()));
+            QSharedPointer<QVariant> variant = QSharedPointer<QVariant>(new QVariant(arguments->get(x)->toQVariant()));
             variantArgs.append(variant);
             voidArgs.push_back(static_cast<void*>(variant.data()));
         }

@@ -72,11 +72,17 @@ namespace Qml.Net.Tests.Qml
                     this.ActivateNotifySignal();
                 }
             }
+
+            public virtual object GetTestObject()
+            {
+                return null;
+            }
         }
 
         [Signal("testSignal")]
         [Signal("testSignalWithArgs1", NetVariantType.String, NetVariantType.Int)]
         [Signal("testSignalWithArgs2", NetVariantType.String, NetVariantType.Int)]
+        [Signal("testSignalWithNetArg", NetVariantType.Object)]
         public class SignalObject
         {
             
@@ -306,6 +312,62 @@ namespace Qml.Net.Tests.Qml
                 ");
 
             message.Should().Be("from qml");
+        }
+
+        [Fact]
+        public void Can_raise_net_signal_from_qml_with_net_object_parameter()
+        {
+            var o = new SignalObject();
+            var param = new ObjectTestsQml();
+            param.SomeStringProperty = Guid.NewGuid().ToString();
+            ObjectTestsQml paramResult = null;
+            Mock.Setup(x => x.GetSignalObject()).Returns(o);
+            Mock.Setup(x => x.GetTestObject()).Returns(param);
+            o.AttachToSignal("testSignalWithNetArg", new Action<ObjectTestsQml>((p) =>
+            {
+                paramResult = p;
+            }));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var instance = test.getSignalObject()
+                    var param = test.getTestObject()
+                    instance.testSignalWithNetArg(param)
+                ");
+            
+            paramResult.Should().NotBeNull();
+            paramResult.SomeStringProperty.Should().NotBeNull(param.SomeStringProperty);
+        }
+
+        [Fact]
+        public void Can_raise_net_signal_from_net_with_net_object_parameter()
+        {
+            var o = new SignalObject();
+            var param = new ObjectTestsQml();
+            param.SomeStringProperty = Guid.NewGuid().ToString();
+            ObjectTestsQml paramResult = null;
+            Mock.Setup(x => x.GetSignalObject()).Returns(o);
+            Mock.Setup(x => x.GetTestObject()).Returns(param);
+            // When testMethod() is called, activate the signal (from .NET)
+            Mock.Setup(x => x.TestMethod()).Callback(() =>
+            {
+                o.ActivateSignal("testSignalWithNetArg", param);
+            });
+            o.AttachToSignal("testSignalWithNetArg", new Action<ObjectTestsQml>((p) =>
+            {
+                paramResult = p;
+            }));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var instance = test.getSignalObject()
+                    test.testMethod()
+                ");
+            
+            paramResult.Should().NotBeNull();
+            paramResult.SomeStringProperty.Should().NotBeNull(param.SomeStringProperty);
         }
     }
 }

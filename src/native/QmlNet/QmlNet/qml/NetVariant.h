@@ -31,11 +31,10 @@ public:
     QDateTime getDateTime();
     void setJsValue(QSharedPointer<NetJSValue> jsValue);
     QSharedPointer<NetJSValue> getJsValue();
-    QVariant getVariant();
-    void setVariant(QVariant variant);
     void clear();
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
     QJSValue toQJSValue(QJSEngine* jsEngine);
+    QVariant toQVariant();
 private:
     void clearNetReference();
     QVariant variant;

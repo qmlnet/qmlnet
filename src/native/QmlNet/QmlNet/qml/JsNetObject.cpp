@@ -4,6 +4,8 @@
 #include <QmlNet/qml/JsNetArray.h>
 #include <QmlNet/types/NetTypeManager.h>
 #include <private/qv4qobjectwrapper_p.h>
+#include <QmlNet/qml/NetListModel.h>
+#include <QQmlEngine>
 #include <QDebug>
 
 using namespace QV4;
@@ -18,6 +20,7 @@ void Heap::NetObject::init() {
     o->defineDefaultProperty(QStringLiteral("cancelTokenSource"), QV4::NetObject::method_cancelTokenSource);
     o->defineDefaultProperty(QStringLiteral("serialize"), QV4::NetObject::method_serialize);
     o->defineDefaultProperty(QStringLiteral("toJsArray"), QV4::NetObject::method_toJsArray);
+    o->defineDefaultProperty(QStringLiteral("toListModel"), QV4::NetObject::method_toListModel);
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
@@ -144,6 +147,32 @@ void NetObject::method_toJsArray(const BuiltinFunction *, Scope &scope, CallData
     scope.result = NetArray::create(scope.engine, NetValue::forInstance(netReference));
 }
 
+void NetObject::method_toListModel(const BuiltinFunction *, Scope &scope, CallData *callData)
+{
+    if(callData->argc != 1) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Missing instance parameter");
+    }
+    qInfo("TOJSARRAYY");
+    QV4::ScopedValue instance(scope, callData->args[0]);
+    if(instance->isNullOrUndefined()) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Instance parameter must not be null or undefined");
+    }
+    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
+    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
+    if(value->getVariantType() != NetVariantTypeEnum_Object) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a .NET object");
+    }
+
+    QSharedPointer<NetReference> netReference = value->getNetReference();
+    NetListModel* listModel = NetListModel::fromReference(netReference);
+    if(listModel == nullptr) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a type that can be wrapped by a list model.");
+    }
+
+    QQmlEngine::setObjectOwnership(listModel, QQmlEngine::JavaScriptOwnership);
+    scope.result = QObjectWrapper::wrap(scope.engine, listModel);
+}
+
 #else
 
 ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
@@ -264,6 +293,7 @@ ReturnedValue NetObject::method_serialize(const FunctionObject *b, const Value *
 ReturnedValue NetObject::method_toJsArray(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
 {
     QV4::Scope scope(b);
+
     if(argc != 1) {
         THROW_GENERIC_ERROR("Net.toJsArray(): Missing instance parameter");
     }
@@ -283,6 +313,33 @@ ReturnedValue NetObject::method_toJsArray(const FunctionObject *b, const Value *
     }
 
     return NetArray::create(scope.engine, NetValue::forInstance(netReference));
+}
+
+ReturnedValue NetObject::method_toListModel(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+{
+    QV4::Scope scope(b);
+
+    if(argc != 1) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Missing instance parameter");
+    }
+    QV4::ScopedValue instance(scope, argv[0]);
+    if(instance->isNullOrUndefined()) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Instance parameter must not be null or undefined");
+    }
+    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
+    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
+    if(value->getVariantType() != NetVariantTypeEnum_Object) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a .NET object");
+    }
+
+    QSharedPointer<NetReference> netReference = value->getNetReference();
+    NetListModel* listModel = NetListModel::fromReference(netReference);
+    if(listModel == nullptr) {
+        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a type that can be wrapped by a list model.");
+    }
+
+    QQmlEngine::setObjectOwnership(listModel, QQmlEngine::JavaScriptOwnership);
+    return QObjectWrapper::wrap(scope.engine, listModel);
 }
 
 #endif
