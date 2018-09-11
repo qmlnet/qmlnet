@@ -33,6 +33,18 @@ namespace Qml.Net
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
 
+        internal QGuiApplication(IntPtr existingApp)
+            :base(CreateFromExisting(existingApp))
+        {
+            TriggerDelegate triggerDelegate = Trigger;
+            _triggerHandle = GCHandle.Alloc(triggerDelegate);
+            
+            Interop.QGuiApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
+            
+            _oldSynchronizationContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
+        }
+
         public int Exec()
         {
             return Interop.QGuiApplication.Exec(Handle);
@@ -62,6 +74,8 @@ namespace Qml.Net
             Interop.QGuiApplication.RequestTrigger(Handle);
         }
 
+        internal IntPtr InternalPointer => Interop.QGuiApplication.InternalPointer(Handle);
+
         private void Trigger()
         {
             Action action;
@@ -77,6 +91,11 @@ namespace Qml.Net
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
             Interop.QGuiApplication.Destroy(ptr);
             _triggerHandle.Free();
+        }
+
+        private static IntPtr CreateFromExisting(IntPtr app)
+        {
+            return Interop.QGuiApplication.Create(IntPtr.Zero, app);
         }
 
         private static IntPtr Create(List<string> args)
@@ -101,7 +120,7 @@ namespace Qml.Net
                         strings.Add(variant);
                     }
                 }
-                return Interop.QGuiApplication.Create(strings.Handle);
+                return Interop.QGuiApplication.Create(strings.Handle, IntPtr.Zero);
             }
         }
 
@@ -127,7 +146,7 @@ namespace Qml.Net
     internal interface IQGuiApplicationInterop
     {
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
-        IntPtr Create(IntPtr args);
+        IntPtr Create(IntPtr args, IntPtr existingApp);
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
         void Destroy(IntPtr app);
 
@@ -139,5 +158,7 @@ namespace Qml.Net
         void RequestTrigger(IntPtr app);
         [NativeSymbol(Entrypoint = "qguiapplication_exit")]
         void Exit(IntPtr app, int returnCode);
+        [NativeSymbol(Entrypoint = "qguiapplication_internalPointer")]
+        IntPtr InternalPointer(IntPtr app);
     }
 }

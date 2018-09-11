@@ -5,7 +5,7 @@
 extern "C" {
 
 Q_DECL_EXPORT void net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml) {
-    QQmlComponent component(qmlEngineContainer->qmlEngine.data());
+    QQmlComponent component(qmlEngineContainer->qmlEngine);
     QString qmlString = QString::fromUtf16((const char16_t*)qml);
     component.setData(qmlString.toUtf8(), QUrl());
     QObject *object = component.create();

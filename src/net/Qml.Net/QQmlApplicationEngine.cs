@@ -10,7 +10,13 @@ namespace Qml.Net
     public sealed class QQmlApplicationEngine : BaseDisposable
     {
         public QQmlApplicationEngine()
-            :base(Interop.QQmlApplicationEngine.Create())
+            :base(Interop.QQmlApplicationEngine.Create(IntPtr.Zero))
+        {
+            
+        }
+
+        internal QQmlApplicationEngine(IntPtr existingEngine)
+            :base(Interop.QQmlApplicationEngine.Create(existingEngine))
         {
             
         }
@@ -24,6 +30,13 @@ namespace Qml.Net
         {
             Interop.QQmlApplicationEngine.LoadData(Handle, data);
         }
+        
+        public void AddImportPath(string path)
+        {
+            Interop.QQmlApplicationEngine.AddImportPath(Handle, path);
+        }
+        
+        internal IntPtr InternalPointer => Interop.QQmlApplicationEngine.InternalPointer(Handle);
 
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
@@ -49,11 +62,6 @@ namespace Qml.Net
             InteropBehaviors.RegisterQmlInteropBehavior(new MvvmQmlInteropBehavior(), false);
         }
 
-        public void AddImportPath(string path)
-        {
-            Interop.QQmlApplicationEngine.AddImportPath(Handle, path);
-        }
-
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.QQmlApplicationEngine.Destroy(ptr);
@@ -63,7 +71,7 @@ namespace Qml.Net
     internal interface IQQmlApplicationEngine
     {
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_create")]
-        IntPtr Create();
+        IntPtr Create(IntPtr existingEngine);
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_destroy")]
         void Destroy(IntPtr engine);
 
@@ -78,5 +86,8 @@ namespace Qml.Net
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
         void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string path);
+        
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_internalPointer")]
+        IntPtr InternalPointer(IntPtr app);
     }
 }
