@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Most of the time it is easier to have .NET serve the entry point of your application (```Program.cs```). This approach works consistently across platforms and IDEs.
+Most of the time, it is easier to have .NET serve the entry point of your application (```Program.cs```). This approach works consistently across platforms and IDEs.
 
-However, sometimes you need great control over how Qt is initialize on start. Or, you have some C/C++ code that needs to be run before the applications stars. Or, you need to register custom ```QObject``` classes with QML.
+However, sometimes you need greater control over how Qt is initialized on start. Or, you have some C/C++ code that needs to be run before the applications stars. Or, you need to register custom ```QObject``` classes with QML. You get the idea.
 
-Regardless, this approachs allows you to create a Qt project in tradtional way (with .qrc files, linked libs, etc).
+Regardless, the following approach allows you to create a Qt project in tradtional way (with .qrc files, linked libs, etc) while still using ```Qml.Net```.
 
 ## Benefits
 
