@@ -3,10 +3,10 @@
 
 #include <QmlNet.h>
 #include <QQmlApplicationEngine>
-#include <QSharedPointer>
 
 struct QQmlApplicationEngineContainer {
-    QSharedPointer<QQmlApplicationEngine> qmlEngine;
+    QQmlApplicationEngine* qmlEngine;
+    bool ownsEngine;
 };
 
 #endif // NET_QQMLAPPLICATIONENGINE_H

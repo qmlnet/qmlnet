@@ -12,19 +12,34 @@ static int netValueTypeNumber = 0;
 
 extern "C" {
 
-Q_DECL_EXPORT QQmlApplicationEngineContainer* qqmlapplicationengine_create() {
-    QSharedPointer<QQmlApplicationEngine> qmlEngine = QSharedPointer<QQmlApplicationEngine>(new QQmlApplicationEngine());
+Q_DECL_EXPORT QQmlApplicationEngineContainer* qqmlapplicationengine_create(QQmlApplicationEngine* existingEngine) {
+    bool ownsEngine = true;
+    QQmlApplicationEngine* engine = nullptr;
 
-    QV4::ExecutionEngine* v4Engine = QQmlEnginePrivate::getV4Engine(qmlEngine.data());
+    if (existingEngine != nullptr) {
+        engine = existingEngine;
+        ownsEngine = false;
+    } else {
+        engine = new QQmlApplicationEngine();
+        ownsEngine = true;
+    }
+
+    QV4::ExecutionEngine* v4Engine = QQmlEnginePrivate::getV4Engine(engine);
 
     QV4::Scope scope(v4Engine);
     QV4::ScopedObject net(scope, v4Engine->memoryManager->allocObject<QV4::NetObject>());
     v4Engine->globalObject->defineDefaultProperty("Net", net);;
 
-    return new QQmlApplicationEngineContainer{qmlEngine};
+    return new QQmlApplicationEngineContainer{
+        engine,
+        ownsEngine
+    };
 }
 
 Q_DECL_EXPORT void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer* container) {
+    if(container->ownsEngine) {
+        delete container->qmlEngine;
+    }
     delete container;
 }
 
@@ -177,6 +192,10 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeC
 Q_DECL_EXPORT void qqmlapplicationengine_addImportPath(QQmlApplicationEngineContainer* container, LPWSTR path) {
     QString pathString = QString::fromUtf16((const char16_t*)path);
     container->qmlEngine->addImportPath(pathString);
+}
+
+Q_DECL_EXPORT QQmlApplicationEngine* qqmlapplicationengine_internalPointer(QQmlApplicationEngineContainer* container) {
+    return container->qmlEngine;
 }
 
 }

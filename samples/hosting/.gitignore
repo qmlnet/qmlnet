@@ -1,0 +1,6 @@
+build-*/
+*.pro.user
+net-output/
+net/.idea/
+net/obj/
+net/.vs/
