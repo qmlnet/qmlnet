@@ -18,6 +18,19 @@
 #define HOSTFXR_DLL_NAME "libhostfxr.so"
 #endif
 
+static void* getExportedFunction(const char* symbolName) {
+#ifdef _WIN32
+    HMODULE library = GetModuleHandle(nullptr);
+    FARPROC symbol = GetProcAddress(library, symbolName);
+    return (void*)symbol;
+#else
+    void* dll = dlopen(nullptr, RTLD_LAZY);
+    void* result = dlsym(dll, symbolName);
+    dlclose(dll);
+    return result;
+#endif
+}
+
 QList<QString> CoreHost::getPotientialDotnetRoots()
 {
     QList<QString> result;
@@ -130,10 +143,13 @@ int CoreHost::run(QGuiApplication& app, QQmlApplicationEngine& engine, runCallba
     enginePtr.sprintf("%llu", (quintptr)&engine);
     QString callbackPtr;
     callbackPtr.sprintf("%llu", (quintptr)runCallback);
+    QString exportedSymbolPointer;
+    exportedSymbolPointer.sprintf("%llu", (quintptr)getExportedFunction);
 
     execArgs.push_back(appPtr);
     execArgs.push_back(enginePtr);
     execArgs.push_back(callbackPtr);
+    execArgs.push_back(exportedSymbolPointer);
 
     for (QString arg : runContext.args) {
         execArgs.push_back(arg);

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
@@ -18,52 +20,62 @@ namespace Qml.Net.Internal
         {
             string pluginsDirectory = null;
             string qmlDirectory = null;
-
             ILibraryPathResolver pathResolver = null;
-            var internalType = Type.GetType("AdvancedDLSupport.DynamicLinkLibraryPathResolver, AdvancedDLSupport");
-            if (internalType != null)
+            
+            if (Host.GetExportedSymbol != null)
             {
-                pathResolver = (ILibraryPathResolver)Activator.CreateInstance(internalType, new object[] { true });
+                // We are loading exported functions from the currently running executable.
+                var member = (FieldInfo)typeof(NativeLibraryBase).GetMember("PlatformLoader", BindingFlags.Static | BindingFlags.NonPublic).First();
+                member.SetValue(null, new Host.Loader());
+                pathResolver = new Host.Loader();
+            }
+            else
+            {
+                var internalType = Type.GetType("AdvancedDLSupport.DynamicLinkLibraryPathResolver, AdvancedDLSupport");
+                if (internalType != null)
+                {
+                    pathResolver = (ILibraryPathResolver) Activator.CreateInstance(internalType, new object[] {true});
 
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    // This custom path resolver attempts to do a DllImport to get the path that .NET decides.
-                    // It may load a special dll from a NuGet package.
-                    pathResolver = new WindowsDllImportLibraryPathResolver(pathResolver);
-                }
-                else if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    pathResolver = new MacDllImportLibraryPathResolver(pathResolver);
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    pathResolver = new LinuxDllImportLibraryPathResolver(pathResolver);
-                }
-
-                var resolveResult = pathResolver.Resolve("QmlNet");
-                
-                if(resolveResult.IsSuccess)
-                {
-                    var directory = Path.GetDirectoryName(resolveResult.Path);
-                    if (!string.IsNullOrEmpty(directory))
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        // If this library has a plugins/qml directory below it, set it.
-                        var potentialPlugisDirectory = Path.Combine(directory, "plugins");
-                        if (Directory.Exists(potentialPlugisDirectory))
-                        {
-                            pluginsDirectory = potentialPlugisDirectory;
-                        }
+                        // This custom path resolver attempts to do a DllImport to get the path that .NET decides.
+                        // It may load a special dll from a NuGet package.
+                        pathResolver = new WindowsDllImportLibraryPathResolver(pathResolver);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        pathResolver = new MacDllImportLibraryPathResolver(pathResolver);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        pathResolver = new LinuxDllImportLibraryPathResolver(pathResolver);
+                    }
 
-                        var potentialQmlDirectory = Path.Combine(directory, "qml");
-                        if (Directory.Exists(potentialQmlDirectory))
+                    var resolveResult = pathResolver.Resolve("QmlNet");
+
+                    if (resolveResult.IsSuccess)
+                    {
+                        var directory = Path.GetDirectoryName(resolveResult.Path);
+                        if (!string.IsNullOrEmpty(directory))
                         {
-                            qmlDirectory = potentialQmlDirectory;
+                            // If this library has a plugins/qml directory below it, set it.
+                            var potentialPlugisDirectory = Path.Combine(directory, "plugins");
+                            if (Directory.Exists(potentialPlugisDirectory))
+                            {
+                                pluginsDirectory = potentialPlugisDirectory;
+                            }
+
+                            var potentialQmlDirectory = Path.Combine(directory, "qml");
+                            if (Directory.Exists(potentialQmlDirectory))
+                            {
+                                qmlDirectory = potentialQmlDirectory;
+                            }
                         }
                     }
                 }
             }
-            
-            
+
+
             var builder = new NativeLibraryBuilder(pathResolver: pathResolver);
             
             var interop = builder.ActivateInterface<ICombined>("QmlNet");

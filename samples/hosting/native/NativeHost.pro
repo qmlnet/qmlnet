@@ -11,3 +11,4 @@ RESOURCES += qml.qrc
 DEFINES += "NET_ROOT=\"\\\"$$PWD/../net-output\\\"\""
 
 include (../../../src/native/QmlNet/Hosting.pri)
+include (../../../src/native/QmlNet/QmlNet.pri)
