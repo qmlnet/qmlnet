@@ -169,7 +169,7 @@ ApplicationWindow {
           test.activateCustomSignal("test message!")
       }
       function testHandler(message) {
-          console.log("Message - " message)
+          console.log("Message - " + message)
       }
     }
 }
