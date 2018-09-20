@@ -18,7 +18,7 @@ namespace Build
 {
     static class Program
     {
-        static Task<int> Main(string[] args)
+        static Task Main(string[] args)
         {
             var options = ParseOptions<Options>(args);
             
@@ -34,12 +34,12 @@ namespace Build
             
             Info($"Version: {JsonConvert.SerializeObject(gitversion)}");
             
-            Add("clean", () =>
+            Target("clean", () =>
             {
                 CleanDirectory(ExpandPath("./output"));
             });
             
-            Add("test", () =>
+            Target("test", () =>
             {
                 if (IsOSX())
                 {
@@ -54,7 +54,7 @@ namespace Build
                 }
             });
 
-            Add("build-native", () =>
+            Target("build-native", () =>
             {
                 if (IsWindows())
                 {
@@ -238,14 +238,14 @@ namespace Build
                 }
             });
 
-            Add("build-net", () =>
+            Target("build-net", () =>
             {
                 RunShell($"dotnet build {ExpandPath("src/net/Qml.Net.sln")} {commandBuildArgsWithVersion}");
             });
 
-            Add("build", DependsOn("build-native", "build-net"));
+            Target("build", DependsOn("build-native", "build-net"));
 
-            Add("deploy", DependsOn("clean"), () =>
+            Target("deploy", DependsOn("clean"), () =>
             {
                 // Deploy our nuget packages.
                 RunShell($"dotnet pack {ExpandPath("src/net/Qml.Net.sln")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
@@ -266,7 +266,7 @@ namespace Build
                 }
             });
             
-            Add("update-version", () =>
+            Target("update-version", () =>
             {
                 if (FileExists("./build/version.props"))
                 {
@@ -281,7 +281,7 @@ namespace Build
 </Project>");
             });
             
-            Add("publish", () =>
+            Target("publish", () =>
             {
                 return; //temp
                 if (string.IsNullOrEmpty(nugetApiKey))
@@ -308,9 +308,9 @@ namespace Build
                 }
             });
             
-            Add("default", DependsOn("clean", "build"));
+            Target("default", DependsOn("clean", "build"));
 
-            Add("ci", DependsOn("update-version", "build", "test", "deploy", "publish"));
+            Target("ci", DependsOn("update-version", "build", "test", "deploy", "publish"));
 
             return Run(options);
         }
