@@ -36,7 +36,7 @@ namespace Qml.Net.Sandbox
                 {
                     engine.AddImportPath(Path.Combine(Directory.GetCurrentDirectory(), "Qml"));
                     
-                    QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
+                    Qml.RegisterType<TestQmlImport>("test");
 
                     engine.Load("main.qml");
                     

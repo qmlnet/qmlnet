@@ -38,6 +38,7 @@ namespace Qml.Net
         
         internal IntPtr InternalPointer => Interop.QQmlApplicationEngine.InternalPointer(Handle);
 
+        [Obsolete("Use Qml.RegisterType<T>() instead.", true)]
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
             return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
