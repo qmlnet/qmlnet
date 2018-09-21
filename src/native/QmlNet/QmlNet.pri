@@ -1,5 +1,10 @@
 QT += gui qml qml-private core-private quickcontrols2 webengine
 
+CONFIG(enable-webengine) {
+    QT += webengine
+    DEFINES += QMLNET_WEBENGINE
+}
+
 INCLUDEPATH += $$PWD
 
 HEADERS += $$PWD/QmlNet.h \
