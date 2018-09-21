@@ -17,6 +17,10 @@ Supported platforms/runtimes:
   * OSX
   * Windows
 
+# Documentation
+
+https://qmlnet.github.io/
+
 # Getting started
 
 ```bash
