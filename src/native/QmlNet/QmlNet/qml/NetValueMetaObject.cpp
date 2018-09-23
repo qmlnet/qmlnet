@@ -112,7 +112,19 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
+
+#if QMLNET_TRACE
+        qDebug("begin: read: %s.%s", qPrintable(instance->displayName()),
+               qPrintable(propertyInfo->getPropertyName()));
+#endif
+
         readProperty(propertyInfo, instance, nullptr, result);
+
+#if QMLNET_TRACE
+        qDebug("end:   read: %s.%s value: %s", qPrintable(instance->displayName()),
+               qPrintable(propertyInfo->getPropertyName()),
+               qPrintable(result->getDisplayValue()));
+#endif
 
         NetMetaValuePack(propertyType->getPrefVariantType(), result, a[0]);
     }
@@ -130,7 +142,19 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
         NetMetaValueUnpack(propertyType->getPrefVariantType(), newValue, a[0]);
 
+#if QMLNET_TRACE
+        qDebug("begin: write: %s.%s value: %s", qPrintable(instance->displayName()),
+               qPrintable(propertyInfo->getPropertyName()),
+               qPrintable(newValue->getDisplayValue()));
+#endif
+
         writeProperty(propertyInfo, instance, nullptr, newValue);
+
+#if QMLNET_TRACE
+        qDebug("end:   write: %s.%s", qPrintable(instance->displayName()),
+               qPrintable(propertyInfo->getPropertyName()));
+#endif
+
     }
         break;
     case  InvokeMetaMethod:
@@ -170,7 +194,26 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 result = QSharedPointer<NetVariant>(new NetVariant());
             }
 
+#if QMLNET_TRACE
+        qDebug("begin: method: %s.%s(%s)", qPrintable(instance->displayName()),
+               qPrintable(methodInfo->getMethodName()),
+               qPrintable(parameters->debugDisplay()));
+#endif
+
             invokeNetMethod(methodInfo, instance, parameters, result);
+
+#if QMLNET_TRACE
+            if(result != nullptr) {
+                qDebug("end:   method: %s.%s(%s) result: %s", qPrintable(instance->displayName()),
+                       qPrintable(methodInfo->getMethodName()),
+                       qPrintable(parameters->debugDisplay()),
+                       qPrintable(result->getDisplayValue()));
+            } else  {
+                qDebug("end:   method: %s.%s(%s)", qPrintable(instance->displayName()),
+                       qPrintable(methodInfo->getMethodName()),
+                       qPrintable(parameters->debugDisplay()));
+            }
+#endif
 
             if(result != nullptr) {
                 NetMetaValuePack(returnType->getPrefVariantType(), result, a[0]);

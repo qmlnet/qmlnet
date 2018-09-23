@@ -15,6 +15,7 @@ public:
     QSharedPointer<NetVariant> get(int index);
     void remove(int index);
     void clear();
+    QString debugDisplay();
 private:
     QList<QSharedPointer<NetVariant>> variants;
 };

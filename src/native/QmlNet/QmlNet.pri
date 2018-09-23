@@ -5,6 +5,10 @@ CONFIG(enable-webengine) {
     DEFINES += QMLNET_WEBENGINE
 }
 
+CONFIG(qmlnet-trace) {
+    DEFINES += QMLNET_TRACE
+}
+
 INCLUDEPATH += $$PWD
 
 HEADERS += $$PWD/QmlNet.h \
