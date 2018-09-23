@@ -270,6 +270,23 @@ QVariant NetVariant::toQVariant()
     return result;
 }
 
+QString NetVariant::getDisplayValue()
+{
+    QString result;
+    switch(getVariantType()) {
+    case NetVariantTypeEnum_JSValue:
+        result = getJsValue()->getJsValue().toString();
+        break;
+    case NetVariantTypeEnum_Object:
+        result = getNetReference()->displayName();
+        break;
+    default:
+        result = variant.toString();
+        break;
+    }
+    return result;
+}
+
 void NetVariant::clearNetReference()
 {
     if(variant.canConvert<NetReferenceQmlContainer>())

@@ -24,6 +24,15 @@ QSharedPointer<NetTypeInfo> NetReference::getTypeInfo()
     return typeInfo;
 }
 
+QString NetReference::displayName()
+{
+    QString result = typeInfo->getClassName();
+    result.append("(");
+    result.append(QVariant::fromValue(objectId).toString());
+    result.append(")");
+    return result;
+}
+
 extern "C" {
 
 Q_DECL_EXPORT NetReferenceContainer* net_instance_create(uint64_t objectId, NetTypeInfoContainer* typeContainer) {

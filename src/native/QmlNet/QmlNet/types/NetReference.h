@@ -10,6 +10,7 @@ public:
     ~NetReference();
     uint64_t getObjectId();
     QSharedPointer<NetTypeInfo> getTypeInfo();
+    QString displayName();
 private:
     uint64_t objectId;
     QSharedPointer<NetTypeInfo> typeInfo;
