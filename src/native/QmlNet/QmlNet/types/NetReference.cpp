@@ -11,7 +11,7 @@ NetReference::NetReference(uint64_t objectId, QSharedPointer<NetTypeInfo> typeIn
 
 NetReference::~NetReference()
 {
-    releaseNetReference(objectId);
+    QmlNet::releaseNetReference(objectId);
 }
 
 uint64_t NetReference::getObjectId()

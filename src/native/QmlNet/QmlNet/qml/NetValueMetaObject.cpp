@@ -112,7 +112,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-        readProperty(propertyInfo, instance, nullptr, result);
+        QmlNet::readProperty(propertyInfo, instance, nullptr, result);
 
         NetMetaValuePack(propertyType->getPrefVariantType(), result, a[0]);
     }
@@ -130,7 +130,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
         QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
         NetMetaValueUnpack(propertyType->getPrefVariantType(), newValue, a[0]);
 
-        writeProperty(propertyInfo, instance, nullptr, newValue);
+        QmlNet::writeProperty(propertyInfo, instance, nullptr, newValue);
     }
         break;
     case  InvokeMetaMethod:
@@ -170,7 +170,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 result = QSharedPointer<NetVariant>(new NetVariant());
             }
 
-            invokeNetMethod(methodInfo, instance, parameters, result);
+            QmlNet::invokeNetMethod(methodInfo, instance, parameters, result);
 
             if(result != nullptr) {
                 NetMetaValuePack(returnType->getPrefVariantType(), result, a[0]);
@@ -199,7 +199,7 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
                 }
             }
 
-            raiseNetSignals(instance, signalInfo->getName(), parameters);
+            QmlNet::raiseNetSignals(instance, signalInfo->getName(), parameters);
         }
     }
         break;

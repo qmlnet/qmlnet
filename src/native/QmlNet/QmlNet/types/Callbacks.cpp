@@ -1,5 +1,7 @@
 #include <QmlNet/types/Callbacks.h>
 
+namespace QmlNet {
+
 typedef bool (*isTypeValidCb)(LPWSTR typeName);
 typedef void (*createLazyTypeInfoCb)(NetTypeInfoContainer* typeInfo);
 typedef void (*loadTypeInfoCb)(NetTypeInfoContainer* typeInfo);
@@ -152,29 +154,31 @@ bool serializeNetToString(QSharedPointer<NetReference> instance, QSharedPointer<
                                                 new NetVariantContainer{result});
 }
 
+}
+
 extern "C" {
 
-Q_DECL_EXPORT void type_info_callbacks_registerCallbacks(NetTypeInfoManagerCallbacks* callbacks) {
-    sharedCallbacks = *callbacks;
+Q_DECL_EXPORT void type_info_callbacks_registerCallbacks(QmlNet::NetTypeInfoManagerCallbacks* callbacks) {
+    QmlNet::sharedCallbacks = *callbacks;
 }
 
 Q_DECL_EXPORT bool type_info_callbacks_isTypeValid(LPWSTR typeName) {
-    return sharedCallbacks.isTypeValid(typeName);
+    return QmlNet::sharedCallbacks.isTypeValid(typeName);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_releaseNetReferenceGCHandle(uint64_t objectId) {
-    sharedCallbacks.releaseNetReference(objectId);
+    QmlNet::sharedCallbacks.releaseNetReference(objectId);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_releaseNetDelegateGCHandle(NetGCHandle* handle) {
-    sharedCallbacks.releaseNetDelegateGCHandle(handle);
+    QmlNet::sharedCallbacks.releaseNetDelegateGCHandle(handle);
 }
 
 Q_DECL_EXPORT NetReferenceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* type) {
     // The parameters have to be copied to new containers, because the callback
     // will delete them.
     NetTypeInfoContainer* typeCopy = new NetTypeInfoContainer{type->netTypeInfo};
-    return sharedCallbacks.instantiateType(typeCopy);
+    return QmlNet::sharedCallbacks.instantiateType(typeCopy);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_invokeMethod(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result) {
@@ -193,7 +197,7 @@ Q_DECL_EXPORT void type_info_callbacks_invokeMethod(NetMethodInfoContainer* meth
         resultCopy = new NetVariantContainer{result->variant};
     }
 
-    sharedCallbacks.invokeMethod(
+    QmlNet::sharedCallbacks.invokeMethod(
                 methodCopy,
                 targetCopy,
                 parametersCopy,

@@ -12,7 +12,7 @@ class NetValueType : public NetValue
 public:
 
     NetValueType()
-        : NetValue(instantiateType(typeInfo), nullptr) {}
+        : NetValue(QmlNet::instantiateType(typeInfo), nullptr) {}
 
     static void init(QSharedPointer<NetTypeInfo> info)
     {

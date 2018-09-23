@@ -7,7 +7,7 @@ NetDelegate::NetDelegate(NetGCHandle* gcHandle) :
 }
 
 NetDelegate::~NetDelegate() {
-    releaseNetDelegateGCHandle(gcHandle);
+    QmlNet::releaseNetDelegateGCHandle(gcHandle);
 }
 
 NetGCHandle* NetDelegate::getGCHandle() {

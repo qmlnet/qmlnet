@@ -69,7 +69,10 @@ void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 
 QSharedPointer<NetReference> NetVariant::getNetReference()
 {
-    return variant.value<NetReferenceQmlContainer>().netReference;
+    if(getVariantType() == NetVariantTypeEnum_Object) {
+        return variant.value<NetReferenceQmlContainer>().netReference;
+    }
+    return nullptr;
 }
 
 void NetVariant::setBool(bool value)
@@ -194,7 +197,10 @@ void NetVariant::setJsValue(QSharedPointer<NetJSValue> jsValue)
 
 QSharedPointer<NetJSValue> NetVariant::getJsValue()
 {
-    return variant.value<NetJsValueQmlContainer>().jsValue;
+    if(getVariantType() == NetVariantTypeEnum_JSValue) {
+        return variant.value<NetJsValueQmlContainer>().jsValue;
+    }
+    return nullptr;
 }
 
 void NetVariant::clear()

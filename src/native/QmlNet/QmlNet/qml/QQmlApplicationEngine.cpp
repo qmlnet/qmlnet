@@ -24,14 +24,13 @@ Q_DECL_EXPORT QQmlApplicationEngineContainer* qqmlapplicationengine_create(QQmlA
         ownsEngine = true;
     }
 
-    QV4::ExecutionEngine* v4Engine = QQmlEnginePrivate::getV4Engine(engine);
+    JsNetObject* netObject = new JsNetObject();
 
-    QV4::Scope scope(v4Engine);
-    QV4::ScopedObject net(scope, v4Engine->memoryManager->allocObject<QV4::NetObject>());
-    v4Engine->globalObject->defineDefaultProperty("Net", net);;
+    engine->rootContext()->setContextProperty("Net", netObject);
 
     return new QQmlApplicationEngineContainer{
         engine,
+        netObject,
         ownsEngine
     };
 }
@@ -40,6 +39,7 @@ Q_DECL_EXPORT void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer*
     if(container->ownsEngine) {
         delete container->qmlEngine;
     }
+    delete container->netObject;
     delete container;
 }
 

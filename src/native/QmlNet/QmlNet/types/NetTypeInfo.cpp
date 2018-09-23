@@ -6,6 +6,8 @@
 #include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNetUtilities.h>
 
+using namespace QmlNet;
+
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
     _fullTypeName(fullTypeName),
