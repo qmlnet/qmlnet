@@ -198,4 +198,22 @@ Q_DECL_EXPORT QQmlApplicationEngine* qqmlapplicationengine_internalPointer(QQmlA
     return container->qmlEngine;
 }
 
+Q_DECL_EXPORT NetVariantContainer* qqmlapplicationengine_getContextProperty(QQmlApplicationEngineContainer* container, LPWCSTR name)
+{
+    QVariant result = container->qmlEngine->rootContext()->contextProperty(QString::fromUtf16(name));
+    return new NetVariantContainer {
+        NetVariant::fromQVariant(&result)
+    };
+}
+
+Q_DECL_EXPORT void qqmlapplicationengine_setContextProperty(QQmlApplicationEngineContainer* container, LPWCSTR name, NetVariantContainer* valueContainer)
+{
+    if(valueContainer == nullptr) {
+        container->qmlEngine->rootContext()->setContextProperty(QString::fromUtf16(name), nullptr);
+    } else {
+        QSharedPointer<NetVariant> value = valueContainer->variant;
+        container->qmlEngine->rootContext()->setContextProperty(QString::fromUtf16(name), value->toQVariant());
+    }
+}
+
 }
