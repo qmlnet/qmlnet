@@ -283,6 +283,7 @@ namespace Build
             
             Target("publish", () =>
             {
+                return; // temp, until we move to Azure Dev Ops
                 if (string.IsNullOrEmpty(nugetApiKey))
                 {
                     Info("Skipping publish, due to missing NuGet key...");
