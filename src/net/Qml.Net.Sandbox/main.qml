@@ -12,14 +12,7 @@ ApplicationWindow {
 		Timer {
 			interval: 1000; running: true; repeat: true
 			onTriggered: {
-			    var netObject = test.getObject()
-			    var toJson = Net.serialize(netObject)
-			    console.log(toJson)
-			    console.log(typeof toJson)
-			    toJson = JSON.parse(toJson)
-			    console.log(toJson)
-                console.log(typeof toJson)
-			    console.log(toJson.prop1)
+			    test.getObject().method()
 			}
 		}
 	}
