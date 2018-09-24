@@ -3,7 +3,7 @@
 #include <QmlNet/qml/NetValueType.h>
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/qml/JsNetObject.h>
-#include <private/qqmlengine_p.h>
+#include <QQmlContext>
 
 static int netValueTypeNumber = 0;
 

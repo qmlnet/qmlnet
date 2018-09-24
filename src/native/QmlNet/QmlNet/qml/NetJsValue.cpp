@@ -5,7 +5,6 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QDebug>
 #include <QJSEngine>
-#include <private/qjsvalue_p.h>
 
 NetJSValue::NetJSValue(QJSValue jsValue) :
     _jsValue(jsValue)
@@ -30,13 +29,11 @@ bool NetJSValue::isCallable()
 
 QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> parameters)
 {
-    QV4::ExecutionEngine* engine = QJSValuePrivate::engine(&_jsValue);
-
     QJSValueList jsValueList;
     if(parameters != nullptr) {
         for(int x = 0; x < parameters->count(); x++) {
             QSharedPointer<NetVariant> netVariant = parameters->get(x);
-            jsValueList.append(netVariant->toQJSValue(engine->jsEngine()));
+            jsValueList.append(netVariant->toQJSValue(_jsValue.engine()));
         }
     }
 
@@ -53,8 +50,7 @@ void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> va
 {
     QJSValue value = QJSValue::NullValue;
     if(variant != nullptr) {
-        QV4::ExecutionEngine* engine = QJSValuePrivate::engine(&_jsValue);
-        value = variant->toQJSValue(engine->jsEngine());
+        value = variant->toQJSValue(_jsValue.engine());
     }
     _jsValue.setProperty(propertyName, value);
 }
