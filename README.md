@@ -45,7 +45,7 @@ dotnet add package Qml.Net.OSXBinaries
 dotnet add package Qml.Net.LinuxBinaries
 ```
 
-Checkout the [examples](https://github.com/pauldotknopf/Qml.Net.Examples) for some inspiration.
+Checkout the [examples](https://github.com/qmlnet/qmlnet-examples) for some inspiration.
 
 # Quick overview
 
