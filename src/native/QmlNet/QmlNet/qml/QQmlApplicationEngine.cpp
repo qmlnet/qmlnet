@@ -24,14 +24,13 @@ Q_DECL_EXPORT QQmlApplicationEngineContainer* qqmlapplicationengine_create(QQmlA
         ownsEngine = true;
     }
 
-    QV4::ExecutionEngine* v4Engine = QQmlEnginePrivate::getV4Engine(engine);
+    JsNetObject* netObject = new JsNetObject();
 
-    QV4::Scope scope(v4Engine);
-    QV4::ScopedObject net(scope, v4Engine->memoryManager->allocObject<QV4::NetObject>());
-    v4Engine->globalObject->defineDefaultProperty("Net", net);;
+    engine->rootContext()->setContextProperty("Net", netObject);
 
     return new QQmlApplicationEngineContainer{
         engine,
+        netObject,
         ownsEngine
     };
 }
@@ -40,6 +39,7 @@ Q_DECL_EXPORT void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer*
     if(container->ownsEngine) {
         delete container->qmlEngine;
     }
+    delete container->netObject;
     delete container;
 }
 
@@ -196,6 +196,24 @@ Q_DECL_EXPORT void qqmlapplicationengine_addImportPath(QQmlApplicationEngineCont
 
 Q_DECL_EXPORT QQmlApplicationEngine* qqmlapplicationengine_internalPointer(QQmlApplicationEngineContainer* container) {
     return container->qmlEngine;
+}
+
+Q_DECL_EXPORT NetVariantContainer* qqmlapplicationengine_getContextProperty(QQmlApplicationEngineContainer* container, LPWCSTR name)
+{
+    QVariant result = container->qmlEngine->rootContext()->contextProperty(QString::fromUtf16(name));
+    return new NetVariantContainer {
+        NetVariant::fromQVariant(&result)
+    };
+}
+
+Q_DECL_EXPORT void qqmlapplicationengine_setContextProperty(QQmlApplicationEngineContainer* container, LPWCSTR name, NetVariantContainer* valueContainer)
+{
+    if(valueContainer == nullptr) {
+        container->qmlEngine->rootContext()->setContextProperty(QString::fromUtf16(name), nullptr);
+    } else {
+        QSharedPointer<NetVariant> value = valueContainer->variant;
+        container->qmlEngine->rootContext()->setContextProperty(QString::fromUtf16(name), value->toQVariant());
+    }
 }
 
 }

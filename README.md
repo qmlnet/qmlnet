@@ -3,8 +3,9 @@
 
 A Qml integration with .NET
 
-[![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat-square&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
-[![Build status](https://travis-ci.com/pauldotknopf/Qml.Net.svg?branch=develop)](https://travis-ci.com/pauldotknopf/Qml.Net) [![Build status](https://ci.appveyor.com/api/projects/status/0ob29turkjslh61j/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qml-net)
+[![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
+[![Build status](https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop)](https://travis-ci.com/qmlnet/qmlnet) [![Build status](https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qmlnet/branch/develop)
+[![Gitter chat](https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat)](https://gitter.im/qmlnet/Lobby)
 
 Supported platforms/runtimes:
 * Runtimes:
@@ -15,6 +16,10 @@ Supported platforms/runtimes:
   * Linux
   * OSX
   * Windows
+
+# Documentation
+
+https://qmlnet.github.io/
 
 # Getting started
 
@@ -169,7 +174,7 @@ ApplicationWindow {
           test.activateCustomSignal("test message!")
       }
       function testHandler(message) {
-          console.log("Message - " message)
+          console.log("Message - " + message)
       }
     }
 }

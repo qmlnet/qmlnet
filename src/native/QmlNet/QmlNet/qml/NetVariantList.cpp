@@ -32,6 +32,18 @@ void NetVariantList::clear() {
     variants.clear();
 }
 
+QString NetVariantList::debugDisplay()
+{
+    QString result;
+    for(int x = 0; x < variants.length(); x++) {
+        result.append(variants.at(x)->getDisplayValue());
+        if(x < variants.length() - 1) {
+            result.append(", ");
+        }
+    }
+    return result;
+}
+
 extern "C" {
 
 Q_DECL_EXPORT NetVariantListContainer* net_variant_list_create() {

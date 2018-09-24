@@ -3,9 +3,11 @@
 
 #include <QmlNet.h>
 #include <QQmlApplicationEngine>
+#include <QmlNet/qml/JsNetObject.h>
 
 struct QQmlApplicationEngineContainer {
     QQmlApplicationEngine* qmlEngine;
+    JsNetObject* netObject;
     bool ownsEngine;
 };
 

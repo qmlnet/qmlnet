@@ -1,5 +1,14 @@
 QT += gui qml qml-private core-private quickcontrols2
 
+CONFIG(enable-webengine) {
+    QT += webengine
+    DEFINES += QMLNET_WEBENGINE
+}
+
+CONFIG(qmlnet-trace) {
+    DEFINES += QMLNET_TRACE
+}
+
 INCLUDEPATH += $$PWD
 
 HEADERS += $$PWD/QmlNet.h \

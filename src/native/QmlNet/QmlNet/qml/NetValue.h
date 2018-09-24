@@ -27,7 +27,8 @@ public:
     QSharedPointer<NetReference> getNetReference();
     bool activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments);
 
-    static NetValue* forInstance(QSharedPointer<NetReference> instance, bool autoCreate = true);
+    static NetValue* forInstance(QSharedPointer<NetReference> instance);
+    static QList<NetValue*> getAllLiveInstances(QSharedPointer<NetReference> instance);
 
 protected:
     NetValue(QSharedPointer<NetReference> instance, QObject *parent);
@@ -36,7 +37,10 @@ private:
     QSharedPointer<NetReference> instance;
     NetValueMetaObject* valueMeta;
 
-    static std::map<uint64_t, NetValue*> objectIdNetValuesMap;
+    struct NetValueCollection {
+        QList<NetValue*> netValues;
+    };
+    static QMap<uint64_t, NetValueCollection*> objectIdNetValuesMap;
 };
 
 #endif // NETVALUE_H

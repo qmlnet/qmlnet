@@ -1,345 +1,121 @@
 #include <QmlNet/qml/JsNetObject.h>
+#include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/types/Callbacks.h>
-#include <QmlNet/qml/NetValue.h>
-#include <QmlNet/qml/JsNetArray.h>
 #include <QmlNet/types/NetTypeManager.h>
-#include <private/qv4qobjectwrapper_p.h>
 #include <QmlNet/qml/NetListModel.h>
 #include <QQmlEngine>
-#include <QDebug>
 
-using namespace QV4;
-
-DEFINE_OBJECT_VTABLE(NetObject);
-
-void Heap::NetObject::init() {
-    Scope scope(internalClass->engine);
-    ScopedObject o(scope, this);
-    o->defineDefaultProperty(QStringLiteral("gcCollect"), QV4::NetObject::method_gccollect);
-    o->defineDefaultProperty(QStringLiteral("await"), QV4::NetObject::method_await);
-    o->defineDefaultProperty(QStringLiteral("cancelTokenSource"), QV4::NetObject::method_cancelTokenSource);
-    o->defineDefaultProperty(QStringLiteral("serialize"), QV4::NetObject::method_serialize);
-    o->defineDefaultProperty(QStringLiteral("toJsArray"), QV4::NetObject::method_toJsArray);
-    o->defineDefaultProperty(QStringLiteral("toListModel"), QV4::NetObject::method_toListModel);
-}
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
-
-void NetObject::method_gccollect(const BuiltinFunction *, Scope &scope, CallData *callData) {
-    int maxGeneration = 0;
-    if(callData->argc > 0) {
-        maxGeneration = callData->args[0].toNumber();
-    }
-    gcCollect(maxGeneration);
-    scope.result = QV4::Encode::undefined();
-}
-
-void NetObject::method_await(const BuiltinFunction *, Scope &scope, CallData *callData) {
-    scope.result = QV4::Encode::undefined();
-
-    if (callData->argc != 2 && callData->argc != 3) {
-        qWarning() << "Invalid number of parameters passed to Net.await(task, callback)";
-        return;
-    }
-
-    ScopedValue task(scope, callData->args[0]);
-    ScopedValue successCallback(scope, callData->args[1]);
-    ScopedValue failureCallback(scope);
-
-    if(callData->argc == 3) {
-        failureCallback = ScopedValue(scope, callData->args[2]);
-    }
-
-    if(task->isNullOrUndefined()) {
-        qWarning() << "No task for Net.await(task, callback)";
-        return;
-    }
-
-    if(successCallback->isNullOrUndefined()) {
-        qWarning() << "No callback for Net.await(task, callback)";
-        return;
-    }
-
-    QJSValue taskJsValue(scope.engine, task->asReturnedValue());
-    QJSValue callbackJsValue(scope.engine, successCallback->asReturnedValue());
-    QJSValue failureJsValue(scope.engine, failureCallback->asReturnedValue());
-
-    QObject* qObject = taskJsValue.toQObject();
-    NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
-
-    if(!netValue) {
-        qWarning() << "Invalid task object passed to Net.await(task, callback)";
-        return;
-    }
-
-    // Send the method to .NET, await the task, and call the callback.
-    awaitTask(netValue->getNetReference(),
-              QSharedPointer<NetJSValue>(new NetJSValue(callbackJsValue)),
-              failureJsValue.isNull()
-                ? QSharedPointer<NetJSValue>(nullptr)
-                : QSharedPointer<NetJSValue>(new NetJSValue(failureJsValue)));
-}
-
-void NetObject::method_cancelTokenSource(const BuiltinFunction *, Scope &scope, CallData *callData) {
-    Q_UNUSED(callData);
-    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo("System.Threading.CancellationTokenSource");
-    if(typeInfo == nullptr) {
-        qWarning() << "Couldn't get cancellation token type for platform, please file a bug";
-        scope.result = QV4::Encode::undefined();
-        return;
-    }
-    QSharedPointer<NetReference> netReference = instantiateType(typeInfo);
-    if(netReference == nullptr) {
-        qWarning() << "Couldn't create cancellation token for platform, please file a bug";
-        scope.result = QV4::Encode::undefined();
-        return;
-    }
-    NetValue* netValue = NetValue::forInstance(netReference);
-    scope.result = QV4::QObjectWrapper::wrap(scope.engine, netValue);
-}
-
-void NetObject::method_serialize(const BuiltinFunction *, Scope &scope, CallData *callData)
+JsNetObject::JsNetObject()
 {
-    if(callData->argc != 1) {
-        THROW_GENERIC_ERROR("Net.serialize(): Missing instance parameter");
+
+}
+
+QString JsNetObject::serialize(QJSValue value)
+{
+    if(value.isNull() || value.isUndefined()) {
+        qWarning("Net.serialize(): Instance parameter must not be null or undefined");
+        return QString();
     }
 
-    ScopedValue instance(scope, callData->args[0]);
-    if(instance->isNullOrUndefined()) {
-        THROW_GENERIC_ERROR("Net.serialize(): Instance parameter must not be null or undefined");
-    }
-
-    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
-    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
-    if(value->getVariantType() != NetVariantTypeEnum_Object) {
-        THROW_GENERIC_ERROR("Net.serialize(): Parameter is not a .NET object");
+    QSharedPointer<NetVariant> netVaraint = NetVariant::fromQJSValue(value);
+    if(netVaraint->getVariantType() != NetVariantTypeEnum_Object) {
+        qWarning("Net.serialize(): Parameter is not a .NET object");
+        return QString();
     }
 
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    bool serializationResult = serializeNetToString(value->getNetReference(), result);
+    bool serializationResult = QmlNet::serializeNetToString(netVaraint->getNetReference(), result);
     if(!serializationResult) {
-        THROW_GENERIC_ERROR("Net.serialize(): Could not serialize object.");
+        qWarning("Net.serialize(): Could not serialize object.");
+        return QString();
     }
 
-    scope.result = scope.engine->newString(result->getString());
+    return result->getString();
 }
 
-void NetObject::method_toJsArray(const BuiltinFunction *, Scope &scope, CallData *callData)
+QVariant JsNetObject::cancelTokenSource()
 {
-    if(callData->argc != 1) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Missing instance parameter");
-    }
-    QV4::ScopedValue instance(scope, callData->args[0]);
-    if(instance->isNullOrUndefined()) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Instance parameter must not be null or undefined");
-    }
-    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
-    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
-    if(value->getVariantType() != NetVariantTypeEnum_Object) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a .NET object");
-    }
-
-    QSharedPointer<NetReference> netReference = value->getNetReference();
-    if(!netReference->getTypeInfo()->isArray() && !netReference->getTypeInfo()->isList()) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a type that can be wrapped on a JavaScript list.");
-    }
-
-    scope.result = NetArray::create(scope.engine, NetValue::forInstance(netReference));
-}
-
-void NetObject::method_toListModel(const BuiltinFunction *, Scope &scope, CallData *callData)
-{
-    if(callData->argc != 1) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Missing instance parameter");
-    }
-    qInfo("TOJSARRAYY");
-    QV4::ScopedValue instance(scope, callData->args[0]);
-    if(instance->isNullOrUndefined()) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Instance parameter must not be null or undefined");
-    }
-    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
-    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
-    if(value->getVariantType() != NetVariantTypeEnum_Object) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a .NET object");
-    }
-
-    QSharedPointer<NetReference> netReference = value->getNetReference();
-    NetListModel* listModel = NetListModel::fromReference(netReference);
-    if(listModel == nullptr) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a type that can be wrapped by a list model.");
-    }
-
-    QQmlEngine::setObjectOwnership(listModel, QQmlEngine::JavaScriptOwnership);
-    scope.result = QObjectWrapper::wrap(scope.engine, listModel);
-}
-
-#else
-
-ReturnedValue NetObject::method_gccollect(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
-    Q_UNUSED(b);
-    Q_UNUSED(thisObject);
-    int maxGeneration = 0;
-    if(argc > 0) {
-        maxGeneration = static_cast<int>(argv[0].toNumber());
-    }
-    gcCollect(maxGeneration);
-    return Encode::undefined();
-}
-
-ReturnedValue NetObject::method_await(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
-    QV4::Scope scope(b);
-
-    if(argc != 2 && argc != 3) {
-        qWarning() << "Invalid number of parameters passed to Net.await(task, callback)";
-        return Encode::undefined();
-    }
-
-    QV4::ScopedValue task(scope, argv[0]);
-    QV4::ScopedValue successCallback(scope, argv[1]);
-    QV4::ScopedValue failureCallback(scope, Encode::null());
-
-    if(argc == 3) {
-        // We are passing in a failure callback
-        failureCallback = argv[2];
-    }
-
-    if(task->isNullOrUndefined()) {
-        qWarning() << "No task for Net.await(task, callback)";
-        return Encode::undefined();
-    }
-
-    if(successCallback->isNullOrUndefined()) {
-        qWarning() << "No callback for Net.await(task, callback)";
-        return Encode::undefined();
-    }
-
-    QJSValue taskJsValue(scope.engine, task->asReturnedValue());
-    QJSValue successCallbackJsValue(scope.engine, successCallback->asReturnedValue());
-    QJSValue failureCallbackJsValue(scope.engine, failureCallback->asReturnedValue());
-
-    if(!taskJsValue.isQObject()) {
-        qWarning() << "Invalid task object passed to Net.await(task, callback)";
-        return Encode::undefined();
-    }
-
-    if(!successCallbackJsValue.isCallable()) {
-        qWarning() << "Invalid function passed for success callback";
-        return Encode::undefined();
-    }
-
-    if(!failureCallbackJsValue.isNull() && !failureCallbackJsValue.isCallable()) {
-        qWarning() << "Invalid function passed for failure callback";
-        return Encode::undefined();
-    }
-
-    QObject* qObject = taskJsValue.toQObject();
-    NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
-
-    if(!netValue) {
-        qWarning() << "Invalid task object passed to Net.await(task, callback)";
-        return Encode::undefined();
-    }
-
-    // Send the method to .NET, await the task, and call the callback.
-    awaitTask(netValue->getNetReference(),
-              QSharedPointer<NetJSValue>(new NetJSValue(successCallbackJsValue)),
-              failureCallbackJsValue.isNull()
-                ? QSharedPointer<NetJSValue>(nullptr)
-                : QSharedPointer<NetJSValue>(new NetJSValue(failureCallbackJsValue)));
-
-    return Encode::undefined();
-}
-
-ReturnedValue NetObject::method_cancelTokenSource(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc) {
-    QV4::Scope scope(b);
     QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo("System.Threading.CancellationTokenSource");
     if(typeInfo == nullptr) {
-        qWarning() << "Couldn't get cancellation token type for platform, please file a bug";
-        return Encode::undefined();
+        qWarning("Couldn't get cancellation token type for platform, please file a bug");
+        return QVariant();
     }
-    QSharedPointer<NetReference> netReference = instantiateType(typeInfo);
+    QSharedPointer<NetReference> netReference = QmlNet::instantiateType(typeInfo);
     if(netReference == nullptr) {
-        qWarning() << "Couldn't create cancellation token for platform, please file a bug";
-        return Encode::undefined();
+        qWarning("Couldn't create cancellation token for platform, please file a bug");
+        return QVariant();
     }
-    NetValue* netValue = NetValue::forInstance(netReference);
-    return QV4::QObjectWrapper::wrap(scope.engine, netValue);
+    QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
+    netVariant->setNetReference(netReference);
+    return netVariant->toQVariant();
 }
 
-ReturnedValue NetObject::method_serialize(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+void JsNetObject::gcCollect(int maxGeneration)
 {
-    QV4::Scope scope(b);
-    if(argc != 1) {
-        THROW_GENERIC_ERROR("Net.serialize(): Missing instance parameter");
-    }
-    QV4::ScopedValue instance(scope, argv[0]);
-    if(instance->isNullOrUndefined()) {
-        THROW_GENERIC_ERROR("Net.serialize(): Instance parameter must not be null or undefined");
-    }
-    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
-    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
-    if(value->getVariantType() != NetVariantTypeEnum_Object) {
-        THROW_GENERIC_ERROR("Net.serialize(): Parameter is not a .NET object");
-    }
-    QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    bool serializationResult = serializeNetToString(value->getNetReference(), result);
-    if(!serializationResult) {
-        THROW_GENERIC_ERROR("Net.serialize(): Could not serialize object.");
-    }
-
-    return Encode(scope.engine->newString(result->getString()));
+    QmlNet::gcCollect(maxGeneration);
 }
 
-ReturnedValue NetObject::method_toJsArray(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
+QVariant JsNetObject::toListModel(QJSValue value)
 {
-    QV4::Scope scope(b);
-
-    if(argc != 1) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Missing instance parameter");
-    }
-    QV4::ScopedValue instance(scope, argv[0]);
-    if(instance->isNullOrUndefined()) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Instance parameter must not be null or undefined");
-    }
-    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
-    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
-    if(value->getVariantType() != NetVariantTypeEnum_Object) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a .NET object");
+    if(value.isNull() || value.isUndefined()) {
+        qWarning("Net.toListModel(): Instance parameter must not be null or undefined");
+        return QVariant();
     }
 
-    QSharedPointer<NetReference> netReference = value->getNetReference();
-    if(!netReference->getTypeInfo()->isArray() && !netReference->getTypeInfo()->isList()) {
-        THROW_GENERIC_ERROR("Net.toJsArray(): Parameter is not a type that can be wrapped on a JavaScript list.");
+    QSharedPointer<NetVariant> netVaraint = NetVariant::fromQJSValue(value);
+    if(netVaraint->getVariantType() != NetVariantTypeEnum_Object) {
+        qWarning("Net.toListModel(): Parameter is not a .NET object");
+        return QVariant();
     }
 
-    return NetArray::create(scope.engine, NetValue::forInstance(netReference));
-}
-
-ReturnedValue NetObject::method_toListModel(const FunctionObject *b, const Value *thisObject, const Value *argv, int argc)
-{
-    QV4::Scope scope(b);
-
-    if(argc != 1) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Missing instance parameter");
-    }
-    QV4::ScopedValue instance(scope, argv[0]);
-    if(instance->isNullOrUndefined()) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Instance parameter must not be null or undefined");
-    }
-    QJSValue instanceJsValue(scope.engine, instance->asReturnedValue());
-    QSharedPointer<NetVariant> value = NetVariant::fromQJSValue(instanceJsValue);
-    if(value->getVariantType() != NetVariantTypeEnum_Object) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a .NET object");
-    }
-
-    QSharedPointer<NetReference> netReference = value->getNetReference();
-    NetListModel* listModel = NetListModel::fromReference(netReference);
+    NetListModel* listModel = NetListModel::fromReference(netVaraint->getNetReference());
     if(listModel == nullptr) {
-        THROW_GENERIC_ERROR("Net.toListModel(): Parameter is not a type that can be wrapped by a list model.");
+        qWarning("Net.toListModel(): Parameter is not a type that can be wrapped by a list model.");
+        return QVariant();
     }
 
     QQmlEngine::setObjectOwnership(listModel, QQmlEngine::JavaScriptOwnership);
-    return QObjectWrapper::wrap(scope.engine, listModel);
+    return QVariant::fromValue(listModel);
 }
 
-#endif
+void JsNetObject::toJsArray()
+{
+    qWarning("Net.toJsArray(): Not supported anymore. Use Net.toListModel().");
+}
+
+void JsNetObject::await(QJSValue task, QJSValue successCallback, QJSValue failureCallback)
+{
+    if(task.isNull() || task.isUndefined()) {
+        qWarning("Net.await(): No task object provided.");
+        return;
+    }
+
+    if(successCallback.isNull() || successCallback.isUndefined()) {
+        qWarning("Net.await(): Not success callback given");
+        return;
+    }
+
+    if(!successCallback.isCallable()) {
+        qWarning("Net.await(): Success callback invalid type.");
+        return;
+    }
+
+    if(!failureCallback.isNull() && !failureCallback.isUndefined()) {
+        if(!failureCallback.isCallable()) {
+            qWarning("Net.await(): Failure callback invalid type.");
+            return;
+        }
+    }
+
+    QSharedPointer<NetVariant> taskVariant = NetVariant::fromQJSValue(task);
+    if(taskVariant->getVariantType() != NetVariantTypeEnum_Object) {
+        qWarning("Net.await(): Task is invalid type.");
+        return;
+    }
+
+    QSharedPointer<NetVariant> successCallbackVariant = NetVariant::fromQJSValue(successCallback);
+    QSharedPointer<NetVariant> failureCallbackVariant = NetVariant::fromQJSValue(failureCallback);
+    QmlNet::awaitTask(taskVariant->getNetReference(),
+                      successCallbackVariant->getJsValue(),
+                      failureCallbackVariant != nullptr ? failureCallbackVariant->getJsValue() : nullptr);
+}

@@ -14,7 +14,7 @@ namespace Qml.Net.Benchmarks
         {
             if (!_initialized)
             {
-                QQmlApplicationEngine.RegisterType<QmlType>("tests");
+                Qml.RegisterType<QmlType>("tests");
                 _initialized = true;
             }
         }

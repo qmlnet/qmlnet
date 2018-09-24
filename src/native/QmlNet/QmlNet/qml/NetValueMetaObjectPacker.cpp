@@ -153,52 +153,7 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
         break;
     }
 
-    switch(sourceVariant->type()) {
-    case QVariant::Invalid:
-        destination->clear();
-        break;
-    case QVariant::Bool:
-        destination->setBool(sourceVariant->value<bool>());
-        break;
-    case QVariant::Char:
-        destination->setChar(sourceVariant->toChar());
-        break;
-    case QVariant::Int:
-        destination->setInt(sourceVariant->value<int>());
-        break;
-    case QVariant::UInt:
-        destination->setUInt(sourceVariant->value<unsigned int>());
-        break;
-    case QVariant::Double:
-        destination->setDouble(sourceVariant->value<double>());
-        break;
-    case QVariant::String:
-    {
-        QString stringValue = sourceVariant->toString();
-        destination->setString(&stringValue);
-        break;
-    }
-    case QVariant::DateTime:
-    {
-        QDateTime dateTimeValue = sourceVariant->toDateTime();
-        destination->setDateTime(dateTimeValue);
-        break;
-    }
-    default:
-
-        if(sourceVariant->userType() == qMetaTypeId<QJSValue>()) {
-            // TODO: Either serialize this type to a string, to be deserialized in .NET, or
-            // pass raw value to .NET to be dynamically invoked (using dynamic).
-            // See qtdeclarative\src\plugins\qmltooling\qmldbg_debugger\qqmlenginedebugservice.cpp:184
-            // for serialization methods.
-            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(sourceVariant->value<QJSValue>()));
-            destination->setJsValue(netJsValue);
-            break;
-        }
-
-        qDebug() << "Unsupported variant type: " << sourceVariant->type();
-        break;
-    }
+    NetVariant::fromQVariant(sourceVariant, destination);
 }
 
 class StringValueTypePacker : public NetValueTypePacker

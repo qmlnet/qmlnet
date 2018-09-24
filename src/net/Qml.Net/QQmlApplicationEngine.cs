@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Behaviors;
+using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net
@@ -35,9 +36,42 @@ namespace Qml.Net
         {
             Interop.QQmlApplicationEngine.AddImportPath(Handle, path);
         }
+
+        public object GetContextProperty(string name)
+        {
+            var result = Interop.QQmlApplicationEngine.GetContextProperty(Handle, name);
+            if (result == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            using (var variant = new NetVariant(result))
+            {
+                object r = null;
+                Helpers.Unpackvalue(ref r, variant);
+                return r;
+            }
+        }
+
+        public void SetContextProperty(string name, object value)
+        {
+            if (value == null)
+            {
+                Interop.QQmlApplicationEngine.SetContextProperty(Handle, name, IntPtr.Zero);
+            }
+            else
+            {
+                using (var variant = new NetVariant())
+                {
+                    Helpers.PackValue(value, variant);
+                    Interop.QQmlApplicationEngine.SetContextProperty(Handle, name, variant.Handle);
+                }
+            }
+        }
         
         internal IntPtr InternalPointer => Interop.QQmlApplicationEngine.InternalPointer(Handle);
 
+        [Obsolete("Use Qml.RegisterType<T>() instead.", true)]
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
             return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
@@ -89,5 +123,11 @@ namespace Qml.Net
         
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_internalPointer")]
         IntPtr InternalPointer(IntPtr app);
+        
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_getContextProperty")]
+        IntPtr GetContextProperty(IntPtr app, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string name);
+        
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_setContextProperty")]
+        void SetContextProperty(IntPtr app, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string path, IntPtr value);
     }
 }

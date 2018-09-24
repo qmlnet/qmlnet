@@ -45,7 +45,7 @@ namespace Qml.Net.Tests.Qml
             TypeCreator.SetInstance(typeof(TestContext), new TestContext(_coreApplication));
             if (!_testContextRegistered)
             {
-                QQmlApplicationEngine.RegisterType<TestContext>("testContext");
+                Net.Qml.RegisterType<TestContext>("testContext");
                 _testContextRegistered = true;
             }
         }
@@ -54,7 +54,7 @@ namespace Qml.Net.Tests.Qml
         {
             if (_registeredTypes.Contains(typeof(T))) return;
             _registeredTypes.Add(typeof(T));
-            QQmlApplicationEngine.RegisterType<T>("tests");
+            Net.Qml.RegisterType<T>("tests");
         }
 
         protected int ExecApplicationWithTimeout(int timeoutMs)

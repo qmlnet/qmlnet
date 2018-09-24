@@ -2,6 +2,8 @@
 #include <QmlNet/types/Callbacks.h>
 #include <QSharedPointer>
 
+using namespace QmlNet;
+
 QMap<QString, QSharedPointer<NetTypeInfo>> NetTypeManager::types;
 
 NetTypeManager::NetTypeManager() {

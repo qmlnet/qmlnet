@@ -11,32 +11,33 @@ namespace Qml.Net.Sandbox
     {
         public class TestQmlImport
         {
+            public static TestObject ts = new TestObject();
+            
             public TestObject GetObject()
             {
-                return new TestObject
-                {
-                    Prop1 = "test1",
-                    Prop2 = 3
-                };
+                return ts;
             }
         }
 
         public class TestObject
         {
-            public string Prop1 { get; set; }
-            
-            public int Prop2 { get; set; }
+            public void Method()
+            {
+                Console.WriteLine("test");
+            }
         }
 
         static int Main(string[] args)
         {
+            Qt.PutEnv("QV4_MM_AGGRESSIVE_GC", "1");
+            
             using (var app = new QGuiApplication(args))
             {
                 using (var engine = new QQmlApplicationEngine())
                 {
                     engine.AddImportPath(Path.Combine(Directory.GetCurrentDirectory(), "Qml"));
                     
-                    QQmlApplicationEngine.RegisterType<TestQmlImport>("test");
+                    Qml.RegisterType<TestQmlImport>("test");
 
                     engine.Load("main.qml");
                     

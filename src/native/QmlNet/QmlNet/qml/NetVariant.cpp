@@ -69,7 +69,10 @@ void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 
 QSharedPointer<NetReference> NetVariant::getNetReference()
 {
-    return variant.value<NetReferenceQmlContainer>().netReference;
+    if(getVariantType() == NetVariantTypeEnum_Object) {
+        return variant.value<NetReferenceQmlContainer>().netReference;
+    }
+    return nullptr;
 }
 
 void NetVariant::setBool(bool value)
@@ -194,7 +197,10 @@ void NetVariant::setJsValue(QSharedPointer<NetJSValue> jsValue)
 
 QSharedPointer<NetJSValue> NetVariant::getJsValue()
 {
-    return variant.value<NetJsValueQmlContainer>().jsValue;
+    if(getVariantType() == NetVariantTypeEnum_JSValue) {
+        return variant.value<NetJsValueQmlContainer>().jsValue;
+    }
+    return nullptr;
 }
 
 void NetVariant::clear()
@@ -247,6 +253,72 @@ QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine)
     }
 }
 
+void NetVariant::fromQVariant(const QVariant* variant, QSharedPointer<NetVariant> destination)
+{
+    switch(variant->type()) {
+    case QVariant::Invalid:
+        destination->clear();
+        break;
+    case QVariant::Bool:
+        destination->setBool(variant->value<bool>());
+        break;
+    case QVariant::Char:
+        destination->setChar(variant->toChar());
+        break;
+    case QVariant::Int:
+        destination->setInt(variant->value<int>());
+        break;
+    case QVariant::UInt:
+        destination->setUInt(variant->value<unsigned int>());
+        break;
+    case QVariant::Double:
+        destination->setDouble(variant->value<double>());
+        break;
+    case QVariant::String:
+    {
+        QString stringValue = variant->toString();
+        destination->setString(&stringValue);
+        break;
+    }
+    case QVariant::DateTime:
+    {
+        QDateTime dateTimeValue = variant->toDateTime();
+        destination->setDateTime(dateTimeValue);
+        break;
+    }
+    default:
+
+        if(variant->userType() == qMetaTypeId<QJSValue>()) {
+            // TODO: Either serialize this type to a string, to be deserialized in .NET, or
+            // pass raw value to .NET to be dynamically invoked (using dynamic).
+            // See qtdeclarative\src\plugins\qmltooling\qmldbg_debugger\qqmlenginedebugservice.cpp:184
+            // for serialization methods.
+            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(variant->value<QJSValue>()));
+            destination->setJsValue(netJsValue);
+            break;
+        }
+
+        if(variant->userType() == QMetaType::QObjectStar) {
+            QObject* value = variant->value<QObject*>();
+            NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
+            if(netValue) {
+                destination->setNetReference(netValue->getNetReference());
+                break;
+            }
+        }
+
+        qDebug() << "Unsupported variant type: " << variant->type();
+        break;
+    }
+}
+
+QSharedPointer<NetVariant> NetVariant::fromQVariant(const QVariant* variant)
+{
+    QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
+    fromQVariant(variant, result);
+    return result;
+}
+
 QVariant NetVariant::toQVariant()
 {
     QVariant result;
@@ -259,6 +331,23 @@ QVariant NetVariant::toQVariant()
         break;
     default:
         result = variant;
+        break;
+    }
+    return result;
+}
+
+QString NetVariant::getDisplayValue()
+{
+    QString result;
+    switch(getVariantType()) {
+    case NetVariantTypeEnum_JSValue:
+        result = getJsValue()->getJsValue().toString();
+        break;
+    case NetVariantTypeEnum_Object:
+        result = getNetReference()->displayName();
+        break;
+    default:
+        result = variant.toString();
         break;
     }
     return result;

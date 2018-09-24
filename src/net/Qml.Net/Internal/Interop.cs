@@ -98,6 +98,7 @@ namespace Qml.Net.Internal
             QQuickStyle = interop;
             QtInterop = interop;
             Utilities = interop;
+            QtWebEngine = interop;
             
             if(!string.IsNullOrEmpty(pluginsDirectory))
             {
@@ -134,7 +135,8 @@ namespace Qml.Net.Internal
             INetJsValueInterop,
             IQQuickStyleInterop,
             IQtInterop,
-            IUtilities
+            IUtilities,
+            IQtWebEngine
         {
 
         }
@@ -174,5 +176,7 @@ namespace Qml.Net.Internal
         public static IQtInterop QtInterop { get; }
         
         public static IUtilities Utilities { get; }
+        
+        public static IQtWebEngine QtWebEngine { get; }
     }
 }

@@ -6,10 +6,15 @@
 
 NetValue::~NetValue()
 {
-    auto hit = objectIdNetValuesMap.find(instance->getObjectId());
-    if(hit != objectIdNetValuesMap.end())
-    {
-        objectIdNetValuesMap.erase(hit);
+    auto objectId = instance->getObjectId();
+    auto hit = objectIdNetValuesMap.find(objectId);
+    if(hit != objectIdNetValuesMap.end()) {
+        NetValueCollection* collection = hit.value();
+        collection->netValues.removeOne(this);
+        if(collection->netValues.length() == 0) {
+            objectIdNetValuesMap.remove(objectId);
+            delete collection;
+        }
     }
     instance = nullptr;
 }
@@ -66,20 +71,23 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
     return true;
 }
 
-NetValue* NetValue::forInstance(QSharedPointer<NetReference> instance, bool autoCreate)
+NetValue* NetValue::forInstance(QSharedPointer<NetReference> instance)
 {
-    auto objectId = instance->getObjectId();
-    if(objectIdNetValuesMap.find(objectId) != objectIdNetValuesMap.end())
-    {
-        return objectIdNetValuesMap.at(objectId);
-    }
-    if(!autoCreate)
-    {
-        return nullptr;
-    }
-    auto result = new NetValue(instance, nullptr);
+    NetValue* result = new NetValue(instance, nullptr);
     QQmlEngine::setObjectOwnership(result, QQmlEngine::JavaScriptOwnership);
     return result;
+}
+
+QList<NetValue*> NetValue::getAllLiveInstances(QSharedPointer<NetReference> instance)
+{
+    auto objectId = instance->getObjectId();
+    NetValueCollection* collection = nullptr;
+    auto hit = objectIdNetValuesMap.find(objectId);
+    if(hit != objectIdNetValuesMap.end()) {
+        collection = hit.value();
+        return collection->netValues;
+    }
+    return QList<NetValue*>();
 }
 
 NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
@@ -87,6 +95,17 @@ NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
 {
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
+
+    auto objectId = instance->getObjectId();
+    NetValueCollection* collection = nullptr;
+    auto hit = objectIdNetValuesMap.find(objectId);
+    if(hit != objectIdNetValuesMap.end()) {
+        collection = hit.value();
+    } else {
+        collection = new NetValueCollection();
+        objectIdNetValuesMap.insert(objectId, collection);
+    }
+    collection->netValues.append(this);
 
     // Auto wire up all of our signal handlers that will invoke .NET delegates.
     for(int index = 0; index <= instance->getTypeInfo()->getSignalCount() - 1; index++)
@@ -104,9 +123,7 @@ NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
 
         QObject::connect(this, signalMethod,
                          this, slotMethod);
-    }
-
-    objectIdNetValuesMap[instance->getObjectId()] = this;
+    };
 }
 
-std::map<uint64_t, NetValue*> NetValue::objectIdNetValuesMap = std::map<uint64_t, NetValue*>();
+QMap<uint64_t, NetValue::NetValueCollection*> NetValue::objectIdNetValuesMap = QMap<uint64_t, NetValue::NetValueCollection*>();

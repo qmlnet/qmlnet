@@ -47,7 +47,7 @@ bool NetTypeArrayFacade_Array::isFixed()
 uint NetTypeArrayFacade_Array::getLength(QSharedPointer<NetReference> reference)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    readProperty(_lengthProperty, reference, nullptr, result);
+    QmlNet::readProperty(_lengthProperty, reference, nullptr, result);
     return static_cast<uint>(result->getInt());
 }
 
@@ -58,7 +58,7 @@ QSharedPointer<NetVariant> NetTypeArrayFacade_Array::getIndexed(QSharedPointer<N
     parameter->setInt(static_cast<int>(index));
     parameters->add(parameter);
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    invokeNetMethod(_getIndexed, reference, parameters, result);
+    QmlNet::invokeNetMethod(_getIndexed, reference, parameters, result);
     return result;
 }
 
@@ -70,5 +70,5 @@ void NetTypeArrayFacade_Array::setIndexed(QSharedPointer<NetReference> reference
     parameters->add(parameter);
     parameters->add(value);
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
-    invokeNetMethod(_setIndexed, reference, parameters, result);
+    QmlNet::invokeNetMethod(_setIndexed, reference, parameters, result);
 }
