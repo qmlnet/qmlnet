@@ -52,3 +52,17 @@ QHash<int,QByteArray> NetListModel::roleNames() const
     roles[0] = "modelData";
     return roles;
 }
+
+QVariant NetListModel::at(int index)
+{
+    QSharedPointer<NetVariant> result = _facade->getIndexed(_reference, static_cast<uint>(index));
+    if(result == nullptr) {
+        return QVariant();
+    }
+    return result->toQVariant();
+}
+
+int NetListModel::length()
+{
+    return static_cast<int>(_facade->getLength(_reference));
+}
