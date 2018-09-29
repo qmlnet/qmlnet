@@ -20,6 +20,8 @@ namespace Qml.Net.Internal
         {
             string pluginsDirectory = null;
             string qmlDirectory = null;
+            string libDirectory = null;
+
             ILibraryPathResolver pathResolver = null;
             
             if (Host.GetExportedSymbol != null)
@@ -55,17 +57,17 @@ namespace Qml.Net.Internal
 
                     if (resolveResult.IsSuccess)
                     {
-                        var directory = Path.GetDirectoryName(resolveResult.Path);
-                        if (!string.IsNullOrEmpty(directory))
+                        libDirectory = Path.GetDirectoryName(resolveResult.Path);
+                        if (!string.IsNullOrEmpty(libDirectory))
                         {
                             // If this library has a plugins/qml directory below it, set it.
-                            var potentialPlugisDirectory = Path.Combine(directory, "plugins");
+                            var potentialPlugisDirectory = Path.Combine(libDirectory, "plugins");
                             if (Directory.Exists(potentialPlugisDirectory))
                             {
                                 pluginsDirectory = potentialPlugisDirectory;
                             }
 
-                            var potentialQmlDirectory = Path.Combine(directory, "qml");
+                            var potentialQmlDirectory = Path.Combine(libDirectory, "qml");
                             if (Directory.Exists(potentialQmlDirectory))
                             {
                                 qmlDirectory = potentialQmlDirectory;
@@ -107,6 +109,19 @@ namespace Qml.Net.Internal
             if(!string.IsNullOrEmpty(qmlDirectory))
             {
                 Qt.PutEnv("QML2_IMPORT_PATH", qmlDirectory);
+            }
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (!string.IsNullOrEmpty(libDirectory) && Directory.Exists(libDirectory))
+                {
+                    // Even though we opened up the native dll correctly, we need to add
+                    // the folder to the path. The reason is because QML plugins aren't
+                    // in the same directory and have trouble finding dependencies
+                    // that are within our lib folder.
+                    Environment.SetEnvironmentVariable("PATH",
+                        Environment.GetEnvironmentVariable("PATH") + $";{libDirectory}");
+                }
             }
 
             var cb = DefaultCallbacks.Callbacks();
