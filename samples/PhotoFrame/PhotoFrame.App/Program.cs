@@ -29,7 +29,7 @@ namespace PhotoFrame.App
                 QQmlApplicationEngine.ActivateMVVMBehavior();
                 using (var engine = new QQmlApplicationEngine())
                 {
-                    QQmlApplicationEngine.RegisterType<AppModel>("app", 1, 1);
+                    Qml.Net.Qml.RegisterType<AppModel>("app", 1, 1);
 
                     var assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().Location).LocalPath);
                     var mainQmlPath = Path.Combine(assemblyDir, "UI", "QML", "main.qml");
