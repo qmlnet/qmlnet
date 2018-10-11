@@ -27,6 +27,21 @@ bool NetJSValue::isCallable()
     return _jsValue.isCallable();
 }
 
+bool NetJSValue::isArray()
+{
+    return _jsValue.isArray();
+}
+
+bool NetJSValue::isNumber()
+{
+    return _jsValue.isNumber();
+}
+
+bool NetJSValue::isString()
+{
+    return _jsValue.isString();
+}
+
 QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> parameters)
 {
     QJSValueList jsValueList;
@@ -46,6 +61,12 @@ QSharedPointer<NetVariant> NetJSValue::getProperty(QString propertyName)
     return NetVariant::fromQJSValue(property);
 }
 
+QSharedPointer<NetVariant> NetJSValue::getItemAtIndex(quint32 arrayIndex)
+{
+    QJSValue property = _jsValue.property(arrayIndex);
+    return NetVariant::fromQJSValue(property);
+}
+
 void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> variant)
 {
     QJSValue value = QJSValue::NullValue;
@@ -53,6 +74,25 @@ void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> va
         value = variant->toQJSValue(_jsValue.engine());
     }
     _jsValue.setProperty(propertyName, value);
+}
+
+void NetJSValue::setItemAtIndex(quint32 arrayIndex, QSharedPointer<NetVariant> variant)
+{
+    QJSValue value = QJSValue::NullValue;
+    if(variant != nullptr) {
+        value = variant->toQJSValue(_jsValue.engine());
+    }
+    _jsValue.setProperty(arrayIndex, value);
+}
+
+double NetJSValue::toNumber()
+{
+    return _jsValue.toNumber();
+}
+
+QString NetJSValue::toString()
+{
+    return _jsValue.toString();
 }
 
 extern "C" {
@@ -63,6 +103,18 @@ Q_DECL_EXPORT void net_js_value_destroy(NetJSValueContainer* jsValueContainer) {
 
 Q_DECL_EXPORT bool net_js_value_isCallable(NetJSValueContainer* jsValueContainer) {
     return jsValueContainer->jsValue->isCallable();
+}
+
+Q_DECL_EXPORT bool net_js_value_isArray(NetJSValueContainer* jsValueContainer) {
+    return jsValueContainer->jsValue->isArray();
+}
+
+Q_DECL_EXPORT bool net_js_value_isNumber(NetJSValueContainer* jsValueContainer) {
+    return jsValueContainer->jsValue->isNumber();
+}
+
+Q_DECL_EXPORT bool net_js_value_isString(NetJSValueContainer* jsValueContainer) {
+    return jsValueContainer->jsValue->isString();
 }
 
 Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValueContainer, NetVariantListContainer* parametersContainer) {
@@ -85,12 +137,36 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer*
     return new NetVariantContainer{result};
 }
 
+Q_DECL_EXPORT NetVariantContainer* net_js_value_getItemAtIndex(NetJSValueContainer* jsValueContainer, quint32 arrayIndex) {
+    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getItemAtIndex(arrayIndex);
+    if(result == nullptr) {
+        return nullptr;
+    }
+    return new NetVariantContainer{result};
+}
+
 Q_DECL_EXPORT void net_js_value_setProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName, NetVariantContainer* valueContainer) {
     QSharedPointer<NetVariant> value;
     if(valueContainer != nullptr) {
         value = valueContainer->variant;
     }
     jsValueContainer->jsValue->setProperty(QString::fromUtf16((const char16_t*)propertyName), value);
+}
+
+Q_DECL_EXPORT void net_js_value_setItemAtIndex(NetJSValueContainer* jsValueContainer, quint32 arrayIndex, NetVariantContainer* valueContainer) {
+    QSharedPointer<NetVariant> value;
+    if(valueContainer != nullptr) {
+        value = valueContainer->variant;
+    }
+    jsValueContainer->jsValue->setItemAtIndex(arrayIndex, value);
+}
+
+Q_DECL_EXPORT QString net_js_value_toString(NetJSValueContainer* jsValueContainer) {
+    return jsValueContainer->jsValue->toString();
+}
+
+Q_DECL_EXPORT double net_js_value_toNumber(NetJSValueContainer* jsValueContainer) {
+    return jsValueContainer->jsValue->toNumber();
 }
 
 }
