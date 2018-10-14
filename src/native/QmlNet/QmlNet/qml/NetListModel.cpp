@@ -55,6 +55,13 @@ QHash<int,QByteArray> NetListModel::roleNames() const
 
 QVariant NetListModel::at(int index)
 {
+    if(index < 0) {
+        return QVariant();
+    }
+    int length = static_cast<int>(_facade->getLength(_reference));
+    if(index >= length) {
+        return QVariant();
+    }
     QSharedPointer<NetVariant> result = _facade->getIndexed(_reference, static_cast<uint>(index));
     if(result == nullptr) {
         return QVariant();

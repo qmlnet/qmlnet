@@ -74,5 +74,60 @@ namespace Qml.Net.Tests.Qml
             list[1].Prop.Should().Be(result[1].Prop);
             list[2].Prop.Should().Be(result[2].Prop);
         }
+
+        [Fact]
+        public void Can_get_length()
+        {
+            var list = new List<TestNetObject>();
+            list.Add(new TestNetObject());
+            Mock.Setup(x => x.GetNetObjectList()).Returns(list);
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var list = test.getNetObjectList()
+                    var listModel = Net.toListModel(list)
+                    test.test(listModel.length());
+                ");
+
+            Mock.Verify(x => x.Test(1), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_get_at()
+        {
+            var list = new List<TestNetObject>();
+            list.Add(new TestNetObject());
+            Mock.Setup(x => x.GetNetObjectList()).Returns(list);
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var list = test.getNetObjectList()
+                    var listModel = Net.toListModel(list)
+                    test.test(listModel.at(0));
+                ");
+
+            Mock.Verify(x => x.Test(list[0]), Times.Once);
+        }
+        
+        [Fact]
+        public void Can_get_at_invalid()
+        {
+            var list = new List<TestNetObject>();
+            list.Add(new TestNetObject());
+            Mock.Setup(x => x.GetNetObjectList()).Returns(list);
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var list = test.getNetObjectList()
+                    var listModel = Net.toListModel(list)
+                    test.test(listModel.at(-1));
+                    test.test(listModel.at(1));
+                ");
+
+            Mock.Verify(x => x.Test(null), Times.Exactly(2));
+        }
     }
 }
