@@ -113,9 +113,29 @@ namespace Qml.Net.Internal.Qml
 
             public bool IsArray => _jsValue.IsArray;
 
-            public object GetProperty(string propertyName) => _jsValue.GetProperty(propertyName);
-            
-            public object GetItemAtIndex(int arrayIndex) => _jsValue.GetItemAtIndex(arrayIndex);
+            public object GetProperty(string propertyName)
+            {
+                var result = _jsValue.GetProperty(propertyName);
+                if (result == null)
+                {
+                    return null;
+                }
+                object unpacked = null;
+                Helpers.Unpackvalue(ref unpacked, result);
+                return unpacked;
+            }
+
+            public object GetItemAtIndex(int arrayIndex)
+            {
+                var result = _jsValue.GetItemAtIndex(arrayIndex);
+                if (result == null)
+                {
+                    return null;
+                }
+                object unpacked = null;
+                Helpers.Unpackvalue(ref unpacked, result);
+                return unpacked;
+            }
 
             public object Call(params object[] parameters)
             {

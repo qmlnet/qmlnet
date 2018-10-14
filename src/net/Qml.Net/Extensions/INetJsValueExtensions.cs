@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Qml.Net.Internal;
-using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Extensions
 {
@@ -24,22 +20,12 @@ namespace Qml.Net.Extensions
             var list = new List<T>();
             try
             {
-                var lengthProp = (NetVariant)value.GetProperty("length");
-                var length = lengthProp.Int;
+                var length = (int)value.GetProperty("length");
                 
                 for (var i = 0; i < length; i++)
                 {
-                    var item = (NetVariant)value.GetItemAtIndex(i);
-                    if(typeof(T) == typeof(int))
-                    {
-                        object result = item.Int;
-                        list.Add((T)result);
-                    }
-                    else
-                    {
-                        object result = item.String;
-                        list.Add((T)result);
-                    }
+                    var item = value.GetItemAtIndex(i);
+                    list.Add((T)item);
                 }
 
                 return list;
