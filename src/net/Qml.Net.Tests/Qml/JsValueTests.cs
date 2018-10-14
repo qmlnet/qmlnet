@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
 using Qml.Net.Internal.Qml;
 using Xunit;
+using Qml.Net.Extensions;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -307,6 +308,56 @@ namespace Qml.Net.Tests.Qml
             ((string) result.dest2).Should().Be("value");
             ((object) result.dest3).Should().BeSameAs(testObject);
             ((object) result.dest4).Should().BeAssignableTo<INetJsValue>();
+        }
+
+        [Fact]
+        public void Can_convert_array_to_list_string()
+        {
+            List<string> result = null;
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(param =>
+                {
+                    result = ((INetJsValue) param).AsList<string>();
+                }));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var p = []
+                    p.push(""test1"")
+                    p.push(""test2"")
+                    test.method(p)
+                ");
+            
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
+            result.Should().NotBeNull();
+            result.Count.Should().Be(2);
+            result[0].Should().Be("test1");
+            result[1].Should().Be("test2");
+        }
+        
+        [Fact]
+        public void Can_convert_array_to_list_int()
+        {
+            List<int> result = null;
+            Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(param =>
+            {
+                result = ((INetJsValue) param).AsList<int>();
+            }));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    var p = []
+                    p.push(23)
+                    p.push(1)
+                    test.method(p)
+                ");
+            
+            Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
+            result.Should().NotBeNull();
+            result.Count.Should().Be(2);
+            result[0].Should().Be(23);
+            result[1].Should().Be(1);
         }
     }
 }

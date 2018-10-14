@@ -32,16 +32,6 @@ bool NetJSValue::isArray()
     return _jsValue.isArray();
 }
 
-bool NetJSValue::isNumber()
-{
-    return _jsValue.isNumber();
-}
-
-bool NetJSValue::isString()
-{
-    return _jsValue.isString();
-}
-
 QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> parameters)
 {
     QJSValueList jsValueList;
@@ -85,16 +75,6 @@ void NetJSValue::setItemAtIndex(quint32 arrayIndex, QSharedPointer<NetVariant> v
     _jsValue.setProperty(arrayIndex, value);
 }
 
-double NetJSValue::toNumber()
-{
-    return _jsValue.toNumber();
-}
-
-QString NetJSValue::toString()
-{
-    return _jsValue.toString();
-}
-
 extern "C" {
 
 Q_DECL_EXPORT void net_js_value_destroy(NetJSValueContainer* jsValueContainer) {
@@ -107,14 +87,6 @@ Q_DECL_EXPORT bool net_js_value_isCallable(NetJSValueContainer* jsValueContainer
 
 Q_DECL_EXPORT bool net_js_value_isArray(NetJSValueContainer* jsValueContainer) {
     return jsValueContainer->jsValue->isArray();
-}
-
-Q_DECL_EXPORT bool net_js_value_isNumber(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->isNumber();
-}
-
-Q_DECL_EXPORT bool net_js_value_isString(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->isString();
 }
 
 Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValueContainer, NetVariantListContainer* parametersContainer) {
@@ -159,14 +131,6 @@ Q_DECL_EXPORT void net_js_value_setItemAtIndex(NetJSValueContainer* jsValueConta
         value = valueContainer->variant;
     }
     jsValueContainer->jsValue->setItemAtIndex(arrayIndex, value);
-}
-
-Q_DECL_EXPORT QString net_js_value_toString(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->toString();
-}
-
-Q_DECL_EXPORT double net_js_value_toNumber(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->toNumber();
 }
 
 }

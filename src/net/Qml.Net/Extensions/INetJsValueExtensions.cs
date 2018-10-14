@@ -1,12 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Extensions
 {
-    public static class INetJsValueExtensions
+    public static class NetJsValueExtensions
     {
-        public static IEnumerable<T> AsEnumerable<T>(this INetJsValue value)
+        public static List<T> AsList<T>(this INetJsValue value)
         {
             if (value == null || !value.IsArray)
             {
@@ -40,7 +42,7 @@ namespace Qml.Net.Extensions
                     }
                 }
 
-                return list.AsEnumerable();
+                return list;
             }
             catch
             {

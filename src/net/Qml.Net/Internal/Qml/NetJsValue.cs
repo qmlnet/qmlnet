@@ -19,10 +19,6 @@ namespace Qml.Net.Internal.Qml
 
         public bool IsArray => Interop.NetJsValue.IsArray(Handle);
 
-        public bool IsDouble => Interop.NetJsValue.IsDouble(Handle);
-
-        public bool IsString => Interop.NetJsValue.IsString(Handle);
-        
         public NetVariant Call(NetVariantList parameters)
         {
             var result = Interop.NetJsValue.Call(Handle, parameters?.Handle ?? IntPtr.Zero);
@@ -87,19 +83,9 @@ namespace Qml.Net.Internal.Qml
             Interop.NetJsValue.SetProperty(Handle, propertyName, value?.Handle ?? IntPtr.Zero);
         }
 
-        public double ToDouble()
-        {
-            return Interop.NetJsValue.ToDouble(Handle);
-        }
-        
-        public new string ToString()
-        {
-            return Interop.NetJsValue.ToString(Handle);
-        }
-
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
-            Interop.NetVariant.Destroy(ptr);
+            Interop.NetJsValue.Destroy(ptr);
         }
 
         public dynamic AsDynamic()
@@ -127,10 +113,6 @@ namespace Qml.Net.Internal.Qml
 
             public bool IsArray => _jsValue.IsArray;
 
-            public bool IsDouble => _jsValue.IsDouble;
-
-            public bool IsString => _jsValue.IsString;
-
             public object GetProperty(string propertyName) => _jsValue.GetProperty(propertyName);
             
             public object GetItemAtIndex(int arrayIndex) => _jsValue.GetItemAtIndex(arrayIndex);
@@ -139,10 +121,6 @@ namespace Qml.Net.Internal.Qml
             {
                 return _jsValue.Call(parameters);
             }
-
-            public double ToDouble() =>_jsValue.ToDouble();
-
-            public new string ToString() => _jsValue.ToString();
 
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
@@ -203,10 +181,6 @@ namespace Qml.Net.Internal.Qml
         bool IsCallable(IntPtr jsValue);
         [NativeSymbol(Entrypoint = "net_js_value_isArray")]
         bool IsArray(IntPtr jsValue);
-        [NativeSymbol(Entrypoint = "net_js_value_isNumber")]
-        bool IsDouble(IntPtr jsValue);
-        [NativeSymbol(Entrypoint = "net_js_value_isString")]
-        bool IsString(IntPtr jsValue);
         [NativeSymbol(Entrypoint = "net_js_value_call")]
         IntPtr Call(IntPtr jsValue, IntPtr parameters);
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
@@ -215,9 +189,5 @@ namespace Qml.Net.Internal.Qml
         IntPtr GetItemAtIndex(IntPtr jsValue, int arrayIndex);
         [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
         void SetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName, IntPtr value);
-        [NativeSymbol(Entrypoint = "net_js_value_toNumber")]
-        double ToDouble(IntPtr jsValue);
-        [NativeSymbol(Entrypoint = "net_js_value_toString")]
-        string ToString(IntPtr jsValue);
     }
 }
