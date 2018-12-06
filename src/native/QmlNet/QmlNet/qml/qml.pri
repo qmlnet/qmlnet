@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/QApplication.h \
     $$PWD/QGuiApplication.h \
     $$PWD/QQmlApplicationEngine.h \
     $$PWD/NetVariant.h \
@@ -17,6 +18,7 @@ HEADERS += \
     $$PWD/QtWebEngine.h
 
 SOURCES += \
+    $$PWD/QApplication.cpp \
     $$PWD/QGuiApplication.cpp \
     $$PWD/QQmlApplicationEngine.cpp \
     $$PWD/NetVariant.cpp \

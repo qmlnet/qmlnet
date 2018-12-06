@@ -3,6 +3,7 @@
 
 #include <QSharedPointer>
 #include <Hosting/coreclrhost.h>
+#include <QApplication>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -35,10 +36,12 @@ public:
         Failed
     };
     typedef int (*runCallback)(QGuiApplication* app, QQmlApplicationEngine* engine);
+    typedef int (*runCallback)(QApplication* app, QQmlApplicationEngine* engine);
 
     static QList<QString> getPotientialDotnetRoots();
     static HostFxrContext findHostFxr();
     static int run(QGuiApplication& app, QQmlApplicationEngine& engine, runCallback runCallback, RunContext runContext);
+    static int run(QApplication& app, QQmlApplicationEngine& engine, runCallback runCallback, RunContext runContext);
 };
 
 #endif

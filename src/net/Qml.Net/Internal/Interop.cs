@@ -138,6 +138,7 @@ namespace Qml.Net.Internal
             INetMethodInfoInterop,
             INetPropertyInfoInterop,
             INetTypeManagerInterop,
+            IQApplicationInterop,
             IQGuiApplicationInterop,
             IQQmlApplicationEngine,
             INetVariantInterop,
@@ -165,7 +166,9 @@ namespace Qml.Net.Internal
         public static INetPropertyInfoInterop NetPropertyInfo { get; }
         
         public static INetTypeManagerInterop NetTypeManager { get; }
-        
+
+        public static IQApplicationInterop QApplication { get; }
+
         public static IQGuiApplicationInterop QGuiApplication { get; }
         
         public static IQQmlApplicationEngine QQmlApplicationEngine { get; }

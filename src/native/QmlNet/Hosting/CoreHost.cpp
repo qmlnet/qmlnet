@@ -214,3 +214,88 @@ int CoreHost::run(QGuiApplication& app, QQmlApplicationEngine& engine, runCallba
 
     return result;
 }
+
+int CoreHost::run(QApplication& app, QQmlApplicationEngine& engine, runCallback runCallback, RunContext runContext)
+{
+    QList<QString> execArgs;
+    execArgs.push_back(runContext.entryPoint);
+    execArgs.push_back("exec");
+    execArgs.push_back(runContext.managedExe);
+
+    QString appPtr;
+    appPtr.sprintf("%llu", (quintptr)&app);
+    QString enginePtr;
+    enginePtr.sprintf("%llu", (quintptr)&engine);
+    QString callbackPtr;
+    callbackPtr.sprintf("%llu", (quintptr)runCallback);
+    QString exportedSymbolPointer;
+    exportedSymbolPointer.sprintf("%llu", (quintptr)getExportedFunction);
+
+    execArgs.push_back(appPtr);
+    execArgs.push_back(enginePtr);
+    execArgs.push_back(callbackPtr);
+    execArgs.push_back(exportedSymbolPointer);
+
+    for (QString arg : runContext.args) {
+        execArgs.push_back(arg);
+    }
+
+    std::vector<const CORECLR_CHAR_TYPE*> hostFxrArgs;
+
+#ifdef _WIN32
+
+    for (QString arg : execArgs) {
+        hostFxrArgs.push_back(arg.utf16());
+    }
+
+#else
+
+    QList<QByteArray> execArgs8bit;
+    for (QString arg : execArgs) {
+        execArgs8bit.push_back(arg.toLocal8Bit());
+    }
+    for (QByteArray arg : execArgs8bit) {
+        hostFxrArgs.push_back(arg);
+    }
+
+#endif
+
+    hostfxr_main_ptr hostfxr_main = nullptr;
+
+#ifdef _WIN32
+
+    HMODULE dll = LoadLibraryA(qPrintable(runContext.hostFxrContext.hostFxrLib));
+    if(dll == nullptr) {
+        qCritical("Couldn't load lib at %s", qPrintable(runContext.hostFxrContext.hostFxrLib));
+        return LoadHostFxrResult::Failed;
+    }
+
+    hostfxr_main = reinterpret_cast<hostfxr_main_ptr>(GetProcAddress(dll, "hostfxr_main"));
+
+#else
+
+    void* dll = dlopen(qPrintable(runContext.hostFxrContext.hostFxrLib), RTLD_NOW | RTLD_LOCAL);
+    if(dll == nullptr) {
+        qCritical("Couldn't load lib at %s", qPrintable(runContext.hostFxrContext.hostFxrLib));
+        return LoadHostFxrResult::Failed;
+    }
+
+    hostfxr_main = reinterpret_cast<hostfxr_main_ptr>(dlsym(dll, "hostfxr_main"));
+
+#endif
+
+    if(hostfxr_main == nullptr) {
+        qCritical("Couldn't load 'hostfxr_main' from %s", qPrintable(runContext.hostFxrContext.hostFxrLib));
+        return -1;
+    }
+
+    int result = hostfxr_main(static_cast<int>(hostFxrArgs.size()), &hostFxrArgs[0]);
+
+#ifdef _WIN32
+    FreeLibrary(dll);
+#else
+    dlclose(dll);
+#endif
+
+    return result;
+}
