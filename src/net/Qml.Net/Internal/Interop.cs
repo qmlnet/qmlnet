@@ -87,6 +87,7 @@ namespace Qml.Net.Internal
             NetMethodInfo = interop;
             NetPropertyInfo = interop;
             NetTypeManager = interop;
+            QApplication = interop;
             QGuiApplication = interop;
             QQmlApplicationEngine = interop;
             NetVariant = interop;
