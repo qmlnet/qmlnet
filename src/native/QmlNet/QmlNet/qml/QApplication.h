@@ -21,7 +21,7 @@ struct QApplicationContainer {
     QList<QString> args;
     std::vector<char*> argsPointer;
     QApplication* app;
-    bool ownsGuiApp;
+    bool ownsApp;
     QSharedPointer<GuiThreadContextTriggerCallback> callback;
 };
 
