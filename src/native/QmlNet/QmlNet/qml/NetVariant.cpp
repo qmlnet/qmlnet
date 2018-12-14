@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QJSEngine>
 
+namespace
+{
 struct NetReferenceQmlContainer
 {
     QSharedPointer<NetReference> netReference;
@@ -15,9 +17,16 @@ struct NetJsValueQmlContainer
 {
     QSharedPointer<NetJSValue> jsValue;
 };
+}
 
 Q_DECLARE_METATYPE(NetReferenceQmlContainer)
 Q_DECLARE_METATYPE(NetJsValueQmlContainer)
+
+namespace
+{
+const int NetReferenceQmlContainerTypeId = qMetaTypeId<NetReferenceQmlContainer>();
+const int NetJsValueQmlContainerTypeId = qMetaTypeId<NetJsValueQmlContainer>();
+}
 
 NetVariant::NetVariant()
 {
@@ -29,144 +38,149 @@ NetVariant::~NetVariant()
     clearNetReference();
 }
 
-NetVariantTypeEnum NetVariant::getVariantType()
+NetVariantTypeEnum NetVariant::getVariantType() const
 {
-    switch(variant.type()) {
-    case QVariant::Invalid:
+    const int type = variant.userType();
+    switch(type) {
+    case QMetaType::UnknownType:
         return NetVariantTypeEnum_Invalid;
-    case QVariant::Bool:
+    case QMetaType::Bool:
         return NetVariantTypeEnum_Bool;
-    case QVariant::Char:
+    case QMetaType::QChar:
         return NetVariantTypeEnum_Char;
-    case QVariant::Int:
+    case qMetaTypeId<qint32>():
         return NetVariantTypeEnum_Int;
-    case QVariant::UInt:
+    case qMetaTypeId<quint32>():
         return NetVariantTypeEnum_UInt;
-    case QVariant::Double:
+    case qMetaTypeId<qint64>():
+        return NetVariantTypeEnum_Long;
+    case qMetaTypeId<quint64>():
+        return NetVariantTypeEnum_ULong;
+    case QMetaType::Float:
+        return NetVariantTypeEnum_Float;
+    case QMetaType::Double:
         return NetVariantTypeEnum_Double;
-    case QVariant::String:
+    case QMetaType::QString:
         return NetVariantTypeEnum_String;
-    case QVariant::DateTime:
+    case QMetaType::QDateTime:
         return NetVariantTypeEnum_DateTime;
-    case QVariant::UserType:
-        if(strcmp(variant.typeName(), "NetReferenceQmlContainer") == 0)
-            return NetVariantTypeEnum_Object;
-        if(strcmp(variant.typeName(), "NetJsValueQmlContainer") == 0)
-            return NetVariantTypeEnum_JSValue;
-        qWarning() << "Unknown user type for NetVariant: " << variant.typeName();
-        return NetVariantTypeEnum_Invalid;
     default:
-        qWarning() << "Unsupported qt variant type: " << variant.type();
-        return NetVariantTypeEnum_Invalid;
+        if(type == NetReferenceQmlContainerTypeId) {
+            return NetVariantTypeEnum_Object;
+        }
+        else if(type == NetJsValueQmlContainerTypeId) {
+            return NetVariantTypeEnum_JSValue;
+        } else {
+            qWarning() << "Unknown type for NetVariant: " << variant.typeName();
+            return NetVariantTypeEnum_Invalid;
+        }
     }
 }
 
 void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 {
     clearNetReference();
-    variant.setValue(NetReferenceQmlContainer{ netReference });
+    variant.setValue(NetReferenceQmlContainer{ std::move(netReference) });
 }
 
-QSharedPointer<NetReference> NetVariant::getNetReference()
+QSharedPointer<NetReference> NetVariant::getNetReference() const
 {
-    if(getVariantType() == NetVariantTypeEnum_Object) {
-        return variant.value<NetReferenceQmlContainer>().netReference;
-    }
-    return nullptr;
+    return getValue<NetReferenceQmlContainer>().netReference;
 }
 
 void NetVariant::setBool(bool value)
 {
-    clearNetReference();
-    variant.setValue(value);
+    setValue(value);
 }
 
-bool NetVariant::getBool()
+bool NetVariant::getBool() const
 {
-    if(variant.canConvert(QMetaType::Bool))
-        return variant.value<int>();
-
-    qDebug() << "Can't convert value to bool";
-
-    return false;
+    return getValue<bool>();
 }
 
 void NetVariant::setChar(QChar value)
 {
-    clearNetReference();
-    variant.setValue(value);
+    setValue(value);
 }
 
-QChar NetVariant::getChar()
+QChar NetVariant::getChar() const
 {
-    return variant.toChar();
+    return getValue<QChar>();
 }
 
-void NetVariant::setInt(int value)
+void NetVariant::setInt(qint32 value)
 {
-    clearNetReference();
-    variant.setValue(value);
+    setValue(value);
 }
 
-int NetVariant::getInt()
+qint32 NetVariant::getInt() const
 {
-    if(variant.canConvert(QMetaType::Int))
-        return variant.value<int>();
-
-    qDebug() << "Can't convert value to int";
-
-    return 0;
+    return getValue<qint32>();
 }
 
-void NetVariant::setUInt(unsigned int value)
+void NetVariant::setUInt(quint32 value)
 {
-    clearNetReference();
-    variant.setValue(value);
+    setValue(value);
 }
 
-unsigned int NetVariant::getUInt()
+quint32 NetVariant::getUInt() const
 {
-    bool ok = false;
-    unsigned int result = variant.toUInt(&ok);
+    return getValue<quint32>();
+}
 
-    if(!ok) {
-        qDebug() << "Couldn't convert variant to unsigned int";
-    }
+void NetVariant::setLong(qint64 value)
+{
+    setValue(value);
+}
 
-    return result;
+qint64 NetVariant::getLong() const
+{
+    return getValue<qint64>();
+}
+
+void NetVariant::setULong(quint64 value)
+{
+    setValue(value);
+}
+
+quint64 NetVariant::getULong() const
+{
+    return getValue<quint64>();
+}
+
+void NetVariant::setFloat(float value)
+{
+    setValue(value);
+}
+
+float NetVariant::getFloat() const
+{
+    return getValue<float>();
 }
 
 void NetVariant::setDouble(double value)
 {
-    clearNetReference();
-    variant.setValue(value);
+    setValue(value);
 }
 
-double NetVariant::getDouble()
+double NetVariant::getDouble() const
 {
-    bool ok = false;
-    double result = variant.toDouble(&ok);
-
-    if(!ok) {
-        qDebug() << "Couldn't convert variant to double";
-    }
-
-    return result;
+    return getValue<double>();
 }
 
-void NetVariant::setString(QString* value)
+void NetVariant::setString(const QString* value)
 {
-    clearNetReference();
-    if(value) {
-        variant.setValue(*value);
-    } else {
-        variant.clear();
-    }
+    setValuePtr(value);
 }
 
-QString NetVariant::getString()
+void NetVariant::setString(const QString& value)
 {
-    if(variant.type() != QVariant::String) {
+    setValue(value);
+}
+
+QString NetVariant::getString() const
+{
+    if(variant.userType() != QMetaType::QString) {
         qDebug() << "Variant is not a string";
         return QString();
     }
@@ -174,33 +188,24 @@ QString NetVariant::getString()
     return variant.toString();
 }
 
-void NetVariant::setDateTime(QDateTime& value)
+void NetVariant::setDateTime(const QDateTime& value)
 {
-    clearNetReference();
-    if(value.isNull()) {
-        variant.clear();
-    } else {
-        variant.setValue(value);
-    }
+    setValue(value);
 }
 
-QDateTime NetVariant::getDateTime()
+QDateTime NetVariant::getDateTime() const
 {
-    return variant.toDateTime();
+    return getValue<QDateTime>();
 }
 
 void NetVariant::setJsValue(QSharedPointer<NetJSValue> jsValue)
 {
-    clearNetReference();
-    variant.setValue(NetJsValueQmlContainer{ jsValue });
+    setValue(NetJsValueQmlContainer{ std::move(jsValue) });
 }
 
-QSharedPointer<NetJSValue> NetVariant::getJsValue()
+QSharedPointer<NetJSValue> NetVariant::getJsValue() const
 {
-    if(getVariantType() == NetVariantTypeEnum_JSValue) {
-        return variant.value<NetJsValueQmlContainer>().jsValue;
-    }
-    return nullptr;
+    return getValue<NetJsValueQmlContainer>().jsValue;
 }
 
 void NetVariant::clear()
@@ -228,8 +233,7 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
     else if(qJsValue.isObject()) {
         result = QSharedPointer<NetVariant>(new NetVariant());
         result->setJsValue(QSharedPointer<NetJSValue>(new NetJSValue(qJsValue)));
-    }
-    else {
+    } else {
         result = QSharedPointer<NetVariant>(new NetVariant());
         QVariant variant = qJsValue.toVariant();
         result->variant = variant;
@@ -237,7 +241,7 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
     return result;
 }
 
-QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine)
+QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine) const
 {
     switch(getVariantType()) {
     case NetVariantTypeEnum_Object: {
@@ -255,116 +259,125 @@ QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine)
 
 void NetVariant::fromQVariant(const QVariant* variant, QSharedPointer<NetVariant> destination)
 {
-    switch(variant->type()) {
-    case QVariant::Invalid:
+    const int type = variant->userType();
+    switch(type) {
+    case QMetaType::UnknownType:
         destination->clear();
         break;
-    case QVariant::Bool:
-        destination->setBool(variant->value<bool>());
+    case QMetaType::Bool:
+    case QMetaType::QChar:
+    case qMetaTypeId<qint32>():
+    case qMetaTypeId<quint32>():
+    case qMetaTypeId<qint64>():
+    case qMetaTypeId<quint64>():
+    case QMetaType::Float:
+    case QMetaType::Double:
+    case QMetaType::QString:
+    case QMetaType::QDateTime:
+        destination->setValueVariant(*variant);
         break;
-    case QVariant::Char:
-        destination->setChar(variant->toChar());
-        break;
-    case QVariant::Int:
-        destination->setInt(variant->value<int>());
-        break;
-    case QVariant::UInt:
-        destination->setUInt(variant->value<unsigned int>());
-        break;
-    case QVariant::Double:
-        destination->setDouble(variant->value<double>());
-        break;
-    case QVariant::String:
-    {
-        QString stringValue = variant->toString();
-        destination->setString(&stringValue);
-        break;
-    }
-    case QVariant::DateTime:
-    {
-        QDateTime dateTimeValue = variant->toDateTime();
-        destination->setDateTime(dateTimeValue);
+    case QMetaType::QObjectStar: {
+        QObject* value = variant->value<QObject*>();
+        NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
+        if(netValue) {
+            destination->setNetReference(netValue->getNetReference());
+        } else {
+            qDebug() << "Unsupported variant type: " << variant->type() << variant->typeName();
+        }
         break;
     }
     default:
-
-        if(variant->userType() == qMetaTypeId<QJSValue>()) {
+        if(type == qMetaTypeId<QJSValue>()) {
             // TODO: Either serialize this type to a string, to be deserialized in .NET, or
             // pass raw value to .NET to be dynamically invoked (using dynamic).
             // See qtdeclarative\src\plugins\qmltooling\qmldbg_debugger\qqmlenginedebugservice.cpp:184
             // for serialization methods.
-            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(variant->value<QJSValue>()));
+            QSharedPointer<NetJSValue> netJsValue(new NetJSValue(variant->value<QJSValue>()));
             destination->setJsValue(netJsValue);
             break;
         }
 
-        if(variant->userType() == QMetaType::QObjectStar) {
-            QObject* value = variant->value<QObject*>();
-            NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
-            if(netValue) {
-                destination->setNetReference(netValue->getNetReference());
-                break;
-            }
-        }
-
-        qDebug() << "Unsupported variant type: " << variant->type();
+        qDebug() << "Unsupported variant type: " << variant->type() << variant->typeName();
         break;
     }
 }
 
 QSharedPointer<NetVariant> NetVariant::fromQVariant(const QVariant* variant)
 {
-    QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
+    QSharedPointer<NetVariant> result(new NetVariant());
     fromQVariant(variant, result);
     return result;
 }
 
-QVariant NetVariant::toQVariant()
+QVariant NetVariant::toQVariant() const
 {
-    QVariant result;
     switch(getVariantType()) {
     case NetVariantTypeEnum_JSValue:
-        result = getJsValue()->getJsValue().toVariant();
-        break;
+        return getJsValue()->getJsValue().toVariant();
     case NetVariantTypeEnum_Object:
-        result = QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
-        break;
+        return QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
     default:
-        result = variant;
-        break;
+        return variant;
     }
-    return result;
 }
 
-QString NetVariant::getDisplayValue()
+QString NetVariant::getDisplayValue() const
 {
-    QString result;
     switch(getVariantType()) {
     case NetVariantTypeEnum_JSValue:
-        result = getJsValue()->getJsValue().toString();
-        break;
+        return getJsValue()->getJsValue().toString();
     case NetVariantTypeEnum_Object:
-        result = getNetReference()->displayName();
-        break;
+        return getNetReference()->displayName();
     default:
-        result = variant.toString();
-        break;
+        return variant.toString();
     }
-    return result;
 }
 
 void NetVariant::clearNetReference()
 {
-    if(variant.canConvert<NetReferenceQmlContainer>())
-    {
+    if(variant.canConvert<NetReferenceQmlContainer>()) {
         variant.value<NetReferenceQmlContainer>().netReference.clear();
         variant.clear();
     }
-    else if(variant.canConvert<NetJsValueQmlContainer>())
-    {
+    else if(variant.canConvert<NetJsValueQmlContainer>()) {
         variant.value<NetJsValueQmlContainer>().jsValue.clear();
         variant.clear();
     }
+}
+
+template<typename T>
+void NetVariant::setValue(const T& value)
+{
+    clearNetReference();
+    variant.setValue(value);
+}
+
+void NetVariant::setValueVariant(const QVariant& value)
+{
+    Q_ASSERT(value.userType() != QMetaType::QObjectStar);
+    Q_ASSERT(value.userType() != qMetaTypeId<QJSValue>());
+    Q_ASSERT(value.userType() < QMetaType::User);
+    clearNetReference();
+    variant = value;
+}
+
+template<typename T>
+void NetVariant::setValuePtr(const T* value)
+{
+    if(value) {
+        setValue(*value);
+    } else {
+        clear();
+    }
+}
+
+template<typename T>
+T NetVariant::getValue() const
+{
+    if(!variant.canConvert(qMetaTypeId<T>())) {
+        qDebug() << "Can't convert value" << variant << "from" << variant.typeName() << "to" << QMetaType::typeName(qMetaTypeId<T>());
+    }
+    return variant.value<T>();
 }
 
 extern "C" {
@@ -421,28 +434,52 @@ Q_DECL_EXPORT bool net_variant_getBool(NetVariantContainer* container) {
     return container->variant->getBool();
 }
 
-Q_DECL_EXPORT void net_variant_setChar(NetVariantContainer* container, ushort value) {
+Q_DECL_EXPORT void net_variant_setChar(NetVariantContainer* container, quint16 value) {
     container->variant->setChar(value);
 }
 
-Q_DECL_EXPORT ushort net_variant_getChar(NetVariantContainer* container) {
-    return (ushort)container->variant->getChar().unicode();
+Q_DECL_EXPORT quint16 net_variant_getChar(NetVariantContainer* container) {
+    return quint16(container->variant->getChar().unicode());
 }
 
-Q_DECL_EXPORT void net_variant_setInt(NetVariantContainer* container, int value) {
+Q_DECL_EXPORT void net_variant_setInt(NetVariantContainer* container, qint32 value) {
     container->variant->setInt(value);
 }
 
-Q_DECL_EXPORT int net_variant_getInt(NetVariantContainer* container) {
+Q_DECL_EXPORT qint32 net_variant_getInt(NetVariantContainer* container) {
     return container->variant->getInt();
 }
 
-Q_DECL_EXPORT void net_variant_setUInt(NetVariantContainer* container, unsigned int value) {
+Q_DECL_EXPORT void net_variant_setUInt(NetVariantContainer* container, quint32 value) {
     container->variant->setUInt(value);
 }
 
-Q_DECL_EXPORT unsigned int net_variant_getUInt(NetVariantContainer* container) {
+Q_DECL_EXPORT quint32 net_variant_getUInt(NetVariantContainer* container) {
     return container->variant->getUInt();
+}
+
+Q_DECL_EXPORT void net_variant_setLong(NetVariantContainer* container, qint64 value) {
+    container->variant->setLong(value);
+}
+
+Q_DECL_EXPORT qint64 net_variant_getLong(NetVariantContainer* container) {
+    return container->variant->getLong();
+}
+
+Q_DECL_EXPORT void net_variant_setULong(NetVariantContainer* container, quint64 value) {
+    container->variant->setULong(value);
+}
+
+Q_DECL_EXPORT quint64 net_variant_getULong(NetVariantContainer* container) {
+    return container->variant->getULong();
+}
+
+Q_DECL_EXPORT void net_variant_setFloat(NetVariantContainer* container, float value) {
+    container->variant->setFloat(value);
+}
+
+Q_DECL_EXPORT float net_variant_getFloat(NetVariantContainer* container) {
+    return container->variant->getFloat();
 }
 
 Q_DECL_EXPORT void net_variant_setDouble(NetVariantContainer* container, double value) {
@@ -457,32 +494,29 @@ Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, LPWSTR 
     if(value == nullptr) {
         container->variant->setString(nullptr);
     } else {
-        QString temp = QString::fromUtf16((const char16_t*)value);
-        container->variant->setString(&temp);
+        container->variant->setString(QString::fromUtf16(static_cast<const char16_t*>(value)));
     }
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* net_variant_getString(NetVariantContainer* container) {
-    QString string = container->variant->getString();
+    const QString& string = container->variant->getString();
     if(string.isNull()) {
         return nullptr;
     }
     return createString(string);
 }
 
-Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, DateTimeContainer* value) {
+Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, const DateTimeContainer* value) {
     if(value == nullptr || value->isNull) {
-        QDateTime dt;
-        container->variant->setDateTime(dt);
+        container->variant->setDateTime(QDateTime());
     } else {
-        QDateTime dt(QDate(value->year, value->month, value->day),
-                     QTime(value->hour, value->minute, value->second, value->msec),
-                     Qt::OffsetFromUTC, value->offsetSeconds);
-        container->variant->setDateTime(dt);
+        container->variant->setDateTime(QDateTime(QDate(value->year, value->month, value->day),
+                                                  QTime(value->hour, value->minute, value->second, value->msec),
+                                                  Qt::OffsetFromUTC, value->offsetSeconds));
     }
 }
 Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* value) {
-    QDateTime dt = container->variant->getDateTime();
+    const QDateTime& dt = container->variant->getDateTime();
     if(dt.isNull()) {
         value->isNull = true;
         return;
@@ -492,13 +526,15 @@ Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateT
         value->isNull = true;
         return;
     }
-    value->year = dt.date().year();
-    value->month = dt.date().month();
-    value->day = dt.date().day();
-    value->hour = dt.time().hour();
-    value->minute = dt.time().minute();
-    value->second = dt.time().second();
-    value->msec = dt.time().msec();
+    const QDate& date = dt.date();
+    const QTime& time = dt.time();
+    value->year = date.year();
+    value->month = date.month();
+    value->day = date.day();
+    value->hour = time.hour();
+    value->minute = time.minute();
+    value->second = time.second();
+    value->msec = time.msec();
     value->offsetSeconds = dt.offsetFromUtc();
 }
 
@@ -511,7 +547,7 @@ Q_DECL_EXPORT void net_variant_setJsValue(NetVariantContainer* container, NetJSV
 }
 
 Q_DECL_EXPORT NetJSValueContainer* net_variant_getJsValue(NetVariantContainer* container) {
-    QSharedPointer<NetJSValue> instance = container->variant->getJsValue();
+    const QSharedPointer<NetJSValue>& instance = container->variant->getJsValue();
     if(instance == nullptr) {
         return nullptr;
     }

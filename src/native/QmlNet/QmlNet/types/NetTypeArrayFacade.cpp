@@ -15,7 +15,7 @@ QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(QSharedPointer<N
         if(facade->isIncomplete()) {
             return nullptr;
         }
-        return facade.dynamicCast<NetTypeArrayFacade>();
+        return facade.staticCast<NetTypeArrayFacade>();
     }
 
     if(type->isList()) {
@@ -23,7 +23,7 @@ QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(QSharedPointer<N
         if(facade->isIncomplete()) {
             return nullptr;
         }
-        return facade.dynamicCast<NetTypeArrayFacade>();
+        return facade.staticCast<NetTypeArrayFacade>();
     }
 
     return nullptr;

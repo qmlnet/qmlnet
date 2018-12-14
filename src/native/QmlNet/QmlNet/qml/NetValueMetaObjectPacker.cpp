@@ -27,6 +27,15 @@ void NetValueTypePacker::pack(QSharedPointer<NetVariant> source, void* destinati
     case NetVariantTypeEnum_UInt:
         destinationVariant->setValue(source->getUInt());
         break;
+    case NetVariantTypeEnum_Long:
+        destinationVariant->setValue(source->getLong());
+        break;
+    case NetVariantTypeEnum_ULong:
+        destinationVariant->setValue(source->getULong());
+        break;
+    case NetVariantTypeEnum_Float:
+        destinationVariant->setValue(source->getFloat());
+        break;
     case NetVariantTypeEnum_Double:
         destinationVariant->setValue(source->getDouble());
         break;
@@ -43,8 +52,8 @@ void NetValueTypePacker::pack(QSharedPointer<NetVariant> source, void* destinati
         destinationVariant->setValue(netValue);
         break;
     }
-    default:
-        qWarning() << "Unsupported variant type: " << source->getVariantType();
+    case NetVariantTypeEnum_JSValue:
+        destinationVariant->setValue(source->getJsValue()->getJsValue());
         break;
     }
 }
@@ -52,7 +61,6 @@ void NetValueTypePacker::pack(QSharedPointer<NetVariant> source, void* destinati
 void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum prefType)
 {
     QVariant* sourceVariant = static_cast<QVariant*>(source);
-    bool ok = false;
 
     if(sourceVariant->isNull()) {
         destination->clear();
@@ -60,75 +68,49 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
     }
 
     switch(prefType) {
+    case NetVariantTypeEnum_Invalid:
+        destination->clear();
+        return;
     case NetVariantTypeEnum_Bool:
         destination->setBool(sourceVariant->toBool());
         return;
     case NetVariantTypeEnum_Char: {
-        QString v = sourceVariant->toString();
-        if(v.isNull() || v.isEmpty()) {
-            qDebug() << "Can't set empty string to char, setting to null.";
-            destination->setChar(QChar::Null);
+        const QString& v = sourceVariant->toString();
+        if(v.length() == 1) {
+            destination->setChar(v.at(0));
         } else {
-            if(v.length() == 1) {
-                destination->setChar(v.at(0));
-            } else {
-                qDebug() << "Can't set string to char that has more than one character.";
-                destination->setChar(QChar::Null);
-            }
+            qDebug() << "Can't set string" << v << "to char.";
+            destination->setChar(QChar::Null);
         }
         return;
     }
     case NetVariantTypeEnum_Int:
-    {
-        int result = sourceVariant->toInt(&ok);
-        if(ok) {
-            destination->setInt(result);
-            return;
-        }
-        break;
-    }
+        destination->setInt(sourceVariant->value<qint32>());
+        return;
     case NetVariantTypeEnum_UInt:
-    {
-        unsigned int result = sourceVariant->toUInt(&ok);
-        if(ok) {
-            destination->setUInt(result);
-            return;
-        }
-        break;
-    }
+        destination->setUInt(sourceVariant->value<quint32>());
+        return;
+    case NetVariantTypeEnum_Long:
+        destination->setLong(sourceVariant->value<qint64>());
+        return;
+    case NetVariantTypeEnum_ULong:
+        destination->setULong(sourceVariant->value<quint64>());
+        return;
+    case NetVariantTypeEnum_Float:
+        destination->setFloat(sourceVariant->toFloat());
+        return;
     case NetVariantTypeEnum_Double:
-    {
-        double result = sourceVariant->toDouble(&ok);
-        if(ok) {
-            destination->setDouble(result);
-            return;
-        }
-        break;
-    }
+        destination->setDouble(sourceVariant->toDouble());
+        return;
     case NetVariantTypeEnum_String:
-    {
-        QString stringResult = sourceVariant->toString();
-        destination->setString(&stringResult);
+        destination->setString(sourceVariant->toString());
         return;
-    }
     case NetVariantTypeEnum_DateTime:
-    {
-        QDateTime dateTimeResult = sourceVariant->toDateTime();
-        if(!dateTimeResult.isValid()) {
-            qDebug() << "Invalid date time";
-            break;
-        }
-        if(dateTimeResult.isNull()) {
-            destination->clear();
-            break;
-        }
-        destination->setDateTime(dateTimeResult);
+        destination->setDateTime(sourceVariant->toDateTime());
         return;
-    }
     case NetVariantTypeEnum_Object:
     {
-        if (sourceVariant->type() == static_cast<QVariant::Type>(QMetaType::QObjectStar)) {
-
+        if(sourceVariant->userType() == QMetaType::QObjectStar) {
             QObject* value = sourceVariant->value<QObject*>();
             NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
             if(netValue) {
@@ -141,7 +123,7 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
     case NetVariantTypeEnum_JSValue:
     {
         if(sourceVariant->userType() == qMetaTypeId<QJSValue>()) {
-            QSharedPointer<NetJSValue> netJsValue = QSharedPointer<NetJSValue>(new NetJSValue(sourceVariant->value<QJSValue>()));
+            QSharedPointer<NetJSValue> netJsValue(new NetJSValue(sourceVariant->value<QJSValue>()));
             destination->setJsValue(netJsValue);
             return;
         } else {
@@ -149,8 +131,6 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
         }
         break;
     }
-    default:
-        break;
     }
 
     NetVariant::fromQVariant(sourceVariant, destination);
@@ -165,10 +145,11 @@ public:
     }
     void pack(QSharedPointer<NetVariant> source, void* destination)
     {
+        Q_ASSERT(source->getVariantType() == NetVariantTypeEnum_String);
         QString* destinationString = static_cast<QString*>(destination);
         switch(source->getVariantType()){
         case NetVariantTypeEnum_Invalid:
-            // Leave it empty
+            destinationString->clear();
             break;
         case NetVariantTypeEnum_String:
             *destinationString = source->getString();
@@ -178,8 +159,9 @@ public:
             break;
         }
     }
-    void unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum)
+    void unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum prefType)
     {
+        Q_ASSERT(prefType == NetVariantTypeEnum_String);
         QString* sourceString = static_cast<QString*>(source);
         destination->setString(sourceString);
     }
@@ -194,6 +176,9 @@ NetValueMetaObjectPacker::NetValueMetaObjectPacker()
     packers[NetVariantTypeEnum_Char] = variantPacker;
     packers[NetVariantTypeEnum_Int] = variantPacker;
     packers[NetVariantTypeEnum_UInt] = variantPacker;
+    packers[NetVariantTypeEnum_Long] = variantPacker;
+    packers[NetVariantTypeEnum_ULong] = variantPacker;
+    packers[NetVariantTypeEnum_Float] = variantPacker;
     packers[NetVariantTypeEnum_Double] = variantPacker;
     packers[NetVariantTypeEnum_String] = stringPacker;
     packers[NetVariantTypeEnum_DateTime] = variantPacker;
@@ -209,5 +194,6 @@ NetValueMetaObjectPacker* NetValueMetaObjectPacker::getInstance()
 
 NetValueTypePacker* NetValueMetaObjectPacker::getPacker(NetVariantTypeEnum variantType)
 {
+    Q_ASSERT(packers.contains(variantType));
     return packers[variantType];
 }
