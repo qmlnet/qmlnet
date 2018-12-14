@@ -1,3 +1,4 @@
+image: Visual Studio 2017
 install:
   - choco install gitversion.portable -pre -y --version 4.0.0-beta0012
 before_build:
