@@ -54,6 +54,24 @@ namespace Qml.Net.Internal.Qml
             get => Interop.NetVariant.GetUInt(Handle);
             set => Interop.NetVariant.SetUInt(Handle, value);
         }
+
+        public long Long
+        {
+            get => Interop.NetVariant.GetLong(Handle);
+            set => Interop.NetVariant.SetLong(Handle, value);
+        }
+
+        public ulong ULong
+        {
+            get => Interop.NetVariant.GetULong(Handle);
+            set => Interop.NetVariant.SetULong(Handle, value);
+        }
+
+        public float Float
+        {
+            get => Interop.NetVariant.GetFloat(Handle);
+            set => Interop.NetVariant.SetFloat(Handle, value);
+        }
         
         public double Double
         {
@@ -163,6 +181,21 @@ namespace Qml.Net.Internal.Qml
         void SetUInt(IntPtr variant, uint value);
         [NativeSymbol(Entrypoint = "net_variant_getUInt")]
         uint GetUInt(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setLong")]
+        void SetLong(IntPtr variant, long value);
+        [NativeSymbol(Entrypoint = "net_variant_getLong")]
+        long GetLong(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setULong")]
+        void SetULong(IntPtr variant, ulong value);
+        [NativeSymbol(Entrypoint = "net_variant_getULong")]
+        ulong GetULong(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setFloat")]
+        void SetFloat(IntPtr variant, float value);
+        [NativeSymbol(Entrypoint = "net_variant_getFloat")]
+        float GetFloat(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setDouble")]
         void SetDouble(IntPtr variant, double value);

@@ -12,34 +12,52 @@ class NetVariant
 public:
     NetVariant();
     ~NetVariant();
-    NetVariantTypeEnum getVariantType();
+    NetVariantTypeEnum getVariantType() const;
     void setNetReference(QSharedPointer<NetReference> netReference);
-    QSharedPointer<NetReference> getNetReference();
+    QSharedPointer<NetReference> getNetReference() const;
     void setBool(bool value);
-    bool getBool();
+    bool getBool() const;
     void setChar(QChar value);
-    QChar getChar();
-    void setInt(int value);
-    int getInt();
-    void setUInt(unsigned int value);
-    unsigned int getUInt();
+    QChar getChar() const;
+    void setInt(qint32 value);
+    qint32 getInt() const;
+    void setUInt(quint32 value);
+    quint32 getUInt() const;
+    void setLong(qint64 value);
+    qint64 getLong() const;
+    void setULong(quint64 value);
+    quint64 getULong() const;
+    void setFloat(float value);
+    float getFloat() const;
     void setDouble(double value);
-    double getDouble();
-    void setString(QString* value);
-    QString getString();
-    void setDateTime(QDateTime& value);
-    QDateTime getDateTime();
+    double getDouble() const;
+    void setString(const QString* value);
+    void setString(const QString& value);
+    QString getString() const;
+    void setDateTime(const QDateTime& value);
+    QDateTime getDateTime() const;
     void setJsValue(QSharedPointer<NetJSValue> jsValue);
-    QSharedPointer<NetJSValue> getJsValue();
+    QSharedPointer<NetJSValue> getJsValue() const;
     void clear();
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
-    QJSValue toQJSValue(QJSEngine* jsEngine);
+    QJSValue toQJSValue(QJSEngine* jsEngine) const;
     static void fromQVariant(const QVariant* variant, QSharedPointer<NetVariant> destination);
     static QSharedPointer<NetVariant> fromQVariant(const QVariant* variant);
-    QVariant toQVariant();
-    QString getDisplayValue();
+    QVariant toQVariant() const;
+    QString getDisplayValue() const;
 private:
     void clearNetReference();
+
+    template<typename T>
+    void setValue(const T& value);
+    void setValueVariant(const QVariant& value);
+
+    template<typename T>
+    void setValuePtr(const T* value);
+
+    template<typename T>
+    T getValue() const;
+
     QVariant variant;
 };
 

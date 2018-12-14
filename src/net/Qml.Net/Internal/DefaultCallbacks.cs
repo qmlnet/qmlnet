@@ -461,6 +461,12 @@ namespace Qml.Net.Internal
                 return NetVariantType.Int;
             if (typeInfo == typeof(uint))
                 return NetVariantType.UInt;
+            if (typeInfo == typeof(long))
+                return NetVariantType.Long;
+            if (typeInfo == typeof(ulong))
+                return NetVariantType.ULong;
+            if (typeInfo == typeof(float))
+                return NetVariantType.Float;
             if (typeInfo == typeof(double))
                 return NetVariantType.Double;
             if (typeInfo == typeof(string))

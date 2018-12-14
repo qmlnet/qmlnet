@@ -13,6 +13,7 @@ class NetValueMetaObject;
 
 struct NetValueInterface
 {
+    virtual ~NetValueInterface() {}
     virtual QSharedPointer<NetReference> getNetReference() = 0;
 };
 

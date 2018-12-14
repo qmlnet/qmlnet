@@ -42,12 +42,18 @@ namespace Qml.Net.Internal
                     destination.Bool = (bool)source;
                 else if(type == typeof(char))
                     destination.Char = (char)source;
+                else if(type == typeof(float))
+                    destination.Float = (float)source;
                 else if(type == typeof(double))
                     destination.Double = (double)source;
                 else if (type == typeof(int))
                     destination.Int = (int)source;
                 else if(type == typeof(uint))
                     destination.UInt = (uint)source;
+                else if (type == typeof(long))
+                    destination.Long = (long)source;
+                else if(type == typeof(ulong))
+                    destination.ULong = (ulong)source;
                 else if (type == typeof(string))
                     destination.String = (string)source;
                 else if (type == typeof(DateTimeOffset))
@@ -79,6 +85,15 @@ namespace Qml.Net.Internal
                     break;
                 case NetVariantType.UInt:
                     destination = source.UInt;
+                    break;
+                case NetVariantType.Long:
+                    destination = source.Long;
+                    break;
+                case NetVariantType.ULong:
+                    destination = source.ULong;
+                    break;
+                case NetVariantType.Float:
+                    destination = source.Float;
                     break;
                 case NetVariantType.Double:
                     destination = source.Double;
