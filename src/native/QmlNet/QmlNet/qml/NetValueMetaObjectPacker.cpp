@@ -13,7 +13,7 @@ void NetValueTypePacker::pack(QSharedPointer<NetVariant> source, void* destinati
     QVariant* destinationVariant = static_cast<QVariant*>(destination);
     switch(source->getVariantType()) {
     case NetVariantTypeEnum_Invalid:
-        destinationVariant->clear();
+        destinationVariant->setValue(QVariant::fromValue(nullptr));
         break;
     case NetVariantTypeEnum_Bool:
         destinationVariant->setValue(source->getBool());
