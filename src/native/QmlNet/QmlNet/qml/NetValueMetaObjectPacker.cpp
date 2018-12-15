@@ -171,19 +171,31 @@ NetValueMetaObjectPacker::NetValueMetaObjectPacker()
 {
     NetValueTypePacker* variantPacker = new NetValueTypePacker();
     StringValueTypePacker* stringPacker = new StringValueTypePacker();
-    packers[NetVariantTypeEnum_Invalid] = variantPacker;
-    packers[NetVariantTypeEnum_Bool] = variantPacker;
-    packers[NetVariantTypeEnum_Char] = variantPacker;
-    packers[NetVariantTypeEnum_Int] = variantPacker;
-    packers[NetVariantTypeEnum_UInt] = variantPacker;
-    packers[NetVariantTypeEnum_Long] = variantPacker;
-    packers[NetVariantTypeEnum_ULong] = variantPacker;
-    packers[NetVariantTypeEnum_Float] = variantPacker;
-    packers[NetVariantTypeEnum_Double] = variantPacker;
-    packers[NetVariantTypeEnum_String] = stringPacker;
-    packers[NetVariantTypeEnum_DateTime] = variantPacker;
-    packers[NetVariantTypeEnum_Object] = variantPacker;
-    packers[NetVariantTypeEnum_JSValue] = variantPacker;
+
+    //This is might not be pretty, but it does allow the compiler generate a warning if a value is missing.
+    for (int typeInt = NetVariantTypeEnum_Invalid; typeInt <= NetVariantTypeEnum_JSValue; ++typeInt)
+    {
+        NetVariantTypeEnum type = NetVariantTypeEnum(typeInt);
+        switch(type) {
+        case NetVariantTypeEnum_Invalid:
+        case NetVariantTypeEnum_Bool:
+        case NetVariantTypeEnum_Char:
+        case NetVariantTypeEnum_Int:
+        case NetVariantTypeEnum_UInt:
+        case NetVariantTypeEnum_Long:
+        case NetVariantTypeEnum_ULong:
+        case NetVariantTypeEnum_Float:
+        case NetVariantTypeEnum_Double:
+        case NetVariantTypeEnum_DateTime:
+        case NetVariantTypeEnum_Object:
+        case NetVariantTypeEnum_JSValue:
+            packers[type] = variantPacker;
+            break;
+        case NetVariantTypeEnum_String:
+            packers[type] = stringPacker;
+            break;
+        }
+    }
 }
 
 NetValueMetaObjectPacker* NetValueMetaObjectPacker::getInstance()
