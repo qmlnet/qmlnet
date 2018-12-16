@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using AdvancedDLSupport;
 using Qml.Net.Internal;
@@ -117,6 +117,12 @@ namespace Qml.Net
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
         int RegisterType(IntPtr type, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string qmlName);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerSingletonTypeQml")]
+        int RegisterSingletonTypeQml([MarshalAs(UnmanagedType.LPWStr), CallerFree]string url, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string qmlName);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerSingletonTypeNet")]
+        int RegisterSingletonTypeNet(IntPtr type, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string typeName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
         void AddImportPath(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string path);
