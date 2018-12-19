@@ -8,7 +8,7 @@ const char* NetValueTypePacker::getQmlType()
     return "QVariant";
 }
 
-void NetValueTypePacker::pack(QSharedPointer<NetVariant> source, void* destination)
+void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* destination)
 {
     QVariant* destinationVariant = static_cast<QVariant*>(destination);
     switch(source->getVariantType()) {
@@ -58,7 +58,7 @@ void NetValueTypePacker::pack(QSharedPointer<NetVariant> source, void* destinati
     }
 }
 
-void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum prefType)
+void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType)
 {
     QVariant* sourceVariant = static_cast<QVariant*>(source);
 
@@ -74,7 +74,8 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
     case NetVariantTypeEnum_Bool:
         destination->setBool(sourceVariant->toBool());
         return;
-    case NetVariantTypeEnum_Char: {
+    case NetVariantTypeEnum_Char:
+    {
         const QString& v = sourceVariant->toString();
         if(v.length() == 1) {
             destination->setChar(v.at(0));
@@ -126,9 +127,8 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
             QSharedPointer<NetJSValue> netJsValue(new NetJSValue(sourceVariant->value<QJSValue>()));
             destination->setJsValue(netJsValue);
             return;
-        } else {
-            // TODO: Try to convert other types to JS Value.
         }
+        // TODO: Try to convert other types to JS Value.
         break;
     }
     }
@@ -139,11 +139,11 @@ void NetValueTypePacker::unpack(QSharedPointer<NetVariant> destination, void* so
 class StringValueTypePacker : public NetValueTypePacker
 {
 public:
-    const char* getQmlType()
+    const char* getQmlType() override
     {
         return "QString";
     }
-    void pack(QSharedPointer<NetVariant> source, void* destination)
+    void pack(const QSharedPointer<NetVariant>& source, void* destination) override
     {
         Q_ASSERT(source->getVariantType() == NetVariantTypeEnum_String);
         QString* destinationString = static_cast<QString*>(destination);
@@ -155,11 +155,11 @@ public:
             *destinationString = source->getString();
             break;
         default:
-            qWarning("Attempting to set a variant id %d to a QString", source->getVariantType());
+            qWarning() << "Attempting to set a variant id" <<  source->getVariantType() << "to a QString";
             break;
         }
     }
-    void unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum prefType)
+    void unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType) override
     {
         Q_ASSERT(prefType == NetVariantTypeEnum_String);
         QString* sourceString = static_cast<QString*>(source);

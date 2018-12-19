@@ -16,11 +16,11 @@ public:
     QJSValue getJsValue();
     bool isCallable();
     bool isArray();
-    QSharedPointer<NetVariant> call(QSharedPointer<NetVariantList> parameters);
-    QSharedPointer<NetVariant> getProperty(QString propertyName);
+    QSharedPointer<NetVariant> call(const QSharedPointer<NetVariantList>& parameters);
+    QSharedPointer<NetVariant> getProperty(const QString& propertyName);
     QSharedPointer<NetVariant> getItemAtIndex(quint32 arrayIndex);
-    void setProperty(QString propertyName, QSharedPointer<NetVariant> variant);
-    void setItemAtIndex(quint32 arrayIndex, QSharedPointer<NetVariant> variant);
+    void setProperty(const QString& propertyName, const QSharedPointer<NetVariant>& variant);
+    void setItemAtIndex(quint32 arrayIndex, const QSharedPointer<NetVariant>& variant);
 private:
     QJSValue _jsValue;
 };

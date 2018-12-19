@@ -41,7 +41,7 @@ public:
     void clear();
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
     QJSValue toQJSValue(QJSEngine* jsEngine) const;
-    static void fromQVariant(const QVariant* variant, QSharedPointer<NetVariant> destination);
+    static void fromQVariant(const QVariant* variant, const QSharedPointer<NetVariant>& destination);
     static QSharedPointer<NetVariant> fromQVariant(const QVariant* variant);
     QVariant toQVariant() const;
     QString getDisplayValue() const;

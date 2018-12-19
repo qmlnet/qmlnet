@@ -18,9 +18,9 @@ QmlNetStringContainer* createString(const QString& value)
 void freeString(QmlNetStringContainer* container)
 {
     if(container) {
-        if(container->container) {
+        
             delete container->container;
-        }
+        
         delete container;
     }
 }

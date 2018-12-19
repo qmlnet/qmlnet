@@ -1,11 +1,12 @@
 #include <QmlNet/types/NetMethodInfo.h>
 #include <QmlNet/qml/NetValueMetaObjectPacker.h>
 #include <QmlNetUtilities.h>
+#include <utility>
 
 NetMethodInfoArguement::NetMethodInfoArguement(QString name,
                                                QSharedPointer<NetTypeInfo> type) :
-    _name(name),
-    _type(type)
+    _name(std::move(name)),
+    _type(std::move(type))
 {
 }
 
@@ -23,9 +24,9 @@ NetMethodInfo::NetMethodInfo(QSharedPointer<NetTypeInfo> parentTypeInfo,
                              QString methodName,
                              QSharedPointer<NetTypeInfo> returnType,
                              bool isStatic) :
-    _parentTypeInfo(parentTypeInfo),
-    _methodName(methodName),
-    _returnType(returnType),
+    _parentTypeInfo(std::move(parentTypeInfo)),
+    _methodName(std::move(methodName)),
+    _returnType(std::move(returnType)),
     _isStatic(isStatic)
 {
 }
@@ -47,7 +48,7 @@ bool NetMethodInfo::isStatic()
 
 void NetMethodInfo::addParameter(QString name, QSharedPointer<NetTypeInfo> typeInfo)
 {
-    _parameters.append(QSharedPointer<NetMethodInfoArguement>(new NetMethodInfoArguement(name, typeInfo)));
+    _parameters.append(QSharedPointer<NetMethodInfoArguement>(new NetMethodInfoArguement(std::move(name), std::move(typeInfo))));
 }
 
 int NetMethodInfo::getParameterCount()
@@ -121,7 +122,7 @@ Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* p
         returnType = returnTypeContainer->netTypeInfo;
     }
 
-    NetMethodInfo* instance = new NetMethodInfo(parentType, QString::fromUtf16((const char16_t*)methodName), returnType, isStatic);
+    NetMethodInfo* instance = new NetMethodInfo(parentType, QString::fromUtf16(static_cast<const char16_t*>(methodName)), returnType, isStatic);
     result->method = QSharedPointer<NetMethodInfo>(instance);
     return result;
 }
@@ -155,7 +156,7 @@ Q_DECL_EXPORT bool method_info_isStatic(NetMethodInfoContainer* container)
 
 Q_DECL_EXPORT void method_info_addParameter(NetMethodInfoContainer* container, LPWSTR name, NetTypeInfoContainer* typeInfoContainer)
 {
-    container->method->addParameter(QString::fromUtf16((const char16_t*)name), typeInfoContainer->netTypeInfo);
+    container->method->addParameter(QString::fromUtf16(static_cast<const char16_t*>(name)), typeInfoContainer->netTypeInfo);
 }
 
 Q_DECL_EXPORT int method_info_getParameterCount(NetMethodInfoContainer* container)

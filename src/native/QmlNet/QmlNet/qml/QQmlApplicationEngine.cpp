@@ -8,7 +8,7 @@
 static int netValueTypeNumber = 0;
 
 #define NETVALUETYPE_CASE(N) \
-    case N: NetValueType<N>::init(typeInfo); return qmlRegisterType<NetValueType<N>>(uriString.toUtf8().data(), versionMajor, versionMinor, qmlNameString.toUtf8().data());
+    case N: NetValueType<N>::init(typeInfo); return qmlRegisterType<NetValueType<(N)>>(uriString.toUtf8().data(), versionMajor, versionMinor, qmlNameString.toUtf8().data());
 
 #define NETVALUETYPESINGLETON_CASE(N) \
     case N: NetValueType<N>::init(typeInfo); return qmlRegisterSingletonType<NetValueType<N>>(uriString.toUtf8().data(), versionMajor, versionMinor, typeNameString.toUtf8().data(), NetValueType<N>::build);
@@ -48,19 +48,18 @@ Q_DECL_EXPORT void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer*
 }
 
 Q_DECL_EXPORT void qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR path) {
-    container->qmlEngine->load(QString::fromUtf16((const char16_t*)path));
+    container->qmlEngine->load(QString::fromUtf16(static_cast<const char16_t*>(path)));
 }
 
 Q_DECL_EXPORT void qqmlapplicationengine_loadData(QQmlApplicationEngineContainer* container, LPWSTR dataString) {
-    container->qmlEngine->loadData(QByteArray::fromStdString(QString::fromUtf16((const char16_t*)dataString).toStdString()));
+    container->qmlEngine->loadData(QByteArray::fromStdString(QString::fromUtf16(static_cast<const char16_t*>(dataString)).toStdString()));
 }
 
 Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeContainer, LPWSTR uri, int versionMajor, int versionMinor, LPWSTR qmlName) {
 
-    QString uriString = QString::fromUtf16((const char16_t*)uri);
-    QString qmlNameString = QString::fromUtf16((const char16_t*)qmlName);
+    QString uriString = QString::fromUtf16(static_cast<const char16_t*>(uri));
+    QString qmlNameString = QString::fromUtf16(static_cast<const char16_t*>(qmlName));
     QSharedPointer<NetTypeInfo> typeInfo = typeContainer->netTypeInfo;
-    QString fullType = typeInfo->getFullTypeName();
 
     switch (++netValueTypeNumber) {
         NETVALUETYPE_CASE(1)
@@ -337,7 +336,7 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeNet(NetTypeInfoCont
 }
 
 Q_DECL_EXPORT void qqmlapplicationengine_addImportPath(QQmlApplicationEngineContainer* container, LPWSTR path) {
-    QString pathString = QString::fromUtf16((const char16_t*)path);
+    QString pathString = QString::fromUtf16(static_cast<const char16_t*>(path));
     container->qmlEngine->addImportPath(pathString);
 }
 

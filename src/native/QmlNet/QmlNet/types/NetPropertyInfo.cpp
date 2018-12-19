@@ -1,6 +1,7 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNetUtilities.h>
+#include <utility>
 
 NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
         QString name,
@@ -8,12 +9,12 @@ NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
         bool canRead,
         bool canWrite,
         QSharedPointer<NetSignalInfo> notifySignal) :
-    _parentType(parentType),
-    _name(name),
-    _returnType(returnType),
+    _parentType(std::move(parentType)),
+    _name(std::move(name)),
+    _returnType(std::move(returnType)),
     _canRead(canRead),
     _canWrite(canWrite),
-    _notifySignal(notifySignal)
+    _notifySignal(std::move(notifySignal))
 {
 
 }
@@ -50,7 +51,7 @@ QSharedPointer<NetSignalInfo> NetPropertyInfo::getNotifySignal()
 
 void NetPropertyInfo::setNotifySignal(QSharedPointer<NetSignalInfo> signal)
 {
-    _notifySignal = signal;
+    _notifySignal = std::move(signal);
 }
 
 extern "C" {
@@ -67,7 +68,7 @@ Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContaine
         notifySignal = notifySignalContainer->signal;
     }
     NetPropertyInfo* instance = new NetPropertyInfo(parentTypeContainer->netTypeInfo,
-                                                    QString::fromUtf16((const char16_t*)name),
+                                                    QString::fromUtf16(static_cast<const char16_t*>(name)),
                                                     returnType->netTypeInfo,
                                                     canRead,
                                                     canWrite,
