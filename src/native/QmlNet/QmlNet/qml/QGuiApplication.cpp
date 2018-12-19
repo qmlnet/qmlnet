@@ -55,7 +55,7 @@ Q_DECL_EXPORT void qguiapplication_destroy(QGuiApplicationContainer* container) 
     delete container;
 }
 
-Q_DECL_EXPORT int qguiapplication_exec(QGuiApplicationContainer* container) {
+Q_DECL_EXPORT int qguiapplication_exec() {
     return QGuiApplication::exec();
 }
 
@@ -67,7 +67,7 @@ Q_DECL_EXPORT void qguiapplication_requestTrigger(QGuiApplicationContainer* cont
     QMetaObject::invokeMethod(container->callback.data(), "trigger", Qt::QueuedConnection);
 }
 
-Q_DECL_EXPORT void qguiapplication_exit(QGuiApplicationContainer* container, int returnCode) {
+Q_DECL_EXPORT void qguiapplication_exit(int returnCode) {
     QGuiApplication::exit(returnCode);
 }
 

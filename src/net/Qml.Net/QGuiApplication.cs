@@ -47,7 +47,7 @@ namespace Qml.Net
 
         public int Exec()
         {
-            return Interop.QGuiApplication.Exec(Handle);
+            return Interop.QGuiApplication.Exec();
         }
 
         public void Dispatch(Action action)
@@ -61,7 +61,7 @@ namespace Qml.Net
 
         public void Exit(int returnCode = 0)
         {
-            Interop.QGuiApplication.Exit(Handle, returnCode);
+            Interop.QGuiApplication.Exit(returnCode);
         }
 
         public void Quit()
@@ -151,13 +151,13 @@ namespace Qml.Net
         void Destroy(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qguiapplication_exec")]
-        int Exec(IntPtr app);
+        int Exec();
         [NativeSymbol(Entrypoint = "qguiapplication_addTriggerCallback")]
         void AddTriggerCallback(IntPtr app, IntPtr callback);
         [NativeSymbol(Entrypoint = "qguiapplication_requestTrigger")]
         void RequestTrigger(IntPtr app);
         [NativeSymbol(Entrypoint = "qguiapplication_exit")]
-        void Exit(IntPtr app, int returnCode);
+        void Exit(int returnCode);
         [NativeSymbol(Entrypoint = "qguiapplication_internalPointer")]
         IntPtr InternalPointer(IntPtr app);
     }
