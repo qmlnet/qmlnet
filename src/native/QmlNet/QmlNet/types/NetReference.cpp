@@ -2,10 +2,11 @@
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/qml/NetValue.h>
 #include <QDebug>
+#include <utility>
 
 NetReference::NetReference(uint64_t objectId, QSharedPointer<NetTypeInfo> typeInfo) :
     objectId(objectId),
-    typeInfo(typeInfo)
+    typeInfo(std::move(typeInfo))
 {
 }
 
@@ -69,8 +70,8 @@ Q_DECL_EXPORT bool net_instance_activateSignal(NetReferenceContainer* container,
     }
 
     bool result = false;
-    for(int x = 0; x < liveInstances.length(); x++) {
-        result = result || liveInstances.at(x)->activateSignal(signalNameString, parameters);
+    for(NetValue* liveInstance : liveInstances) {
+        result = result || liveInstance->activateSignal(signalNameString, parameters);
     }
 
     return result;

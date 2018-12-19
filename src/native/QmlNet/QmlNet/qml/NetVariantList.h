@@ -11,7 +11,7 @@ public:
     NetVariantList();
     ~NetVariantList();
     int count();
-    void add(QSharedPointer<NetVariant> variant);
+    void add(const QSharedPointer<NetVariant>& variant);
     QSharedPointer<NetVariant> get(int index);
     void remove(int index);
     void clear();

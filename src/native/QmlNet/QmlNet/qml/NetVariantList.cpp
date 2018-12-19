@@ -1,20 +1,14 @@
 #include <QmlNet/qml/NetVariantList.h>
 
-NetVariantList::NetVariantList()
-{
+NetVariantList::NetVariantList() = default;
 
-}
-
-NetVariantList::~NetVariantList()
-{
-
-}
+NetVariantList::~NetVariantList() = default;
 
 int NetVariantList::count() {
     return variants.size();
 }
 
-void NetVariantList::add(QSharedPointer<NetVariant> variant) {
+void NetVariantList::add(const QSharedPointer<NetVariant>& variant) {
     variants.append(variant);
 }
 

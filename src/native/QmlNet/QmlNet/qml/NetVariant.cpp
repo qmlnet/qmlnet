@@ -28,10 +28,7 @@ const int NetReferenceQmlContainerTypeId = qMetaTypeId<NetReferenceQmlContainer>
 const int NetJsValueQmlContainerTypeId = qMetaTypeId<NetJsValueQmlContainer>();
 }
 
-NetVariant::NetVariant()
-{
-
-}
+NetVariant::NetVariant() = default;
 
 NetVariant::~NetVariant()
 {
@@ -257,7 +254,7 @@ QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine) const
     }
 }
 
-void NetVariant::fromQVariant(const QVariant* variant, QSharedPointer<NetVariant> destination)
+void NetVariant::fromQVariant(const QVariant* variant, const QSharedPointer<NetVariant>& destination)
 {
     const int type = variant->userType();
     switch(type) {
@@ -522,7 +519,7 @@ Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateT
         return;
     }
     if(!dt.isValid()) {
-        qWarning("QDateTime is invalid");
+        qWarning() << "QDateTime is invalid";
         value->isNull = true;
         return;
     }

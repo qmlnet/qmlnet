@@ -3,12 +3,9 @@
 #include <QmlNet/types/NetTypeArrayFacadeList.h>
 #include <QmlNet/types/NetTypeInfo.h>
 
-NetTypeArrayFacade::NetTypeArrayFacade()
-{
+NetTypeArrayFacade::NetTypeArrayFacade() = default;
 
-}
-
-QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(QSharedPointer<NetTypeInfo> type)
+QSharedPointer<NetTypeArrayFacade> NetTypeArrayFacade::fromType(const QSharedPointer<NetTypeInfo>& type)
 {
     if(type->isArray()) {
         QSharedPointer<NetTypeArrayFacade_Array> facade = QSharedPointer<NetTypeArrayFacade_Array>(new NetTypeArrayFacade_Array(type));
@@ -34,32 +31,32 @@ bool NetTypeArrayFacade::isFixed()
     return false;
 }
 
-uint NetTypeArrayFacade::getLength(QSharedPointer<NetReference>)
+uint NetTypeArrayFacade::getLength(const QSharedPointer<NetReference>&)
 {
     return 0;
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade::getIndexed(QSharedPointer<NetReference>, uint)
+QSharedPointer<NetVariant> NetTypeArrayFacade::getIndexed(const QSharedPointer<NetReference>&, uint)
 {
     return nullptr;
 }
 
-void NetTypeArrayFacade::setIndexed(QSharedPointer<NetReference>, uint, QSharedPointer<NetVariant>)
+void NetTypeArrayFacade::setIndexed(const QSharedPointer<NetReference>&, uint, const QSharedPointer<NetVariant>&)
 {
 
 }
 
-void NetTypeArrayFacade::push(QSharedPointer<NetReference>, QSharedPointer<NetVariant>)
+void NetTypeArrayFacade::push(const QSharedPointer<NetReference>&, const QSharedPointer<NetVariant>&)
 {
 
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade::pop(QSharedPointer<NetReference>)
+QSharedPointer<NetVariant> NetTypeArrayFacade::pop(const QSharedPointer<NetReference>&)
 {
     return nullptr;
 }
 
-void NetTypeArrayFacade::deleteAt(QSharedPointer<NetReference>, uint)
+void NetTypeArrayFacade::deleteAt(const QSharedPointer<NetReference>&, uint)
 {
 
 }
