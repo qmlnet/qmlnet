@@ -46,7 +46,7 @@ Q_DECL_EXPORT QGuiApplicationContainer* qguiapplication_create(NetVariantListCon
 
 Q_DECL_EXPORT void qguiapplication_destroy(QGuiApplicationContainer* container) {
     for (auto i : container->argsPointer) {
-        delete i;
+        delete[] i;
     }
     container->callback.clear();
     if(container->ownsGuiApp) {
