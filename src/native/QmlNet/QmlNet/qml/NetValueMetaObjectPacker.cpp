@@ -136,6 +136,8 @@ void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, v
     NetVariant::fromQVariant(sourceVariant, destination);
 }
 
+namespace
+{
 class StringValueTypePacker : public NetValueTypePacker
 {
 public:
@@ -166,6 +168,7 @@ public:
         destination->setString(sourceString);
     }
 };
+}
 
 NetValueMetaObjectPacker::NetValueMetaObjectPacker()
 {
