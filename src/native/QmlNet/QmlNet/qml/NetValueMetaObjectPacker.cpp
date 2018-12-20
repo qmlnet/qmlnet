@@ -147,7 +147,7 @@ public:
     }
     void pack(const QSharedPointer<NetVariant>& source, void* destination) override
     {
-        Q_ASSERT(source->getVariantType() == NetVariantTypeEnum_String);
+        Q_ASSERT(source->getVariantType() == NetVariantTypeEnum_String || source->getVariantType() == NetVariantTypeEnum_Invalid);
         QString* destinationString = static_cast<QString*>(destination);
         switch(source->getVariantType()){
         case NetVariantTypeEnum_Invalid:
