@@ -302,7 +302,7 @@
     </valuelist>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">/Users/pknopf/git/net-core-qml/src/net/Qt.NetCore.Sandbox/bin/Debug/netcoreapp2.1/Qt.NetCore.Sandbox.dll</value>
+    <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Arguments">/Users/pknopf/git/net-core-qml/src/net/Qt.NetCore.Sandbox/bin/Debug/netcoreapp2.2/Qt.NetCore.Sandbox.dll</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.Executable">/usr/local/share/dotnet/dotnet</value>
     <value type="QString" key="ProjectExplorer.CustomExecutableRunConfiguration.WorkingDirectory">/Users/pknopf/git/net-core-qml/src/net/Qt.NetCore.Sandbox</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Run /usr/local/share/dotnet/dotnet</value>
