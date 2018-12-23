@@ -6,12 +6,12 @@
 #include <QmlNet/qml/NetValue.h>
 #include <private/qobject_p.h>
 
-QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo);
+QMetaObject *metaObjectFor(const QSharedPointer<NetTypeInfo>& typeInfo);
 
 class NetValueMetaObject : public QAbstractDynamicMetaObject
 {
 public:
-    NetValueMetaObject(QObject* value, QSharedPointer<NetReference> instance);
+    NetValueMetaObject(QObject* value, const QSharedPointer<NetReference>& instance);
 
 protected:
     int metaCall(QMetaObject::Call c, int id, void **a);

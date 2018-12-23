@@ -9,12 +9,12 @@ class NetPropertyInfo;
 class NetTypeArrayFacade_Array : public NetTypeArrayFacade
 {
 public:
-    NetTypeArrayFacade_Array(QSharedPointer<NetTypeInfo> type);
+    NetTypeArrayFacade_Array(const QSharedPointer<NetTypeInfo>& type);
     bool isIncomplete();
-    bool isFixed();
-    uint getLength(QSharedPointer<NetReference> reference);
-    QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, uint index);
-    void setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value);
+    bool isFixed() override;
+    uint getLength(const QSharedPointer<NetReference>& reference) override;
+    QSharedPointer<NetVariant> getIndexed(const QSharedPointer<NetReference>& reference, uint index) override;
+    void setIndexed(const QSharedPointer<NetReference>& reference, uint index, const QSharedPointer<NetVariant>& value) override;
 private:
     bool _isIncomplete;
     QSharedPointer<NetPropertyInfo> _lengthProperty;

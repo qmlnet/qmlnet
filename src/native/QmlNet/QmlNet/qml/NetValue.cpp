@@ -3,6 +3,7 @@
 #include <QmlNet/qml/NetValueMetaObject.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QDebug>
+#include <utility>
 
 NetValue::~NetValue()
 {
@@ -16,6 +17,9 @@ NetValue::~NetValue()
             delete collection;
         }
     }
+#ifdef QMLNET_TRACE
+    qDebug("netvalue: destroyed: for: %s", qPrintable(instance->displayName()));
+#endif
     instance = nullptr;
 }
 
@@ -25,7 +29,7 @@ QSharedPointer<NetReference> NetValue::getNetReference()
     return instance;
 }
 
-bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments)
+bool NetValue::activateSignal(const QString& signalName, const QSharedPointer<NetVariantList>& arguments)
 {
     int signalMethodIndex = -1;
     for(int x = 0; valueMeta->methodCount(); x++) {
@@ -38,12 +42,12 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
 
     // If signal not found, dump the registered signals for debugging.
     if(signalMethodIndex < 0) {
-        qDebug("Signal not found: %s", qPrintable(signalName));
-        qDebug("Current signals:");
+        qDebug() << "Signal not found:" << signalName;
+        qDebug() << "Current signals:";
         for (int i = 0; i < metaObject()->methodCount(); i++) {
             QMetaMethod method = metaObject()->method(i);
             if (method.methodType() == QMetaMethod::Signal) {
-                qDebug("\t%s", qPrintable(method.methodSignature()));
+                qDebug().nospace() << "\t" << method.methodSignature();
             }
         }
         return false;
@@ -55,30 +59,30 @@ bool NetValue::activateSignal(QString signalName, QSharedPointer<NetVariantList>
     voidArgs.push_back(nullptr); // For the return type, which is nothing for signals.
     if(arguments != nullptr) {
         for(int x = 0 ; x < arguments->count(); x++) {
-            QSharedPointer<QVariant> variant = QSharedPointer<QVariant>(new QVariant(arguments->get(x)->toQVariant()));
+            QSharedPointer<QVariant> variant(new QVariant(arguments->get(x)->toQVariant()));
             variantArgs.append(variant);
             voidArgs.push_back(static_cast<void*>(variant.data()));
         }
     }
     void** argsPointer = nullptr;
-    if(voidArgs.size() > 0) {
+    if(!voidArgs.empty()) {
         argsPointer = &voidArgs[0];
     }
 
     // Activate the signal!
-    valueMeta->activate(this, signalMethodIndex, argsPointer);
+    NetValueMetaObject::activate(this, signalMethodIndex, argsPointer);
 
     return true;
 }
 
-NetValue* NetValue::forInstance(QSharedPointer<NetReference> instance)
+NetValue* NetValue::forInstance(const QSharedPointer<NetReference>& instance)
 {
     NetValue* result = new NetValue(instance, nullptr);
     QQmlEngine::setObjectOwnership(result, QQmlEngine::JavaScriptOwnership);
     return result;
 }
 
-QList<NetValue*> NetValue::getAllLiveInstances(QSharedPointer<NetReference> instance)
+QList<NetValue*> NetValue::getAllLiveInstances(const QSharedPointer<NetReference>& instance)
 {
     auto objectId = instance->getObjectId();
     NetValueCollection* collection = nullptr;
@@ -90,9 +94,13 @@ QList<NetValue*> NetValue::getAllLiveInstances(QSharedPointer<NetReference> inst
     return QList<NetValue*>();
 }
 
-NetValue::NetValue(QSharedPointer<NetReference> instance, QObject *parent)
+NetValue::NetValue(const QSharedPointer<NetReference>& instance, QObject *parent)
     : instance(instance)
 {
+#ifdef QMLNET_TRACE
+    qDebug("netvalue: created: for: %s", qPrintable(instance->displayName()));
+#endif
+
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
 

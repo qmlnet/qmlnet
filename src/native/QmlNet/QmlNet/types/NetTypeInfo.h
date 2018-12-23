@@ -31,7 +31,7 @@ public:
     bool isList();
     void setIsList(bool isList);
 
-    void addMethod(QSharedPointer<NetMethodInfo> methodInfo);
+    void addMethod(const QSharedPointer<NetMethodInfo>& methodInfo);
     int getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(int index);
 
@@ -41,11 +41,11 @@ public:
     int getStaticMethodCount();
     QSharedPointer<NetMethodInfo> getStaticMethodInfo(int index);
 
-    void addProperty(QSharedPointer<NetPropertyInfo> property);
+    void addProperty(const QSharedPointer<NetPropertyInfo>& property);
     int getPropertyCount();
     QSharedPointer<NetPropertyInfo> getProperty(int index);
 
-    void addSignal(QSharedPointer<NetSignalInfo> signal);
+    void addSignal(const QSharedPointer<NetSignalInfo>& signal);
     int getSignalCount();
     QSharedPointer<NetSignalInfo> getSignal(int index);
 

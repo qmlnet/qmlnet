@@ -1,15 +1,15 @@
-﻿using AdvancedDLSupport;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using NetNativeLibLoader.PathResolver;
 
 namespace Qml.Net.Internal
 {
-    internal class WindowsDllImportLibraryPathResolver : ILibraryPathResolver
+    internal class WindowsDllImportLibraryPathResolver : IPathResolver
     {
-        ILibraryPathResolver _original;
+        IPathResolver _original;
 
-        public WindowsDllImportLibraryPathResolver(ILibraryPathResolver original)
+        public WindowsDllImportLibraryPathResolver(IPathResolver original)
         {
             _original = original;
         }
