@@ -1,6 +1,5 @@
 language: csharp
 mono: 5.12.0
-dotnet: 2.2.101
 matrix:
   include:
     - name: "Linux Qt 5.11.1"
@@ -8,9 +7,11 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
+      dotnet: 2.2.101
     - name: "OSX Qt 5.11.1"
       os: osx
       osx_image: xcode9.4
+      dotnet: 2.2.101
 cache:
     directories:
      - build/Qt
