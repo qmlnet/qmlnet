@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 
 namespace Qml.Net.Internal.Types
@@ -73,37 +72,47 @@ namespace Qml.Net.Internal.Types
         }
     }
 
-    internal interface INetPropertyInfoInterop
+    internal class NetPropertyInfoInterop
     {
         [NativeSymbol(Entrypoint = "property_info_create")]
-        IntPtr Create(IntPtr parentType,
-            [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName,
+        public CreateDel Create { get; set; }
+        public delegate  IntPtr CreateDel(IntPtr parentType,
+            [MarshalAs(UnmanagedType.LPWStr)]string methodName,
             IntPtr returnType,
             bool canRead,
             bool canWrite,
             IntPtr notifySignal);
+        
         [NativeSymbol(Entrypoint = "property_info_destroy")]
-        void Destroy(IntPtr property);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getParentType")]
-        IntPtr GetParentType(IntPtr property);
+        public GetParentTypeDel GetParentType { get; set; }
+        public delegate IntPtr GetParentTypeDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getPropertyName")]
-        IntPtr GetPropertyName(IntPtr property);
+        public GetPropertyNameDel GetPropertyName { get; set; }
+        public delegate IntPtr GetPropertyNameDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getReturnType")]
-        IntPtr GetReturnType(IntPtr property);
+        public GetReturnTypeDel GetReturnType { get; set; }
+        public delegate IntPtr GetReturnTypeDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_canRead")]
-        bool GetCanRead(IntPtr property);
+        public GetCanReadDel GetCanRead { get; set; }
+        public delegate bool GetCanReadDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_canWrite")]
-        bool GetCanWrite(IntPtr property);
+        public GetCanWriteDel GetCanWrite { get; set; }
+        public delegate bool GetCanWriteDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getNotifySignal")]
-        IntPtr GetNotifySignal(IntPtr property);
+        public GetNotifySignalDel GetNotifySignal { get; set; }
+        public delegate IntPtr GetNotifySignalDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_setNotifySignal")]
-        void SetNotifySignal(IntPtr property, IntPtr signal);
+        public SetNotifySignalDel SetNotifySignal { get; set; }
+        public delegate void SetNotifySignalDel(IntPtr property, IntPtr signal);
     }
 }

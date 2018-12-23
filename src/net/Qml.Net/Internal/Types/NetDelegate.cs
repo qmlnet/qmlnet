@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Types
 {
@@ -39,14 +38,17 @@ namespace Qml.Net.Internal.Types
         }
     }
 
-    internal interface INetDelegateInterop
+    internal class NetDelegateInterop
     {
         [NativeSymbol(Entrypoint = "delegate_create")]
-        IntPtr Create(IntPtr handle);
+        public CreateDel Create { get; set; }
+        public delegate IntPtr CreateDel(IntPtr handle);
         [NativeSymbol(Entrypoint = "delegate_destroy")]
-        void Destroy(IntPtr del);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr del);
         
         [NativeSymbol(Entrypoint = "delegate_getHandle")]
-        IntPtr GetHandle(IntPtr del);
+        public GetHandleDel GetHandle { get; set; }
+        public delegate IntPtr GetHandleDel(IntPtr del);
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -104,19 +101,27 @@ namespace Qml.Net.Internal.Types
         #endregion
     }
 
-    internal interface INetReferenceInterop
+    internal class NetReferenceInterop
     {   
         [NativeSymbol(Entrypoint = "net_instance_create")]
-        IntPtr Create(UInt64 objectId, IntPtr type);
+        public CreateDel Create { get; set; }
+        public delegate IntPtr CreateDel(UInt64 objectId, IntPtr type);
+        
         [NativeSymbol(Entrypoint = "net_instance_destroy")]
-        void Destroy(IntPtr instance);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr instance);
+        
         [NativeSymbol(Entrypoint = "net_instance_clone")]
-        IntPtr Clone(IntPtr instance);
+        public CloneDel Clone { get; set; }
+        public delegate IntPtr CloneDel(IntPtr instance);
 
         [NativeSymbol(Entrypoint = "net_instance_getObjectId")]
-        UInt64 GetObjectId(IntPtr instance);
+        public GetObjectIdDel GetObjectId { get; set; }
+        public delegate UInt64 GetObjectIdDel(IntPtr instance);
+        
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
-        bool ActivateSignal(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string signalName, IntPtr variants);
+        public ActivateSignalDel ActivateSignal { get; set; }
+        public delegate bool ActivateSignalDel(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
     }
 
     internal static class ObjectIdReferenceTracker

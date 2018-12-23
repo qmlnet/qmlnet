@@ -17,6 +17,9 @@ NetValue::~NetValue()
             delete collection;
         }
     }
+#ifdef QMLNET_TRACE
+    qDebug("netvalue: destroyed: for: %s", qPrintable(instance->displayName()));
+#endif
     instance = nullptr;
 }
 
@@ -94,6 +97,10 @@ QList<NetValue*> NetValue::getAllLiveInstances(const QSharedPointer<NetReference
 NetValue::NetValue(const QSharedPointer<NetReference>& instance, QObject *parent)
     : instance(instance)
 {
+#ifdef QMLNET_TRACE
+    qDebug("netvalue: created: for: %s", qPrintable(instance->displayName()));
+#endif
+
     valueMeta = new NetValueMetaObject(this, instance);
     setParent(parent);
 

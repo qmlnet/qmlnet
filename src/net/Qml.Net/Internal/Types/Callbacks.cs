@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Types
 {
@@ -23,25 +22,31 @@ namespace Qml.Net.Internal.Types
         public IntPtr Serialize;
     }
 
-    internal interface ICallbacksIterop
+    internal class CallbacksInterop
     {
         [NativeSymbol(Entrypoint = "type_info_callbacks_registerCallbacks")]
-        void RegisterCallbacks(ref Callbacks callbacks);
+        public RegisterCallbacksDel RegisterCallbacks { get; set; }
+        public delegate void RegisterCallbacksDel(ref Callbacks callbacks);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_isTypeValid")]
-        bool IsTypeValid([MarshalAs(UnmanagedType.LPWStr), CallerFree]string typeName);
+        public IsTypeValidDel IsTypeValid { get; set; }
+        public delegate bool IsTypeValidDel([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetReferenceGCHandle")]
-        void ReleaseNetReference(UInt64 objectId);
+        public ReleaseNetReferenceDel ReleaseNetReference { get; set; }
+        public delegate void ReleaseNetReferenceDel(UInt64 objectId);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetDelegateGCHandle")]
-        void ReleaseNetDelegateGCHandle(IntPtr handle);
-
+        public ReleaseNetDelegateGCHandleDel ReleaseNetDelegateGCHandle { get; set; }
+        public delegate void ReleaseNetDelegateGCHandleDel(IntPtr handle);
+        
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
-        IntPtr InstantiateType(IntPtr type);
+        public InstantiateTypeDel InstantiateType { get; set; }
+        public delegate IntPtr InstantiateTypeDel(IntPtr type);
         
         [NativeSymbol(Entrypoint = "type_info_callbacks_invokeMethod")]
-        void InvokeMethod(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
+        public InvokeMethodDel InvokeMethod { get; set; }
+        public delegate void InvokeMethodDel(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
     }
 
     internal interface ICallbacks

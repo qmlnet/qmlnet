@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
+using NetNativeLibLoader.PathResolver;
 
 namespace Qml.Net.Internal
 {
-    public class LinuxDllImportLibraryPathResolver : ILibraryPathResolver
+    public class LinuxDllImportLibraryPathResolver : IPathResolver
     {
-        ILibraryPathResolver _original;
+        IPathResolver _original;
 
-        public LinuxDllImportLibraryPathResolver(ILibraryPathResolver original)
+        public LinuxDllImportLibraryPathResolver(IPathResolver original)
         {
             _original = original;
         }

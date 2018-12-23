@@ -14,8 +14,8 @@ public:
     NetJSValue(QJSValue jsValue);
     ~NetJSValue();
     QJSValue getJsValue();
-    bool isCallable();
-    bool isArray();
+    bool isCallable() const;
+    bool isArray() const;
     QSharedPointer<NetVariant> call(const QSharedPointer<NetVariantList>& parameters);
     QSharedPointer<NetVariant> getProperty(const QString& propertyName);
     QSharedPointer<NetVariant> getItemAtIndex(quint32 arrayIndex);
