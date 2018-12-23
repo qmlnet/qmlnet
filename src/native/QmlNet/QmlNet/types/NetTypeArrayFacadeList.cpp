@@ -6,7 +6,7 @@
 #include <QmlNet/qml/NetVariantList.h>
 #include <QmlNet/types/Callbacks.h>
 
-NetTypeArrayFacade_List::NetTypeArrayFacade_List(QSharedPointer<NetTypeInfo> type) :
+NetTypeArrayFacade_List::NetTypeArrayFacade_List(const QSharedPointer<NetTypeInfo>& type) :
     _isIncomplete(false)
 {
     for(int x = 0; x < type->getPropertyCount(); x++) {
@@ -46,37 +46,37 @@ bool NetTypeArrayFacade_List::isFixed()
     return false;
 }
 
-uint NetTypeArrayFacade_List::getLength(QSharedPointer<NetReference> reference)
+uint NetTypeArrayFacade_List::getLength(const QSharedPointer<NetReference>& reference)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
     QmlNet::readProperty(_lengthProperty, reference, nullptr, result);
     return static_cast<uint>(result->getInt());
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade_List::getIndexed(QSharedPointer<NetReference> reference, uint index)
+QSharedPointer<NetVariant> NetTypeArrayFacade_List::getIndexed(const QSharedPointer<NetReference>& reference, uint index)
 {
     QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
     QSharedPointer<NetVariant> indexParameter = QSharedPointer<NetVariant>(new NetVariant());
-    indexParameter->setInt(index);
+    indexParameter->setInt(qint32(index));
     QmlNet::readProperty(_itemProperty, reference, indexParameter, result);
     return result;
 }
 
-void NetTypeArrayFacade_List::setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value)
+void NetTypeArrayFacade_List::setIndexed(const QSharedPointer<NetReference>& reference, uint index, const QSharedPointer<NetVariant>& value)
 {
     QSharedPointer<NetVariant> indexParameter = QSharedPointer<NetVariant>(new NetVariant());
-    indexParameter->setInt(static_cast<int>(index));
+    indexParameter->setInt(qint32(index));
     QmlNet::writeProperty(_itemProperty, reference, indexParameter, value);
 }
 
-void NetTypeArrayFacade_List::push(QSharedPointer<NetReference> reference, QSharedPointer<NetVariant> value)
+void NetTypeArrayFacade_List::push(const QSharedPointer<NetReference>& reference, const QSharedPointer<NetVariant>& value)
 {
     QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
     parameters->add(value);
     QmlNet::invokeNetMethod(_addMethod, reference, parameters, nullptr);
 }
 
-QSharedPointer<NetVariant> NetTypeArrayFacade_List::pop(QSharedPointer<NetReference> reference)
+QSharedPointer<NetVariant> NetTypeArrayFacade_List::pop(const QSharedPointer<NetReference>& reference)
 {
     uint length = getLength(reference);
     QSharedPointer<NetVariant> item = getIndexed(reference, length - 1);
@@ -84,7 +84,7 @@ QSharedPointer<NetVariant> NetTypeArrayFacade_List::pop(QSharedPointer<NetRefere
     return item;
 }
 
-void NetTypeArrayFacade_List::deleteAt(QSharedPointer<NetReference> reference, uint index)
+void NetTypeArrayFacade_List::deleteAt(const QSharedPointer<NetReference>& reference, uint index)
 {
     QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
     QSharedPointer<NetVariant> parameter = QSharedPointer<NetVariant>(new NetVariant());

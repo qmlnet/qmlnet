@@ -50,7 +50,7 @@ namespace Qml.Net.Tests.Qml
             }
         }
 
-        protected void RegisterType<T>()
+        protected virtual void RegisterType<T>()
         {
             if (_registeredTypes.Contains(typeof(T))) return;
             _registeredTypes.Add(typeof(T));

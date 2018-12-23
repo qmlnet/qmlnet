@@ -5,9 +5,10 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QDebug>
 #include <QJSEngine>
+#include <utility>
 
 NetJSValue::NetJSValue(QJSValue jsValue) :
-    _jsValue(jsValue)
+    _jsValue(std::move(jsValue))
 {
 
 }
@@ -22,17 +23,17 @@ QJSValue NetJSValue::getJsValue()
     return _jsValue;
 }
 
-bool NetJSValue::isCallable()
+bool NetJSValue::isCallable() const
 {
     return _jsValue.isCallable();
 }
 
-bool NetJSValue::isArray()
+bool NetJSValue::isArray() const
 {
     return _jsValue.isArray();
 }
 
-QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> parameters)
+QSharedPointer<NetVariant> NetJSValue::call(const QSharedPointer<NetVariantList>& parameters)
 {
     QJSValueList jsValueList;
     if(parameters != nullptr) {
@@ -45,7 +46,7 @@ QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> param
     return NetVariant::fromQJSValue(_jsValue.call(jsValueList));
 }
 
-QSharedPointer<NetVariant> NetJSValue::getProperty(QString propertyName)
+QSharedPointer<NetVariant> NetJSValue::getProperty(const QString& propertyName)
 {
     QJSValue property = _jsValue.property(propertyName);
     return NetVariant::fromQJSValue(property);
@@ -57,7 +58,7 @@ QSharedPointer<NetVariant> NetJSValue::getItemAtIndex(quint32 arrayIndex)
     return NetVariant::fromQJSValue(property);
 }
 
-void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> variant)
+void NetJSValue::setProperty(const QString& propertyName, const QSharedPointer<NetVariant>& variant)
 {
     QJSValue value = QJSValue::NullValue;
     if(variant != nullptr) {
@@ -66,7 +67,7 @@ void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> va
     _jsValue.setProperty(propertyName, value);
 }
 
-void NetJSValue::setItemAtIndex(quint32 arrayIndex, QSharedPointer<NetVariant> variant)
+void NetJSValue::setItemAtIndex(quint32 arrayIndex, const QSharedPointer<NetVariant>& variant)
 {
     QJSValue value = QJSValue::NullValue;
     if(variant != nullptr) {
@@ -82,7 +83,15 @@ Q_DECL_EXPORT void net_js_value_destroy(NetJSValueContainer* jsValueContainer) {
 }
 
 Q_DECL_EXPORT bool net_js_value_isCallable(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->isCallable();
+    // Weird bug here, maybe someone can help explain?
+    // If I were to make this method return "jsValueContainer->jsValue->isCallable()"
+    // directly, sometimes, in .NET the bool returned will be wrong.
+    // However, if I first set the bool on the stack, and return it, it (seems?)
+    // to always work.
+    // Also, this only seemed to happen after updating to Qt 5.12.
+    // I'm not sure what is going on here...
+    auto result = jsValueContainer->jsValue->isCallable();
+    return result;
 }
 
 Q_DECL_EXPORT bool net_js_value_isArray(NetJSValueContainer* jsValueContainer) {
@@ -102,7 +111,7 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValu
 }
 
 Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName) {
-    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString::fromUtf16((const char16_t*)propertyName));
+    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString::fromUtf16(static_cast<const char16_t*>(propertyName)));
     if(result == nullptr) {
         return nullptr;
     }
@@ -122,7 +131,7 @@ Q_DECL_EXPORT void net_js_value_setProperty(NetJSValueContainer* jsValueContaine
     if(valueContainer != nullptr) {
         value = valueContainer->variant;
     }
-    jsValueContainer->jsValue->setProperty(QString::fromUtf16((const char16_t*)propertyName), value);
+    jsValueContainer->jsValue->setProperty(QString::fromUtf16(static_cast<const char16_t*>(propertyName)), value);
 }
 
 Q_DECL_EXPORT void net_js_value_setItemAtIndex(NetJSValueContainer* jsValueContainer, quint32 arrayIndex, NetVariantContainer* valueContainer) {

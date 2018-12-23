@@ -13,7 +13,7 @@ class NetListModel : public QAbstractListModel
 public:
     NetListModel(QObject* parent, QSharedPointer<NetTypeArrayFacade> facade, QSharedPointer<NetReference> reference);
 
-    static NetListModel* fromReference(QSharedPointer<NetReference> reference);
+    static NetListModel* fromReference(const QSharedPointer<NetReference>& reference);
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;

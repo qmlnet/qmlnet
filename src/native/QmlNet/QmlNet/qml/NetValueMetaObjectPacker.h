@@ -13,8 +13,8 @@ public:
     NetValueTypePacker() {}
     virtual ~NetValueTypePacker() {}
     virtual const char* getQmlType();
-    virtual void pack(QSharedPointer<NetVariant> source, void* destination);
-    virtual void unpack(QSharedPointer<NetVariant> destination, void* source, NetVariantTypeEnum prefType);
+    virtual void pack(const QSharedPointer<NetVariant>& source, void* destination);
+    virtual void unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType);
 };
 
 #define NetMetaValuePack(type, source, destination) \

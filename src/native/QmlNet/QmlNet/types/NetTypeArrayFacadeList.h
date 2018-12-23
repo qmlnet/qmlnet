@@ -9,15 +9,15 @@ class NetPropertyInfo;
 class NetTypeArrayFacade_List : public NetTypeArrayFacade
 {
 public:
-    NetTypeArrayFacade_List(QSharedPointer<NetTypeInfo> type);
+    NetTypeArrayFacade_List(const QSharedPointer<NetTypeInfo>& type);
     bool isIncomplete();
-    bool isFixed();
-    uint getLength(QSharedPointer<NetReference> reference);
-    QSharedPointer<NetVariant> getIndexed(QSharedPointer<NetReference> reference, uint index);
-    void setIndexed(QSharedPointer<NetReference> reference, uint index, QSharedPointer<NetVariant> value);
-    void push(QSharedPointer<NetReference> reference, QSharedPointer<NetVariant> value);
-    QSharedPointer<NetVariant> pop(QSharedPointer<NetReference> reference);
-    void deleteAt(QSharedPointer<NetReference> reference, uint index);
+    bool isFixed() override;
+    uint getLength(const QSharedPointer<NetReference>& reference) override;
+    QSharedPointer<NetVariant> getIndexed(const QSharedPointer<NetReference>& reference, uint index) override;
+    void setIndexed(const QSharedPointer<NetReference>& reference, uint index, const QSharedPointer<NetVariant>& value) override;
+    void push(const QSharedPointer<NetReference>& reference, const QSharedPointer<NetVariant>& value) override;
+    QSharedPointer<NetVariant> pop(const QSharedPointer<NetReference>& reference) override;
+    void deleteAt(const QSharedPointer<NetReference>& reference, uint index) override;
 private:
     bool _isIncomplete;
     QSharedPointer<NetPropertyInfo> _lengthProperty;

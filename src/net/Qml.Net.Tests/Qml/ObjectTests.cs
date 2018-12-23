@@ -28,6 +28,13 @@ namespace Qml.Net.Tests.Qml
             {
                 
             }
+            
+            public object TestObjectProperty { get; set; }
+
+            public virtual void TestObjectPropertyTest(string result)
+            {
+                
+            }
         }
 
         public class ObjectTestsQmlReturnType
@@ -95,6 +102,20 @@ namespace Qml.Net.Tests.Qml
             
             Mock.Verify(x => x.Overload(), Times.Once);
             Mock.Verify(x => x.Overload(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public void Can_get_null()
+        {
+            Mock.Setup(x => x.TestObjectPropertyTest(It.IsAny<string>()));
+            
+            RunQmlTest(
+                "test",
+                @"
+                    test.testObjectPropertyTest(typeof test.testObjectProperty)
+                ");
+            
+            Mock.Verify(x => x.TestObjectPropertyTest("object"), Times.Once);
         }
     }
 }

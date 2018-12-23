@@ -3,9 +3,6 @@ using Qml.Net.Internal.Types;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -461,6 +458,12 @@ namespace Qml.Net.Internal
                 return NetVariantType.Int;
             if (typeInfo == typeof(uint))
                 return NetVariantType.UInt;
+            if (typeInfo == typeof(long))
+                return NetVariantType.Long;
+            if (typeInfo == typeof(ulong))
+                return NetVariantType.ULong;
+            if (typeInfo == typeof(float))
+                return NetVariantType.Float;
             if (typeInfo == typeof(double))
                 return NetVariantType.Double;
             if (typeInfo == typeof(string))

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -47,7 +46,7 @@ namespace Qml.Net
 
         public int Exec()
         {
-            return Interop.QGuiApplication.Exec(Handle);
+            return Interop.QGuiApplication.Exec();
         }
 
         public void Dispatch(Action action)
@@ -61,7 +60,7 @@ namespace Qml.Net
 
         public void Exit(int returnCode = 0)
         {
-            Interop.QGuiApplication.Exit(Handle, returnCode);
+            Interop.QGuiApplication.Exit(returnCode);
         }
 
         public void Quit()
@@ -143,22 +142,34 @@ namespace Qml.Net
         }
     }
     
-    internal interface IQGuiApplicationInterop
+    internal class QGuiApplicationInterop
     {
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
-        IntPtr Create(IntPtr args, IntPtr existingApp);
+        public CreateDel Create { get; set; }
+        public delegate IntPtr CreateDel(IntPtr args, IntPtr existingApp);
+        
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
-        void Destroy(IntPtr app);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qguiapplication_exec")]
-        int Exec(IntPtr app);
+        public ExecDel Exec { get; set; }
+        public delegate int ExecDel();
+        
         [NativeSymbol(Entrypoint = "qguiapplication_addTriggerCallback")]
-        void AddTriggerCallback(IntPtr app, IntPtr callback);
+        public AddTriggerCallbackDel AddTriggerCallback { get; set; }
+        public delegate void AddTriggerCallbackDel(IntPtr app, IntPtr callback);
+        
         [NativeSymbol(Entrypoint = "qguiapplication_requestTrigger")]
-        void RequestTrigger(IntPtr app);
+        public RequestTriggerDel RequestTrigger { get; set; }
+        public delegate void RequestTriggerDel(IntPtr app);
+        
         [NativeSymbol(Entrypoint = "qguiapplication_exit")]
-        void Exit(IntPtr app, int returnCode);
+        public ExitDel Exit { get; set; }
+        public delegate void ExitDel(int returnCode);
+        
         [NativeSymbol(Entrypoint = "qguiapplication_internalPointer")]
-        IntPtr InternalPointer(IntPtr app);
+        public InternalPointerDel InternalPointer { get; set; }
+        public delegate IntPtr InternalPointerDel(IntPtr app);
     }
 }

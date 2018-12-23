@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 
 namespace Qml.Net.Internal.Types
@@ -105,32 +104,50 @@ namespace Qml.Net.Internal.Types
         }
     }
     
-    internal interface INetMethodInfoInterop
+    internal class NetMethodInfoInterop
     {
         [NativeSymbol(Entrypoint = "method_info_parameter_destroy")]
-        void DestroyParameter(IntPtr parameter);
+        public DestroyParameterDel DestroyParameter { get; set; }
+        public delegate void DestroyParameterDel(IntPtr parameter);
+        
         [NativeSymbol(Entrypoint = "method_info_parameter_getName")]
-        IntPtr GetParameterName(IntPtr methodParameter);
+        public GetParameterNameDel GetParameterName { get; set; }
+        public delegate IntPtr GetParameterNameDel(IntPtr methodParameter);
+        
         [NativeSymbol(Entrypoint = "method_info_parameter_getType")]
-        IntPtr GetParameterType(IntPtr methodParameter);
+        public GetParameterTypeDel GetParameterType { get; set; }
+        public delegate IntPtr GetParameterTypeDel(IntPtr methodParameter);
         
         [NativeSymbol(Entrypoint = "method_info_create")]
-        IntPtr Create(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName, IntPtr returnTypeInfo, bool isStatic);
+        public CreateDel Create { get; set; }
+        public delegate IntPtr CreateDel(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string methodName, IntPtr returnTypeInfo, bool isStatic);
+        
         [NativeSymbol(Entrypoint = "method_info_destroy")]
-        void Destroy(IntPtr methodInfo);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr methodInfo);
 
         [NativeSymbol(Entrypoint = "method_info_getMethodName")]
-        IntPtr GetMethodName(IntPtr method);
+        public GetMethodNameDel GetMethodName { get; set; }
+        public delegate IntPtr GetMethodNameDel(IntPtr method);
+        
         [NativeSymbol(Entrypoint = "method_info_getReturnType")]
-        IntPtr GetReturnType(IntPtr method);
+        public GetReturnTypeDel GetReturnType { get; set; }
+        public delegate IntPtr GetReturnTypeDel(IntPtr method);
+        
         [NativeSymbol(Entrypoint = "method_info_isStatic")]
-        bool GetIsStatic(IntPtr method);
+        public GetIsStaticDel GetIsStatic { get; set; }
+        public delegate bool GetIsStaticDel(IntPtr method);
         
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
-        void AddParameter(IntPtr method, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string name, IntPtr type);
+        public AddParameterDel AddParameter { get; set; }
+        public delegate void AddParameterDel(IntPtr method, [MarshalAs(UnmanagedType.LPWStr)]string name, IntPtr type);
+        
         [NativeSymbol(Entrypoint = "method_info_getParameterCount")]
-        int GetParameterCount(IntPtr method);
+        public GetParameterCountDel GetParameterCount { get; set; }
+        public delegate int GetParameterCountDel(IntPtr method);
+        
         [NativeSymbol(Entrypoint = "method_info_getParameter")]
-        IntPtr GetParameter(IntPtr method, int index);
+        public GetParameterDel GetParameter { get; set; }
+        public delegate IntPtr GetParameterDel(IntPtr method, int index);
     }
 }

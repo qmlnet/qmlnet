@@ -11,7 +11,7 @@ struct QmlNetStringContainer {
 
 extern "C" {
 
-Q_DECL_EXPORT QmlNetStringContainer* createString(QString& value);
+Q_DECL_EXPORT QmlNetStringContainer* createString(const QString& value);
 Q_DECL_EXPORT void freeString(QmlNetStringContainer* container);
 
 }

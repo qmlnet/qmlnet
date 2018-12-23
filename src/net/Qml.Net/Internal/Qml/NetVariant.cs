@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal.Qml
@@ -53,6 +52,24 @@ namespace Qml.Net.Internal.Qml
         {
             get => Interop.NetVariant.GetUInt(Handle);
             set => Interop.NetVariant.SetUInt(Handle, value);
+        }
+
+        public long Long
+        {
+            get => Interop.NetVariant.GetLong(Handle);
+            set => Interop.NetVariant.SetLong(Handle, value);
+        }
+
+        public ulong ULong
+        {
+            get => Interop.NetVariant.GetULong(Handle);
+            set => Interop.NetVariant.SetULong(Handle, value);
+        }
+
+        public float Float
+        {
+            get => Interop.NetVariant.GetFloat(Handle);
+            set => Interop.NetVariant.SetFloat(Handle, value);
         }
         
         public double Double
@@ -129,63 +146,108 @@ namespace Qml.Net.Internal.Qml
         }
     }
     
-    internal interface INetVariantInterop
+    internal class NetVariantInterop
     {
         [NativeSymbol(Entrypoint = "net_variant_create")]
-        IntPtr Create();
+        public CreateDel Create { get; set; }
+        public delegate IntPtr CreateDel();
+        
         [NativeSymbol(Entrypoint = "net_variant_destroy")]
-        void Destroy(IntPtr variant);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
-        NetVariantType GetVariantType(IntPtr variant);
+        public GetVariantTypeDel GetVariantType { get; set; }
+        public delegate NetVariantType GetVariantTypeDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setNetReference")]
-        void SetNetReference(IntPtr variant, IntPtr instance);
+        public SetNetReferenceDel SetNetReference { get; set; }
+        public delegate void SetNetReferenceDel(IntPtr variant, IntPtr instance);
+        
         [NativeSymbol(Entrypoint = "net_variant_getNetReference")]
-        IntPtr GetNetReference(IntPtr variant);
+        public GetNetReferenceDel GetNetReference { get; set; }
+        public delegate IntPtr GetNetReferenceDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setBool")]
-        void SetBool(IntPtr variant, bool value);
+        public SetBoolDel SetBool { get; set; }
+        public delegate void SetBoolDel(IntPtr variant, bool value);
         [NativeSymbol(Entrypoint = "net_variant_getBool")]
-        bool GetBool(IntPtr variant);
+        public GetBoolDel GetBool { get; set; }
+        public delegate bool GetBoolDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setChar")]
-        void SetChar(IntPtr variant, ushort value);
+        public SetCharDel SetChar { get; set; }
+        public delegate void SetCharDel(IntPtr variant, ushort value);
         [NativeSymbol(Entrypoint = "net_variant_getChar")]
-        ushort GetChar(IntPtr variant);
+        public GetCharDel GetChar { get; set; }
+        public delegate ushort GetCharDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setInt")]
-        void SetInt(IntPtr variant, int value);
+        public SetIntDel SetInt { get; set; }
+        public delegate void SetIntDel(IntPtr variant, int value);
         [NativeSymbol(Entrypoint = "net_variant_getInt")]
-        int GetInt(IntPtr variant);
+        public GetIntDel GetInt { get; set; }
+        public delegate int GetIntDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setUInt")]
-        void SetUInt(IntPtr variant, uint value);
+        public SetUIntDel SetUInt { get; set; }
+        public delegate void SetUIntDel(IntPtr variant, uint value);
         [NativeSymbol(Entrypoint = "net_variant_getUInt")]
-        uint GetUInt(IntPtr variant);
+        public GetUIntDel GetUInt { get; set; }
+        public delegate uint GetUIntDel(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setLong")]
+        public SetLongDel SetLong { get; set; }
+        public delegate void SetLongDel(IntPtr variant, long value);
+        [NativeSymbol(Entrypoint = "net_variant_getLong")]
+        public GetLongDel GetLong { get; set; }
+        public delegate long GetLongDel(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setULong")]
+        public SetULongDel SetULong { get; set; }
+        public delegate void SetULongDel(IntPtr variant, ulong value);
+        [NativeSymbol(Entrypoint = "net_variant_getULong")]
+        public GetULongDel GetULong { get; set; }
+        public delegate ulong GetULongDel(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setFloat")]
+        public SetFloatDel SetFloat { get; set; }
+        public delegate void SetFloatDel(IntPtr variant, float value);
+        [NativeSymbol(Entrypoint = "net_variant_getFloat")]
+        public GetFloatDel GetFloat { get; set; }
+        public delegate float GetFloatDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setDouble")]
-        void SetDouble(IntPtr variant, double value);
+        public SetDoubleDel SetDouble { get; set; }
+        public delegate void SetDoubleDel(IntPtr variant, double value);
         [NativeSymbol(Entrypoint = "net_variant_getDouble")]
-        double GetDouble(IntPtr variant);
+        public GetDoubleDel GetDouble { get; set; }
+        public delegate double GetDoubleDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setString")]
-        void SetString(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string value);
+        public SetStringDel SetString { get; set; }
+        public delegate void SetStringDel(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr)]string value);
         [NativeSymbol(Entrypoint = "net_variant_getString")]
-        IntPtr GetString(IntPtr variant);
+        public GetStringDel GetString { get; set; }
+        public delegate IntPtr GetStringDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
-        void SetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+        public SetDateTimeDel SetDateTime { get; set; }
+        public delegate void SetDateTimeDel(IntPtr variant, ref DateTimeContainer dateTime);
         [NativeSymbol(Entrypoint = "net_variant_getDateTime")]
-        void GetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+        public GetDateTimeDel GetDateTime { get; set; }
+        public delegate void GetDateTimeDel(IntPtr variant, ref DateTimeContainer dateTime);
 
         [NativeSymbol(Entrypoint = "net_variant_setJsValue")]
-        void SetJsValue(IntPtr variant, IntPtr jsValue);
+        public SetJsValueDel SetJsValue { get; set; }
+        public delegate void SetJsValueDel(IntPtr variant, IntPtr jsValue);
         [NativeSymbol(Entrypoint = "net_variant_getJsValue")]
-        IntPtr GetJsValue(IntPtr variant);
+        public GetJsValueDel GetJsValue { get; set; }
+        public delegate IntPtr GetJsValueDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_clear")]
-        void Clear(IntPtr variant);
+        public ClearDel Clear { get; set; }
+        public delegate void ClearDel(IntPtr variant);
     }
     
     [StructLayout(LayoutKind.Sequential)]

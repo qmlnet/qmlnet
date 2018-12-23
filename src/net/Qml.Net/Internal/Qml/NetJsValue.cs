@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -192,22 +189,34 @@ namespace Qml.Net.Internal.Qml
         }
     }
 
-    internal interface INetJsValueInterop
+    internal class NetJsValueInterop
     {
         [NativeSymbol(Entrypoint = "net_js_value_destroy")]
-        void Destroy(IntPtr jsValue);
-
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr jsValue);
+        
         [NativeSymbol(Entrypoint = "net_js_value_isCallable")]
-        bool IsCallable(IntPtr jsValue);
+        public IsCallableDel IsCallable { get; set; }
+        public delegate bool IsCallableDel(IntPtr jsValue);
+        
         [NativeSymbol(Entrypoint = "net_js_value_isArray")]
-        bool IsArray(IntPtr jsValue);
+        public IsArrayDel IsArray { get; set; }
+        public delegate bool IsArrayDel(IntPtr jsValue);
+        
         [NativeSymbol(Entrypoint = "net_js_value_call")]
-        IntPtr Call(IntPtr jsValue, IntPtr parameters);
+        public CallDel Call { get; set; }
+        public delegate IntPtr CallDel(IntPtr jsValue, IntPtr parameters);
+        
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
-        IntPtr GetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName);
+        public GetPropertyDel GetProperty { get; set; }
+        public delegate IntPtr GetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
+        
         [NativeSymbol(Entrypoint = "net_js_value_getItemAtIndex")]
-        IntPtr GetItemAtIndex(IntPtr jsValue, int arrayIndex);
+        public GetItemAtIndexDel GetItemAtIndex { get; set; }
+        public delegate IntPtr GetItemAtIndexDel(IntPtr jsValue, int arrayIndex);
+        
         [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
-        void SetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName, IntPtr value);
+        public SetPropertyDel SetProperty { get; set; }
+        public delegate void SetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr value);
     }
 }
