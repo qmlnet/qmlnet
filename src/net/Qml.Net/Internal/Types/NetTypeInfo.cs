@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
-using Qml.Net.Internal;
 
 namespace Qml.Net.Internal.Types
 {
@@ -119,72 +117,114 @@ namespace Qml.Net.Internal.Types
         }
     }
 
-    internal interface INetTypeInfoInterop
+    internal class NetTypeInfoInterop
     {
         [NativeSymbol(Entrypoint = "type_info_create")]
-        IntPtr Create([MarshalAs(UnmanagedType.LPWStr), CallerFree]string fullTypeName);
+        public CreateDel Create { get; set; }
+        public delegate IntPtr CreateDel([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
+        
         [NativeSymbol(Entrypoint = "type_info_destroy")]
-        void Destroy(IntPtr netTypeInfo);
+        public DestroyDel Destroy { get; set; }
+        public delegate void DestroyDel(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_getFullTypeName")]
-        IntPtr GetFullTypeName(IntPtr netTypeInfo);
+        public GetFullTypeNameDel GetFullTypeName { get; set; }
+        public delegate IntPtr GetFullTypeNameDel(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_setClassName")]
-        void SetClassName(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string className);
+        public SetClassNameDel SetClassName { get; set; }
+        public delegate void SetClassNameDel(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string className);
+        
         [NativeSymbol(Entrypoint = "type_info_getClassName")]
-        IntPtr GetClassName(IntPtr netTypeInfo);
+        public GetClassNameDel GetClassName { get; set; }
+        public delegate IntPtr GetClassNameDel(IntPtr netTypeInfo);
         
         [NativeSymbol(Entrypoint = "type_info_setPrefVariantType")]
-        void SetPrefVariantType(IntPtr netTypeInfo, NetVariantType variantType);
+        public SetPrefVariantTypeDel SetPrefVariantType { get; set; }
+        public delegate void SetPrefVariantTypeDel(IntPtr netTypeInfo, NetVariantType variantType);
+        
         [NativeSymbol(Entrypoint = "type_info_getPrefVariantType")]
-        NetVariantType GetPrefVariantType(IntPtr netTypeInfo);
+        public GetPrefVariantTypeDel GetPrefVariantType { get; set; }
+        public delegate NetVariantType GetPrefVariantTypeDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setIsArray")]
-        bool GetIsArray(IntPtr netTypeInfo);
+        public GetIsArrayDel GetIsArray { get; set; }
+        public delegate bool GetIsArrayDel(IntPtr netTypeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getIsArray")]
-        void SetIsArray(IntPtr netTypeInfo, bool isArray);
+        public SetIsArrayDel SetIsArray { get; set; }
+        public delegate void SetIsArrayDel(IntPtr netTypeInfo, bool isArray);
         
         [NativeSymbol(Entrypoint = "type_info_setIsList")]
-        bool GetIsList(IntPtr netTypeInfo);
+        public GetIsListDel GetIsList { get; set; }
+        public delegate bool GetIsListDel(IntPtr netTypeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getIsList")]
-        void SetIsList(IntPtr netTypeInfo, bool isList);
+        public SetIsListDel SetIsList { get; set; }
+        public delegate void SetIsListDel(IntPtr netTypeInfo, bool isList);
         
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
-        void AddMethod(IntPtr typeInfo, IntPtr methodInfo);
+        public AddMethodDel AddMethod { get; set; }
+        public delegate void AddMethodDel(IntPtr typeInfo, IntPtr methodInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getMethodCount")]
-        int GetMethodCount(IntPtr typeInfo);
+        public GetMethodCountDel GetMethodCount { get; set; }
+        public delegate int GetMethodCountDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
-        IntPtr GetMethodInfo(IntPtr typeInfo, int index);
+        public GetMethodInfoDel GetMethodInfo { get; set; }
+        public delegate IntPtr GetMethodInfoDel(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_getLocalMethodCount")]
-        int GetLocalMethodCount(IntPtr typeInfo);
+        public GetLocalMethodCountDel GetLocalMethodCount { get; set; }
+        public delegate int GetLocalMethodCountDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getLocalMethodInfo")]
-        IntPtr GetLocalMethodInfo(IntPtr typeInfo, int index);
+        public GetLocalMethodInfoDel GetLocalMethodInfo { get; set; }
+        public delegate IntPtr GetLocalMethodInfoDel(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_getStaticMethodCount")]
-        int GetStaticMethodCount(IntPtr typeInfo);
+        public GetStaticMethodCountDel GetStaticMethodCount { get; set; }
+        public delegate int GetStaticMethodCountDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getStaticMethodInfo")]
-        IntPtr GetStaticMethodInfo(IntPtr typeInfo, int index);
+        public GetStaticMethodInfoDel GetStaticMethodInfo { get; set; }
+        public delegate IntPtr GetStaticMethodInfoDel(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_addProperty")]
-        void AddProperty(IntPtr typeInfo, IntPtr property);
+        public AddPropertyDel AddProperty { get; set; }
+        public delegate void AddPropertyDel(IntPtr typeInfo, IntPtr property);
+        
         [NativeSymbol(Entrypoint = "type_info_getPropertyCount")]
-        int GetPropertyCount(IntPtr typeInfo);
+        public GetPropertyCountDel GetPropertyCount { get; set; }
+        public delegate int GetPropertyCountDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getProperty")]
-        IntPtr GetProperty(IntPtr typeInfo, int index);
+        public GetPropertyDel GetProperty { get; set; }
+        public delegate IntPtr GetPropertyDel(IntPtr typeInfo, int index);
         
         [NativeSymbol(Entrypoint = "type_info_addSignal")]
-        void AddSignal(IntPtr typeInfo, IntPtr signal);
+        public AddSignalDel AddSignal { get; set; }
+        public delegate void AddSignalDel(IntPtr typeInfo, IntPtr signal);
+        
         [NativeSymbol(Entrypoint = "type_info_getSignalCount")]
-        int GetSignalCount(IntPtr typeInfo);
+        public GetSignalCountDel GetSignalCount { get; set; }
+        public delegate int GetSignalCountDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_getSignal")]
-        IntPtr GetSignal(IntPtr typeInfo, int index);
+        public GetSignalDel GetSignal { get; set; }
+        public delegate IntPtr GetSignalDel(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_isLoaded")]
-        bool IsLoaded(IntPtr typeInfo);
+        public IsLoadedDel IsLoaded { get; set; }
+        public delegate bool IsLoadedDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_isLoading")]
-        bool IsLoading(IntPtr typeInfo);
+        public IsLoadingDel IsLoading { get; set; }
+        public delegate bool IsLoadingDel(IntPtr typeInfo);
+        
         [NativeSymbol(Entrypoint = "type_info_ensureLoaded")]
-        void EnsureLoaded(IntPtr typeInfo);
+        public EnsureLoadedDel EnsureLoaded { get; set; }
+        public delegate void EnsureLoadedDel(IntPtr typeInfo);
     }
 }

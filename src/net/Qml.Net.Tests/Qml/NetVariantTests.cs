@@ -31,7 +31,7 @@ namespace Qml.Net.Tests.Qml
             variant.Instance.Instance.Should().Be(testObject);
             variant.VariantType.Should().Be(NetVariantType.Object);
         }
-
+        
         [Fact]
         public void Can_store_bool()
         {
@@ -42,7 +42,7 @@ namespace Qml.Net.Tests.Qml
             variant.Bool = false;
             variant.Bool.Should().BeFalse();
         }
-
+        
         [Fact]
         public void Can_store_char()
         {
@@ -74,6 +74,39 @@ namespace Qml.Net.Tests.Qml
             variant.UInt.Should().Be(uint.MinValue);
             variant.UInt = uint.MaxValue;
             variant.UInt.Should().Be(uint.MaxValue);
+        }
+        
+        [Fact]
+        public void Can_store_long()
+        {
+            var variant = new NetVariant();
+            variant.Long = -1;
+            variant.VariantType.Should().Be(NetVariantType.Long);
+            variant.Long.Should().Be(-1);
+            variant.Long = long.MaxValue;
+            variant.Long.Should().Be(long.MaxValue);
+        }
+        
+        [Fact]
+        public void Can_store_ulong()
+        {
+            var variant = new NetVariant();
+            variant.ULong = ulong.MinValue;
+            variant.VariantType.Should().Be(NetVariantType.ULong);
+            variant.ULong.Should().Be(ulong.MinValue);
+            variant.ULong = ulong.MaxValue;
+            variant.ULong.Should().Be(ulong.MaxValue);
+        }
+        
+        [Fact]
+        public void Can_store_float()
+        {
+            var variant = new NetVariant();
+            variant.Float = float.MinValue;
+            variant.VariantType.Should().Be(NetVariantType.Float);
+            variant.Float.Should().Be(float.MinValue);
+            variant.Float = float.MaxValue;
+            variant.Float.Should().Be(float.MaxValue);
         }
         
         [Fact]
@@ -119,7 +152,7 @@ namespace Qml.Net.Tests.Qml
             value.Value.Millisecond.Should().Be(0);
             value.Value.Offset.Should().Be(TimeSpan.FromHours(5));
         }
-
+        
         [Fact]
         public void Can_clear_value()
         {

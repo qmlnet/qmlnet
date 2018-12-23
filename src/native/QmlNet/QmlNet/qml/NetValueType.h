@@ -5,6 +5,7 @@
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetValueMetaObject.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QQmlEngine>
 
 template <int N>
 class NetValueType : public NetValue
@@ -18,6 +19,13 @@ public:
     {
         typeInfo = info;
         static_cast<QMetaObject &>(staticMetaObject) = *metaObjectFor(typeInfo);
+    }
+
+    static QObject *build(QQmlEngine *engine, QJSEngine *scriptEngine)
+    {
+        Q_UNUSED(engine)
+        Q_UNUSED(scriptEngine)
+        return new NetValueType<N>();
     }
 
     static QSharedPointer<NetTypeInfo> typeInfo;

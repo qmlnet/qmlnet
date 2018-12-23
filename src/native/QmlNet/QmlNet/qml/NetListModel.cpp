@@ -2,19 +2,20 @@
 #include <QmlNet/types/NetReference.h>
 #include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNet/qml/NetVariant.h>
+#include <QDebug>
 
 NetListModel::NetListModel(
     QObject* parent,
     QSharedPointer<NetTypeArrayFacade> facade,
     QSharedPointer<NetReference> reference) :
     QAbstractListModel(parent),
-    _facade(facade),
-    _reference(reference)
+    _facade(std::move(facade)),
+    _reference(std::move(reference))
 {
 
 }
 
-NetListModel* NetListModel::fromReference(QSharedPointer<NetReference> reference)
+NetListModel* NetListModel::fromReference(const QSharedPointer<NetReference>& reference)
 {
     QSharedPointer<NetTypeArrayFacade> facade = reference->getTypeInfo()->getArrayFacade();
     if(facade == nullptr) {
@@ -26,7 +27,7 @@ NetListModel* NetListModel::fromReference(QSharedPointer<NetReference> reference
 QVariant NetListModel::data(const QModelIndex &index, int role) const
 {
     if(role != 0) {
-        qWarning("invalid role id: %d", role);
+        qWarning() << "invalid role id:" << role;
         return QVariant();
     }
     int length = static_cast<int>(_facade->getLength(_reference));

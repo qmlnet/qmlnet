@@ -28,9 +28,8 @@ Q_DECL_EXPORT QGuiApplicationContainer* qguiapplication_create(NetVariantListCon
             for(int x = 0; x < args->count(); x++) {
                 QByteArray arg = args->get(x)->getString().toLatin1();
                 result->args.append(arg);
-                char* cstr = nullptr;
-                cstr = new char [arg.size()+1];
-                strcpy(cstr, arg.data());
+                char* cstr = new char [size_t(arg.size())+1];
+                memcpy(cstr, arg.data(), size_t(arg.size())+1);
                 result->argsPointer.push_back(cstr);
             }
             result->argCount = result->args.size();
@@ -47,7 +46,7 @@ Q_DECL_EXPORT QGuiApplicationContainer* qguiapplication_create(NetVariantListCon
 
 Q_DECL_EXPORT void qguiapplication_destroy(QGuiApplicationContainer* container) {
     for (auto i : container->argsPointer) {
-        delete i;
+        delete[] i;
     }
     container->callback.clear();
     if(container->ownsGuiApp) {
@@ -56,8 +55,8 @@ Q_DECL_EXPORT void qguiapplication_destroy(QGuiApplicationContainer* container) 
     delete container;
 }
 
-Q_DECL_EXPORT int qguiapplication_exec(QGuiApplicationContainer* container) {
-    return container->guiApp->exec();
+Q_DECL_EXPORT int qguiapplication_exec() {
+    return QGuiApplication::exec();
 }
 
 Q_DECL_EXPORT void qguiapplication_addTriggerCallback(QGuiApplicationContainer* container, guiThreadTriggerCb callback) {
@@ -68,8 +67,8 @@ Q_DECL_EXPORT void qguiapplication_requestTrigger(QGuiApplicationContainer* cont
     QMetaObject::invokeMethod(container->callback.data(), "trigger", Qt::QueuedConnection);
 }
 
-Q_DECL_EXPORT void qguiapplication_exit(QGuiApplicationContainer* container, int returnCode) {
-    container->guiApp->exit(returnCode);
+Q_DECL_EXPORT void qguiapplication_exit(int returnCode) {
+    QGuiApplication::exit(returnCode);
 }
 
 Q_DECL_EXPORT QGuiApplication* qguiapplication_internalPointer(QGuiApplicationContainer* container) {

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
+using NetNativeLibLoader.PathResolver;
 
 namespace Qml.Net.Internal
 {
-    public class MacDllImportLibraryPathResolver : ILibraryPathResolver
+    public class MacDllImportLibraryPathResolver : IPathResolver
     {
-        ILibraryPathResolver _original;
+        IPathResolver _original;
 
-        public MacDllImportLibraryPathResolver(ILibraryPathResolver original)
+        public MacDllImportLibraryPathResolver(IPathResolver original)
         {
             _original = original;
         }
