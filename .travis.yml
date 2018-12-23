@@ -10,7 +10,7 @@ matrix:
     - name: "OSX Qt 5.11.1"
       os: osx
       osx_image: xcode9.4
-      dotnet: 2.1.302
+      dotnet: 2.2.101
 cache:
     directories:
      - build/Qt
