@@ -4,7 +4,7 @@ using BenchmarkDotNet.Jobs;
 
 namespace Qml.Net.Benchmarks
 {
-    public class Config: ManualConfig
+    public class Config : ManualConfig
     {
         public Config()
         {

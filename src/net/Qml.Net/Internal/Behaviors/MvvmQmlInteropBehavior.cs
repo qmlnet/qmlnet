@@ -1,7 +1,7 @@
-﻿using Qml.Net.Internal.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal.Behaviors
 {
@@ -14,17 +14,18 @@ namespace Qml.Net.Internal.Behaviors
                 Name = name;
                 SignalName = signalName;
             }
-            
+
             // ReSharper disable once MemberCanBePrivate.Local
             // ReSharper disable once UnusedAutoPropertyAccessor.Local
             public string Name { get; }
+
             public string SignalName { get; }
         }
 
         private class MvvmTypeInfo
         {
             private readonly Dictionary<string, MvvmPropertyInfo> _propertyInfos = new Dictionary<string, MvvmPropertyInfo>();
-            
+
             // ReSharper disable once UnusedMember.Local
             public Type Type { get; set; }
 
@@ -40,7 +41,7 @@ namespace Qml.Net.Internal.Behaviors
         }
 
         private static readonly Dictionary<Type, MvvmTypeInfo> TypeInfos = new Dictionary<Type, MvvmTypeInfo>();
-        
+
         public bool IsApplicableFor(Type type)
         {
             return typeof(INotifyPropertyChanged).IsAssignableFrom(type);
@@ -54,7 +55,7 @@ namespace Qml.Net.Internal.Behaviors
             }
             if (!(instance is INotifyPropertyChanged castedInstance))
             {
-                //invalid type 
+                // Invalid type.
                 return;
             }
             castedInstance.PropertyChanged += PropertyChangedHandler;
@@ -68,7 +69,7 @@ namespace Qml.Net.Internal.Behaviors
             }
             if (!(instance is INotifyPropertyChanged castedInstance))
             {
-                //invalid type 
+                // Invalid type.
                 return;
             }
 
@@ -81,7 +82,8 @@ namespace Qml.Net.Internal.Behaviors
             {
                 return;
             }
-            //fire signal according to the property that got changed
+
+            // Fire signal according to the property that got changed.
             var type = sender.GetType();
             if (TypeInfos.TryGetValue(type, out var typeInfo))
             {
@@ -118,30 +120,32 @@ namespace Qml.Net.Internal.Behaviors
                 var property = netTypeInfo.GetProperty(i);
                 if (property.NotifySignal != null)
                 {
-                    //in this case some other behavior or the user has already set up a notify signal for this property
-                    //we don't want to destroy that
+                    // In this case some other behavior or the user has already set up a notify signal for this property.
+                    // We don't want to destroy that.
                     mvvmTypeInfo.AddPropertyInfo(property.Name, property.NotifySignal.Name);
                     continue;
                 }
                 var signalName = CalculateSignalNameFromPropertyName(property.Name);
                 mvvmTypeInfo.AddPropertyInfo(property.Name, signalName);
-                //check if this signal already has been registered
-                for(var signalIndex = 0; signalIndex < netTypeInfo.SignalCount; signalIndex++)
+
+                // Check if this signal already has been registered.
+                for (var signalIndex = 0; signalIndex < netTypeInfo.SignalCount; signalIndex++)
                 {
                     var signal = netTypeInfo.GetSignal(signalIndex);
-                    if(string.Equals(signalName, signal.Name))
+                    if (string.Equals(signalName, signal.Name))
                     {
                         existingSignalIndex = signalIndex;
                         break;
                     }
                 }
-                if(existingSignalIndex.HasValue)
+                if (existingSignalIndex.HasValue)
                 {
-                    //signal for this property is already existent but not registered (we check that above)                    
+                    // Signal for this property is already existent but not registered (we check that above).
                     property.NotifySignal = netTypeInfo.GetSignal(existingSignalIndex.Value);
                     continue;
                 }
-                //create a new signal and link it to the property
+
+                // Create a new signal and link it to the property.
                 var notifySignalInfo = new NetSignalInfo(netTypeInfo, signalName);
                 netTypeInfo.AddSignal(notifySignalInfo);
                 property.NotifySignal = notifySignalInfo;

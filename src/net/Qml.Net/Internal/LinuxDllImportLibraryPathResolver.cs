@@ -19,7 +19,7 @@ namespace Qml.Net.Internal
         {
             var result = _original.Resolve(library);
 
-            if(!result.IsSuccess && library == "QmlNet")
+            if (!result.IsSuccess && library == "QmlNet")
             {
                 // Try to let .NET load the library.
                 try
@@ -39,7 +39,7 @@ namespace Qml.Net.Internal
                 }
                 // ReSharper disable EmptyGeneralCatchClause
                 catch (Exception)
-                    // ReSharper restore EmptyGeneralCatchClause
+                // ReSharper restore EmptyGeneralCatchClause
                 {
                 }
             }

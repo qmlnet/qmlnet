@@ -6,7 +6,6 @@ using Xunit;
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Qml.Net.Tests.Qml
 {
     public class LifetimeTests : BaseQmlTestsWithInstance<LifetimeTests.NetInteropTestQml>
@@ -29,7 +28,7 @@ namespace Qml.Net.Tests.Qml
             }
 
             public SecondLevelType Parameter { get; set; }
-            
+
             public SecondLevelType Parameter2 { get; set; }
 
             private readonly WeakReference<SecondLevelType> _parameterWeakRef;
@@ -39,7 +38,7 @@ namespace Qml.Net.Tests.Qml
                 Parameter = null;
                 Parameter2 = null;
             }
-            
+
             public bool CheckIsParameterAlive()
             {
                 GC.Collect(GC.MaxGeneration);
@@ -187,7 +186,7 @@ namespace Qml.Net.Tests.Qml
             Assert.True(Instance.TestResult);
         }
 
-        [Fact()]
+        [Fact]
         public void Can_handle_instance_deref_of_all_refs_in_qml_and_net()
         {
             qmlApplicationEngine.LoadData(@"

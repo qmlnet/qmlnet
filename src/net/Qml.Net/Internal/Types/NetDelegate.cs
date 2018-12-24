@@ -8,7 +8,6 @@ namespace Qml.Net.Internal.Types
         public NetDelegate(IntPtr handle)
             : base(handle)
         {
-            
         }
 
         public static NetDelegate FromDelegate(Delegate del)
@@ -22,7 +21,6 @@ namespace Qml.Net.Internal.Types
             handle.Free();
         }
 
-
         public Delegate Delegate
         {
             get
@@ -31,7 +29,7 @@ namespace Qml.Net.Internal.Types
                 return (Delegate)handle.Target;
             }
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetDelegate.Destroy(ptr);
@@ -42,13 +40,17 @@ namespace Qml.Net.Internal.Types
     {
         [NativeSymbol(Entrypoint = "delegate_create")]
         public CreateDel Create { get; set; }
+
         public delegate IntPtr CreateDel(IntPtr handle);
+
         [NativeSymbol(Entrypoint = "delegate_destroy")]
         public DestroyDel Destroy { get; set; }
+
         public delegate void DestroyDel(IntPtr del);
-        
+
         [NativeSymbol(Entrypoint = "delegate_getHandle")]
         public GetHandleDel GetHandle { get; set; }
+
         public delegate IntPtr GetHandleDel(IntPtr del);
     }
 }

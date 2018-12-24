@@ -15,31 +15,30 @@ namespace Qml.Net
         readonly SynchronizationContext _oldSynchronizationContext;
 
         public QGuiApplication()
-            :this(null)
+            : this(null)
         {
-            
         }
-        
+
         public QGuiApplication(string[] args)
-            :base(Create(args?.ToList()))
+            : base(Create(args?.ToList()))
         {
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
-            
+
             Interop.QGuiApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
-            
+
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
 
         internal QGuiApplication(IntPtr existingApp)
-            :base(CreateFromExisting(existingApp))
+            : base(CreateFromExisting(existingApp))
         {
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
-            
+
             Interop.QGuiApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
-            
+
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
@@ -84,7 +83,7 @@ namespace Qml.Net
             }
             action?.Invoke();
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
@@ -103,7 +102,7 @@ namespace Qml.Net
             {
                 args = new List<string>();
             }
-            
+
             // By default, the argv[0] should be the process name.
             // .NET doesn't pass that name, but Qt should get it
             // since it does in a normal Qt environment.
@@ -119,13 +118,14 @@ namespace Qml.Net
                         strings.Add(variant);
                     }
                 }
+
                 return Interop.QGuiApplication.Create(strings.Handle, IntPtr.Zero);
             }
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void TriggerDelegate();
-        
+
         private class QtSynchronizationContext : SynchronizationContext
         {
             readonly QGuiApplication _guiApp;
@@ -141,35 +141,42 @@ namespace Qml.Net
             }
         }
     }
-    
+
     internal class QGuiApplicationInterop
     {
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
         public CreateDel Create { get; set; }
+
         public delegate IntPtr CreateDel(IntPtr args, IntPtr existingApp);
-        
+
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
         public DestroyDel Destroy { get; set; }
+
         public delegate void DestroyDel(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qguiapplication_exec")]
         public ExecDel Exec { get; set; }
+
         public delegate int ExecDel();
-        
+
         [NativeSymbol(Entrypoint = "qguiapplication_addTriggerCallback")]
         public AddTriggerCallbackDel AddTriggerCallback { get; set; }
+
         public delegate void AddTriggerCallbackDel(IntPtr app, IntPtr callback);
-        
+
         [NativeSymbol(Entrypoint = "qguiapplication_requestTrigger")]
         public RequestTriggerDel RequestTrigger { get; set; }
+
         public delegate void RequestTriggerDel(IntPtr app);
-        
+
         [NativeSymbol(Entrypoint = "qguiapplication_exit")]
         public ExitDel Exit { get; set; }
+
         public delegate void ExitDel(int returnCode);
-        
+
         [NativeSymbol(Entrypoint = "qguiapplication_internalPointer")]
         public InternalPointerDel InternalPointer { get; set; }
+
         public delegate IntPtr InternalPointerDel(IntPtr app);
     }
 }

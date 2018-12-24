@@ -8,9 +8,8 @@ namespace Qml.Net.Tests.Types
     {
         class TestObject
         {
-            
         }
-        
+
         [Fact]
         public void Can_create_net_instance()
         {

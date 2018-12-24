@@ -23,7 +23,7 @@ namespace Qml.Net.Tests.Qml
             var o = new QQmlApplicationEngineQml();
             o.Guid = Guid.NewGuid();
             qmlApplicationEngine.SetContextProperty(propName, o);
-            ((QQmlApplicationEngineQml) qmlApplicationEngine.GetContextProperty(propName)).Guid.Should().Be(o.Guid);
+            ((QQmlApplicationEngineQml)qmlApplicationEngine.GetContextProperty(propName)).Guid.Should().Be(o.Guid);
         }
     }
 }

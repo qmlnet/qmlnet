@@ -15,20 +15,18 @@ namespace Qml.Net.Tests.Qml
             {
                 return Task.CompletedTask;
             }
-            
+
             public virtual Task<string> TestAsyncWithResult()
             {
-                return Task.FromResult("");
+                return Task.FromResult(string.Empty);
             }
 
             public virtual void TestMethod()
             {
-                
             }
 
             public virtual void TestMethodWithArg(string arg)
             {
-                
             }
         }
 
@@ -59,7 +57,7 @@ namespace Qml.Net.Tests.Qml
                 SynchronizationContext.SetSynchronizationContext(oldContext);
             }
         }
-        
+
         [Fact]
         public void Can_await_on_task_with_result()
         {

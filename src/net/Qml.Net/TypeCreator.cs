@@ -34,7 +34,7 @@ namespace Qml.Net
             {
                 _func = func;
             }
-            
+
             public object Create(Type type)
             {
                 return _func(type);

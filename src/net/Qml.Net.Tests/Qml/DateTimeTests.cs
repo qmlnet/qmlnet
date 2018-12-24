@@ -1,5 +1,4 @@
-﻿using Qml.Net.Internal.Qml;
-using System;
+﻿using System;
 using Moq;
 using Xunit;
 
@@ -30,7 +29,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Property, Times.Once);
             Mock.VerifySet(x => x.Property = value, Times.Once);
         }
-        
+
         [Fact]
         public void Can_read_write_property_nullable_with_value()
         {
@@ -48,7 +47,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Nullable, Times.Once);
             Mock.VerifySet(x => x.Nullable = value);
         }
-        
+
         [Fact]
         public void Can_read_write_property_nullable_without_value()
         {

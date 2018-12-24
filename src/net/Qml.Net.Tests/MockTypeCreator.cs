@@ -10,7 +10,7 @@ namespace Qml.Net.Tests
         public MockTypeCreator(params Tuple<Type, object>[] instances)
         {
             _instances = new Dictionary<Type, object>();
-            foreach(var tuple in instances)
+            foreach (var tuple in instances)
             {
                 _instances[tuple.Item1] = tuple.Item2;
             }

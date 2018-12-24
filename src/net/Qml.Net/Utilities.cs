@@ -24,13 +24,14 @@ namespace Qml.Net
         {
             private readonly IntPtr _ignore;
             public readonly IntPtr Data;
-        } 
+        }
     }
-    
+
     internal class UtilitiesInterop
     {
         [NativeSymbol(Entrypoint = "freeString")]
         public FreeStringDel FreeString { get; set; }
+
         public delegate void FreeStringDel(IntPtr container);
     }
 }

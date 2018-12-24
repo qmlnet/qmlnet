@@ -9,7 +9,7 @@ namespace Qml.Net.Serialization
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
-        
+
         public string Serialize(object value)
         {
             return JsonConvert.SerializeObject(value, _defaultSerializerSettings);

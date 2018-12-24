@@ -38,7 +38,7 @@ namespace Qml.Net.Internal
 
         ~ObjectId()
         {
-            if(_Tagger != null)
+            if (_Tagger != null)
             {
                 _Tagger.FreeId(Id);
             }

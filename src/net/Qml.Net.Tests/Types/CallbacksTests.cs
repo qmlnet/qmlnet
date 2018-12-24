@@ -10,16 +10,16 @@ namespace Qml.Net.Tests.Types
 {
     public class CallbacksTests : BaseTests
     {
-        class TestObject 
-        { 
-            public void Method(TestObject o) 
-            { 
-                Object = o; 
-            } 
-             
-            public TestObject Object { get; set; } 
+        class TestObject
+        {
+            public void Method(TestObject o)
+            {
+                Object = o;
+            }
+
+            public TestObject Object { get; set; }
         }
-        
+
         [Fact]
         public void Can_call_is_type_valid()
         {
@@ -42,35 +42,35 @@ namespace Qml.Net.Tests.Types
             // NetReference is still alive, so the weak reference must be alive as well.
             GC.Collect(GC.MaxGeneration);
             reference.IsAlive.Should().BeTrue();
-            
+
             instance.Dispose();
-            
+
             // NetReference has been destroyed, so the handle should have been released.
             GC.Collect(GC.MaxGeneration);
             reference.IsAlive.Should().BeFalse();
         }
-        
+
         [Fact]
         public void Can_instantiate_type()
         {
             var type = NetTypeManager.GetTypeInfo<TestObject>();
 
-            using(var instance = new NetReference(Interop.Callbacks.InstantiateType(type.Handle), false))
+            using (var instance = new NetReference(Interop.Callbacks.InstantiateType(type.Handle), false))
             {
                 instance.Instance.Should().NotBeNull();
                 instance.Instance.Should().BeOfType<TestObject>();
             }
         }
-        
-        [Fact] 
-        public void Can_invoke_method() 
-        { 
-            var o = new TestObject(); 
-            var type = NetTypeManager.GetTypeInfo<TestObject>(); 
+
+        [Fact]
+        public void Can_invoke_method()
+        {
+            var o = new TestObject();
+            var type = NetTypeManager.GetTypeInfo<TestObject>();
             type.EnsureLoaded();
-            var method = type.GetMethod(0); 
-            var instance = NetReference.CreateForObject(o); 
-            
+            var method = type.GetMethod(0);
+            var instance = NetReference.CreateForObject(o);
+
             // This will jump to native, to then call the .NET delegate (round trip).
             // The purpose is to simulate Qml invoking a method, sending .NET instance back.
             // We will inspect the returned instance that it got back to verify that it
