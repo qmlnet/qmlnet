@@ -1,6 +1,6 @@
 image: Visual Studio 2017
 install:
-  - choco install gitversion.portable -pre -y --version 4.0.0-beta0012
+  - choco install gitversion.portable -pre -y --version 4.0.0
 before_build:
   - cmd: rm -r C:\Tools\GitVersion\
   - cmd: gitversion > version.json
