@@ -1,7 +1,5 @@
-﻿using Qml.Net.Internal.Types;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal
 {

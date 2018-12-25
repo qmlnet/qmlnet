@@ -15,7 +15,7 @@ namespace Qml.Net
         {
             return Interop.QQmlApplicationEngine.RegisterSingletonTypeQml(url, uri, versionMajor, versionMinor, qmlName);
         }
-        
+
         public static int RegisterSingletonType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
             using (var type = NetTypeManager.GetTypeInfo<T>())

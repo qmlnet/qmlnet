@@ -15,7 +15,8 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_register_singleton()
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
+            NetTestHelper.RunQml(
+                qmlApplicationEngine,
                 @"
                 import QtQuick 2.0
                 import tests 1.0

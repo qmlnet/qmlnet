@@ -284,6 +284,7 @@ namespace Build
             Target("publish", () =>
             {
                 return; // temp, until we move to Azure Dev Ops
+                #pragma warning disable CS0162
                 if (string.IsNullOrEmpty(nugetApiKey))
                 {
                     Info("Skipping publish, due to missing NuGet key...");

@@ -9,11 +9,12 @@ namespace Qml.Net
             Interop.QtWebEngine.Initialize();
         }
     }
-    
+
     internal class QtWebEngineInterop
     {
         [NativeSymbol(Entrypoint = "qtwebebengine_initialize")]
         public InitializeDel Initialize { get; set; }
+
         public delegate void InitializeDel();
     }
 }

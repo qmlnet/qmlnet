@@ -9,7 +9,6 @@ namespace Qml.Net.Internal.Qml
         public NetJsValue(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
-            
         }
 
         public bool IsCallable => Interop.NetJsValue.IsCallable(Handle);
@@ -21,11 +20,11 @@ namespace Qml.Net.Internal.Qml
             var result = Interop.NetJsValue.Call(Handle, parameters?.Handle ?? IntPtr.Zero);
             return result != IntPtr.Zero ? new NetVariant(result) : null;
         }
-        
+
         public object Call(params object[] parameters)
         {
             NetVariantList variants = null;
-            
+
             if (parameters != null && parameters.Length > 0)
             {
                 variants = new NetVariantList();
@@ -38,20 +37,20 @@ namespace Qml.Net.Internal.Qml
                     }
                 }
             }
-            
+
             var result = Call(variants);
-            
+
             variants?.Dispose();
 
             if (result == null)
             {
                 return null;
             }
-            
+
             object returnValue = null;
             Helpers.Unpackvalue(ref returnValue, result);
             result.Dispose();
-            
+
             return returnValue;
         }
 
@@ -105,7 +104,7 @@ namespace Qml.Net.Internal.Qml
             }
 
             public NetJsValue JsValue => _jsValue;
-            
+
             public bool IsCallable => _jsValue.IsCallable;
 
             public bool IsArray => _jsValue.IsArray;
@@ -142,14 +141,14 @@ namespace Qml.Net.Internal.Qml
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
                 result = null;
-                
+
                 if (!IsCallable)
                 {
                     return false;
                 }
 
                 result = Call(args);
-                
+
                 return true;
             }
 
@@ -193,30 +192,37 @@ namespace Qml.Net.Internal.Qml
     {
         [NativeSymbol(Entrypoint = "net_js_value_destroy")]
         public DestroyDel Destroy { get; set; }
+
         public delegate void DestroyDel(IntPtr jsValue);
-        
+
         [NativeSymbol(Entrypoint = "net_js_value_isCallable")]
         public IsCallableDel IsCallable { get; set; }
+
         public delegate bool IsCallableDel(IntPtr jsValue);
-        
+
         [NativeSymbol(Entrypoint = "net_js_value_isArray")]
         public IsArrayDel IsArray { get; set; }
+
         public delegate bool IsArrayDel(IntPtr jsValue);
-        
+
         [NativeSymbol(Entrypoint = "net_js_value_call")]
         public CallDel Call { get; set; }
+
         public delegate IntPtr CallDel(IntPtr jsValue, IntPtr parameters);
-        
+
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
         public GetPropertyDel GetProperty { get; set; }
+
         public delegate IntPtr GetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
-        
+
         [NativeSymbol(Entrypoint = "net_js_value_getItemAtIndex")]
         public GetItemAtIndexDel GetItemAtIndex { get; set; }
+
         public delegate IntPtr GetItemAtIndexDel(IntPtr jsValue, int arrayIndex);
-        
+
         [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
         public SetPropertyDel SetProperty { get; set; }
+
         public delegate void SetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr value);
     }
 }

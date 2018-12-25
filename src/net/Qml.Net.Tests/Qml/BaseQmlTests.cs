@@ -31,6 +31,7 @@ namespace Qml.Net.Tests.Qml
     {
         private readonly QGuiApplication _coreApplication;
         protected readonly QQmlApplicationEngine qmlApplicationEngine;
+
         protected MockTypeCreator TypeCreator { get;  private set; }
 
         readonly List<Type> _registeredTypes = new List<Type>();
@@ -38,7 +39,7 @@ namespace Qml.Net.Tests.Qml
 
         protected AbstractBaseQmlTests()
         {
-            _coreApplication = new QGuiApplication(new []{ "-platform", "offscreen" });
+            _coreApplication = new QGuiApplication(new[] { "-platform", "offscreen" });
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
@@ -61,10 +62,11 @@ namespace Qml.Net.Tests.Qml
         {
             CancellationTokenSource cts = new CancellationTokenSource();
             CancellationToken ct = cts.Token;
-            Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(
+                () =>
             {
                 Thread.Sleep(timeoutMs);
-                if(!ct.IsCancellationRequested)
+                if (!ct.IsCancellationRequested)
                 {
                     _coreApplication.Exit(-1);
                 }
@@ -77,18 +79,20 @@ namespace Qml.Net.Tests.Qml
 
         protected void RunQmlTest(string instanceId, string componentOnCompletedCode)
         {
-            NetTestHelper.RunQml(qmlApplicationEngine,
-                string.Format(@"
-                import QtQuick 2.0
-                import tests 1.0
-                {0} {{
-                    id: {1}
-                    Component.onCompleted: function() {{
-                        {2}
+            NetTestHelper.RunQml(
+                qmlApplicationEngine,
+                string.Format(
+                    @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    {0} {{
+                        id: {1}
+                        Component.onCompleted: function() {{
+                            {2}
+                        }}
                     }}
-                }}
-            ", 
-            typeof(TTypeToRegister).Name, 
+            ",
+            typeof(TTypeToRegister).Name,
             instanceId,
             componentOnCompletedCode));
         }
@@ -104,7 +108,8 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public abstract class BaseQmlTests<T> : AbstractBaseQmlTests<T> where T:class
+    public abstract class BaseQmlTests<T> : AbstractBaseQmlTests<T>
+        where T : class
     {
         protected readonly Mock<T> Mock;
 
@@ -116,7 +121,8 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public abstract class BaseQmlTestsWithInstance<T> : AbstractBaseQmlTests<T> where T : class, new()
+    public abstract class BaseQmlTestsWithInstance<T> : AbstractBaseQmlTests<T>
+        where T : class, new()
     {
         protected readonly T Instance;
 
@@ -128,7 +134,8 @@ namespace Qml.Net.Tests.Qml
         }
     }
 
-    public abstract class BaseQmlMvvmTestsWithInstance<T> : AbstractBaseQmlTests<T> where T : class, new()
+    public abstract class BaseQmlMvvmTestsWithInstance<T> : AbstractBaseQmlTests<T>
+        where T : class, new()
     {
         protected readonly T Instance;
 

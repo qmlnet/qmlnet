@@ -12,7 +12,7 @@ namespace Qml.Net.Sandbox
         public class TestQmlImport
         {
             public static TestObject ts = new TestObject();
-            
+
             public TestObject GetObject()
             {
                 return ts;
@@ -30,17 +30,17 @@ namespace Qml.Net.Sandbox
         static int Main(string[] args)
         {
             Qt.PutEnv("QV4_MM_AGGRESSIVE_GC", "1");
-            
+
             using (var app = new QGuiApplication(args))
             {
                 using (var engine = new QQmlApplicationEngine())
                 {
                     engine.AddImportPath(Path.Combine(Directory.GetCurrentDirectory(), "Qml"));
-                    
+
                     Qml.RegisterType<TestQmlImport>("test");
 
                     engine.Load("main.qml");
-                    
+
                     return app.Exec();
                 }
             }

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
-using FluentAssertions.Common;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Moq;
-using Qml.Net.Internal.Qml;
-using Xunit;
 using Qml.Net.Extensions;
+using Xunit;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -16,24 +13,20 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual void Method(dynamic value)
             {
-
             }
 
             public virtual void Method(dynamic value1, dynamic value2)
             {
-                
             }
 
             public virtual void MethodWithoutParams()
             {
-                
             }
-            
+
             public virtual void MethodWithParameters(string param1, int param2)
             {
-                
             }
-            
+
             public virtual void CallMethodWithJsValue(INetJsValue value, INetJsValue method)
             {
                 method.Call(value);
@@ -43,11 +36,11 @@ namespace Qml.Net.Tests.Qml
             {
                 return null;
             }
-            
+
             public class TestObject
             {
                 public int CalledCount { get; set; }
-                
+
                 public void TestMethod()
                 {
                     CalledCount++;
@@ -61,7 +54,7 @@ namespace Qml.Net.Tests.Qml
             INetJsValue jsValue = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
                 .Callback(new Action<dynamic>(x => jsValue = x));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -72,7 +65,7 @@ namespace Qml.Net.Tests.Qml
             jsValue.Should().NotBeNull();
             jsValue.IsCallable.Should().BeTrue();
         }
-        
+
         [Fact]
         public void Can_send_non_function()
         {
@@ -82,7 +75,7 @@ namespace Qml.Net.Tests.Qml
                 {
                     jsValue = x;
                 }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -104,7 +97,7 @@ namespace Qml.Net.Tests.Qml
                     result = x();
                 }));
             Mock.Setup(x => x.MethodWithoutParams());
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -128,7 +121,7 @@ namespace Qml.Net.Tests.Qml
                     result = x("test1", 4);
                 }));
             Mock.Setup(x => x.MethodWithParameters("test1", 4));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -151,7 +144,7 @@ namespace Qml.Net.Tests.Qml
                 {
                     x(testObject);
                 }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -164,13 +157,13 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             testObject.CalledCount.Should().Be(2);
         }
-        
+
         [Fact]
         public void Can_pass_js_value_to_callback()
         {
             Mock.CallBase = true;
             Mock.Setup(x => x.MethodWithParameters("test1", 4));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -198,7 +191,7 @@ namespace Qml.Net.Tests.Qml
                 {
                     results.Add((object)jsValue());
                 }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -242,7 +235,7 @@ namespace Qml.Net.Tests.Qml
                     result = jsValue;
                 }));
             Mock.Setup(x => x.GetTestObject()).Returns(testObject);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -259,11 +252,11 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(1));
             Mock.Verify(x => x.GetTestObject(), Times.Exactly(1));
-            ((object) result.nonExistant).Should().BeNull();
-            ((int) result.test1).Should().Be(34);
-            ((string) result.test2).Should().Be("test3");
+            ((object)result.nonExistant).Should().BeNull();
+            ((int)result.test1).Should().Be(34);
+            ((string)result.test2).Should().Be("test3");
             ((object)result.test3).Should().BeSameAs(testObject);
-            ((string) result.test4.test5).Should().Be("test5");
+            ((string)result.test4.test5).Should().Be("test5");
         }
 
         [Fact]
@@ -282,7 +275,7 @@ namespace Qml.Net.Tests.Qml
                 }));
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>()))
                 .Callback(new Action<dynamic>(value => { result = value; }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -303,11 +296,11 @@ namespace Qml.Net.Tests.Qml
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Exactly(1));
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>(), It.IsAny<INetJsValue>()), Times.Exactly(1));
             Mock.Verify(x => x.GetTestObject(), Times.Exactly(1));
-            ((object) result).Should().NotBeNull();
-            ((int) result.dest1).Should().Be(123);
-            ((string) result.dest2).Should().Be("value");
-            ((object) result.dest3).Should().BeSameAs(testObject);
-            ((object) result.dest4).Should().BeAssignableTo<INetJsValue>();
+            ((object)result).Should().NotBeNull();
+            ((int)result.dest1).Should().Be(123);
+            ((string)result.dest2).Should().Be("value");
+            ((object)result.dest3).Should().BeSameAs(testObject);
+            ((object)result.dest4).Should().BeAssignableTo<INetJsValue>();
         }
 
         [Fact]
@@ -316,9 +309,9 @@ namespace Qml.Net.Tests.Qml
             List<string> result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(param =>
                 {
-                    result = ((INetJsValue) param).AsList<string>();
+                    result = ((INetJsValue)param).AsList<string>();
                 }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -327,23 +320,23 @@ namespace Qml.Net.Tests.Qml
                     p.push(""test2"")
                     test.method(p)
                 ");
-            
+
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             result.Should().NotBeNull();
             result.Count.Should().Be(2);
             result[0].Should().Be("test1");
             result[1].Should().Be("test2");
         }
-        
+
         [Fact]
         public void Can_convert_array_to_list_int()
         {
             List<int> result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(param =>
             {
-                result = ((INetJsValue) param).AsList<int>();
+                result = ((INetJsValue)param).AsList<int>();
             }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -352,7 +345,7 @@ namespace Qml.Net.Tests.Qml
                     p.push(1)
                     test.method(p)
                 ");
-            
+
             Mock.Verify(x => x.Method(It.IsAny<INetJsValue>()), Times.Once);
             result.Should().NotBeNull();
             result.Count.Should().Be(2);

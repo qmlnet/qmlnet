@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Xunit;
 using FluentAssertions;
-using Qml.Net.Internal.Qml;
+using Xunit;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -34,7 +33,7 @@ namespace Qml.Net.Tests.Qml
         {
             ViewModel.NotifyOnlyIntProperty = newValue;
         }
-        
+
         public void ChangeCustomNotifyOnlyIntPropertyTo(int newValue)
         {
             ViewModel.CustomNotifyOnlyIntProperty = newValue;
@@ -47,13 +46,15 @@ namespace Qml.Net.Tests.Qml
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private string _stringProperty = "";
+        private string _stringProperty = string.Empty;
+
         public string StringProperty
         {
             get
             {
                 return _stringProperty;
             }
+
             set
             {
                 if (!Equals(value, _stringProperty))
@@ -65,6 +66,7 @@ namespace Qml.Net.Tests.Qml
         }
 
         private int _intProperty;
+
         public int IntProperty
         {
             get => _intProperty;
@@ -77,8 +79,9 @@ namespace Qml.Net.Tests.Qml
                 }
             }
         }
-        
+
         private int _customIntProperty;
+
         [NotifySignal("customIntPropertyChangedSignal")]
         public int CustomIntProperty
         {
@@ -86,6 +89,7 @@ namespace Qml.Net.Tests.Qml
             {
                 return _customIntProperty;
             }
+
             set
             {
                 if (!Equals(value, _customIntProperty))
@@ -95,8 +99,9 @@ namespace Qml.Net.Tests.Qml
                 }
             }
         }
-        
+
         private int _customMvvmStyleIntProperty;
+
         [NotifySignal]
         public int CustomMvvmStyleIntProperty
         {
@@ -104,6 +109,7 @@ namespace Qml.Net.Tests.Qml
             {
                 return _customMvvmStyleIntProperty;
             }
+
             set
             {
                 if (!Equals(value, _customMvvmStyleIntProperty))
@@ -113,8 +119,9 @@ namespace Qml.Net.Tests.Qml
                 }
             }
         }
-        
+
         private int _notifyOnlyIntProperty;
+
         [NotifySignal]
         public int NotifyOnlyIntProperty
         {
@@ -122,6 +129,7 @@ namespace Qml.Net.Tests.Qml
             {
                 return _notifyOnlyIntProperty;
             }
+
             set
             {
                 if (!Equals(value, _notifyOnlyIntProperty))
@@ -131,8 +139,9 @@ namespace Qml.Net.Tests.Qml
                 }
             }
         }
-        
+
         private int _customNotifyOnlyIntProperty;
+
         [NotifySignal("customNotifyIntPropertyChangedSignal")]
         public int CustomNotifyOnlyIntProperty
         {
@@ -140,6 +149,7 @@ namespace Qml.Net.Tests.Qml
             {
                 return _customNotifyOnlyIntProperty;
             }
+
             set
             {
                 if (!Equals(value, _customNotifyOnlyIntProperty))
@@ -218,7 +228,7 @@ namespace Qml.Net.Tests.Qml
 
             Instance.TestResult.Should().Be(true);
         }
-        
+
         [Fact]
         public void Does_play_nicely_with_completely_custom_notify_signals()
         {
@@ -234,7 +244,7 @@ namespace Qml.Net.Tests.Qml
 
             Instance.TestResult.Should().Be(true);
         }
-        
+
         [Fact]
         public void Does_play_nicely_with_custom_notify_signals()
         {
@@ -250,7 +260,7 @@ namespace Qml.Net.Tests.Qml
 
             Instance.TestResult.Should().Be(true);
         }
-        
+
         [Fact]
         public void Does_not_interfer_with_properties_only_using_notify_signals()
         {
@@ -266,7 +276,7 @@ namespace Qml.Net.Tests.Qml
 
             Instance.TestResult.Should().Be(true);
         }
-        
+
         [Fact]
         public void Does_not_interfer_with_properties_only_using_custom_notify_signals()
         {

@@ -12,7 +12,7 @@ namespace Qml.Net.Internal.Types
 
         public static NetTypeInfo GetTypeInfo(Type type)
         {
-            if(type == null)
+            if (type == null)
             {
                 return null;
             }
@@ -21,11 +21,12 @@ namespace Qml.Net.Internal.Types
             return netTypeInfo;
         }
     }
-    
+
     internal class NetTypeManagerInterop
     {
         [NativeSymbol(Entrypoint = "type_manager_getTypeInfo")]
         public GetTypeInfoDel GetTypeInfo { get; set; }
+
         public delegate IntPtr GetTypeInfoDel([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
     }
 }

@@ -10,7 +10,7 @@ namespace Qml.Net.Extensions
             {
                 return null;
             }
-            
+
             if (typeof(T) != typeof(int) && typeof(T) != typeof(string))
             {
                 // Only enumerables of int and string are currently supported
@@ -21,7 +21,7 @@ namespace Qml.Net.Extensions
             try
             {
                 var length = (int)value.GetProperty("length");
-                
+
                 for (var i = 0; i < length; i++)
                 {
                     var item = value.GetItemAtIndex(i);

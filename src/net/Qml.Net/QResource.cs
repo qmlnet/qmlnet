@@ -15,14 +15,17 @@ namespace Qml.Net
             return Internal.Interop.QResource.UnregisterResource(rccFileName, resourceRoot);
         }
     }
-    
+
     internal class QResourceInterop
     {
         [NativeSymbol(Entrypoint = "qresource_registerResource")]
         public RegisterResourceDel RegisterResource { get; set; }
+
         public delegate bool RegisterResourceDel([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
+
         [NativeSymbol(Entrypoint = "qresource_unregisterResource")]
         public UnregisterResourceDel UnregisterResource { get; set; }
+
         public delegate bool UnregisterResourceDel([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
     }
 }

@@ -13,7 +13,7 @@ namespace Qml.Net
             _handle = handle;
             _ownesHandle = ownsHandle;
         }
-        
+
         ~BaseDisposable()
         {
             Dispose(false);
@@ -27,21 +27,21 @@ namespace Qml.Net
                 {
                     throw new ObjectDisposedException($"Type {GetType().Name} is disposed.");
                 }
-                
+
                 return _handle;
             }
         }
 
-        public void Dispose() 
+        public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this); 
+            GC.SuppressFinalize(this);
         }
 
         protected void Dispose(bool disposing)
         {
             if (_disposed) return;
-            
+
             if (disposing)
             {
                 DisposeManaged();
@@ -59,7 +59,6 @@ namespace Qml.Net
 
         protected virtual void DisposeManaged()
         {
-            
         }
 
         protected abstract void DisposeUnmanaged(IntPtr ptr);

@@ -15,25 +15,20 @@ namespace Qml.Net.Tests.Qml
 
             public virtual void TestMethodParameter(ObjectTestsQmlReturnType parameter)
             {
-                
             }
 
             public virtual void Overload()
             {
-                
             }
-
 
             public virtual void Overload(string param)
             {
-                
             }
-            
+
             public object TestObjectProperty { get; set; }
 
             public virtual void TestObjectPropertyTest(string result)
             {
-                
             }
         }
 
@@ -41,7 +36,6 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual void TestMethod()
             {
-                
             }
         }
 
@@ -90,16 +84,16 @@ namespace Qml.Net.Tests.Qml
                 @"
                     test.overload()
                 ");
-            
+
             Mock.Verify(x => x.Overload(), Times.Once);
             Mock.Verify(x => x.Overload(It.IsAny<string>()), Times.Never);
-            
+
             RunQmlTest(
                 "test",
                 @"
                     test.overload('test')
                 ");
-            
+
             Mock.Verify(x => x.Overload(), Times.Once);
             Mock.Verify(x => x.Overload(It.IsAny<string>()), Times.Once);
         }
@@ -108,13 +102,13 @@ namespace Qml.Net.Tests.Qml
         public void Can_get_null()
         {
             Mock.Setup(x => x.TestObjectPropertyTest(It.IsAny<string>()));
-            
+
             RunQmlTest(
                 "test",
                 @"
                     test.testObjectPropertyTest(typeof test.testObjectProperty)
                 ");
-            
+
             Mock.Verify(x => x.TestObjectPropertyTest("object"), Times.Once);
         }
     }

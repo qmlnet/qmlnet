@@ -10,10 +10,9 @@ namespace Qml.Net
             Name = name;
             Parameters = parameters;
         }
-        
-        
+
         public string Name { get; }
-        
+
         public NetVariantType[] Parameters { get; }
     }
 }

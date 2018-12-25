@@ -13,7 +13,7 @@ namespace Qml.Net.Internal
     internal static class Interop
     {
         static readonly CallbacksImpl DefaultCallbacks = new CallbacksImpl(new DefaultCallbacks());
-        
+
         static Interop()
         {
             string pluginsDirectory = null;
@@ -22,7 +22,7 @@ namespace Qml.Net.Internal
 
             IPathResolver pathResolver = null;
             IPlatformLoader loader = null;
-            
+
             if (Host.GetExportedSymbol != null)
             {
                 // We are loading exported functions from the currently running executable.
@@ -69,7 +69,7 @@ namespace Qml.Net.Internal
                         }
                     }
                 }
-                
+
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     if (!string.IsNullOrEmpty(libDirectory) && Directory.Exists(libDirectory))
@@ -78,7 +78,8 @@ namespace Qml.Net.Internal
                         // the folder to the path. The reason is because QML plugins aren't
                         // in the same directory and have trouble finding dependencies
                         // that are within our lib folder.
-                        Environment.SetEnvironmentVariable("PATH",
+                        Environment.SetEnvironmentVariable(
+                            "PATH",
                             Environment.GetEnvironmentVariable("PATH") + $";{libDirectory}");
                     }
                 }
@@ -112,11 +113,11 @@ namespace Qml.Net.Internal
             Utilities = LoadInteropType<UtilitiesInterop>(library, loader);
             QtWebEngine = LoadInteropType<QtWebEngineInterop>(library, loader);
 
-            if(!string.IsNullOrEmpty(pluginsDirectory))
+            if (!string.IsNullOrEmpty(pluginsDirectory))
             {
                 Qt.PutEnv("QT_PLUGIN_PATH", pluginsDirectory);
             }
-            if(!string.IsNullOrEmpty(qmlDirectory))
+            if (!string.IsNullOrEmpty(qmlDirectory))
             {
                 Qt.PutEnv("QML2_IMPORT_PATH", qmlDirectory);
             }
@@ -128,48 +129,49 @@ namespace Qml.Net.Internal
         public static CallbacksInterop Callbacks { get; }
 
         public static NetTypeInfoInterop NetTypeInfo { get; }
-        
+
         public static NetMethodInfoInterop NetMethodInfo { get; }
-        
+
         public static NetPropertyInfoInterop NetPropertyInfo { get; }
-        
+
         public static NetTypeManagerInterop NetTypeManager { get; }
-        
+
         public static QGuiApplicationInterop QGuiApplication { get; }
-        
+
         public static QQmlApplicationEngineInterop QQmlApplicationEngine { get; }
-        
+
         public static NetVariantInterop NetVariant { get; }
-        
+
         public static NetReferenceInterop NetReference { get; }
-        
+
         public static NetVariantListInterop NetVariantList { get; }
-        
+
         public static NetTestHelperInterop NetTestHelper { get; }
-        
+
         public static NetSignalInfoInterop NetSignalInfo { get; }
-        
+
         public static QResourceInterop QResource { get; }
-        
+
         public static NetDelegateInterop NetDelegate { get; }
-        
+
         public static NetJsValueInterop NetJsValue { get; }
-        
+
         public static QQuickStyleInterop QQuickStyle { get; }
 
         public static QtInterop QtInterop { get; }
-        
+
         public static UtilitiesInterop Utilities { get; }
-        
+
         public static QtWebEngineInterop QtWebEngine { get; }
 
-        private static T LoadInteropType<T>(IntPtr library, NetNativeLibLoader.Loader.IPlatformLoader loader) where T:new()
+        private static T LoadInteropType<T>(IntPtr library, NetNativeLibLoader.Loader.IPlatformLoader loader)
+            where T : new()
         {
             var result = new T();
             LoadDelegates(result, library, loader);
             return result;
         }
-        
+
         private static void LoadDelegates(object o, IntPtr library, NetNativeLibLoader.Loader.IPlatformLoader loader)
         {
             foreach (var property in o.GetType().GetProperties())

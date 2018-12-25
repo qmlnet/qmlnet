@@ -11,15 +11,13 @@ namespace Qml.Net.Tests.Qml
             public virtual bool Property { get; set; }
 
             public virtual bool? Nullable { get; set; }
-            
+
             public virtual void MethodParameter(bool value)
             {
-
             }
 
             public virtual void MethodParameterNullable(bool? value)
             {
-                
             }
 
             public virtual bool MethodReturn()
@@ -36,7 +34,7 @@ namespace Qml.Net.Tests.Qml
                 @"
                     test.property = true
                 ");
-            
+
             Mock.VerifySet(x => x.Property = true, Times.Once);
         }
 
@@ -81,7 +79,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Property, Times.Once);
             Mock.Verify(x => x.MethodParameter(It.Is<bool>(y => y)));
         }
-        
+
         [Fact]
         public void Can_read_nullable_bool_no_value()
         {
@@ -97,7 +95,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Nullable, Times.Once);
             Mock.Verify(x => x.MethodParameterNullable(It.Is<bool?>(y => y == null)), Times.Once);
         }
-        
+
         [Fact]
         public void Can_read_nullable_bool_with_value()
         {

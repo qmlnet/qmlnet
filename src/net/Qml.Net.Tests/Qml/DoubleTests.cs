@@ -12,7 +12,6 @@ namespace Qml.Net.Tests.Qml
 
             public virtual void MethodParameter(double value)
             {
-
             }
 
             public virtual double MethodReturn()
@@ -20,12 +19,12 @@ namespace Qml.Net.Tests.Qml
                 return 0;
             }
         }
-        
+
         [Fact]
         public void Can_read_write_int_min_value()
         {
             Mock.Setup(x => x.Property).Returns(double.MinValue);
-            
+
             RunQmlTest(
                 "test",
                 @"

@@ -15,15 +15,17 @@ namespace Qml.Net
             Interop.QQuickStyle.SetStyle(style);
         }
     }
-    
+
     internal class QQuickStyleInterop
     {
         [NativeSymbol(Entrypoint = "qquickstyle_setFallbackStyle")]
         public SetFallbackStyleDel SetFallbackStyle { get; set; }
+
         public delegate void SetFallbackStyleDel([MarshalAs(UnmanagedType.LPWStr)]string style);
 
         [NativeSymbol(Entrypoint = "qquickstyle_setStyle")]
         public SetStyleDel SetStyle { get; set; }
+
         public delegate void SetStyleDel([MarshalAs(UnmanagedType.LPWStr)]string style);
     }
 }

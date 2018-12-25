@@ -18,11 +18,11 @@ namespace Qml.Net.Benchmarks
                 _initialized = true;
             }
         }
-        
+
         [IterationSetup]
         public void Setup()
         {
-            _guiApplication = new QGuiApplication(new[]{"-platform", "offscreen"});
+            _guiApplication = new QGuiApplication(new[] { "-platform", "offscreen" });
             _qmlApplicationEngine = new QQmlApplicationEngine();
         }
 
@@ -32,7 +32,7 @@ namespace Qml.Net.Benchmarks
             _qmlApplicationEngine.Dispose();
             _guiApplication.Dispose();
         }
-        
+
         [Benchmark]
         public void Run()
         {
@@ -73,7 +73,7 @@ namespace Qml.Net.Benchmarks
         public class QmlType
         {
             private readonly InnerType _object = new InnerType();
-            
+
             public object GetObject()
             {
                 return _object;
@@ -83,10 +83,9 @@ namespace Qml.Net.Benchmarks
             {
                 _guiApplication.Exit();
             }
-            
+
             public class InnerType
             {
-                
             }
         }
     }

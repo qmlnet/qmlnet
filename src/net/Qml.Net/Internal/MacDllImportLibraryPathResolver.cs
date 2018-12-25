@@ -18,7 +18,7 @@ namespace Qml.Net.Internal
         {
             var result = _original.Resolve(library);
 
-            if(!result.IsSuccess && library == "QmlNet")
+            if (!result.IsSuccess && library == "QmlNet")
             {
                 // Try to let .NET load the library.
                 try
@@ -32,14 +32,13 @@ namespace Qml.Net.Internal
                     {
                         return result;
                     }
-                    
+
                     var sym = dlsym(dll, "qml_net_getVersion");
                     if (sym == IntPtr.Zero)
                     {
                         return result;
                     }
 
-                    
                     var info = new DlInfo();
                     if (dladdr(sym, ref info) != 1)
                     {
@@ -48,11 +47,12 @@ namespace Qml.Net.Internal
 
                     var location = Marshal.PtrToStringAnsi(info.fname);
 
-                    if(File.Exists(location))
+                    if (File.Exists(location))
                     {
                         return ResolvePathResult.FromSuccess(location);
                     }
                 }
+
                 // ReSharper disable EmptyGeneralCatchClause
                 catch (Exception)
                 // ReSharper restore EmptyGeneralCatchClause
@@ -65,13 +65,13 @@ namespace Qml.Net.Internal
 
         [DllImport("libQmlNet.dylib")]
         static extern long qml_net_getVersion();
-        
+
         [DllImport("dl")]
         static extern IntPtr dlopen(string fileName, SymbolFlag flags);
-        
+
         [DllImport("dl")]
         static extern IntPtr dlsym(IntPtr handle, string name);
-        
+
         [DllImport("dl")]
         static extern int dladdr(IntPtr handle, ref DlInfo info);
 
@@ -82,7 +82,7 @@ namespace Qml.Net.Internal
             private IntPtr notUsed2;
             private IntPtr notUsed3;
         }
-        
+
         [Flags]
         private enum SymbolFlag
         {

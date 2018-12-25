@@ -7,7 +7,7 @@ namespace Qml.Net
         bool IsCallable { get; }
 
         bool IsArray { get; }
-        
+
         object GetProperty(string propertyName);
 
         object GetItemAtIndex(int arrayIndex);
