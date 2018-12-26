@@ -7,5 +7,5 @@ docker run -it --rm \
     -w /work \
     -e LD_LIBRARY_PATH=/work/src/native/output \
     -e PRIVATE_NUGET_KEY=$PRIVATE_NUGET_KEY \
-    qmlnet/linux-ci:qt-5.11.1 \
+    qmlnet/linux-ci:qt-5.12.0 \
     ./build.sh ci

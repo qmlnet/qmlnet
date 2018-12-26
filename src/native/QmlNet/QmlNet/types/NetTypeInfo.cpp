@@ -207,24 +207,32 @@ Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInf
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
-Q_DECL_EXPORT bool type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
+Q_DECL_EXPORT uchar type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
 {
-    return netTypeInfo->netTypeInfo->isArray();
+    if(netTypeInfo->netTypeInfo->isArray()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, bool isArray)
+Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, uchar isArray)
 {
-    netTypeInfo->netTypeInfo->setIsArray(isArray);
+    netTypeInfo->netTypeInfo->setIsArray(isArray == 1);
 }
 
-Q_DECL_EXPORT bool type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
+Q_DECL_EXPORT uchar type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
 {
-    return netTypeInfo->netTypeInfo->isList();
+    if(netTypeInfo->netTypeInfo->isList()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, bool isList)
+Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, uchar isList)
 {
-    netTypeInfo->netTypeInfo->setIsList(isList);
+    netTypeInfo->netTypeInfo->setIsList(isList == 1);
 }
 
 Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
@@ -311,12 +319,20 @@ Q_DECL_EXPORT NetSignalInfoContainer* type_info_getSignal(NetTypeInfoContainer* 
     return result;
 }
 
-Q_DECL_EXPORT bool type_info_isLoaded(NetTypeInfoContainer* container) {
-    return container->netTypeInfo->isLoaded();
+Q_DECL_EXPORT uchar type_info_isLoaded(NetTypeInfoContainer* container) {
+    if(container->netTypeInfo->isLoaded()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT bool type_info_isLoading(NetTypeInfoContainer* container) {
-    return container->netTypeInfo->isLoading();
+Q_DECL_EXPORT uchar type_info_isLoading(NetTypeInfoContainer* container) {
+    if(container->netTypeInfo->isLoading()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 Q_DECL_EXPORT void type_info_ensureLoaded(NetTypeInfoContainer* container) {

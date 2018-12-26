@@ -31,14 +31,14 @@ namespace Qml.Net.Internal.Types
 
         public bool IsArray
         {
-            get => Interop.NetTypeInfo.GetIsArray(Handle);
-            set => Interop.NetTypeInfo.SetIsArray(Handle, value);
+            get => Interop.NetTypeInfo.GetIsArray(Handle) == 1;
+            set => Interop.NetTypeInfo.SetIsArray(Handle, value ? (byte)1 : (byte)0);
         }
 
         public bool IsList
         {
-            get => Interop.NetTypeInfo.GetIsList(Handle);
-            set => Interop.NetTypeInfo.SetIsList(Handle, value);
+            get => Interop.NetTypeInfo.GetIsList(Handle) == 1;
+            set => Interop.NetTypeInfo.SetIsList(Handle, value ? (byte)1 : (byte)0);
         }
 
         public void AddMethod(NetMethodInfo methodInfo)
@@ -101,9 +101,9 @@ namespace Qml.Net.Internal.Types
             return new NetSignalInfo(result);
         }
 
-        public bool IsLoaded => Interop.NetTypeInfo.IsLoaded(Handle);
+        public bool IsLoaded => Interop.NetTypeInfo.IsLoaded(Handle) == 1;
 
-        public bool IsLoading => Interop.NetTypeInfo.IsLoading(Handle);
+        public bool IsLoading => Interop.NetTypeInfo.IsLoading(Handle) == 1;
 
         public void EnsureLoaded()
         {
@@ -156,22 +156,22 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_setIsArray")]
         public GetIsArrayDel GetIsArray { get; set; }
 
-        public delegate bool GetIsArrayDel(IntPtr netTypeInfo);
+        public delegate byte GetIsArrayDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getIsArray")]
         public SetIsArrayDel SetIsArray { get; set; }
 
-        public delegate void SetIsArrayDel(IntPtr netTypeInfo, bool isArray);
+        public delegate void SetIsArrayDel(IntPtr netTypeInfo, byte isArray);
 
         [NativeSymbol(Entrypoint = "type_info_setIsList")]
         public GetIsListDel GetIsList { get; set; }
 
-        public delegate bool GetIsListDel(IntPtr netTypeInfo);
+        public delegate byte GetIsListDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getIsList")]
         public SetIsListDel SetIsList { get; set; }
 
-        public delegate void SetIsListDel(IntPtr netTypeInfo, bool isList);
+        public delegate void SetIsListDel(IntPtr netTypeInfo, byte isList);
 
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
         public AddMethodDel AddMethod { get; set; }
@@ -241,12 +241,12 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_isLoaded")]
         public IsLoadedDel IsLoaded { get; set; }
 
-        public delegate bool IsLoadedDel(IntPtr typeInfo);
+        public delegate byte IsLoadedDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_isLoading")]
         public IsLoadingDel IsLoading { get; set; }
 
-        public delegate bool IsLoadingDel(IntPtr typeInfo);
+        public delegate byte IsLoadingDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_ensureLoaded")]
         public EnsureLoadedDel EnsureLoaded { get; set; }

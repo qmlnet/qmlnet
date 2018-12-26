@@ -82,20 +82,22 @@ Q_DECL_EXPORT void net_js_value_destroy(NetJSValueContainer* jsValueContainer) {
     delete jsValueContainer;
 }
 
-Q_DECL_EXPORT bool net_js_value_isCallable(NetJSValueContainer* jsValueContainer) {
-    // Weird bug here, maybe someone can help explain?
-    // If I were to make this method return "jsValueContainer->jsValue->isCallable()"
-    // directly, sometimes, in .NET the bool returned will be wrong.
-    // However, if I first set the bool on the stack, and return it, it (seems?)
-    // to always work.
-    // Also, this only seemed to happen after updating to Qt 5.12.
-    // I'm not sure what is going on here...
+Q_DECL_EXPORT uchar net_js_value_isCallable(NetJSValueContainer* jsValueContainer) {
     auto result = jsValueContainer->jsValue->isCallable();
-    return result;
+    if (result) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT bool net_js_value_isArray(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->isArray();
+Q_DECL_EXPORT uchar net_js_value_isArray(NetJSValueContainer* jsValueContainer) {
+    auto result = jsValueContainer->jsValue->isArray();
+    if (result) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValueContainer, NetVariantListContainer* parametersContainer) {

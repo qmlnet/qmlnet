@@ -30,8 +30,8 @@ namespace Qml.Net.Internal.Qml
 
         public bool Bool
         {
-            get => Interop.NetVariant.GetBool(Handle);
-            set => Interop.NetVariant.SetBool(Handle, value);
+            get => Interop.NetVariant.GetBool(Handle) == 1;
+            set => Interop.NetVariant.SetBool(Handle, value ? (byte)1 : (byte)0);
         }
 
         public char Char
@@ -88,7 +88,7 @@ namespace Qml.Net.Internal.Qml
             {
                 var dateTime = new DateTimeContainer();
                 Interop.NetVariant.GetDateTime(Handle, ref dateTime);
-                if (dateTime.IsNull)
+                if (dateTime.IsNull == 1)
                     return null;
                 return new DateTimeOffset(
                     dateTime.Year,
@@ -106,12 +106,12 @@ namespace Qml.Net.Internal.Qml
                 var dateTime = new DateTimeContainer();
                 if (value == null)
                 {
-                    dateTime.IsNull = true;
+                    dateTime.IsNull = 1;
                     Interop.NetVariant.SetDateTime(Handle, ref dateTime);
                 }
                 else
                 {
-                    dateTime.IsNull = false;
+                    dateTime.IsNull = 0;
                     dateTime.Year = value.Value.Year;
                     dateTime.Month = value.Value.Month;
                     dateTime.Day = value.Value.Day;
@@ -176,12 +176,12 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_variant_setBool")]
         public SetBoolDel SetBool { get; set; }
 
-        public delegate void SetBoolDel(IntPtr variant, bool value);
+        public delegate void SetBoolDel(IntPtr variant, byte value);
 
         [NativeSymbol(Entrypoint = "net_variant_getBool")]
         public GetBoolDel GetBool { get; set; }
 
-        public delegate bool GetBoolDel(IntPtr variant);
+        public delegate byte GetBoolDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setChar")]
         public SetCharDel SetChar { get; set; }
@@ -292,7 +292,7 @@ namespace Qml.Net.Internal.Qml
     [StructLayout(LayoutKind.Sequential)]
     internal struct DateTimeContainer
     {
-        public bool IsNull;
+        public byte IsNull;
         public int Month;
         public int Day;
         public int Year;

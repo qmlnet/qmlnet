@@ -2,6 +2,8 @@ image: Visual Studio 2017
 install:
   - choco install gitversion.portable -pre -y --version 4.0.0
 before_build:
+  - ps: Invoke-WebRequest -Uri https://github.com/qmlnet/qmlnet/releases/download/ci/qt-5.12-windows-x64.zip -OutFile C:\qt.zip
+  - cmd: 7z x C:\qt.zip -oC:\Qt5120
   - cmd: rm -r C:\Tools\GitVersion\
   - cmd: gitversion > version.json
   - cmd: git submodule update --init

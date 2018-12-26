@@ -4,8 +4,9 @@ set -e
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # Before we run the build, get gitversion and generate a version.json.
-nuget install GitVersion.CommandLine -Version 4.0.0
-mono ./GitVersion.CommandLine.4.0.0/tools/GitVersion.exe > version.json
+dotnet tool install -g GitVersion.Tool --version 4.0.1-beta1-58
+export PATH="$PATH:$HOME/.dotnet/tools"
+dotnet gitversion > version.json
 
 if [ "$TRAVIS_OS_NAME" == "linux" ]; then
 

@@ -11,9 +11,9 @@ namespace Qml.Net.Internal.Qml
         {
         }
 
-        public bool IsCallable => Interop.NetJsValue.IsCallable(Handle);
+        public bool IsCallable => Interop.NetJsValue.IsCallable(Handle) == 1;
 
-        public bool IsArray => Interop.NetJsValue.IsArray(Handle);
+        public bool IsArray => Interop.NetJsValue.IsArray(Handle) == 1;
 
         public NetVariant Call(NetVariantList parameters)
         {
@@ -198,12 +198,12 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_js_value_isCallable")]
         public IsCallableDel IsCallable { get; set; }
 
-        public delegate bool IsCallableDel(IntPtr jsValue);
+        public delegate byte IsCallableDel(IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_js_value_isArray")]
         public IsArrayDel IsArray { get; set; }
 
-        public delegate bool IsArrayDel(IntPtr jsValue);
+        public delegate byte IsArrayDel(IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_js_value_call")]
         public CallDel Call { get; set; }

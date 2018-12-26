@@ -39,8 +39,8 @@ namespace Qml.Net.Internal.Types
                 parentType?.Handle ?? IntPtr.Zero,
                 name,
                 returnType?.Handle ?? IntPtr.Zero,
-                canRead,
-                canWrite,
+                canRead ? (byte)1 : (byte)0,
+                canWrite ? (byte)1 : (byte)0,
                 notifySignal?.Handle ?? IntPtr.Zero);
         }
 
@@ -50,9 +50,9 @@ namespace Qml.Net.Internal.Types
 
         public NetTypeInfo ReturnType => new NetTypeInfo(Interop.NetPropertyInfo.GetReturnType(Handle));
 
-        public bool CanRead => Interop.NetPropertyInfo.GetCanRead(Handle);
+        public bool CanRead => Interop.NetPropertyInfo.GetCanRead(Handle) == 1;
 
-        public bool CanWrite => Interop.NetPropertyInfo.GetCanWrite(Handle);
+        public bool CanWrite => Interop.NetPropertyInfo.GetCanWrite(Handle) == 1;
 
         public NetSignalInfo NotifySignal
         {
@@ -83,8 +83,8 @@ namespace Qml.Net.Internal.Types
             IntPtr parentType,
             [MarshalAs(UnmanagedType.LPWStr)]string methodName,
             IntPtr returnType,
-            bool canRead,
-            bool canWrite,
+            byte canRead,
+            byte canWrite,
             IntPtr notifySignal);
 
         [NativeSymbol(Entrypoint = "property_info_destroy")]
@@ -110,12 +110,12 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "property_info_canRead")]
         public GetCanReadDel GetCanRead { get; set; }
 
-        public delegate bool GetCanReadDel(IntPtr property);
+        public delegate byte GetCanReadDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_canWrite")]
         public GetCanWriteDel GetCanWrite { get; set; }
 
-        public delegate bool GetCanWriteDel(IntPtr property);
+        public delegate byte GetCanWriteDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getNotifySignal")]
         public GetNotifySignalDel GetNotifySignal { get; set; }

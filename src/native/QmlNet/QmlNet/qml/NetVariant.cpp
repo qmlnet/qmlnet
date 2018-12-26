@@ -380,7 +380,7 @@ T NetVariant::getValue() const
 extern "C" {
 
 struct Q_DECL_EXPORT DateTimeContainer {
-    bool isNull;
+    uchar isNull;
     int month;
     int day;
     int year;
@@ -423,12 +423,16 @@ Q_DECL_EXPORT NetReferenceContainer* net_variant_getNetReference(NetVariantConta
     return result;
 }
 
-Q_DECL_EXPORT void net_variant_setBool(NetVariantContainer* container, bool value) {
-    container->variant->setBool(value);
+Q_DECL_EXPORT void net_variant_setBool(NetVariantContainer* container, uchar value) {
+    container->variant->setBool(value == 1 ? true : false);
 }
 
-Q_DECL_EXPORT bool net_variant_getBool(NetVariantContainer* container) {
-    return container->variant->getBool();
+Q_DECL_EXPORT uchar net_variant_getBool(NetVariantContainer* container) {
+    if(container->variant->getBool()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 Q_DECL_EXPORT void net_variant_setChar(NetVariantContainer* container, quint16 value) {
@@ -515,14 +519,15 @@ Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, const
 Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* value) {
     const QDateTime& dt = container->variant->getDateTime();
     if(dt.isNull()) {
-        value->isNull = true;
+        value->isNull = 1;
         return;
     }
     if(!dt.isValid()) {
         qWarning() << "QDateTime is invalid";
-        value->isNull = true;
+        value->isNull = 1;
         return;
     }
+    value->isNull = 0;
     const QDate& date = dt.date();
     const QTime& time = dt.time();
     value->year = date.year();

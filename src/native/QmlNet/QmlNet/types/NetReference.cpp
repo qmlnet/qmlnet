@@ -55,7 +55,7 @@ Q_DECL_EXPORT uint64_t net_instance_getObjectId(NetReferenceContainer* container
     return container->instance->getObjectId();
 }
 
-Q_DECL_EXPORT bool net_instance_activateSignal(NetReferenceContainer* container, LPWCSTR signalName, NetVariantListContainer* parametersContainer) {
+Q_DECL_EXPORT uchar net_instance_activateSignal(NetReferenceContainer* container, LPWCSTR signalName, NetVariantListContainer* parametersContainer) {
     QList<NetValue*> liveInstances = NetValue::getAllLiveInstances(container->instance);
     if(liveInstances.length() == 0) {
         // Not alive in the QML world, so no signals to raise
@@ -74,7 +74,11 @@ Q_DECL_EXPORT bool net_instance_activateSignal(NetReferenceContainer* container,
         result = result || liveInstance->activateSignal(signalNameString, parameters);
     }
 
-    return result;
+    if(result) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 }

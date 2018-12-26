@@ -45,12 +45,12 @@ namespace Qml.Net.Internal.Types
                             list.Add(variant);
                         }
                     }
-                    return Interop.NetReference.ActivateSignal(Handle, signalName, list.Handle);
+                    return Interop.NetReference.ActivateSignal(Handle, signalName, list.Handle) == 1;
                 }
             }
             else
             {
-                return Interop.NetReference.ActivateSignal(Handle, signalName, IntPtr.Zero);
+                return Interop.NetReference.ActivateSignal(Handle, signalName, IntPtr.Zero) == 1;
             }
         }
 
@@ -127,7 +127,7 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
         public ActivateSignalDel ActivateSignal { get; set; }
 
-        public delegate bool ActivateSignalDel(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
+        public delegate byte ActivateSignalDel(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
     }
 
     internal static class ObjectIdReferenceTracker

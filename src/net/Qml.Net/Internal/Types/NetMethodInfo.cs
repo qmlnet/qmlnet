@@ -30,7 +30,7 @@ namespace Qml.Net.Internal.Types
                 parentTypeInfo?.Handle ?? IntPtr.Zero,
                 methodName,
                 returnTypeInfo?.Handle ?? IntPtr.Zero,
-                isStatic);
+                isStatic ? (byte)1 : (byte)0);
         }
 
         public string MethodName => Utilities.ContainerToString(Interop.NetMethodInfo.GetMethodName(Handle));
@@ -45,7 +45,7 @@ namespace Qml.Net.Internal.Types
             }
         }
 
-        public bool IsStatic => Interop.NetMethodInfo.GetIsStatic(Handle);
+        public bool IsStatic => Interop.NetMethodInfo.GetIsStatic(Handle) == 1;
 
         public void AddParameter(string name, NetTypeInfo type)
         {
@@ -123,7 +123,7 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "method_info_create")]
         public CreateDel Create { get; set; }
 
-        public delegate IntPtr CreateDel(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string methodName, IntPtr returnTypeInfo, bool isStatic);
+        public delegate IntPtr CreateDel(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string methodName, IntPtr returnTypeInfo, byte isStatic);
 
         [NativeSymbol(Entrypoint = "method_info_destroy")]
         public DestroyDel Destroy { get; set; }
@@ -143,7 +143,7 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "method_info_isStatic")]
         public GetIsStaticDel GetIsStatic { get; set; }
 
-        public delegate bool GetIsStaticDel(IntPtr method);
+        public delegate byte GetIsStaticDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
         public AddParameterDel AddParameter { get; set; }

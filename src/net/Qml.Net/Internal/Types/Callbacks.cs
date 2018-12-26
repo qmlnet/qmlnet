@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -102,7 +102,7 @@ namespace Qml.Net.Internal.Types
         SerializeDelegate _serializeDelegate;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate bool IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        delegate byte IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void CreateLazyTypeInfoDelegate(IntPtr typeInfo);
@@ -132,13 +132,13 @@ namespace Qml.Net.Internal.Types
         delegate void GCCollectDelegate(int maxGeneration);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate bool RaiseNetSignalsDelegate(IntPtr target, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr parameters);
+        delegate byte RaiseNetSignalsDelegate(IntPtr target, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr parameters);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void AwaitTaskDelegate(IntPtr target, IntPtr successCallback, IntPtr failureCallback);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        delegate bool SerializeDelegate(IntPtr instance, IntPtr result);
+        delegate byte SerializeDelegate(IntPtr instance, IntPtr result);
 
         public CallbacksImpl(ICallbacks callbacks)
         {
@@ -184,9 +184,9 @@ namespace Qml.Net.Internal.Types
             GCHandle.Alloc(_serializeDelegate);
         }
 
-        private bool IsTypeValid(string typeName)
+        private byte IsTypeValid(string typeName)
         {
-            return _callbacks.IsTypeValid(typeName);
+            return _callbacks.IsTypeValid(typeName) ? (byte)1 : (byte)0;
         }
 
         private void ReleaseNetReference(UInt64 objectId)
@@ -234,12 +234,12 @@ namespace Qml.Net.Internal.Types
             _callbacks.GCCollect(maxGeneration);
         }
 
-        private bool RaiseNetSignals(
+        private byte RaiseNetSignals(
             IntPtr target,
             string signalName,
             IntPtr parameters)
         {
-            return _callbacks.RaiseNetSignals(target, signalName, parameters);
+            return _callbacks.RaiseNetSignals(target, signalName, parameters) ? (byte)1 : (byte)0;
         }
 
         private void AwaitTask(IntPtr target, IntPtr succesCallback, IntPtr failureCallback)
@@ -247,9 +247,9 @@ namespace Qml.Net.Internal.Types
             _callbacks.AwaitTask(target, succesCallback, failureCallback);
         }
 
-        private bool Serialize(IntPtr instance, IntPtr result)
+        private byte Serialize(IntPtr instance, IntPtr result)
         {
-            return _callbacks.Serialize(instance, result);
+            return _callbacks.Serialize(instance, result) ? (byte)1 : (byte)0;
         }
 
         public Callbacks Callbacks()
