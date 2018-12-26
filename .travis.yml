@@ -12,9 +12,6 @@ matrix:
       dotnet: 2.2.101
       os: osx
       osx_image: xcode9.4
-cache:
-    directories:
-     - build/Qt
 if: tag IS blank
 git:
   depth: false
