@@ -10,16 +10,15 @@ namespace Qml.Net.Tests.Qml
     {
         public class TestObject
         {
-            
         }
-        
+
         [Fact]
         public void Variant_is_invalid_by_default()
         {
             var variant = new NetVariant();
             variant.VariantType.Should().Be(NetVariantType.Invalid);
         }
-        
+
         [Fact]
         public void Can_store_net_instance()
         {
@@ -53,7 +52,7 @@ namespace Qml.Net.Tests.Qml
             variant.Char = ' ';
             variant.Char.Should().Be(' ');
         }
-        
+
         [Fact]
         public void Can_store_int()
         {
@@ -64,7 +63,7 @@ namespace Qml.Net.Tests.Qml
             variant.Int = int.MaxValue;
             variant.Int.Should().Be(int.MaxValue);
         }
-        
+
         [Fact]
         public void Can_store_uint()
         {
@@ -75,7 +74,40 @@ namespace Qml.Net.Tests.Qml
             variant.UInt = uint.MaxValue;
             variant.UInt.Should().Be(uint.MaxValue);
         }
-        
+
+        [Fact]
+        public void Can_store_long()
+        {
+            var variant = new NetVariant();
+            variant.Long = -1;
+            variant.VariantType.Should().Be(NetVariantType.Long);
+            variant.Long.Should().Be(-1);
+            variant.Long = long.MaxValue;
+            variant.Long.Should().Be(long.MaxValue);
+        }
+
+        [Fact]
+        public void Can_store_ulong()
+        {
+            var variant = new NetVariant();
+            variant.ULong = ulong.MinValue;
+            variant.VariantType.Should().Be(NetVariantType.ULong);
+            variant.ULong.Should().Be(ulong.MinValue);
+            variant.ULong = ulong.MaxValue;
+            variant.ULong.Should().Be(ulong.MaxValue);
+        }
+
+        [Fact]
+        public void Can_store_float()
+        {
+            var variant = new NetVariant();
+            variant.Float = float.MinValue;
+            variant.VariantType.Should().Be(NetVariantType.Float);
+            variant.Float.Should().Be(float.MinValue);
+            variant.Float = float.MaxValue;
+            variant.Float.Should().Be(float.MaxValue);
+        }
+
         [Fact]
         public void Can_store_double()
         {
@@ -86,7 +118,7 @@ namespace Qml.Net.Tests.Qml
             variant.Double = double.MaxValue;
             variant.Double.Should().Be(double.MaxValue);
         }
-        
+
         [Fact]
         public void Can_store_string()
         {
@@ -100,7 +132,7 @@ namespace Qml.Net.Tests.Qml
             variant.String = null;
             variant.String.Should().BeNull();
         }
-        
+
         [Fact]
         public void Can_store_date()
         {

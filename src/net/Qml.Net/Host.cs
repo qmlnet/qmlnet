@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
-using AdvancedDLSupport.Loaders;
+using NetNativeLibLoader.Loader;
+using NetNativeLibLoader.PathResolver;
 
 namespace Qml.Net
 {
     public static class Host
     {
-        internal class Loader : IPlatformLoader, ILibraryPathResolver
+        internal class Loader : IPlatformLoader, IPathResolver
         {
             public T LoadFunction<T>(IntPtr library, string symbolName)
             {
@@ -23,7 +23,7 @@ namespace Qml.Net
 
             public IntPtr LoadSymbol(IntPtr library, string symbolName)
             {
-                return new IntPtr(1);
+                return GetExportedSymbol(symbolName);
             }
 
             public bool CloseLibrary(IntPtr library)
@@ -36,24 +36,24 @@ namespace Qml.Net
                 return ResolvePathResult.FromSuccess(library);
             }
         }
-        
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate IntPtr GetExportedSymbolDelegate([MarshalAs(UnmanagedType.LPStr)]string symbolName);
 
         internal static GetExportedSymbolDelegate GetExportedSymbol;
-        
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int NativeRunCallbackDelegate(IntPtr app, IntPtr engine);
 
         public delegate int NetRunCallbackDelegate();
-        
+
         public static int Run(string[] args, Func<string[], QGuiApplication, QQmlApplicationEngine, NetRunCallbackDelegate, int> action)
         {
             if (args.Length < 4)
             {
                 throw new Exception("Args is invalid, must contain three entries which are pointers to native types.");
             }
-            
+
             var appPtr = new IntPtr((long)ulong.Parse(args[0]));
             var enginePtr = new IntPtr((long)ulong.Parse(args[1]));
             var callbackPtr = new IntPtr((long)ulong.Parse(args[2]));

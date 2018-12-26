@@ -5,12 +5,20 @@
 
 extern "C" {
 
-Q_DECL_EXPORT bool qt_putenv(LPCSTR name, LPCSTR value)
+Q_DECL_EXPORT uchar qt_putenv(LPCSTR name, LPCSTR value)
 {
     if(value == nullptr) {
-        return qunsetenv(name);
+        if(qunsetenv(name)) {
+            return 1;
+        } else {
+            return 0;
+        }
     } else {
-        return qputenv(name, value);
+        if(qputenv(name, value)) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
 

@@ -11,15 +11,13 @@ namespace Qml.Net.Tests.Qml
             public virtual char Property { get; set; }
 
             public virtual char? Nullable { get; set; }
-            
+
             public virtual void MethodParameter(char value)
             {
-
             }
 
             public virtual void MethodParameterNullable(char? value)
             {
-                
             }
 
             public virtual char MethodReturn()
@@ -27,12 +25,12 @@ namespace Qml.Net.Tests.Qml
                 return char.MinValue;
             }
         }
-        
+
         [Fact]
         public void Can_read_write_char_null()
         {
             Mock.Setup(x => x.Property).Returns((char)0);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -98,7 +96,7 @@ namespace Qml.Net.Tests.Qml
 
             Mock.Verify(x => x.MethodParameter(It.IsIn('Ώ')), Times.Once);
         }
-        
+
         [Fact]
         public void Can_read_nullable_char_no_value()
         {
@@ -114,7 +112,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Nullable, Times.Once);
             Mock.Verify(x => x.MethodParameterNullable(It.Is<char?>(y => y == null)), Times.Once);
         }
-        
+
         [Fact]
         public void Can_read_nullable_char_with_value()
         {

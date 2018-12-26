@@ -12,7 +12,6 @@ namespace Qml.Net.Tests.Qml
 
             public virtual void MethodParameter(uint value)
             {
-
             }
 
             public virtual uint MethodReturn()

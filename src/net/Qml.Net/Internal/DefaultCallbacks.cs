@@ -1,16 +1,13 @@
-﻿using Qml.Net.Internal.Qml;
-using Qml.Net.Internal.Types;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.CSharp.RuntimeBinder;
+using Qml.Net.Internal.Qml;
+using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal
 {
@@ -27,11 +24,15 @@ namespace Qml.Net.Internal
             using (var type = new NetTypeInfo(t))
             {
                 var typeInfo = Type.GetType(type.FullTypeName);
-                if (typeInfo == null) throw new InvalidOperationException();
+                if (typeInfo == null)
+                {
+                    throw new InvalidOperationException();
+                }
 
                 type.ClassName = typeInfo.Name;
 
                 type.PrefVariantType = GetPrefVariantType(typeInfo);
+
                 // All the methods/properties/signals are later populated when needed.
             }
         }
@@ -45,9 +46,12 @@ namespace Qml.Net.Internal
                 {
                     throw new InvalidOperationException($"Invalid type {type.FullTypeName}");
                 }
-                
+
                 // Don't grab properties and methods for system-level types.
-                if (Helpers.IsPrimitive(typeInfo)) return;
+                if (Helpers.IsPrimitive(typeInfo))
+                {
+                    return;
+                }
 
                 if (typeInfo.IsArray)
                 {
@@ -61,13 +65,13 @@ namespace Qml.Net.Internal
                     }
                     else if (typeInfo.IsGenericType)
                     {
-                        if(typeof(IList<>).IsAssignableFrom(typeInfo.GetGenericTypeDefinition()))
+                        if (typeof(IList<>).IsAssignableFrom(typeInfo.GetGenericTypeDefinition()))
                         {
                             type.IsList = true;
                         }
                     }
                 }
-                
+
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
@@ -92,7 +96,7 @@ namespace Qml.Net.Internal
                 }
 
                 var signals = new Dictionary<string, NetSignalInfo>();
-                
+
                 foreach (var signalAttribute in typeInfo.GetCustomAttributes().OfType<SignalAttribute>())
                 {
                     if (string.IsNullOrEmpty(signalAttribute.Name))
@@ -104,7 +108,7 @@ namespace Qml.Net.Internal
                     {
                         throw new InvalidOperationException($"Signal {signalAttribute.Name} for {typeInfo.Name} must begin with a lower case letter.");
                     }
-                    
+
                     var signal = new NetSignalInfo(type, signalAttribute.Name);
                     foreach (var parameter in signalAttribute.Parameters)
                     {
@@ -113,7 +117,7 @@ namespace Qml.Net.Internal
                     type.AddSignal(signal);
                     signals.Add(signal.Name, signal);
                 }
-                
+
                 foreach (var propertyInfo in typeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     if (Helpers.IsPrimitive(propertyInfo.DeclaringType)) continue;
@@ -128,10 +132,11 @@ namespace Qml.Net.Internal
                             name = $"{propertyInfo.Name}Changed";
                             name = char.ToLower(name[0]) + name.Substring(1);
                         }
-                        
+
                         if (signals.ContainsKey(name))
                         {
                             notifySignal = signals[name];
+
                             // Make sure the signal we are referencing has no parameters.
                             if (notifySignal.ParameterCount != 0)
                             {
@@ -145,12 +150,12 @@ namespace Qml.Net.Internal
                             {
                                 throw new InvalidOperationException($"Signal {name} for {typeInfo.Name} must begin with a lower case letter.");
                             }
-                            
+
                             notifySignal = new NetSignalInfo(type, name);
                             type.AddSignal(notifySignal);
                         }
                     }
-                    
+
                     using (var property = new NetPropertyInfo(
                         type,
                         propertyInfo.Name,
@@ -169,7 +174,7 @@ namespace Qml.Net.Internal
                 InteropBehaviors.OnNetTypeInfoCreated(type, typeInfo);
             }
         }
-        
+
         public void ReleaseNetReference(UInt64 objectId)
         {
             NetReference.OnRelease(objectId);
@@ -177,7 +182,7 @@ namespace Qml.Net.Internal
 
         public void ReleaseNetDelegateGCHandle(IntPtr handle)
         {
-            NetDelegate.ReleaseGCHandle(((GCHandle)handle));
+            NetDelegate.ReleaseGCHandle((GCHandle)handle);
         }
 
         public IntPtr InstantiateType(IntPtr type)
@@ -186,9 +191,9 @@ namespace Qml.Net.Internal
             {
                 var typeName = Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(type));
                 var typeInfo = Type.GetType(typeName);
-                if(typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
-            
+                if (typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
                 var netReference = NetReference.CreateForObject(TypeCreator.Create(typeInfo));
+
                 // When .NET collects this NetReference, we don't want it to delete this
                 // handle. Ownership has been passed to the caller.
                 return Interop.NetReference.Clone(netReference.Handle);
@@ -201,24 +206,23 @@ namespace Qml.Net.Internal
 
         public void ReadProperty(IntPtr p, IntPtr t, IntPtr ip, IntPtr r)
         {
-            using(var property = new NetPropertyInfo(p))
-            using(var target = new NetReference(t))
-            using(var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
-            using(var result = new NetVariant(r))
+            using (var property = new NetPropertyInfo(p))
+            using (var target = new NetReference(t))
+            using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
+            using (var result = new NetVariant(r))
             {
                 var o = target.Instance;
 
                 var propertInfo = o.GetType()
                     .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-            
-                if(propertInfo == null)
+                if (propertInfo == null)
                     throw new InvalidOperationException($"Invalid property {property.Name}");
 
                 if (indexParameter != null)
                 {
                     object indexParameterValue = null;
                     Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
-                    Helpers.PackValue(propertInfo.GetValue(o, new[]{indexParameterValue}), result);
+                    Helpers.PackValue(propertInfo.GetValue(o, new[] { indexParameterValue }), result);
                 }
                 else
                 {
@@ -249,7 +253,7 @@ namespace Qml.Net.Internal
                 {
                     object indexParameterValue = null;
                     Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
-                    propertInfo.SetValue(o, newValue, new[]{indexParameterValue});
+                    propertInfo.SetValue(o, newValue, new[] { indexParameterValue });
                 }
                 else
                 {
@@ -266,7 +270,7 @@ namespace Qml.Net.Internal
             using (var result = r != IntPtr.Zero ? new NetVariant(r) : null)
             {
                 var instance = target.Instance;
-            
+
                 List<object> methodParameters = null;
 
                 if (parameters.Count > 0)
@@ -295,11 +299,12 @@ namespace Qml.Net.Internal
                 else if (methods.Count > 1)
                 {
                     // This is an overload.
-                    
+
                     // TODO: Make this more performant. https://github.com/pauldotknopf/Qml.Net/issues/39
-                    
+
                     // Get all the parameters for the method we are invoking.
                     var parameterTypes = method.GetAllParameters().Select(x => x.Type.FullTypeName).ToList();
+
                     // And find a good method to invoke.
                     foreach (var potentialMethod in methods)
                     {
@@ -333,7 +338,7 @@ namespace Qml.Net.Internal
                 }
 
                 var returnObject = methodInfo.Invoke(instance, methodParameters?.ToArray());
-                
+
                 if (result == null)
                 {
                     // this method doesn't have return type
@@ -387,8 +392,8 @@ namespace Qml.Net.Internal
         public async Task AwaitTask(IntPtr t, IntPtr sc, IntPtr fc)
         {
             using (var target = new NetReference(t))
-            using(var successCallback = new NetJsValue(sc))
-            using(var failureCallback = fc != IntPtr.Zero ? new NetJsValue(fc) : null)
+            using (var successCallback = new NetJsValue(sc))
+            using (var failureCallback = fc != IntPtr.Zero ? new NetJsValue(fc) : null)
             {
                 var taskObject = target.Instance;
                 if (taskObject is Task task)
@@ -450,7 +455,7 @@ namespace Qml.Net.Internal
                 }
             }
         }
-        
+
         private NetVariantType GetPrefVariantType(Type typeInfo)
         {
             if (typeInfo == typeof(bool))
@@ -461,6 +466,12 @@ namespace Qml.Net.Internal
                 return NetVariantType.Int;
             if (typeInfo == typeof(uint))
                 return NetVariantType.UInt;
+            if (typeInfo == typeof(long))
+                return NetVariantType.Long;
+            if (typeInfo == typeof(ulong))
+                return NetVariantType.ULong;
+            if (typeInfo == typeof(float))
+                return NetVariantType.Float;
             if (typeInfo == typeof(double))
                 return NetVariantType.Double;
             if (typeInfo == typeof(string))
@@ -475,7 +486,7 @@ namespace Qml.Net.Internal
                 return GetPrefVariantType(typeInfo.GetGenericArguments()[0]);
                 // ReSharper restore TailRecursiveCall
             }
-            
+
             return NetVariantType.Object;
         }
     }

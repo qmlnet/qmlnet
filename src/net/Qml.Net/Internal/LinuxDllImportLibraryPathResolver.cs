@@ -2,15 +2,15 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
+using NetNativeLibLoader.PathResolver;
 
 namespace Qml.Net.Internal
 {
-    public class LinuxDllImportLibraryPathResolver : ILibraryPathResolver
+    public class LinuxDllImportLibraryPathResolver : IPathResolver
     {
-        ILibraryPathResolver _original;
+        IPathResolver _original;
 
-        public LinuxDllImportLibraryPathResolver(ILibraryPathResolver original)
+        public LinuxDllImportLibraryPathResolver(IPathResolver original)
         {
             _original = original;
         }
@@ -19,7 +19,7 @@ namespace Qml.Net.Internal
         {
             var result = _original.Resolve(library);
 
-            if(!result.IsSuccess && library == "QmlNet")
+            if (!result.IsSuccess && library == "QmlNet")
             {
                 // Try to let .NET load the library.
                 try
@@ -39,7 +39,7 @@ namespace Qml.Net.Internal
                 }
                 // ReSharper disable EmptyGeneralCatchClause
                 catch (Exception)
-                    // ReSharper restore EmptyGeneralCatchClause
+                // ReSharper restore EmptyGeneralCatchClause
                 {
                 }
             }

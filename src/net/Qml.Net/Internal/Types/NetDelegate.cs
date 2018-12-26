@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Types
 {
@@ -9,7 +8,6 @@ namespace Qml.Net.Internal.Types
         public NetDelegate(IntPtr handle)
             : base(handle)
         {
-            
         }
 
         public static NetDelegate FromDelegate(Delegate del)
@@ -23,7 +21,6 @@ namespace Qml.Net.Internal.Types
             handle.Free();
         }
 
-
         public Delegate Delegate
         {
             get
@@ -32,21 +29,28 @@ namespace Qml.Net.Internal.Types
                 return (Delegate)handle.Target;
             }
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetDelegate.Destroy(ptr);
         }
     }
 
-    internal interface INetDelegateInterop
+    internal class NetDelegateInterop
     {
         [NativeSymbol(Entrypoint = "delegate_create")]
-        IntPtr Create(IntPtr handle);
+        public CreateDel Create { get; set; }
+
+        public delegate IntPtr CreateDel(IntPtr handle);
+
         [NativeSymbol(Entrypoint = "delegate_destroy")]
-        void Destroy(IntPtr del);
-        
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr del);
+
         [NativeSymbol(Entrypoint = "delegate_getHandle")]
-        IntPtr GetHandle(IntPtr del);
+        public GetHandleDel GetHandle { get; set; }
+
+        public delegate IntPtr GetHandleDel(IntPtr del);
     }
 }

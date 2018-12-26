@@ -1,58 +1,58 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
-using Qml.Net.Internal;
 
 namespace Qml.Net.Internal.Types
 {
     internal class NetPropertyInfo : BaseDisposable
     {
-        public NetPropertyInfo(NetTypeInfo parentType,
+        public NetPropertyInfo(
+            NetTypeInfo parentType,
             string name,
             NetTypeInfo returnType,
             bool canRead,
             bool canWrite,
             NetSignalInfo notifySignal)
-            : this(Create(parentType,
+            : this(Create(
+                parentType,
                 name,
                 returnType,
                 canRead,
                 canWrite,
                 notifySignal))
         {
-            
         }
 
         public NetPropertyInfo(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
-            
         }
 
-        private static IntPtr Create(NetTypeInfo parentType,
+        private static IntPtr Create(
+            NetTypeInfo parentType,
             string name,
             NetTypeInfo returnType,
             bool canRead,
             bool canWrite,
             NetSignalInfo notifySignal)
         {
-            return Interop.NetPropertyInfo.Create(parentType?.Handle ?? IntPtr.Zero,
+            return Interop.NetPropertyInfo.Create(
+                parentType?.Handle ?? IntPtr.Zero,
                 name,
                 returnType?.Handle ?? IntPtr.Zero,
-                canRead,
-                canWrite,
+                canRead ? (byte)1 : (byte)0,
+                canWrite ? (byte)1 : (byte)0,
                 notifySignal?.Handle ?? IntPtr.Zero);
         }
 
         public NetTypeInfo ParentType => new NetTypeInfo(Interop.NetPropertyInfo.GetParentType(Handle));
 
         public string Name => Utilities.ContainerToString(Interop.NetPropertyInfo.GetPropertyName(Handle));
-        
+
         public NetTypeInfo ReturnType => new NetTypeInfo(Interop.NetPropertyInfo.GetReturnType(Handle));
 
-        public bool CanRead => Interop.NetPropertyInfo.GetCanRead(Handle);
+        public bool CanRead => Interop.NetPropertyInfo.GetCanRead(Handle) == 1;
 
-        public bool CanWrite => Interop.NetPropertyInfo.GetCanWrite(Handle);
+        public bool CanWrite => Interop.NetPropertyInfo.GetCanWrite(Handle) == 1;
 
         public NetSignalInfo NotifySignal
         {
@@ -61,49 +61,70 @@ namespace Qml.Net.Internal.Types
                 var result = Interop.NetPropertyInfo.GetNotifySignal(Handle);
                 return result == IntPtr.Zero ? null : new NetSignalInfo(result);
             }
+
             set
             {
                 Interop.NetPropertyInfo.SetNotifySignal(Handle, value.Handle);
             }
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetPropertyInfo.Destroy(ptr);
         }
     }
 
-    internal interface INetPropertyInfoInterop
+    internal class NetPropertyInfoInterop
     {
         [NativeSymbol(Entrypoint = "property_info_create")]
-        IntPtr Create(IntPtr parentType,
-            [MarshalAs(UnmanagedType.LPWStr), CallerFree]string methodName,
+        public CreateDel Create { get; set; }
+
+        public delegate IntPtr CreateDel(
+            IntPtr parentType,
+            [MarshalAs(UnmanagedType.LPWStr)]string methodName,
             IntPtr returnType,
-            bool canRead,
-            bool canWrite,
+            byte canRead,
+            byte canWrite,
             IntPtr notifySignal);
+
         [NativeSymbol(Entrypoint = "property_info_destroy")]
-        void Destroy(IntPtr property);
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getParentType")]
-        IntPtr GetParentType(IntPtr property);
+        public GetParentTypeDel GetParentType { get; set; }
+
+        public delegate IntPtr GetParentTypeDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getPropertyName")]
-        IntPtr GetPropertyName(IntPtr property);
+        public GetPropertyNameDel GetPropertyName { get; set; }
+
+        public delegate IntPtr GetPropertyNameDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getReturnType")]
-        IntPtr GetReturnType(IntPtr property);
+        public GetReturnTypeDel GetReturnType { get; set; }
+
+        public delegate IntPtr GetReturnTypeDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_canRead")]
-        bool GetCanRead(IntPtr property);
+        public GetCanReadDel GetCanRead { get; set; }
+
+        public delegate byte GetCanReadDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_canWrite")]
-        bool GetCanWrite(IntPtr property);
+        public GetCanWriteDel GetCanWrite { get; set; }
+
+        public delegate byte GetCanWriteDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getNotifySignal")]
-        IntPtr GetNotifySignal(IntPtr property);
+        public GetNotifySignalDel GetNotifySignal { get; set; }
+
+        public delegate IntPtr GetNotifySignalDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_setNotifySignal")]
-        void SetNotifySignal(IntPtr property, IntPtr signal);
+        public SetNotifySignalDel SetNotifySignal { get; set; }
+
+        public delegate void SetNotifySignalDel(IntPtr property, IntPtr signal);
     }
 }

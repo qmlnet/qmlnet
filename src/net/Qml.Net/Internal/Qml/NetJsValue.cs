@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Dynamic;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -10,21 +9,22 @@ namespace Qml.Net.Internal.Qml
         public NetJsValue(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
-            
         }
 
-        public bool IsCallable => Interop.NetJsValue.IsCallable(Handle);
-        
+        public bool IsCallable => Interop.NetJsValue.IsCallable(Handle) == 1;
+
+        public bool IsArray => Interop.NetJsValue.IsArray(Handle) == 1;
+
         public NetVariant Call(NetVariantList parameters)
         {
             var result = Interop.NetJsValue.Call(Handle, parameters?.Handle ?? IntPtr.Zero);
             return result != IntPtr.Zero ? new NetVariant(result) : null;
         }
-        
+
         public object Call(params object[] parameters)
         {
             NetVariantList variants = null;
-            
+
             if (parameters != null && parameters.Length > 0)
             {
                 variants = new NetVariantList();
@@ -37,20 +37,20 @@ namespace Qml.Net.Internal.Qml
                     }
                 }
             }
-            
+
             var result = Call(variants);
-            
+
             variants?.Dispose();
 
             if (result == null)
             {
                 return null;
             }
-            
+
             object returnValue = null;
             Helpers.Unpackvalue(ref returnValue, result);
             result.Dispose();
-            
+
             return returnValue;
         }
 
@@ -64,14 +64,24 @@ namespace Qml.Net.Internal.Qml
             return new NetVariant(result);
         }
 
+        public NetVariant GetItemAtIndex(int arrayIndex)
+        {
+            var result = Interop.NetJsValue.GetItemAtIndex(Handle, arrayIndex);
+            if (result == IntPtr.Zero)
+            {
+                return null;
+            }
+            return new NetVariant(result);
+        }
+
         public void SetProperty(string propertyName, NetVariant value)
         {
             Interop.NetJsValue.SetProperty(Handle, propertyName, value?.Handle ?? IntPtr.Zero);
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
-            Interop.NetVariant.Destroy(ptr);
+            Interop.NetJsValue.Destroy(ptr);
         }
 
         public dynamic AsDynamic()
@@ -94,9 +104,35 @@ namespace Qml.Net.Internal.Qml
             }
 
             public NetJsValue JsValue => _jsValue;
-            
+
             public bool IsCallable => _jsValue.IsCallable;
-            
+
+            public bool IsArray => _jsValue.IsArray;
+
+            public object GetProperty(string propertyName)
+            {
+                var result = _jsValue.GetProperty(propertyName);
+                if (result == null)
+                {
+                    return null;
+                }
+                object unpacked = null;
+                Helpers.Unpackvalue(ref unpacked, result);
+                return unpacked;
+            }
+
+            public object GetItemAtIndex(int arrayIndex)
+            {
+                var result = _jsValue.GetItemAtIndex(arrayIndex);
+                if (result == null)
+                {
+                    return null;
+                }
+                object unpacked = null;
+                Helpers.Unpackvalue(ref unpacked, result);
+                return unpacked;
+            }
+
             public object Call(params object[] parameters)
             {
                 return _jsValue.Call(parameters);
@@ -105,14 +141,14 @@ namespace Qml.Net.Internal.Qml
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
                 result = null;
-                
+
                 if (!IsCallable)
                 {
                     return false;
                 }
 
                 result = Call(args);
-                
+
                 return true;
             }
 
@@ -152,25 +188,41 @@ namespace Qml.Net.Internal.Qml
         }
     }
 
-    public interface INetJsValue : IDisposable
-    {
-        bool IsCallable { get; }
-
-        object Call(params object[] parameters);
-    }
-    
-    internal interface INetJsValueInterop
+    internal class NetJsValueInterop
     {
         [NativeSymbol(Entrypoint = "net_js_value_destroy")]
-        void Destroy(IntPtr jsValue);
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_js_value_isCallable")]
-        bool IsCallable(IntPtr jsValue);
+        public IsCallableDel IsCallable { get; set; }
+
+        public delegate byte IsCallableDel(IntPtr jsValue);
+
+        [NativeSymbol(Entrypoint = "net_js_value_isArray")]
+        public IsArrayDel IsArray { get; set; }
+
+        public delegate byte IsArrayDel(IntPtr jsValue);
+
         [NativeSymbol(Entrypoint = "net_js_value_call")]
-        IntPtr Call(IntPtr jsValue, IntPtr parameters);
+        public CallDel Call { get; set; }
+
+        public delegate IntPtr CallDel(IntPtr jsValue, IntPtr parameters);
+
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
-        IntPtr GetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName);
+        public GetPropertyDel GetProperty { get; set; }
+
+        public delegate IntPtr GetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
+
+        [NativeSymbol(Entrypoint = "net_js_value_getItemAtIndex")]
+        public GetItemAtIndexDel GetItemAtIndex { get; set; }
+
+        public delegate IntPtr GetItemAtIndexDel(IntPtr jsValue, int arrayIndex);
+
         [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
-        void SetProperty(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string propertyName, IntPtr value);
+        public SetPropertyDel SetProperty { get; set; }
+
+        public delegate void SetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr value);
     }
 }

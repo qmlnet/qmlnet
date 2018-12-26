@@ -1,12 +1,9 @@
-﻿using Qml.Net.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Xunit;
-using FluentAssertions;
 using System.Threading;
+using FluentAssertions;
+using Qml.Net.Internal;
+using Xunit;
 
 namespace Qml.Net.Tests.Internal
 {
@@ -21,7 +18,7 @@ namespace Qml.Net.Tests.Internal
         {
             ObjectTagger tagger = new ObjectTagger(10);
             List<object> handledObjects = new List<object>();
-            for(int i=0; i < 9; i++)
+            for (int i = 0; i < 9; i++)
             {
                 var obj = new object();
                 tagger.GetOrCreateTag(obj);
@@ -42,15 +39,16 @@ namespace Qml.Net.Tests.Internal
                 tagger.GetOrCreateTag(obj);
                 handledObjects.Add(obj);
             }
-            //Ids are all used
+
+            // Ids are all used.
             handledObjects.Clear();
             GC.Collect(2, GCCollectionMode.Forced, true);
             Thread.Sleep(100);
-            //the next one is the already prepared next id
+            // The next one is the already prepared next id.
             var obj10 = new object();
             var tag10 = tagger.GetOrCreateTag(obj10);
             tag10.Should().Be(10ul);
-            //the next after that will overflow
+            // The next after that will overflow.
             var obj1 = new object();
             var tag1 = tagger.GetOrCreateTag(obj1);
             tag1.Should().Be(1ul);

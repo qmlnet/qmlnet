@@ -1,5 +1,4 @@
 ﻿using System;
-using AdvancedDLSupport;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -8,13 +7,11 @@ namespace Qml.Net.Internal.Qml
         public NetVariantList()
             : this(Interop.NetVariantList.Create())
         {
-            
         }
 
         public NetVariantList(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
-            
         }
 
         public int Count => Interop.NetVariantList.Count(Handle);
@@ -40,30 +37,48 @@ namespace Qml.Net.Internal.Qml
         {
             Interop.NetVariantList.Clear(Handle);
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariantList.Destroy(ptr);
         }
     }
-    
-    internal interface INetVariantListInterop
-    {   
+
+    internal class NetVariantListInterop
+    {
         [NativeSymbol(Entrypoint = "net_variant_list_create")]
-        IntPtr Create();
+        public CreateDel Create { get; set; }
+
+        public delegate IntPtr CreateDel();
+
         [NativeSymbol(Entrypoint = "net_variant_list_destroy")]
-        void Destroy(IntPtr list);
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr list);
 
         [NativeSymbol(Entrypoint = "net_variant_list_count")]
-        int Count(IntPtr list);
+        public CountDel Count { get; set; }
+
+        public delegate int CountDel(IntPtr list);
 
         [NativeSymbol(Entrypoint = "net_variant_list_add")]
-        void Add(IntPtr list, IntPtr variant);
+        public AddDel Add { get; set; }
+
+        public delegate void AddDel(IntPtr list, IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_list_get")]
-        IntPtr Get(IntPtr list, int index);
+        public GetDel Get { get; set; }
+
+        public delegate IntPtr GetDel(IntPtr list, int index);
+
         [NativeSymbol(Entrypoint = "net_variant_list_remove")]
-        void Remove(IntPtr list, int index);
+        public RemoveDel Remove { get; set; }
+
+        public delegate void RemoveDel(IntPtr list, int index);
+
         [NativeSymbol(Entrypoint = "net_variant_list_clear")]
-        void Clear(IntPtr list);
+        public ClearDel Clear { get; set; }
+
+        public delegate void ClearDel(IntPtr list);
     }
 }

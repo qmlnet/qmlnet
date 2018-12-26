@@ -11,17 +11,17 @@ namespace Qml.Net.Tests.Qml
             {
                 return null;
             }
-            
+
             public virtual string Result { get; set; }
         }
 
         public class JsonObject
         {
             public string Prop1 { get; set; }
-            
+
             public int Prop2 { get; set; }
         }
-        
+
         [Fact]
         public void Can_serialize_object()
         {
@@ -31,14 +31,14 @@ namespace Qml.Net.Tests.Qml
             var jsonObjectSerialized = Serializer.Current.Serialize(jsonObject);
             Mock.Setup(x => x.GetJsonObject()).Returns(jsonObject);
             Mock.SetupSet(x => x.Result = jsonObjectSerialized);
-            
+
             RunQmlTest(
                 "test",
                 @"
                     var jsonObject = test.getJsonObject()
                     test.result = Net.serialize(jsonObject)
                 ");
-            
+
             Mock.Verify(x => x.GetJsonObject(), Times.Once);
             Mock.VerifySet(x => x.Result = jsonObjectSerialized, Times.Once);
         }

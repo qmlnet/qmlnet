@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
-using Qml.Net.Internal;
 
 namespace Qml.Net.Internal.Types
 {
@@ -10,19 +8,17 @@ namespace Qml.Net.Internal.Types
         internal NetSignalInfo(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
-
         }
 
         public NetSignalInfo(NetTypeInfo parentType, string name)
             : this(Interop.NetSignalInfo.Create(parentType.Handle, name))
         {
-
         }
 
         public NetTypeInfo ParentType => new NetTypeInfo(Interop.NetSignalInfo.GetParentType(Handle));
 
         public string Name => Utilities.ContainerToString(Interop.NetSignalInfo.GetName(Handle));
-        
+
         public void AddParameter(NetVariantType type)
         {
             Interop.NetSignalInfo.AddParameter(Handle, type);
@@ -41,23 +37,41 @@ namespace Qml.Net.Internal.Types
         }
     }
 
-    internal interface INetSignalInfoInterop
+    internal class NetSignalInfoInterop
     {
         [NativeSymbol(Entrypoint = "signal_info_create")]
-        IntPtr Create(IntPtr parentType, [MarshalAs(UnmanagedType.LPWStr), CallerFree] string name);
+        public CreateDel Create { get; set; }
+
+        public delegate IntPtr CreateDel(IntPtr parentType, [MarshalAs(UnmanagedType.LPWStr)] string name);
+
         [NativeSymbol(Entrypoint = "signal_info_destroy")]
-        void Destroy(IntPtr signal);
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr signal);
 
         [NativeSymbol(Entrypoint = "signal_info_getParentType")]
-        IntPtr GetParentType(IntPtr signal);
+        public GetParentTypeDel GetParentType { get; set; }
+
+        public delegate IntPtr GetParentTypeDel(IntPtr signal);
+
         [NativeSymbol(Entrypoint = "signal_info_getName")]
-        IntPtr GetName(IntPtr signal);
-        
+        public GetNameDel GetName { get; set; }
+
+        public delegate IntPtr GetNameDel(IntPtr signal);
+
         [NativeSymbol(Entrypoint = "signal_info_addParameter")]
-        void AddParameter(IntPtr signal, NetVariantType type);
+        public AddParameterDel AddParameter { get; set; }
+
+        public delegate void AddParameterDel(IntPtr signal, NetVariantType type);
+
         [NativeSymbol(Entrypoint = "signal_info_getParameterCount")]
-        int GetParameterCount(IntPtr signal);
+        public GetParameterCountDel GetParameterCount { get; set; }
+
+        public delegate int GetParameterCountDel(IntPtr signal);
+
         [NativeSymbol(Entrypoint = "signal_info_getParameter")]
-        NetVariantType GetParameter(IntPtr signal, int index);
+        public GetParameterDel GetParameter { get; set; }
+
+        public delegate NetVariantType GetParameterDel(IntPtr signal, int index);
     }
 }

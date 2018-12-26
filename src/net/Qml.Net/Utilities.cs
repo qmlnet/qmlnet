@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 
 namespace Qml.Net
@@ -25,12 +24,14 @@ namespace Qml.Net
         {
             private readonly IntPtr _ignore;
             public readonly IntPtr Data;
-        } 
+        }
     }
-    
-    internal interface IUtilities
+
+    internal class UtilitiesInterop
     {
         [NativeSymbol(Entrypoint = "freeString")]
-        void FreeString(IntPtr container);
+        public FreeStringDel FreeString { get; set; }
+
+        public delegate void FreeStringDel(IntPtr container);
     }
 }

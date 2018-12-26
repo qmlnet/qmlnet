@@ -9,10 +9,10 @@
 #include <QDebug>
 #include <private/qmetaobjectbuilder_p.h>
 
-QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
+QMetaObject *metaObjectFor(const QSharedPointer<NetTypeInfo>& typeInfo)
 {
     if (typeInfo->metaObject) {
-        return reinterpret_cast<QMetaObject *>(typeInfo->metaObject);
+        return typeInfo->metaObject;
     }
 
     typeInfo->ensureLoaded();
@@ -88,7 +88,7 @@ QMetaObject *metaObjectFor(QSharedPointer<NetTypeInfo> typeInfo)
 }
 
 NetValueMetaObject::NetValueMetaObject(QObject *value,
-                                       QSharedPointer<NetReference> instance) :
+                                       const QSharedPointer<NetReference>& instance) :
     value(value),
     instance(instance)
 {

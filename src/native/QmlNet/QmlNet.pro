@@ -33,9 +33,6 @@ CONFIG(install-qt-libs) {
         INSTALLS += qtqml
     }
     macx {
-        # See here: https://stackoverflow.com/questions/51638447/c-sharp-pinvoke-returning-invalid-wrong-bool-value-only-when-native-code-compil
-        CONFIG += debug
-
         qtlibs.path = $$(PREFIX)/lib
         qtlibs.files = $$[QT_INSTALL_LIBS]/*
         INSTALLS += qtlibs

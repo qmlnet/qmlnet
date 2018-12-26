@@ -12,23 +12,25 @@ namespace Qml.Net.Internal
             {
                 return false;
             }
-            
+
             if (type.Namespace == "System")
             {
                 if (type.Name == "Exception")
                 {
                     return false;
                 }
+
                 if (type.Name == "Array")
                 {
                     return false;
                 }
+
                 return true;
             }
-            
+
             return false;
         }
-        
+
         public static void PackValue(object source, NetVariant destination)
         {
             if (source == null)
@@ -40,20 +42,26 @@ namespace Qml.Net.Internal
                 var type = source.GetType();
                 if (type == typeof(bool))
                     destination.Bool = (bool)source;
-                else if(type == typeof(char))
+                else if (type == typeof(char))
                     destination.Char = (char)source;
-                else if(type == typeof(double))
+                else if (type == typeof(float))
+                    destination.Float = (float)source;
+                else if (type == typeof(double))
                     destination.Double = (double)source;
                 else if (type == typeof(int))
                     destination.Int = (int)source;
-                else if(type == typeof(uint))
+                else if (type == typeof(uint))
                     destination.UInt = (uint)source;
+                else if (type == typeof(long))
+                    destination.Long = (long)source;
+                else if (type == typeof(ulong))
+                    destination.ULong = (ulong)source;
                 else if (type == typeof(string))
                     destination.String = (string)source;
                 else if (type == typeof(DateTimeOffset))
-                    destination.DateTime = ((DateTimeOffset) source).DateTime;
+                    destination.DateTime = ((DateTimeOffset)source).DateTime;
                 else if (typeof(INetJsValue).IsAssignableFrom(type))
-                    destination.JsValue = ((NetJsValue.NetJsValueDynamic) source).JsValue;
+                    destination.JsValue = ((NetJsValue.NetJsValueDynamic)source).JsValue;
                 else
                 {
                     destination.Instance = NetReference.CreateForObject(source);
@@ -61,7 +69,7 @@ namespace Qml.Net.Internal
             }
         }
 
-        public static  void Unpackvalue(ref object destination, NetVariant source)
+        public static void Unpackvalue(ref object destination, NetVariant source)
         {
             switch (source.VariantType)
             {
@@ -79,6 +87,15 @@ namespace Qml.Net.Internal
                     break;
                 case NetVariantType.UInt:
                     destination = source.UInt;
+                    break;
+                case NetVariantType.Long:
+                    destination = source.Long;
+                    break;
+                case NetVariantType.ULong:
+                    destination = source.ULong;
+                    break;
+                case NetVariantType.Float:
+                    destination = source.Float;
                     break;
                 case NetVariantType.Double:
                     destination = source.Double;

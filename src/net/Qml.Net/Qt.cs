@@ -1,9 +1,6 @@
-﻿using AdvancedDLSupport;
-using Qml.Net.Internal;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
+using Qml.Net.Internal;
 
 namespace Qml.Net
 {
@@ -11,7 +8,7 @@ namespace Qml.Net
     {
         public static bool PutEnv(string name, string value)
         {
-            return Interop.QtInterop.PutEnv(name, value);
+            return Interop.QtInterop.PutEnv(name, value) == 1;
         }
 
         public static string GetEnv(string name)
@@ -25,13 +22,21 @@ namespace Qml.Net
         }
     }
 
-    internal interface IQtInterop
+    internal class QtInterop
     {
         [NativeSymbol(Entrypoint = "qt_putenv")]
-        bool PutEnv([MarshalAs(UnmanagedType.LPStr), CallerFree]string name, [MarshalAs(UnmanagedType.LPStr), CallerFree]string value);
+        public PutEnvDel PutEnv { get; set; }
+
+        public delegate byte PutEnvDel([MarshalAs(UnmanagedType.LPStr)]string name, [MarshalAs(UnmanagedType.LPStr)]string value);
+
         [NativeSymbol(Entrypoint = "qt_getenv")]
-        IntPtr GetEnv(string name);
+        public GetEnvDel GetEnv { get; set; }
+
+        public delegate IntPtr GetEnvDel(string name);
+
         [NativeSymbol(Entrypoint = "qt_version")]
-        IntPtr QtVersion();
+        public QtVersionDel QtVersion { get; set; }
+
+        public delegate IntPtr QtVersionDel();
     }
 }

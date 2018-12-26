@@ -1,10 +1,11 @@
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNet/qml/NetValueMetaObjectPacker.h>
 #include <QmlNetUtilities.h>
+#include <utility>
 
 NetSignalInfo::NetSignalInfo(QSharedPointer<NetTypeInfo> parentType, QString name) :
-    _parentType(parentType),
-    _name(name)
+    _parentType(std::move(parentType)),
+    _name(std::move(name))
 {
 }
 
@@ -61,7 +62,7 @@ QString NetSignalInfo::getSlotSignature()
 
     signature.append("_internal_slot_for_net_del(");
 
-    if(_parameters.size() > 0) {
+    if(!_parameters.empty()) {
         for(int parameterIndex = 0; parameterIndex <= _parameters.size() - 1; parameterIndex++)
         {
             if(parameterIndex > 0) {
@@ -82,7 +83,7 @@ extern "C" {
 Q_DECL_EXPORT NetSignalInfoContainer* signal_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR name)
 {
     NetSignalInfoContainer* result = new NetSignalInfoContainer();
-    NetSignalInfo* instance = new NetSignalInfo(parentTypeContainer->netTypeInfo, QString::fromUtf16((const char16_t*)name));
+    NetSignalInfo* instance = new NetSignalInfo(parentTypeContainer->netTypeInfo, QString::fromUtf16(static_cast<const char16_t*>(name)));
     result->signal = QSharedPointer<NetSignalInfo>(instance);
     return result;
 }

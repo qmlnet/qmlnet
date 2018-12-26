@@ -12,12 +12,11 @@ namespace Qml.Net.Tests.Types
         {
             public void TestMethod()
             {
-                
             }
-            
+
             public int TestProperty { get; set; }
         }
-        
+
         [Fact]
         public void Can_get_net_type()
         {
@@ -35,29 +34,28 @@ namespace Qml.Net.Tests.Types
         {
             public void TestMethod(int parameter1, TestType1 parameter2)
             {
-                
             }
         }
-        
+
         [Fact]
         public void Can_get_method_parameters()
         {
             var typeInfo = NetTypeManager.GetTypeInfo<TestType2>();
             typeInfo.EnsureLoaded();
-            
+
             typeInfo.MethodCount.Should().Be(1);
-            
+
             var method = typeInfo.GetMethod(0);
             method.Should().NotBeNull();
             method.ParameterCount.Should().Be(2);
-            
+
             var parameter1 = method.GetParameter(0);
             parameter1.Should().NotBeNull();
             parameter1.Name.Should().Be("parameter1");
             var parameter1Type = parameter1.Type;
             parameter1Type.Should().NotBeNull();
             parameter1Type.ClassName.Should().Be("Int32");
-            
+
             var parameter2 = method.GetParameter(1);
             parameter2.Should().NotBeNull();
             parameter2.Name.Should().Be("parameter2");
@@ -88,10 +86,9 @@ namespace Qml.Net.Tests.Types
         {
             public void TestMethod()
             {
-                
             }
         }
-        
+
         [Fact]
         public void Can_get_method_without_return_type()
         {
@@ -105,7 +102,6 @@ namespace Qml.Net.Tests.Types
         {
             public void ThisIsMethodName()
             {
-                
             }
         }
 
@@ -122,7 +118,7 @@ namespace Qml.Net.Tests.Types
         {
             public string Property { get; set; }
         }
-        
+
         [Fact]
         public void Can_get_property()
         {
@@ -142,9 +138,8 @@ namespace Qml.Net.Tests.Types
         [Signal("testSignal", NetVariantType.DateTime, NetVariantType.Object)]
         public class TestType7
         {
-            
         }
-        
+
         [Fact]
         public void Can_get_signal()
         {
@@ -164,7 +159,7 @@ namespace Qml.Net.Tests.Types
             [NotifySignal("signalName")]
             public string Property { get; set; }
         }
-        
+
         [Fact]
         public void Can_get_notifiy_signal_for_property()
         {
@@ -219,13 +214,12 @@ namespace Qml.Net.Tests.Types
             {
                 return null;
             }
-            
+
             public class InnerType
             {
-                
             }
         }
-        
+
         [Fact]
         public void Can_lazy_load_types()
         {
@@ -246,12 +240,10 @@ namespace Qml.Net.Tests.Types
         {
             public void LocalMethod()
             {
-                
             }
 
             public static void StaticMethod()
             {
-                
             }
         }
 
@@ -270,7 +262,7 @@ namespace Qml.Net.Tests.Types
         {
             public string[] Property { get; set; }
         }
-        
+
         [Fact]
         public void Can_detect_array_type()
         {
@@ -286,7 +278,7 @@ namespace Qml.Net.Tests.Types
         public class TestType14
         {
             public List<int> Prop1 { get; set; }
-            
+
             public System.Collections.ArrayList Prop2 { get; set; }
         }
 

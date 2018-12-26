@@ -1,15 +1,15 @@
-﻿using AdvancedDLSupport;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using NetNativeLibLoader.PathResolver;
 
 namespace Qml.Net.Internal
 {
-    internal class WindowsDllImportLibraryPathResolver : ILibraryPathResolver
+    internal class WindowsDllImportLibraryPathResolver : IPathResolver
     {
-        ILibraryPathResolver _original;
+        IPathResolver _original;
 
-        public WindowsDllImportLibraryPathResolver(ILibraryPathResolver original)
+        public WindowsDllImportLibraryPathResolver(IPathResolver original)
         {
             _original = original;
         }
@@ -18,7 +18,7 @@ namespace Qml.Net.Internal
         {
             var result = _original.Resolve(library);
 
-            if(!result.IsSuccess && library == "QmlNet")
+            if (!result.IsSuccess && library == "QmlNet")
             {
                 // Try to let .NET load the library.
                 try
@@ -34,7 +34,7 @@ namespace Qml.Net.Internal
                     var path = Marshal.PtrToStringAnsi(bytes);
                     Marshal.FreeHGlobal(bytes);
 
-                    if(File.Exists(path))
+                    if (File.Exists(path))
                     {
                         return ResolvePathResult.FromSuccess(path);
                     }

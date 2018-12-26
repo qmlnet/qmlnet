@@ -13,6 +13,7 @@ class NetValueMetaObject;
 
 struct NetValueInterface
 {
+    virtual ~NetValueInterface() {}
     virtual QSharedPointer<NetReference> getNetReference() = 0;
 };
 
@@ -25,13 +26,13 @@ class NetValue : public QObject, NetValueInterface
 public:
     virtual ~NetValue();
     QSharedPointer<NetReference> getNetReference();
-    bool activateSignal(QString signalName, QSharedPointer<NetVariantList> arguments);
+    bool activateSignal(const QString& signalName, const QSharedPointer<NetVariantList>& arguments);
 
-    static NetValue* forInstance(QSharedPointer<NetReference> instance);
-    static QList<NetValue*> getAllLiveInstances(QSharedPointer<NetReference> instance);
+    static NetValue* forInstance(const QSharedPointer<NetReference>& instance);
+    static QList<NetValue*> getAllLiveInstances(const QSharedPointer<NetReference>& instance);
 
 protected:
-    NetValue(QSharedPointer<NetReference> instance, QObject *parent);
+    NetValue(const QSharedPointer<NetReference>& instance, QObject *parent);
 
 private:
     QSharedPointer<NetReference> instance;

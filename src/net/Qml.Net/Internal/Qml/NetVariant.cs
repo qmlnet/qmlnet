@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal.Qml
@@ -10,13 +9,11 @@ namespace Qml.Net.Internal.Qml
         public NetVariant()
             : this(Interop.NetVariant.Create())
         {
-            
         }
 
         public NetVariant(IntPtr handle, bool ownsHandle = true)
             : base(handle, ownsHandle)
         {
-            
         }
 
         public NetVariantType VariantType => Interop.NetVariant.GetVariantType(Handle);
@@ -33,49 +30,68 @@ namespace Qml.Net.Internal.Qml
 
         public bool Bool
         {
-            get => Interop.NetVariant.GetBool(Handle);
-            set => Interop.NetVariant.SetBool(Handle, value);
+            get => Interop.NetVariant.GetBool(Handle) == 1;
+            set => Interop.NetVariant.SetBool(Handle, value ? (byte)1 : (byte)0);
         }
-        
+
         public char Char
         {
             get => (char)Interop.NetVariant.GetChar(Handle);
             set => Interop.NetVariant.SetChar(Handle, value);
         }
-        
+
         public int Int
         {
             get => Interop.NetVariant.GetInt(Handle);
             set => Interop.NetVariant.SetInt(Handle, value);
         }
-        
+
         public uint UInt
         {
             get => Interop.NetVariant.GetUInt(Handle);
             set => Interop.NetVariant.SetUInt(Handle, value);
         }
-        
+
+        public long Long
+        {
+            get => Interop.NetVariant.GetLong(Handle);
+            set => Interop.NetVariant.SetLong(Handle, value);
+        }
+
+        public ulong ULong
+        {
+            get => Interop.NetVariant.GetULong(Handle);
+            set => Interop.NetVariant.SetULong(Handle, value);
+        }
+
+        public float Float
+        {
+            get => Interop.NetVariant.GetFloat(Handle);
+            set => Interop.NetVariant.SetFloat(Handle, value);
+        }
+
         public double Double
         {
             get => Interop.NetVariant.GetDouble(Handle);
             set => Interop.NetVariant.SetDouble(Handle, value);
         }
-        
+
         public string String
         {
             get => Utilities.ContainerToString(Interop.NetVariant.GetString(Handle));
             set => Interop.NetVariant.SetString(Handle, value);
         }
-        
+
         public DateTimeOffset? DateTime
         {
             get
             {
-                var dateTime = new DateTimeContainer(); 
+                var dateTime = new DateTimeContainer();
                 Interop.NetVariant.GetDateTime(Handle, ref dateTime);
-                if (dateTime.IsNull)
+                if (dateTime.IsNull == 1)
                     return null;
-                return new DateTimeOffset(dateTime.Year,
+                return new DateTimeOffset(
+                    dateTime.Year,
                     dateTime.Month,
                     dateTime.Day,
                     dateTime.Hour,
@@ -84,17 +100,18 @@ namespace Qml.Net.Internal.Qml
                     dateTime.Msec,
                     TimeSpan.FromSeconds(dateTime.OffsetSeconds));
             }
+
             set
             {
                 var dateTime = new DateTimeContainer();
                 if (value == null)
                 {
-                    dateTime.IsNull = true;
+                    dateTime.IsNull = 1;
                     Interop.NetVariant.SetDateTime(Handle, ref dateTime);
                 }
                 else
                 {
-                    dateTime.IsNull = false;
+                    dateTime.IsNull = 0;
                     dateTime.Year = value.Value.Year;
                     dateTime.Month = value.Value.Month;
                     dateTime.Day = value.Value.Day;
@@ -117,81 +134,165 @@ namespace Qml.Net.Internal.Qml
             }
             set => Interop.NetVariant.SetJsValue(Handle, value?.Handle ?? IntPtr.Zero);
         }
-        
+
         public void Clear()
         {
             Interop.NetVariant.Clear(Handle);
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
         }
     }
-    
-    internal interface INetVariantInterop
+
+    internal class NetVariantInterop
     {
         [NativeSymbol(Entrypoint = "net_variant_create")]
-        IntPtr Create();
+        public CreateDel Create { get; set; }
+
+        public delegate IntPtr CreateDel();
+
         [NativeSymbol(Entrypoint = "net_variant_destroy")]
-        void Destroy(IntPtr variant);
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
-        NetVariantType GetVariantType(IntPtr variant);
-        
+        public GetVariantTypeDel GetVariantType { get; set; }
+
+        public delegate NetVariantType GetVariantTypeDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setNetReference")]
-        void SetNetReference(IntPtr variant, IntPtr instance);
+        public SetNetReferenceDel SetNetReference { get; set; }
+
+        public delegate void SetNetReferenceDel(IntPtr variant, IntPtr instance);
+
         [NativeSymbol(Entrypoint = "net_variant_getNetReference")]
-        IntPtr GetNetReference(IntPtr variant);
+        public GetNetReferenceDel GetNetReference { get; set; }
+
+        public delegate IntPtr GetNetReferenceDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setBool")]
-        void SetBool(IntPtr variant, bool value);
+        public SetBoolDel SetBool { get; set; }
+
+        public delegate void SetBoolDel(IntPtr variant, byte value);
+
         [NativeSymbol(Entrypoint = "net_variant_getBool")]
-        bool GetBool(IntPtr variant);
-        
+        public GetBoolDel GetBool { get; set; }
+
+        public delegate byte GetBoolDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setChar")]
-        void SetChar(IntPtr variant, ushort value);
+        public SetCharDel SetChar { get; set; }
+
+        public delegate void SetCharDel(IntPtr variant, ushort value);
+
         [NativeSymbol(Entrypoint = "net_variant_getChar")]
-        ushort GetChar(IntPtr variant);
-        
+        public GetCharDel GetChar { get; set; }
+
+        public delegate ushort GetCharDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setInt")]
-        void SetInt(IntPtr variant, int value);
+        public SetIntDel SetInt { get; set; }
+
+        public delegate void SetIntDel(IntPtr variant, int value);
+
         [NativeSymbol(Entrypoint = "net_variant_getInt")]
-        int GetInt(IntPtr variant);
-        
+        public GetIntDel GetInt { get; set; }
+
+        public delegate int GetIntDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setUInt")]
-        void SetUInt(IntPtr variant, uint value);
+        public SetUIntDel SetUInt { get; set; }
+
+        public delegate void SetUIntDel(IntPtr variant, uint value);
+
         [NativeSymbol(Entrypoint = "net_variant_getUInt")]
-        uint GetUInt(IntPtr variant);
-        
+        public GetUIntDel GetUInt { get; set; }
+
+        public delegate uint GetUIntDel(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setLong")]
+        public SetLongDel SetLong { get; set; }
+
+        public delegate void SetLongDel(IntPtr variant, long value);
+
+        [NativeSymbol(Entrypoint = "net_variant_getLong")]
+        public GetLongDel GetLong { get; set; }
+
+        public delegate long GetLongDel(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setULong")]
+        public SetULongDel SetULong { get; set; }
+
+        public delegate void SetULongDel(IntPtr variant, ulong value);
+
+        [NativeSymbol(Entrypoint = "net_variant_getULong")]
+        public GetULongDel GetULong { get; set; }
+
+        public delegate ulong GetULongDel(IntPtr variant);
+
+        [NativeSymbol(Entrypoint = "net_variant_setFloat")]
+        public SetFloatDel SetFloat { get; set; }
+
+        public delegate void SetFloatDel(IntPtr variant, float value);
+
+        [NativeSymbol(Entrypoint = "net_variant_getFloat")]
+        public GetFloatDel GetFloat { get; set; }
+
+        public delegate float GetFloatDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setDouble")]
-        void SetDouble(IntPtr variant, double value);
+        public SetDoubleDel SetDouble { get; set; }
+
+        public delegate void SetDoubleDel(IntPtr variant, double value);
+
         [NativeSymbol(Entrypoint = "net_variant_getDouble")]
-        double GetDouble(IntPtr variant);
-        
+        public GetDoubleDel GetDouble { get; set; }
+
+        public delegate double GetDoubleDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setString")]
-        void SetString(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string value);
+        public SetStringDel SetString { get; set; }
+
+        public delegate void SetStringDel(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr)]string value);
+
         [NativeSymbol(Entrypoint = "net_variant_getString")]
-        IntPtr GetString(IntPtr variant);
-        
+        public GetStringDel GetString { get; set; }
+
+        public delegate IntPtr GetStringDel(IntPtr variant);
+
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
-        void SetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+        public SetDateTimeDel SetDateTime { get; set; }
+
+        public delegate void SetDateTimeDel(IntPtr variant, ref DateTimeContainer dateTime);
+
         [NativeSymbol(Entrypoint = "net_variant_getDateTime")]
-        void GetDateTime(IntPtr variant, ref DateTimeContainer dateTime);
+        public GetDateTimeDel GetDateTime { get; set; }
+
+        public delegate void GetDateTimeDel(IntPtr variant, ref DateTimeContainer dateTime);
 
         [NativeSymbol(Entrypoint = "net_variant_setJsValue")]
-        void SetJsValue(IntPtr variant, IntPtr jsValue);
+        public SetJsValueDel SetJsValue { get; set; }
+
+        public delegate void SetJsValueDel(IntPtr variant, IntPtr jsValue);
+
         [NativeSymbol(Entrypoint = "net_variant_getJsValue")]
-        IntPtr GetJsValue(IntPtr variant);
+        public GetJsValueDel GetJsValue { get; set; }
+
+        public delegate IntPtr GetJsValueDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_clear")]
-        void Clear(IntPtr variant);
+        public ClearDel Clear { get; set; }
+
+        public delegate void ClearDel(IntPtr variant);
     }
-    
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct DateTimeContainer
     {
-        public bool IsNull;
+        public byte IsNull;
         public int Month;
         public int Day;
         public int Year;

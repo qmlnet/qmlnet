@@ -8,6 +8,7 @@ namespace Qml.Net.Internal
     internal static class InteropBehaviors
     {
         private static List<IQmlInteropBehavior> _QmlInteropBehaviors = new List<IQmlInteropBehavior>();
+
         public static IEnumerable<IQmlInteropBehavior> QmlInteropBehaviors => _QmlInteropBehaviors;
 
         private static IEnumerable<IQmlInteropBehavior> GetApplicableInteropBehaviors(Type forType)
@@ -16,13 +17,13 @@ namespace Qml.Net.Internal
                         .Where(b => b.IsApplicableFor(forType));
         }
 
-        /// <summary> 
-        /// Registers an additional Qml Interop behavior. This behavior only gets applied to types and instances created or registered after this behavior registration 
-        /// </summary> 
-        /// <param name="behavior"></param> 
+        /// <summary>
+        /// Registers an additional Qml Interop behavior. This behavior only gets applied to types and instances created or registered after this behavior registration
+        /// </summary>
+        /// <param name="behavior">IQmlInteropBehavior</param>
         public static void RegisterQmlInteropBehavior(IQmlInteropBehavior behavior, bool addIfTypeAlreadyExists = false)
         {
-            if(!addIfTypeAlreadyExists && _QmlInteropBehaviors.Any(ib => ib.GetType() == behavior.GetType()))
+            if (!addIfTypeAlreadyExists && _QmlInteropBehaviors.Any(ib => ib.GetType() == behavior.GetType()))
             {
                 return;
             }

@@ -1,4 +1,3 @@
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 
 namespace Qml.Net
@@ -10,10 +9,12 @@ namespace Qml.Net
             Interop.QtWebEngine.Initialize();
         }
     }
-    
-    internal interface IQtWebEngine
+
+    internal class QtWebEngineInterop
     {
         [NativeSymbol(Entrypoint = "qtwebebengine_initialize")]
-        void Initialize();
+        public InitializeDel Initialize { get; set; }
+
+        public delegate void InitializeDel();
     }
 }

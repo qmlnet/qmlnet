@@ -15,12 +15,10 @@ namespace Qml.Net.Tests.Qml
 
             public virtual void Method(DateTimeOffset value)
             {
-                
             }
-            
+
             public virtual void MethodNullable(DateTimeOffset? value)
             {
-                
             }
         }
 
@@ -28,7 +26,7 @@ namespace Qml.Net.Tests.Qml
         public void Can_read_write_property()
         {
             var value = DateTimeOffset.Now;
-            // This trims some percision off of the milliseconds, makes the comparison accurate.
+            // This trims some precision off of the milliseconds, makes the comparison accurate.
             value = new DateTimeOffset(value.Year, value.Month, value.Day, value.Hour, value.Minute, value.Second, value.Millisecond, value.Offset);
             Mock.SetupGet(x => x.Property).Returns(value);
             Mock.SetupSet(x => x.Property = value);
@@ -42,7 +40,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Property, Times.Once);
             Mock.VerifySet(x => x.Property = value, Times.Once);
         }
-        
+
         [Fact]
         public void Can_read_write_property_nullable_with_value()
         {
@@ -62,7 +60,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Nullable, Times.Once);
             Mock.VerifySet(x => x.Nullable = value);
         }
-        
+
         [Fact]
         public void Can_read_write_property_nullable_without_value()
         {

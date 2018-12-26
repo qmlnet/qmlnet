@@ -40,12 +40,12 @@ namespace Qml.Net.Tests.Types
                 {
                     variant1.String = "test1";
                     variant2.String = "test2";
-                    
+
                     list.Add(variant1);
                     list.Add(variant2);
-                    
+
                     list.Count.Should().Be(2);
-                    
+
                     list.Remove(0);
 
                     list.Count.Should().Be(1);
@@ -64,12 +64,12 @@ namespace Qml.Net.Tests.Types
                 {
                     variant1.String = "test1";
                     variant2.String = "test2";
-                    
+
                     list.Add(variant1);
                     list.Add(variant2);
-                    
+
                     list.Count.Should().Be(2);
-                    
+
                     list.Clear();
 
                     list.Count.Should().Be(0);

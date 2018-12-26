@@ -1,4 +1,4 @@
-QT += gui qml qml-private core-private quickcontrols2
+QT += gui qml core-private quickcontrols2
 
 CONFIG(enable-webengine) {
     QT += webengine

@@ -7,14 +7,13 @@ namespace Qml.Net
     {
         public NotifySignalAttribute()
         {
-            
         }
-        
+
         public NotifySignalAttribute(string name)
         {
             Name = name;
         }
-        
+
         public string Name { get; set; }
     }
 }

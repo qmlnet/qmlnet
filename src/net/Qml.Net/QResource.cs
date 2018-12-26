@@ -1,5 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using AdvancedDLSupport;
+using System.Runtime.InteropServices;
+using Qml.Net.Internal;
 
 namespace Qml.Net
 {
@@ -7,13 +7,25 @@ namespace Qml.Net
     {
         public static bool RegisterResource(string rccFileName, string resourceRoot = null)
         {
-            return Internal.Interop.QResource.RegisterResource(rccFileName, resourceRoot);
+            return Internal.Interop.QResource.RegisterResource(rccFileName, resourceRoot) == 1;
+        }
+
+        public static bool UnregisterResource(string rccFileName, string resourceRoot = null)
+        {
+            return Internal.Interop.QResource.UnregisterResource(rccFileName, resourceRoot) == 1;
         }
     }
-    
-    internal interface IQResourceInterop
+
+    internal class QResourceInterop
     {
         [NativeSymbol(Entrypoint = "qresource_registerResource")]
-        bool RegisterResource([MarshalAs(UnmanagedType.LPWStr), CallerFree]string rccFileName, [MarshalAs(UnmanagedType.LPWStr), CallerFree]string resourceRoot);
+        public RegisterResourceDel RegisterResource { get; set; }
+
+        public delegate byte RegisterResourceDel([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
+
+        [NativeSymbol(Entrypoint = "qresource_unregisterResource")]
+        public UnregisterResourceDel UnregisterResource { get; set; }
+
+        public delegate byte UnregisterResourceDel([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
     }
 }

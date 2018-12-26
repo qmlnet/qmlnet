@@ -5,12 +5,13 @@
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNetUtilities.h>
+#include <utility>
 
 using namespace QmlNet;
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
-    _fullTypeName(fullTypeName),
+    _fullTypeName(std::move(fullTypeName)),
     _variantType(NetVariantTypeEnum_Invalid),
     _isArray(false),
     _isList(false),
@@ -21,9 +22,7 @@ NetTypeInfo::NetTypeInfo(QString fullTypeName) :
 }
 
 
-NetTypeInfo::~NetTypeInfo() {
-
-}
+NetTypeInfo::~NetTypeInfo() = default;
 
 QString NetTypeInfo::getFullTypeName() {
     return _fullTypeName;
@@ -34,7 +33,7 @@ QString NetTypeInfo::getClassName() {
 }
 
 void NetTypeInfo::setClassName(QString className) {
-    _className = className;
+    _className = std::move(className);
 }
 
 NetVariantTypeEnum NetTypeInfo::getPrefVariantType() {
@@ -65,7 +64,7 @@ void NetTypeInfo::setIsList(bool isList)
     _isList = isList;
 }
 
-void NetTypeInfo::addMethod(QSharedPointer<NetMethodInfo> methodInfo) {
+void NetTypeInfo::addMethod(const QSharedPointer<NetMethodInfo>& methodInfo) {
     _methods.append(methodInfo);
     if(methodInfo->isStatic()) {
         _methodsStatic.append(methodInfo);
@@ -108,7 +107,7 @@ QSharedPointer<NetMethodInfo> NetTypeInfo::getStaticMethodInfo(int index)
     return _methodsStatic.at(index);
 }
 
-void NetTypeInfo::addProperty(QSharedPointer<NetPropertyInfo> property) {
+void NetTypeInfo::addProperty(const QSharedPointer<NetPropertyInfo>& property) {
     _properties.append(property);
 }
 
@@ -122,7 +121,7 @@ QSharedPointer<NetPropertyInfo> NetTypeInfo::getProperty(int index) {
     return _properties.at(index);
 }
 
-void NetTypeInfo::addSignal(QSharedPointer<NetSignalInfo> signal) {
+void NetTypeInfo::addSignal(const QSharedPointer<NetSignalInfo>& signal) {
     _signals.append(signal);
 }
 
@@ -171,9 +170,13 @@ void NetTypeInfo::ensureLoaded() {
 
 extern "C" {
 
+static_assert (std::is_pointer<LPWSTR>::value, "Check fromUtf16 calls below.");
+static_assert (!std::is_pointer<std::remove_pointer<LPWSTR>::type>::value, "Check fromUtf16 calls below.");
+static_assert (sizeof(std::remove_pointer<LPWSTR>::type) == sizeof(ushort), "Check fromUtf16 calls below.");
+
 Q_DECL_EXPORT NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
-    result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString::fromUtf16((const char16_t*)fullTypeName)));
+    result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString::fromUtf16(static_cast<const char16_t*>(fullTypeName))));
     return result;
 }
 
@@ -193,7 +196,7 @@ Q_DECL_EXPORT QmlNetStringContainer* type_info_getClassName(NetTypeInfoContainer
 }
 
 Q_DECL_EXPORT void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {
-    netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16((const char16_t*)className));
+    netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16(static_cast<const char16_t*>(className)));
 }
 
 Q_DECL_EXPORT NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContainer* netTypeInfo) {
@@ -204,24 +207,32 @@ Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInf
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
-Q_DECL_EXPORT bool type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
+Q_DECL_EXPORT uchar type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
 {
-    return netTypeInfo->netTypeInfo->isArray();
+    if(netTypeInfo->netTypeInfo->isArray()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, bool isArray)
+Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, uchar isArray)
 {
-    netTypeInfo->netTypeInfo->setIsArray(isArray);
+    netTypeInfo->netTypeInfo->setIsArray(isArray == 1);
 }
 
-Q_DECL_EXPORT bool type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
+Q_DECL_EXPORT uchar type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
 {
-    return netTypeInfo->netTypeInfo->isList();
+    if(netTypeInfo->netTypeInfo->isList()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, bool isList)
+Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, uchar isList)
 {
-    netTypeInfo->netTypeInfo->setIsList(isList);
+    netTypeInfo->netTypeInfo->setIsList(isList == 1);
 }
 
 Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {
@@ -308,12 +319,20 @@ Q_DECL_EXPORT NetSignalInfoContainer* type_info_getSignal(NetTypeInfoContainer* 
     return result;
 }
 
-Q_DECL_EXPORT bool type_info_isLoaded(NetTypeInfoContainer* container) {
-    return container->netTypeInfo->isLoaded();
+Q_DECL_EXPORT uchar type_info_isLoaded(NetTypeInfoContainer* container) {
+    if(container->netTypeInfo->isLoaded()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-Q_DECL_EXPORT bool type_info_isLoading(NetTypeInfoContainer* container) {
-    return container->netTypeInfo->isLoading();
+Q_DECL_EXPORT uchar type_info_isLoading(NetTypeInfoContainer* container) {
+    if(container->netTypeInfo->isLoading()) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 Q_DECL_EXPORT void type_info_ensureLoaded(NetTypeInfoContainer* container) {

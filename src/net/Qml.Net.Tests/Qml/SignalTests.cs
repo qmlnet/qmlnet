@@ -19,17 +19,14 @@ namespace Qml.Net.Tests.Qml
 
             public virtual void MethodWithArgs(string arg1, int arg2)
             {
-                
             }
 
             public virtual void TestMethod()
             {
-                
             }
 
             public virtual void TestMethodWithArgs(string arg1, int arg2)
             {
-                
             }
 
             private string _someStringPropertyValue = "";
@@ -38,8 +35,9 @@ namespace Qml.Net.Tests.Qml
             public string SomeStringProperty
             {
                 get => _someStringPropertyValue;
-                set {
-                    if (_someStringPropertyValue == value) 
+                set
+                {
+                    if (_someStringPropertyValue == value)
                         return;
                     _someStringPropertyValue = value;
                     this.ActivateNotifySignal();
@@ -47,26 +45,32 @@ namespace Qml.Net.Tests.Qml
             }
 
             private int _someIntPropertyValue = 0;
-            
+
             [NotifySignal("someWeirdSignalName")]
             public int SomeIntProperty
             {
                 get => _someIntPropertyValue;
-                set {
-                    if (_someIntPropertyValue == value) 
+                set
+                {
+                    if (_someIntPropertyValue == value)
                         return;
                     _someIntPropertyValue = value;
                     this.ActivateNotifySignal();
                 }
             }
-            
+
             private bool _someBoolPropertyValue = false;
-            
+
             public bool SomeBoolProperty
             {
-                get => _someBoolPropertyValue;
-                set {
-                    if (_someBoolPropertyValue == value) 
+                get
+                {
+                    return _someBoolPropertyValue;
+                }
+
+                set
+                {
+                    if (_someBoolPropertyValue == value)
                         return;
                     _someBoolPropertyValue = value;
                     this.ActivateNotifySignal();
@@ -85,7 +89,6 @@ namespace Qml.Net.Tests.Qml
         [Signal("testSignalWithNetArg", NetVariantType.Object)]
         public class SignalObject
         {
-            
         }
 
         [Fact]
@@ -94,7 +97,7 @@ namespace Qml.Net.Tests.Qml
             var signalObject = new SignalObject();
             Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
             Mock.Setup(x => x.SignalRaised).Returns(false);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -107,7 +110,7 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
         }
-        
+
         [Fact]
         public void Can_raise_signal_from_qml_with_args()
         {
@@ -115,7 +118,7 @@ namespace Qml.Net.Tests.Qml
             Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
             Mock.Setup(x => x.SignalRaised).Returns(false);
             Mock.Setup(x => x.MethodWithArgs("arg1", 3));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -130,14 +133,14 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
             Mock.Verify(x => x.MethodWithArgs("arg1", 3), Times.Once);
         }
-        
+
         [Fact(Skip = "This was broken when issue #71 was resolved. If you need this, file an issue.")]
         public void Can_raise_signal_from_qml_different_retrieval_of_net_instance()
         {
             var signalObject = new SignalObject();
             Mock.Setup(x => x.GetSignalObject()).Returns(signalObject);
             Mock.Setup(x => x.SignalRaised).Returns(false);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -162,7 +165,7 @@ namespace Qml.Net.Tests.Qml
                 signalObject.ActivateSignal("testSignal");
             });
             Mock.Setup(x => x.SignalRaised).Returns(false);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -175,12 +178,12 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
         }
-        
+
         [Fact]
         public void Can_raise_changed_default_signal_from_net()
         {
             Mock.Setup(x => x.SignalRaised).Returns(false);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -192,12 +195,12 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
         }
-        
+
         [Fact]
         public void Can_raise_changed_custom_signal_from_net()
         {
             Mock.Setup(x => x.SignalRaised).Returns(false);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -214,7 +217,7 @@ namespace Qml.Net.Tests.Qml
         public void Can_not_raise_invalid_changed_signal_from_net()
         {
             Mock.Setup(x => x.SignalRaised).Returns(false);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -226,7 +229,7 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Never);
         }
-        
+
         [Fact]
         public void Can_raise_signal_from_net_with_args()
         {
@@ -238,7 +241,7 @@ namespace Qml.Net.Tests.Qml
             });
             Mock.Setup(x => x.SignalRaised).Returns(false);
             Mock.Setup(x => x.MethodWithArgs("arg1", 3));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -253,27 +256,27 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifySet(x => x.SignalRaised = true, Times.Once);
             Mock.Verify(x => x.MethodWithArgs("arg1", 3), Times.Once);
         }
-        
+
         [Fact]
         public void Can_attach_delegate_to_signal_when_object_not_in_qml()
         {
             var o = new SignalObject();
             string message1 = null;
             string message2 = null;
-            
+
             o.AttachToSignal("testSignalWithArgs1", new Action<string, int>((m, _) => { message1 = m; }));
-            o.AttachToSignal("testSignalWithArgs2", new Action<string,int>((m, _) => { message2 = m; }));
-            
+            o.AttachToSignal("testSignalWithArgs2", new Action<string, int>((m, _) => { message2 = m; }));
+
             o.ActivateSignal("testSignalWithArgs1", "message1", 3);
             message1.Should().Be("message1");
             message2.Should().BeNull();
             message1 = null;
-            
+
             o.ActivateSignal("testSignalWithArgs2", "message2", 4);
             message1.Should().BeNull();
             message2.Should().Be("message2");
         }
-        
+
         [Fact]
         public void Can_raise_net_signal_from_qml_when_added_before_qml()
         {
@@ -281,7 +284,7 @@ namespace Qml.Net.Tests.Qml
             string message = null;
             o.AttachToSignal("testSignalWithArgs1", new Action<string, int>((m, _) => message = m));
             Mock.Setup(x => x.GetSignalObject()).Returns(o);
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -291,7 +294,7 @@ namespace Qml.Net.Tests.Qml
 
             message.Should().Be("from qml");
         }
-        
+
         [Fact]
         public void Can_raise_net_signal_from_qml_when_added_after_qml()
         {
@@ -302,7 +305,7 @@ namespace Qml.Net.Tests.Qml
             {
                 o.AttachToSignal("testSignalWithArgs1", new Action<string, int>((m, _) => message = m));
             });
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -327,7 +330,7 @@ namespace Qml.Net.Tests.Qml
             {
                 paramResult = p;
             }));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -335,7 +338,7 @@ namespace Qml.Net.Tests.Qml
                     var param = test.getTestObject()
                     instance.testSignalWithNetArg(param)
                 ");
-            
+
             paramResult.Should().NotBeNull();
             paramResult.SomeStringProperty.Should().NotBeNull(param.SomeStringProperty);
         }
@@ -358,14 +361,14 @@ namespace Qml.Net.Tests.Qml
             {
                 paramResult = p;
             }));
-            
+
             RunQmlTest(
                 "test",
                 @"
                     var instance = test.getSignalObject()
                     test.testMethod()
                 ");
-            
+
             paramResult.Should().NotBeNull();
             paramResult.SomeStringProperty.Should().NotBeNull(param.SomeStringProperty);
         }

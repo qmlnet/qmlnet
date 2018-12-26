@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -16,38 +15,37 @@ namespace Qml.Net
         readonly SynchronizationContext _oldSynchronizationContext;
 
         public QGuiApplication()
-            :this(null)
+            : this(null)
         {
-            
         }
-        
+
         public QGuiApplication(string[] args)
-            :base(Create(args?.ToList()))
+            : base(Create(args?.ToList()))
         {
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
-            
+
             Interop.QGuiApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
-            
+
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
 
         internal QGuiApplication(IntPtr existingApp)
-            :base(CreateFromExisting(existingApp))
+            : base(CreateFromExisting(existingApp))
         {
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
-            
+
             Interop.QGuiApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
-            
+
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
 
         public int Exec()
         {
-            return Interop.QGuiApplication.Exec(Handle);
+            return Interop.QGuiApplication.Exec();
         }
 
         public void Dispatch(Action action)
@@ -61,7 +59,7 @@ namespace Qml.Net
 
         public void Exit(int returnCode = 0)
         {
-            Interop.QGuiApplication.Exit(Handle, returnCode);
+            Interop.QGuiApplication.Exit(returnCode);
         }
 
         public void Quit()
@@ -85,7 +83,7 @@ namespace Qml.Net
             }
             action?.Invoke();
         }
-        
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
@@ -104,7 +102,7 @@ namespace Qml.Net
             {
                 args = new List<string>();
             }
-            
+
             // By default, the argv[0] should be the process name.
             // .NET doesn't pass that name, but Qt should get it
             // since it does in a normal Qt environment.
@@ -120,13 +118,14 @@ namespace Qml.Net
                         strings.Add(variant);
                     }
                 }
+
                 return Interop.QGuiApplication.Create(strings.Handle, IntPtr.Zero);
             }
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void TriggerDelegate();
-        
+
         private class QtSynchronizationContext : SynchronizationContext
         {
             readonly QGuiApplication _guiApp;
@@ -142,23 +141,42 @@ namespace Qml.Net
             }
         }
     }
-    
-    internal interface IQGuiApplicationInterop
+
+    internal class QGuiApplicationInterop
     {
         [NativeSymbol(Entrypoint = "qguiapplication_create")]
-        IntPtr Create(IntPtr args, IntPtr existingApp);
+        public CreateDel Create { get; set; }
+
+        public delegate IntPtr CreateDel(IntPtr args, IntPtr existingApp);
+
         [NativeSymbol(Entrypoint = "qguiapplication_destroy")]
-        void Destroy(IntPtr app);
+        public DestroyDel Destroy { get; set; }
+
+        public delegate void DestroyDel(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qguiapplication_exec")]
-        int Exec(IntPtr app);
+        public ExecDel Exec { get; set; }
+
+        public delegate int ExecDel();
+
         [NativeSymbol(Entrypoint = "qguiapplication_addTriggerCallback")]
-        void AddTriggerCallback(IntPtr app, IntPtr callback);
+        public AddTriggerCallbackDel AddTriggerCallback { get; set; }
+
+        public delegate void AddTriggerCallbackDel(IntPtr app, IntPtr callback);
+
         [NativeSymbol(Entrypoint = "qguiapplication_requestTrigger")]
-        void RequestTrigger(IntPtr app);
+        public RequestTriggerDel RequestTrigger { get; set; }
+
+        public delegate void RequestTriggerDel(IntPtr app);
+
         [NativeSymbol(Entrypoint = "qguiapplication_exit")]
-        void Exit(IntPtr app, int returnCode);
+        public ExitDel Exit { get; set; }
+
+        public delegate void ExitDel(int returnCode);
+
         [NativeSymbol(Entrypoint = "qguiapplication_internalPointer")]
-        IntPtr InternalPointer(IntPtr app);
+        public InternalPointerDel InternalPointer { get; set; }
+
+        public delegate IntPtr InternalPointerDel(IntPtr app);
     }
 }

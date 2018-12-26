@@ -5,10 +5,10 @@
 #include <QmlNet/qml/NetJsValue.h>
 #include <QDebug>
 #include <QJSEngine>
-#include <private/qjsvalue_p.h>
+#include <utility>
 
 NetJSValue::NetJSValue(QJSValue jsValue) :
-    _jsValue(jsValue)
+    _jsValue(std::move(jsValue))
 {
 
 }
@@ -23,40 +23,57 @@ QJSValue NetJSValue::getJsValue()
     return _jsValue;
 }
 
-bool NetJSValue::isCallable()
+bool NetJSValue::isCallable() const
 {
     return _jsValue.isCallable();
 }
 
-QSharedPointer<NetVariant> NetJSValue::call(QSharedPointer<NetVariantList> parameters)
+bool NetJSValue::isArray() const
 {
-    QV4::ExecutionEngine* engine = QJSValuePrivate::engine(&_jsValue);
+    return _jsValue.isArray();
+}
 
+QSharedPointer<NetVariant> NetJSValue::call(const QSharedPointer<NetVariantList>& parameters)
+{
     QJSValueList jsValueList;
     if(parameters != nullptr) {
         for(int x = 0; x < parameters->count(); x++) {
             QSharedPointer<NetVariant> netVariant = parameters->get(x);
-            jsValueList.append(netVariant->toQJSValue(engine->jsEngine()));
+            jsValueList.append(netVariant->toQJSValue(_jsValue.engine()));
         }
     }
 
     return NetVariant::fromQJSValue(_jsValue.call(jsValueList));
 }
 
-QSharedPointer<NetVariant> NetJSValue::getProperty(QString propertyName)
+QSharedPointer<NetVariant> NetJSValue::getProperty(const QString& propertyName)
 {
     QJSValue property = _jsValue.property(propertyName);
     return NetVariant::fromQJSValue(property);
 }
 
-void NetJSValue::setProperty(QString propertyName, QSharedPointer<NetVariant> variant)
+QSharedPointer<NetVariant> NetJSValue::getItemAtIndex(quint32 arrayIndex)
+{
+    QJSValue property = _jsValue.property(arrayIndex);
+    return NetVariant::fromQJSValue(property);
+}
+
+void NetJSValue::setProperty(const QString& propertyName, const QSharedPointer<NetVariant>& variant)
 {
     QJSValue value = QJSValue::NullValue;
     if(variant != nullptr) {
-        QV4::ExecutionEngine* engine = QJSValuePrivate::engine(&_jsValue);
-        value = variant->toQJSValue(engine->jsEngine());
+        value = variant->toQJSValue(_jsValue.engine());
     }
     _jsValue.setProperty(propertyName, value);
+}
+
+void NetJSValue::setItemAtIndex(quint32 arrayIndex, const QSharedPointer<NetVariant>& variant)
+{
+    QJSValue value = QJSValue::NullValue;
+    if(variant != nullptr) {
+        value = variant->toQJSValue(_jsValue.engine());
+    }
+    _jsValue.setProperty(arrayIndex, value);
 }
 
 extern "C" {
@@ -65,8 +82,22 @@ Q_DECL_EXPORT void net_js_value_destroy(NetJSValueContainer* jsValueContainer) {
     delete jsValueContainer;
 }
 
-Q_DECL_EXPORT bool net_js_value_isCallable(NetJSValueContainer* jsValueContainer) {
-    return jsValueContainer->jsValue->isCallable();
+Q_DECL_EXPORT uchar net_js_value_isCallable(NetJSValueContainer* jsValueContainer) {
+    auto result = jsValueContainer->jsValue->isCallable();
+    if (result) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+Q_DECL_EXPORT uchar net_js_value_isArray(NetJSValueContainer* jsValueContainer) {
+    auto result = jsValueContainer->jsValue->isArray();
+    if (result) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValueContainer, NetVariantListContainer* parametersContainer) {
@@ -82,7 +113,15 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValu
 }
 
 Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName) {
-    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString::fromUtf16((const char16_t*)propertyName));
+    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString::fromUtf16(static_cast<const char16_t*>(propertyName)));
+    if(result == nullptr) {
+        return nullptr;
+    }
+    return new NetVariantContainer{result};
+}
+
+Q_DECL_EXPORT NetVariantContainer* net_js_value_getItemAtIndex(NetJSValueContainer* jsValueContainer, quint32 arrayIndex) {
+    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getItemAtIndex(arrayIndex);
     if(result == nullptr) {
         return nullptr;
     }
@@ -94,7 +133,15 @@ Q_DECL_EXPORT void net_js_value_setProperty(NetJSValueContainer* jsValueContaine
     if(valueContainer != nullptr) {
         value = valueContainer->variant;
     }
-    jsValueContainer->jsValue->setProperty(QString::fromUtf16((const char16_t*)propertyName), value);
+    jsValueContainer->jsValue->setProperty(QString::fromUtf16(static_cast<const char16_t*>(propertyName)), value);
+}
+
+Q_DECL_EXPORT void net_js_value_setItemAtIndex(NetJSValueContainer* jsValueContainer, quint32 arrayIndex, NetVariantContainer* valueContainer) {
+    QSharedPointer<NetVariant> value;
+    if(valueContainer != nullptr) {
+        value = valueContainer->variant;
+    }
+    jsValueContainer->jsValue->setItemAtIndex(arrayIndex, value);
 }
 
 }

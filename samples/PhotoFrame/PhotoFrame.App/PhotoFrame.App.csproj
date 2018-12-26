@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Qml.Net" Version="0.1.4" />
-    <PackageReference Include="Qml.Net.LinuxBinaries" Version="0.1.4" />
-    <PackageReference Include="Qml.Net.WindowsBinaries" Version="0.1.4" />
-    <PackageReference Include="Qml.Net.OSXBinaries" Version="0.1.4" />
+    <PackageReference Include="Qml.Net" Version="0.6.2" />
+    <PackageReference Include="Qml.Net.LinuxBinaries" Version="0.6.2" />
+    <PackageReference Include="Qml.Net.WindowsBinaries" Version="0.6.2" />
+    <PackageReference Include="Qml.Net.OSXBinaries" Version="0.6.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PhotoFrame.Logic\PhotoFrame.Logic.csproj" />

@@ -1,20 +1,31 @@
 ﻿using System.Runtime.InteropServices;
-using AdvancedDLSupport;
 using Qml.Net.Internal;
 
 namespace Qml.Net
 {
     public class QQuickStyle
     {
+        public static void SetFallbackStyle(string style)
+        {
+            Interop.QQuickStyle.SetFallbackStyle(style);
+        }
+
         public static void SetStyle(string style)
         {
             Interop.QQuickStyle.SetStyle(style);
         }
     }
-    
-    internal interface IQQuickStyleInterop
+
+    internal class QQuickStyleInterop
     {
+        [NativeSymbol(Entrypoint = "qquickstyle_setFallbackStyle")]
+        public SetFallbackStyleDel SetFallbackStyle { get; set; }
+
+        public delegate void SetFallbackStyleDel([MarshalAs(UnmanagedType.LPWStr)]string style);
+
         [NativeSymbol(Entrypoint = "qquickstyle_setStyle")]
-        void SetStyle([MarshalAs(UnmanagedType.LPWStr), CallerFree]string style);
+        public SetStyleDel SetStyle { get; set; }
+
+        public delegate void SetStyleDel([MarshalAs(UnmanagedType.LPWStr)]string style);
     }
 }

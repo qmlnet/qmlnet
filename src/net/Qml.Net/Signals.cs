@@ -23,17 +23,17 @@ namespace Qml.Net
             }
 
             var signals = instance.GetAttachedDelegates(signalName);
-            
+
             if (signals == null || signals.Count <= 0)
             {
                 return false;
             }
-            
+
             foreach (var del in signals)
             {
                 del.DynamicInvoke(args);
             }
-            
+
             return true;
         }
 

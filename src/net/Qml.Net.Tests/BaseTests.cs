@@ -11,7 +11,7 @@ namespace Qml.Net.Tests
         {
             Monitor.Enter(LockObject);
         }
-        
+
         public virtual void Dispose()
         {
             Monitor.Exit(LockObject);
