@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dotnet: 2.1.302
+dotnet: 2.1.502
 matrix:
   include:
     - name: "Linux Qt 5.12.0"
@@ -17,7 +17,5 @@ cache:
 if: tag IS blank
 git:
   depth: false
-services:
-  - docker
 script:
   - ./build/travis.sh
