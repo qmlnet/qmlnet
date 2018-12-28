@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Qml.Net.Internal;
@@ -64,6 +65,15 @@ namespace Qml.Net
                 signalName = char.ToLower(signalName[0]) + signalName.Substring(1);
             }
             return ActivateSignal(instance, signalName);
+        }
+
+        public static bool SetProperty<T>(this object instance, ref T storage, T value, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value))
+                return false;
+            storage = value;
+            instance.ActivateNotifySignal(propertyName);
+            return true;
         }
 
         public static void AttachToSignal(this object instance, string signalName, System.Delegate del)
