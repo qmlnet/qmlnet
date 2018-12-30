@@ -28,7 +28,14 @@ namespace Qml.Net.Extensions
             for (var i = 0; i < length; i++)
             {
                 var item = value.GetItemAtIndex(i);
-                list.Add((T)destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, item));
+                if (item is T casted)
+                {
+                    list.Add(casted);
+                }
+                else
+                {
+                    list.Add((T) destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, item));
+                }
             }
 
             return list;
