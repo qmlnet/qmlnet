@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QJSEngine>
+#include <QmlNet/qml/QQmlApplicationEngine.h>
 
 namespace
 {
@@ -238,18 +239,18 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
     return result;
 }
 
-QJSValue NetVariant::toQJSValue(QJSEngine* jsEngine) const
+QJSValue NetVariant::toQJSValue() const
 {
     switch(getVariantType()) {
     case NetVariantTypeEnum_Object: {
         NetValue* netValue = NetValue::forInstance(getNetReference());
-        return jsEngine->newQObject(netValue);
+        return sharedQmlEngine()->newQObject(netValue);
     }
     case NetVariantTypeEnum_JSValue: {
         return getJsValue()->getJsValue();
     }
     default: {
-        return jsEngine->toScriptValue<QVariant>(toQVariant());
+        return sharedQmlEngine()->toScriptValue<QVariant>(toQVariant());
     }
     }
 }
