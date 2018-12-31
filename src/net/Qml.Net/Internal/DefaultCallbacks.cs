@@ -29,6 +29,12 @@ namespace Qml.Net.Internal
                     throw new InvalidOperationException();
                 }
 
+                var baseType = typeInfo.BaseType;
+                if (baseType != null)
+                {
+                    type.BaseType = baseType.AssemblyQualifiedName;
+                }
+                
                 type.ClassName = typeInfo.Name;
 
                 type.PrefVariantType = GetPrefVariantType(typeInfo);

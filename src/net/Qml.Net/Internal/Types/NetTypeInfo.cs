@@ -17,6 +17,12 @@ namespace Qml.Net.Internal.Types
 
         public string FullTypeName => Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(Handle));
 
+        public string BaseType
+        {
+            get => Utilities.ContainerToString(Interop.NetTypeInfo.GetBaseType(Handle));
+            set => Interop.NetTypeInfo.SetBaseType(Handle, value);
+        }
+        
         public string ClassName
         {
             get => Utilities.ContainerToString(Interop.NetTypeInfo.GetClassName(Handle));
@@ -133,6 +139,16 @@ namespace Qml.Net.Internal.Types
 
         public delegate IntPtr GetFullTypeNameDel(IntPtr netTypeInfo);
 
+        [NativeSymbol(Entrypoint = "type_info_getBaseType")]
+        public GetBaseTypeDel GetBaseType { get; set; }
+        
+        public delegate IntPtr GetBaseTypeDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_setBaseType")]
+        public SetBaseTypeDel SetBaseType { get; set; }
+        
+        public delegate void SetBaseTypeDel(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string baseType);
+        
         [NativeSymbol(Entrypoint = "type_info_setClassName")]
         public SetClassNameDel SetClassName { get; set; }
 

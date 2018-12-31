@@ -28,6 +28,16 @@ QString NetTypeInfo::getFullTypeName() {
     return _fullTypeName;
 }
 
+QString NetTypeInfo::getBaseType() const
+{
+    return _baseType;
+}
+
+void NetTypeInfo::setBaseType(const QString& baseType)
+{
+    _baseType = baseType;
+}
+
 QString NetTypeInfo::getClassName() {
     return _className;
 }
@@ -188,6 +198,21 @@ Q_DECL_EXPORT void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
 Q_DECL_EXPORT QmlNetStringContainer* type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {
     QString result = netTypeInfo->netTypeInfo->getFullTypeName();
     return createString(result);
+}
+
+Q_DECL_EXPORT QmlNetStringContainer* type_info_getBaseType(NetTypeInfoContainer* netTypeInfo)
+{
+    auto result = netTypeInfo->netTypeInfo->getBaseType();
+    return createString(result);
+}
+
+Q_DECL_EXPORT void type_info_setBaseType(NetTypeInfoContainer* netTypeInfo, LPWCSTR baseType)
+{
+    if(baseType == nullptr) {
+        netTypeInfo->netTypeInfo->setBaseType(QString());
+    } else {
+        netTypeInfo->netTypeInfo->setBaseType(QString::fromUtf16(baseType));
+    }
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* type_info_getClassName(NetTypeInfoContainer* netTypeInfo) {

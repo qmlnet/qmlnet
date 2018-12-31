@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using Qml.Net.Internal.Types;
@@ -297,6 +297,25 @@ namespace Qml.Net.Tests.Types
                     property.ReturnType.IsArray.Should().BeFalse();
                 }
             }
+        }
+
+        public class TestType15
+        {
+        }
+
+        public class TestType16 : TestType15
+        {
+        }
+
+        [Fact]
+        public void Can_detect_base_class()
+        {
+            var type1 = NetTypeManager.GetTypeInfo<TestType15>();
+            type1.BaseType.Should().StartWith("System.Object, ");
+            var type2 = NetTypeManager.GetTypeInfo<TestType16>();
+            type2.BaseType.Should().StartWith("Qml.Net.Tests.Types.NetTypeManagerTests+TestType15, ");
+            var type3 = NetTypeManager.GetTypeInfo<object>();
+            type3.BaseType.Should().BeNull();
         }
     }
 }

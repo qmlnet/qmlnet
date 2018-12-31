@@ -19,6 +19,9 @@ public:
 
     QString getFullTypeName();
 
+    QString getBaseType() const;
+    void setBaseType(const QString& baseType);
+
     QString getClassName();
     void setClassName(QString className);
 
@@ -59,6 +62,7 @@ public:
 
 private:
     QString _fullTypeName;
+    QString _baseType;
     QString _className;
     NetVariantTypeEnum _variantType;
     bool _isArray;
