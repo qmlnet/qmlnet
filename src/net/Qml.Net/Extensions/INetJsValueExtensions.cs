@@ -34,7 +34,7 @@ namespace Qml.Net.Extensions
                 }
                 else
                 {
-                    list.Add((T) destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, item));
+                    list.Add((T)destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, item));
                 }
             }
 
