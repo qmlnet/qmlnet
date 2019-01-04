@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -34,7 +36,7 @@ namespace Qml.Net.Internal
                 {
                     type.BaseType = baseType.AssemblyQualifiedName;
                 }
-                
+
                 type.ClassName = typeInfo.Name;
 
                 type.PrefVariantType = GetPrefVariantType(typeInfo);
@@ -257,13 +259,16 @@ namespace Qml.Net.Internal
 
                 if (indexParameter != null)
                 {
+                    // TODO: Type coercion?
                     object indexParameterValue = null;
                     Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
                     propertInfo.SetValue(o, newValue, new[] { indexParameterValue });
                 }
                 else
                 {
-                    propertInfo.SetValue(o, newValue);
+                    var propertyType = propertInfo.PropertyType;
+                    var underlyingType = Nullable.GetUnderlyingType(propertyType);
+                    propertInfo.SetValue(o, Converter.To(newValue, underlyingType ?? propertyType));
                 }
             }
         }

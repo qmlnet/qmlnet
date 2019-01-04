@@ -65,10 +65,9 @@ namespace Qml.Net.Internal
                 {
                     destination.Instance = NetReference.CreateForObject(source);
                 }
-                
             }
         }
-        
+
         public static void PackValue(object source, NetVariant destination)
         {
             if (source == null)

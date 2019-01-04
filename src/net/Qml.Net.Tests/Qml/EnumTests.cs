@@ -14,14 +14,13 @@ namespace Qml.Net.Tests.Qml
                 Value2,
                 Value3
             }
-            
+
             public virtual TestEnum Value { get; set; }
 
             public virtual TestEnum? ValueNullable { get; set; }
 
             public virtual void Test(string value)
             {
-                
             }
         }
 
@@ -53,7 +52,7 @@ namespace Qml.Net.Tests.Qml
 
             Mock.VerifySet(x => x.Value = EnumTestsObject.TestEnum.Value3, Times.Once);
         }
-        
+
         [Fact]
         public void Can_use_nullable_enum()
         {
@@ -68,7 +67,7 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.ValueNullable, Times.Once);
             Mock.VerifySet(x => x.ValueNullable = EnumTestsObject.TestEnum.Value2, Times.Once);
         }
-        
+
         [Fact]
         public void Can_use_nullable_enum_with_null()
         {
@@ -83,13 +82,13 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.ValueNullable, Times.Once);
             Mock.VerifySet(x => x.ValueNullable = null, Times.Once);
         }
-        
+
         [Fact]
         public void Enum_is_int_type_is_js()
         {
             Mock.Setup(x => x.Value).Returns(EnumTestsObject.TestEnum.Value1);
             Mock.Setup(x => x.Test(It.IsAny<string>()));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -99,13 +98,13 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.Value, Times.Once);
             Mock.Verify(x => x.Test(It.Is<string>(value => value == "number")), Times.Once);
         }
-        
+
         [Fact]
         public void Nullable_enum_is_int_type_is_js()
         {
             Mock.Setup(x => x.ValueNullable).Returns(EnumTestsObject.TestEnum.Value1);
             Mock.Setup(x => x.Test(It.IsAny<string>()));
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -115,13 +114,13 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifyGet(x => x.ValueNullable, Times.Once);
             Mock.Verify(x => x.Test(It.Is<string>(value => value == "number")), Times.Once);
         }
-        
+
         [Fact]
         public void Nullable_enum_is_null_type_is_js_when_null()
         {
             Mock.Setup(x => x.ValueNullable).Returns((EnumTestsObject.TestEnum?)null);
             Mock.Setup(x => x.Test(It.IsAny<string>()));
-            
+
             RunQmlTest(
                 "test",
                 @"
