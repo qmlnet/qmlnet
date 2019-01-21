@@ -121,6 +121,15 @@ namespace Qml.Net
             }
         }
 
+        public static void AwaitTask(Task task, QEventLoop.ProcessEventsFlag flags, TimeSpan? timeout = null)
+        {
+            while (!task.IsCompleted)
+            {
+                ProcessEvents(flags, timeout);
+            }
+            task.GetAwaiter().GetResult();
+        }
+
         private void AboutToQuitHandler()
         {
             List<AboutToQuitEventHandler> handlers;
