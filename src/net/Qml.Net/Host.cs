@@ -94,7 +94,8 @@ namespace Qml.Net
             }
         }
 
-        public static Task<int> RunAsync(string[] args,
+        public static Task<int> RunAsync(
+            string[] args,
             Func<string[], QCoreApplication, QQmlApplicationEngine, NetRunCallbackDelegate, Task<int>> action)
         {
             return Task.FromResult(Run(args, (argsInner, application, engine, callback) =>
