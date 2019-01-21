@@ -22,7 +22,7 @@ namespace Qml.Net.Tests.Qml
         {
             _coreApplication.Dispatch(() =>
             {
-                _coreApplication.Exit();
+                QCoreApplication.Exit();
             });
         }
     }
@@ -68,7 +68,7 @@ namespace Qml.Net.Tests.Qml
                 Thread.Sleep(timeoutMs);
                 if (!ct.IsCancellationRequested)
                 {
-                    _coreApplication.Exit(-1);
+                    QCoreApplication.Exit(-1);
                 }
             }, ct);
 

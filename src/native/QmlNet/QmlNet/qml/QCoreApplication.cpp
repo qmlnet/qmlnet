@@ -2,14 +2,49 @@
 #include <QmlNet/qml/NetVariantList.h>
 #include <QGuiApplication>
 #include <QApplication>
+#include <QQmlApplicationEngine>
 
 GuiThreadContextTriggerCallback::GuiThreadContextTriggerCallback() :
-    callback(nullptr) {
+    _callbacks(nullptr)
+{
 }
 
-void GuiThreadContextTriggerCallback::trigger() {
-    if (callback) {
-       callback();
+GuiThreadContextTriggerCallback::~GuiThreadContextTriggerCallback()
+{
+    if (_callbacks) {
+        delete _callbacks;
+    }
+}
+
+void GuiThreadContextTriggerCallback::trigger()
+{
+    if (!_callbacks) {
+        qCritical("callbacks not registered");
+        return;
+    }
+    _callbacks->guiThreadTrigger();
+}
+
+void GuiThreadContextTriggerCallback::aboutToQuit()
+{
+    qDebug("raising about to quit...");
+    if (!_callbacks) {
+        qCritical("callbacks not registered");
+        return;
+    }
+    _callbacks->aboutToQuit();
+    qDebug("raised about to quit...");
+}
+
+void GuiThreadContextTriggerCallback::setCallbacks(QCoreAppCallbacks* callbacks)
+{
+    if (_callbacks) {
+        delete _callbacks;
+        _callbacks = nullptr;
+    }
+    if (callbacks) {
+        _callbacks = new QCoreAppCallbacks();
+        *_callbacks = *callbacks;
     }
 }
 
@@ -22,6 +57,7 @@ Q_DECL_EXPORT QGuiApplicationContainer* qapp_fromExisting(QCoreApplication* rawP
     result->app = rawPointer;
 
     result->callback = QSharedPointer<GuiThreadContextTriggerCallback>(new GuiThreadContextTriggerCallback());
+    QObject::connect(result->app, SIGNAL(aboutToQuit()), result->callback.data(), SLOT(aboutToQuit()));
 
     return result;
 }
@@ -65,6 +101,7 @@ Q_DECL_EXPORT QGuiApplicationContainer* qapp_create(NetVariantListContainer* arg
     }
 
     result->callback = QSharedPointer<GuiThreadContextTriggerCallback>(new GuiThreadContextTriggerCallback());
+    QObject::connect(result->app, SIGNAL(aboutToQuit()), result->callback.data(), SLOT(aboutToQuit()));
 
     return result;
 }
@@ -104,14 +141,24 @@ Q_DECL_EXPORT int qapp_getType(QGuiApplicationContainer* container, QCoreApplica
     return 0;
 }
 
+Q_DECL_EXPORT void qapp_processEvents(QEventLoop::ProcessEventsFlags flags)
+{
+    QCoreApplication::processEvents(flags);
+}
+
+Q_DECL_EXPORT void qapp_processEventsWithTimeout(QEventLoop::ProcessEventsFlags flags, int timeout)
+{
+    QCoreApplication::processEvents(flags, timeout);
+}
+
 Q_DECL_EXPORT int qapp_exec()
 {
     return QGuiApplication::exec();
 }
 
-Q_DECL_EXPORT void qapp_addTriggerCallback(QGuiApplicationContainer* container, guiThreadTriggerCb callback)
+Q_DECL_EXPORT void qapp_addCallbacks(QGuiApplicationContainer* container, QCoreAppCallbacks* callbacks)
 {
-    container->callback->callback = callback;
+    container->callback->setCallbacks(callbacks);
 }
 
 Q_DECL_EXPORT void qapp_requestTrigger(QGuiApplicationContainer* container)

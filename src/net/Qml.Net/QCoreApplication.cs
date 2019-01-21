@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -11,8 +12,10 @@ namespace Qml.Net
     public class QCoreApplication : BaseDisposable
     {
         private readonly Queue<Action> _actionQueue = new Queue<Action>();
-        private readonly SynchronizationContext _oldSynchronizationContext;
+        private SynchronizationContext _oldSynchronizationContext;
         private GCHandle _triggerHandle;
+        private GCHandle _aboutToQuitHandle;
+        private List<AboutToQuitEventHandler> _aboutToQuitEventHandlers = new List<AboutToQuitEventHandler>();
 
         protected QCoreApplication(IntPtr handle, bool ownsHandle)
             : base(handle, ownsHandle)
@@ -32,22 +35,29 @@ namespace Qml.Net
         internal QCoreApplication(int type, string[] args, int flags)
             : base(Create(type, args?.ToList(), flags))
         {
-            TriggerDelegate triggerDelegate = Trigger;
-            _triggerHandle = GCHandle.Alloc(triggerDelegate);
-
-            Interop.QCoreApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
-
-            _oldSynchronizationContext = SynchronizationContext.Current;
-            SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
+            Init();
         }
 
         internal QCoreApplication(IntPtr existingApp)
             : base(CreateFromExisting(existingApp))
         {
+            Init();
+        }
+
+        private void Init()
+        {
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
 
-            Interop.QCoreApplication.AddTriggerCallback(Handle, Marshal.GetFunctionPointerForDelegate(triggerDelegate));
+            AboutToQuitDelegate aboutToQuitDelegate = AboutToQuitHandler;
+            _aboutToQuitHandle = GCHandle.Alloc(aboutToQuitDelegate);
+
+            var callbacks = new QCoreAppCallbacks
+            {
+                GuiThreadTrigger = Marshal.GetFunctionPointerForDelegate(triggerDelegate),
+                AboutToQuitCb = Marshal.GetFunctionPointerForDelegate(aboutToQuitDelegate)
+            };
+            Interop.QCoreApplication.AddCallbacks(Handle, ref callbacks);
 
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
@@ -67,12 +77,12 @@ namespace Qml.Net
             RequestTrigger();
         }
 
-        public void Exit(int returnCode = 0)
+        public static void Exit(int returnCode = 0)
         {
             Interop.QCoreApplication.Exit(returnCode);
         }
 
-        public void Quit()
+        public static void Quit()
         {
             Exit();
         }
@@ -94,11 +104,97 @@ namespace Qml.Net
             action?.Invoke();
         }
 
+        public static void ProcessEvents(QEventLoop.ProcessEventsFlag flags, TimeSpan? timeout = null)
+        {
+            if (timeout == null)
+            {
+                Interop.QCoreApplication.ProcessEvents((int)flags);
+            }
+            else
+            {
+                Interop.QCoreApplication.ProcessEventsWithTimeout((int)flags, (int)timeout.Value.TotalMilliseconds);
+            }
+        }
+
+        private void AboutToQuitHandler()
+        {
+            List<AboutToQuitEventHandler> handlers;
+
+            lock (_aboutToQuitEventHandlers)
+            {
+                handlers = _aboutToQuitEventHandlers.ToList();
+            }
+
+            if (handlers.Count == 0)
+            {
+                return;
+            }
+
+            var tasks = new List<Task>();
+
+            foreach (var handler in handlers)
+            {
+                tasks.Add(handler.Invoke());
+            }
+
+            // Now, let's wait for all the tasks to completed.
+            var exceptions = new List<Exception>();
+
+            var completed = false;
+            Task.Run(() =>
+            {
+                foreach (var task in tasks)
+                {
+                    try
+                    {
+                        task.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        exceptions.Add(ex);
+                    }
+                }
+                completed = true;
+            });
+
+            while (!completed)
+            {
+                ProcessEvents(QEventLoop.ProcessEventsFlag.EventLoopExec | QEventLoop.ProcessEventsFlag.WaitForMoreEvents);
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException("An exception(s) was thrown while running quit tasks.", exceptions);
+            }
+        }
+
+        public delegate Task AboutToQuitEventHandler();
+
+        public event AboutToQuitEventHandler AboutToQuit
+        {
+            add
+            {
+                lock (_aboutToQuitEventHandlers)
+                {
+                    _aboutToQuitEventHandlers.Add(value);
+                }
+            }
+
+            remove
+            {
+                lock (_aboutToQuitEventHandlers)
+                {
+                    _aboutToQuitEventHandlers.Remove(value);
+                }
+            }
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
             Interop.QCoreApplication.Destroy(ptr);
             _triggerHandle.Free();
+            _aboutToQuitHandle.Free();
         }
 
         private static IntPtr CreateFromExisting(IntPtr app)
@@ -136,6 +232,9 @@ namespace Qml.Net
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void TriggerDelegate();
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void AboutToQuitDelegate();
+
         private class QtSynchronizationContext : SynchronizationContext
         {
             readonly QCoreApplication _app;
@@ -150,6 +249,13 @@ namespace Qml.Net
                 _app.Dispatch(() => d.Invoke(state));
             }
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct QCoreAppCallbacks
+    {
+        public IntPtr GuiThreadTrigger;
+        public IntPtr AboutToQuitCb;
     }
 
     internal class QCoreApplicationInterop
@@ -167,22 +273,32 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qapp_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        public delegate void DestroyDel(IntPtr container);
+
         [NativeSymbol(Entrypoint = "qapp_getType")]
         public GetAppTypeDel GetAppType { get; set; }
 
         public delegate int GetAppTypeDel(IntPtr container, IntPtr rawPointer);
 
-        public delegate void DestroyDel(IntPtr container);
+        [NativeSymbol(Entrypoint = "qapp_processEvents")]
+        public ProcessEventsDel ProcessEvents { get; set; }
+
+        public delegate void ProcessEventsDel(int flags);
+
+        [NativeSymbol(Entrypoint = "qapp_processEventsWithTimeout")]
+        public ProcessEventsWithTimeoutDel ProcessEventsWithTimeout { get; set; }
+
+        public delegate void ProcessEventsWithTimeoutDel(int flags, int timeout);
 
         [NativeSymbol(Entrypoint = "qapp_exec")]
         public ExecDel Exec { get; set; }
 
         public delegate int ExecDel();
 
-        [NativeSymbol(Entrypoint = "qapp_addTriggerCallback")]
-        public AddTriggerCallbackDel AddTriggerCallback { get; set; }
+        [NativeSymbol(Entrypoint = "qapp_addCallbacks")]
+        public AddCallbacksDel AddCallbacks { get; set; }
 
-        public delegate void AddTriggerCallbackDel(IntPtr app, IntPtr callback);
+        public delegate void AddCallbacksDel(IntPtr app, ref QCoreAppCallbacks callbacks);
 
         [NativeSymbol(Entrypoint = "qapp_requestTrigger")]
         public RequestTriggerDel RequestTrigger { get; set; }

@@ -81,7 +81,7 @@ namespace Qml.Net.Benchmarks
 
             public void TestFinished()
             {
-                _guiApplication.Exit();
+                QCoreApplication.Exit();
             }
 
             public class InnerType
