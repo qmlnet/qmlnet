@@ -1,5 +1,4 @@
 HEADERS += \
-    $$PWD/QGuiApplication.h \
     $$PWD/QQmlApplicationEngine.h \
     $$PWD/NetVariant.h \
     $$PWD/NetValue.h \
@@ -14,10 +13,10 @@ HEADERS += \
     $$PWD/NetValueMetaObjectPacker.h \
     $$PWD/QCommon.h \
     $$PWD/NetListModel.h \
-    $$PWD/QtWebEngine.h
+    $$PWD/QtWebEngine.h \
+    $$PWD/QCoreApplication.h
 
 SOURCES += \
-    $$PWD/QGuiApplication.cpp \
     $$PWD/QQmlApplicationEngine.cpp \
     $$PWD/NetVariant.cpp \
     $$PWD/NetValue.cpp \
@@ -32,4 +31,5 @@ SOURCES += \
     $$PWD/NetValueMetaObjectPacker.cpp \
     $$PWD/QCommon.cpp \
     $$PWD/NetListModel.cpp \
-    $$PWD/QtWebEngine.cpp
+    $$PWD/QtWebEngine.cpp \
+    $$PWD/QCoreApplication.cpp

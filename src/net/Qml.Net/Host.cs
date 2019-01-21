@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using NetNativeLibLoader.Loader;
 using NetNativeLibLoader.PathResolver;
+using Qml.Net.Internal;
 
 namespace Qml.Net
 {
@@ -47,7 +48,7 @@ namespace Qml.Net
 
         public delegate int NetRunCallbackDelegate();
 
-        public static int Run(string[] args, Func<string[], QGuiApplication, QQmlApplicationEngine, NetRunCallbackDelegate, int> action)
+        public static int Run(string[] args, Func<string[], QCoreApplication, QQmlApplicationEngine, NetRunCallbackDelegate, int> action)
         {
             if (args.Length < 4)
             {
@@ -60,7 +61,23 @@ namespace Qml.Net
             var exportedSymbolPtr = new IntPtr((long)ulong.Parse(args[3]));
             GetExportedSymbol = Marshal.GetDelegateForFunctionPointer<GetExportedSymbolDelegate>(exportedSymbolPtr);
 
-            using (var app = new QGuiApplication(appPtr))
+            QCoreApplication app = null;
+            switch (Interop.QCoreApplication.GetAppType(IntPtr.Zero, appPtr))
+            {
+                case 0:
+                    app = new QCoreApplication(appPtr);
+                    break;
+                case 1:
+                    app = new QGuiApplication(appPtr);
+                    break;
+                case 2:
+                    app = new QApplication(appPtr);
+                    break;
+                default:
+                    throw new Exception("Invalid app type");
+            }
+
+            using (app)
             {
                 using (var engine = new QQmlApplicationEngine(enginePtr))
                 {

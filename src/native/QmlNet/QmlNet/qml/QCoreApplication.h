@@ -20,8 +20,8 @@ struct QGuiApplicationContainer {
     int argCount;
     QList<QString> args;
     std::vector<char*> argsPointer;
-    QGuiApplication* guiApp;
-    bool ownsGuiApp;
+    QCoreApplication* app;
+    bool ownsApp;
     QSharedPointer<GuiThreadContextTriggerCallback> callback;
 };
 

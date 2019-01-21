@@ -99,7 +99,7 @@ namespace Qml.Net.Internal
             NetMethodInfo = LoadInteropType<NetMethodInfoInterop>(library, loader);
             NetPropertyInfo = LoadInteropType<NetPropertyInfoInterop>(library, loader);
             NetTypeManager = LoadInteropType<NetTypeManagerInterop>(library, loader);
-            QGuiApplication = LoadInteropType<QGuiApplicationInterop>(library, loader);
+            QCoreApplication = LoadInteropType<QCoreApplicationInterop>(library, loader);
             QQmlApplicationEngine = LoadInteropType<QQmlApplicationEngineInterop>(library, loader);
             NetVariant = LoadInteropType<NetVariantInterop>(library, loader);
             NetReference = LoadInteropType<NetReferenceInterop>(library, loader);
@@ -136,7 +136,7 @@ namespace Qml.Net.Internal
 
         public static NetTypeManagerInterop NetTypeManager { get; }
 
-        public static QGuiApplicationInterop QGuiApplication { get; }
+        public static QCoreApplicationInterop QCoreApplication { get; }
 
         public static QQmlApplicationEngineInterop QQmlApplicationEngine { get; }
 
