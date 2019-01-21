@@ -94,15 +94,33 @@ namespace Qml.Net
             }
         }
 
-        public static Task<int> RunAsync(string[] _,
+        public static Task<int> RunAsync(string[] args,
             Func<string[], QCoreApplication, QQmlApplicationEngine, NetRunCallbackDelegate, Task<int>> action)
         {
-            var exitCode = Run(_, (args, application, engine, callback) =>
+            return Task.FromResult(Run(args, (argsInner, application, engine, callback) =>
             {
-                var result = action(args, application, engine, callback);
-                return result.GetAwaiter().GetResult();
-            });
-            return Task.FromResult(exitCode);
+                var result = action(argsInner, application, engine, callback);
+                bool completed = false;
+                var task = Task.Run(() =>
+                {
+                    var exitCode = -1;
+                    try
+                    {
+                        exitCode = result.GetAwaiter().GetResult();
+                    }
+                    finally
+                    {
+                        completed = true;
+                    }
+                    return exitCode;
+                });
+                while (!completed)
+                {
+                    QCoreApplication.ProcessEvents(QEventLoop.ProcessEventsFlag.EventLoopExec |
+                                                   QEventLoop.ProcessEventsFlag.WaitForMoreEvents);
+                }
+                return task.GetAwaiter().GetResult();
+            }));
         }
     }
 }

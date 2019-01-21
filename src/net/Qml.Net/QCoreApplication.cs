@@ -16,6 +16,7 @@ namespace Qml.Net
         private GCHandle _triggerHandle;
         private GCHandle _aboutToQuitHandle;
         private List<AboutToQuitEventHandler> _aboutToQuitEventHandlers = new List<AboutToQuitEventHandler>();
+        private int _threadId;
 
         protected QCoreApplication(IntPtr handle, bool ownsHandle)
             : base(handle, ownsHandle)
@@ -46,6 +47,8 @@ namespace Qml.Net
 
         private void Init()
         {
+            _threadId = Environment.CurrentManagedThreadId;
+
             TriggerDelegate triggerDelegate = Trigger;
             _triggerHandle = GCHandle.Alloc(triggerDelegate);
 
@@ -62,6 +65,8 @@ namespace Qml.Net
             _oldSynchronizationContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
+
+        public bool IsMainThread => Environment.CurrentManagedThreadId == _threadId;
 
         public int Exec()
         {
