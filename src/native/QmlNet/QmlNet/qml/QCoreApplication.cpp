@@ -27,13 +27,11 @@ void GuiThreadContextTriggerCallback::trigger()
 
 void GuiThreadContextTriggerCallback::aboutToQuit()
 {
-    qDebug("raising about to quit...");
     if (!_callbacks) {
         qCritical("callbacks not registered");
         return;
     }
     _callbacks->aboutToQuit();
-    qDebug("raised about to quit...");
 }
 
 void GuiThreadContextTriggerCallback::setCallbacks(QCoreAppCallbacks* callbacks)
