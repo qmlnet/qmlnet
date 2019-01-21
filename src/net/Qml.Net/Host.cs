@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using NetNativeLibLoader.Loader;
 using NetNativeLibLoader.PathResolver;
 using Qml.Net.Internal;
@@ -91,6 +92,17 @@ namespace Qml.Net
                     return action(args.Skip(2).ToArray(), app, engine, runCallback);
                 }
             }
+        }
+
+        public static Task<int> RunAsync(string[] _,
+            Func<string[], QCoreApplication, QQmlApplicationEngine, NetRunCallbackDelegate, Task<int>> action)
+        {
+            var exitCode = Run(_, (args, application, engine, callback) =>
+            {
+                var result = action(args, application, engine, callback);
+                return result.GetAwaiter().GetResult();
+            });
+            return Task.FromResult(exitCode);
         }
     }
 }
