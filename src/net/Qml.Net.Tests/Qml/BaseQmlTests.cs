@@ -11,20 +11,12 @@ namespace Qml.Net.Tests.Qml
 {
     public class TestContext
     {
-        private QGuiApplication _coreApplication { get; set; }
-
-        public TestContext(QGuiApplication application)
-        {
-            _coreApplication = application;
-        }
-
         public void Quit()
         {
-            _coreApplication.Dispatch(() =>
-            {
-                QCoreApplication.Exit();
-            });
+            Quited = true;
         }
+
+        public bool Quited { get; set; }
     }
 
     public abstract class AbstractBaseQmlTests<TTypeToRegister> : BaseTests
@@ -43,7 +35,7 @@ namespace Qml.Net.Tests.Qml
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
-            TypeCreator.SetInstance(typeof(TestContext), new TestContext(_coreApplication));
+            TypeCreator.SetInstance(typeof(TestContext), new TestContext());
             if (!_testContextRegistered)
             {
                 Net.Qml.RegisterType<TestContext>("testContext");
@@ -58,23 +50,10 @@ namespace Qml.Net.Tests.Qml
             Net.Qml.RegisterType<T>("tests");
         }
 
-        protected int ExecApplicationWithTimeout(int timeoutMs)
+        protected bool ExecApplicationWithTimeout(int timeoutMs)
         {
-            CancellationTokenSource cts = new CancellationTokenSource();
-            CancellationToken ct = cts.Token;
-            Task.Factory.StartNew(
-                () =>
-            {
-                Thread.Sleep(timeoutMs);
-                if (!ct.IsCancellationRequested)
-                {
-                    QCoreApplication.Exit(-1);
-                }
-            }, ct);
-
-            var result = _coreApplication.Exec();
-            cts.Cancel();
-            return result;
+            var testContext = TypeCreator.Create(typeof(TestContext)) as TestContext;
+            return QTest.QWaitFor(() => testContext.Quited, timeoutMs);
         }
 
         protected void RunQmlTest(string instanceId, string componentOnCompletedCode)

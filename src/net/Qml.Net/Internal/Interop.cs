@@ -112,6 +112,7 @@ namespace Qml.Net.Internal
             QtInterop = LoadInteropType<QtInterop>(library, loader);
             Utilities = LoadInteropType<UtilitiesInterop>(library, loader);
             QtWebEngine = LoadInteropType<QtWebEngineInterop>(library, loader);
+            QTest = LoadInteropType<QTestInterop>(library, loader);
 
             if (!string.IsNullOrEmpty(pluginsDirectory))
             {
@@ -163,6 +164,8 @@ namespace Qml.Net.Internal
         public static UtilitiesInterop Utilities { get; }
 
         public static QtWebEngineInterop QtWebEngine { get; }
+        
+        public static QTestInterop QTest { get; }
 
         private static T LoadInteropType<T>(IntPtr library, NetNativeLibLoader.Loader.IPlatformLoader loader)
             where T : new()
