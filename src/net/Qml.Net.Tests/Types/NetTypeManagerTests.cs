@@ -30,6 +30,17 @@ namespace Qml.Net.Tests.Types
             typeInfo.PropertyCount.Should().Be(1);
         }
 
+        [Fact]
+        public void Can_get_parent_type_on_method()
+        {
+            var typeInfo = NetTypeManager.GetTypeInfo<TestType1>();
+            typeInfo.EnsureLoaded();
+
+            var method = typeInfo.GetMethod(0);
+            method.MethodName.Should().Be("TestMethod");
+            method.ParentType.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
+        }
+
         public class TestType2
         {
             public void TestMethod(int parameter1, TestType1 parameter2)

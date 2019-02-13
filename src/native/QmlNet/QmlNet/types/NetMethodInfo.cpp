@@ -31,6 +31,11 @@ NetMethodInfo::NetMethodInfo(QSharedPointer<NetTypeInfo> parentTypeInfo,
 {
 }
 
+QSharedPointer<NetTypeInfo> NetMethodInfo::getParentType()
+{
+    return _parentTypeInfo;
+}
+
 QString NetMethodInfo::getMethodName()
 {
     return _methodName;
@@ -130,6 +135,11 @@ Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* p
 Q_DECL_EXPORT void method_info_destroy(NetMethodInfoContainer* container)
 {
     delete container;
+}
+
+Q_DECL_EXPORT NetTypeInfoContainer* method_info_getParentType(NetMethodInfoContainer* container)
+{
+    return new NetTypeInfoContainer{container->method->getParentType()};
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* method_info_getMethodName(NetMethodInfoContainer* container)

@@ -23,6 +23,8 @@ public:
                   QSharedPointer<NetTypeInfo> returnType,
                   bool isStatic);
 
+    QSharedPointer<NetTypeInfo> getParentType();
+
     QString getMethodName();
 
     QSharedPointer<NetTypeInfo> getReturnType();
