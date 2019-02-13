@@ -26,7 +26,7 @@ namespace Qml.Net.Tests.Types
             typeInfo.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
             typeInfo.ClassName.Should().Be("TestType1");
             typeInfo.PrefVariantType.Should().Be(NetVariantType.Object);
-            typeInfo.MethodCount.Should().Be(3); // the property has a "getter" and "setter" method
+            typeInfo.MethodCount.Should().Be(1);
             typeInfo.PropertyCount.Should().Be(1);
         }
 

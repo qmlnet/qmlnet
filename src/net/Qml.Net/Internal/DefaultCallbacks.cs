@@ -85,6 +85,8 @@ namespace Qml.Net.Internal
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
                     if (Helpers.IsPrimitive(methodInfo.DeclaringType)) continue;
 
+                    if (methodInfo.IsSpecialName) continue; // Ignore the property get/set methods.
+
                     NetTypeInfo returnType = null;
 
                     if (methodInfo.ReturnParameter != null && methodInfo.ReturnParameter.ParameterType != typeof(void))
