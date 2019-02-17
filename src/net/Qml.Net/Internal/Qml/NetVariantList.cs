@@ -42,6 +42,18 @@ namespace Qml.Net.Internal.Qml
         {
             Interop.NetVariantList.Destroy(ptr);
         }
+
+        public static NetVariantList From(params NetVariant[] variants)
+        {
+            var list = new NetVariantList();
+
+            foreach (var variant in variants)
+            {
+                list.Add(variant);
+            }
+
+            return list;
+        }
     }
 
     internal class NetVariantListInterop

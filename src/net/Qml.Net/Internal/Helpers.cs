@@ -63,7 +63,14 @@ namespace Qml.Net.Internal
                 }
                 else
                 {
-                    destination.Instance = NetReference.CreateForObject(source);
+                    if (source == null)
+                    {
+                        destination.Clear();
+                    }
+                    else
+                    {
+                        destination.Instance = NetReference.CreateForObject(source);
+                    }
                 }
             }
         }

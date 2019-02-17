@@ -164,7 +164,7 @@ namespace Qml.Net.Internal
         public static UtilitiesInterop Utilities { get; }
 
         public static QtWebEngineInterop QtWebEngine { get; }
-        
+
         public static QTestInterop QTest { get; }
 
         private static T LoadInteropType<T>(IntPtr library, NetNativeLibLoader.Loader.IPlatformLoader loader)

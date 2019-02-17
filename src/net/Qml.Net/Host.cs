@@ -12,12 +12,6 @@ namespace Qml.Net
     {
         internal class Loader : IPlatformLoader, IPathResolver
         {
-            public T LoadFunction<T>(IntPtr library, string symbolName)
-            {
-                IntPtr symbol = GetExportedSymbol(symbolName);
-                return Marshal.GetDelegateForFunctionPointer<T>(symbol);
-            }
-
             public IntPtr LoadLibrary(string path)
             {
                 return IntPtr.Zero;

@@ -144,6 +144,13 @@ namespace Qml.Net.Internal.Qml
         {
             Interop.NetVariant.Destroy(ptr);
         }
+
+        public static NetVariant From<T>(T value)
+        {
+            var variant = new NetVariant();
+            Helpers.Pack(value, variant, typeof(T));
+            return variant;
+        }
     }
 
     internal class NetVariantInterop
