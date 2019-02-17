@@ -23,6 +23,8 @@ public:
                   QSharedPointer<NetTypeInfo> returnType,
                   bool isStatic);
 
+    int getId();
+
     QSharedPointer<NetTypeInfo> getParentType();
 
     QString getMethodName();
@@ -38,6 +40,7 @@ public:
     QString getSignature();
 
 private:
+    int _id;
     QSharedPointer<NetTypeInfo> _parentTypeInfo;
     QString _methodName;
     QSharedPointer<NetTypeInfo> _returnType;

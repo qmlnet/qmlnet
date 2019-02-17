@@ -44,6 +44,8 @@ namespace Qml.Net.Internal.Types
                 notifySignal?.Handle ?? IntPtr.Zero);
         }
 
+        public int Id => Interop.NetPropertyInfo.GetId(Handle);
+
         public NetTypeInfo ParentType => new NetTypeInfo(Interop.NetPropertyInfo.GetParentType(Handle));
 
         public string Name => Utilities.ContainerToString(Interop.NetPropertyInfo.GetPropertyName(Handle));
@@ -91,6 +93,11 @@ namespace Qml.Net.Internal.Types
         public DestroyDel Destroy { get; set; }
 
         public delegate void DestroyDel(IntPtr property);
+
+        [NativeSymbol(Entrypoint = "property_info_getId")]
+        public GetIdDel GetId { get; set; }
+
+        public delegate int GetIdDel(IntPtr property);
 
         [NativeSymbol(Entrypoint = "property_info_getParentType")]
         public GetParentTypeDel GetParentType { get; set; }

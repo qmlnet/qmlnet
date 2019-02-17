@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Qml.Net.Internal.Types;
 using Xunit;
@@ -338,6 +339,63 @@ namespace Qml.Net.Tests.Types
             type2.BaseType.Should().StartWith("Qml.Net.Tests.Types.NetTypeManagerTests+TestType15, ");
             var type3 = NetTypeManager.GetTypeInfo<object>();
             type3.BaseType.Should().BeNull();
+        }
+
+        public class TestType17
+        {
+            public void Method1()
+            {
+            }
+
+            public void Method2()
+            {
+            }
+        }
+
+        [Fact]
+        public void Can_get_unique_id_for_method()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType17>();
+            type.EnsureLoaded();
+
+            var methods = new List<NetMethodInfo>();
+            for (var x = 0; x < type.LocalMethodCount; x++)
+            {
+                methods.Add(type.GetMethod(x));
+            }
+
+            methods.Select(x => x.Id).Distinct().Count().Should().Be(2);
+        }
+
+        public class TestType18
+        {
+            public bool Prop1 { get; set; }
+
+            public bool Prop2 { get; set; }
+        }
+
+        [Fact]
+        public void Can_get_unique_id_for_property()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType18>();
+            type.EnsureLoaded();
+
+            var properties = new List<NetPropertyInfo>();
+            for (var x = 0; x < type.PropertyCount; x++)
+            {
+                properties.Add(type.GetProperty(x));
+            }
+
+            properties.Select(x => x.Id).Distinct().Count().Should().Be(2);
+        }
+
+        [Fact]
+        public void Can_get_unique_id_for_types()
+        {
+            var type1 = NetTypeManager.GetTypeInfo<TestType16>();
+            var type2 = NetTypeManager.GetTypeInfo<TestType17>();
+
+            type1.Id.Should().NotBe(type2.Id);
         }
     }
 }

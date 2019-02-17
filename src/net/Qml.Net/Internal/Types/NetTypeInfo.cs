@@ -15,6 +15,8 @@ namespace Qml.Net.Internal.Types
         {
         }
 
+        public int Id => Interop.NetTypeInfo.GetId(Handle);
+
         public string FullTypeName => Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(Handle));
 
         public string BaseType
@@ -131,6 +133,11 @@ namespace Qml.Net.Internal.Types
 
         [NativeSymbol(Entrypoint = "type_info_destroy")]
         public DestroyDel Destroy { get; set; }
+
+        public delegate int GetIdDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_getId")]
+        public GetIdDel GetId { get; set; }
 
         public delegate void DestroyDel(IntPtr netTypeInfo);
 

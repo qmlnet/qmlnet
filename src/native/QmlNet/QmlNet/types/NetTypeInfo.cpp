@@ -5,9 +5,13 @@
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNetUtilities.h>
+#include <QMutex>
 #include <utility>
 
 using namespace QmlNet;
+
+static int nextTypeId = 1;
+Q_GLOBAL_STATIC(QMutex, typeIdMutex);
 
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
@@ -17,12 +21,21 @@ NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _isList(false),
     _arrayFacadeLoaded(false),
     _lazyLoaded(false),
-    _isLoading(false) {
-
+    _isLoading(false)
+{
+    typeIdMutex->lock();
+    _id = nextTypeId;
+    nextTypeId++;
+    typeIdMutex->unlock();
 }
 
 
 NetTypeInfo::~NetTypeInfo() = default;
+
+int NetTypeInfo::getId()
+{
+    return _id;
+}
 
 QString NetTypeInfo::getFullTypeName() {
     return _fullTypeName;
@@ -193,6 +206,11 @@ Q_DECL_EXPORT NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
 Q_DECL_EXPORT void type_info_destroy(NetTypeInfoContainer* netTypeInfo) {
     delete netTypeInfo;
     netTypeInfo = nullptr;
+}
+
+Q_DECL_EXPORT int type_info_getId(NetTypeInfoContainer* netTypeInfo)
+{
+    return netTypeInfo->netTypeInfo->getId();
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* type_info_getFullTypeName(NetTypeInfoContainer* netTypeInfo) {

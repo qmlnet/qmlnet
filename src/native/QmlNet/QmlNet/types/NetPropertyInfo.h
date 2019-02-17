@@ -11,6 +11,7 @@ public:
                     bool canRead,
                     bool canWrite,
                     QSharedPointer<NetSignalInfo> notifySignal);
+    int getId();
     QSharedPointer<NetTypeInfo> getParentType();
     QString getPropertyName();
     QSharedPointer<NetTypeInfo> getReturnType();
@@ -19,6 +20,7 @@ public:
     QSharedPointer<NetSignalInfo> getNotifySignal();
     void setNotifySignal(QSharedPointer<NetSignalInfo> signal);
 private:
+    int _id;
     QSharedPointer<NetTypeInfo> _parentType;
     QString _name;
     QSharedPointer<NetTypeInfo> _returnType;

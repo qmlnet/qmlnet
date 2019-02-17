@@ -1,7 +1,11 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNetUtilities.h>
+#include <QMutex>
 #include <utility>
+
+static int nextPropertyId = 1;
+Q_GLOBAL_STATIC(QMutex, propertyIdMutex);
 
 NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
         QString name,
@@ -16,7 +20,15 @@ NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
     _canWrite(canWrite),
     _notifySignal(std::move(notifySignal))
 {
+    propertyIdMutex->lock();
+    _id = nextPropertyId;
+    nextPropertyId++;
+    propertyIdMutex->unlock();
+}
 
+int NetPropertyInfo::getId()
+{
+    return _id;
 }
 
 QSharedPointer<NetTypeInfo> NetPropertyInfo::getParentType()
@@ -79,6 +91,11 @@ Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContaine
 
 Q_DECL_EXPORT void property_info_destroy(NetTypeInfoContainer* container) {
     delete container;
+}
+
+Q_DECL_EXPORT int property_info_getId(NetPropertyInfoContainer* container)
+{
+    return container->property->getId();
 }
 
 Q_DECL_EXPORT NetTypeInfoContainer* property_info_getParentType(NetPropertyInfoContainer* container) {

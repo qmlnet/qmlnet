@@ -17,6 +17,8 @@ public:
     NetTypeInfo(QString fullTypeName);
     ~NetTypeInfo();
 
+    int getId();
+
     QString getFullTypeName();
 
     QString getBaseType() const;
@@ -61,6 +63,7 @@ public:
     QMetaObject* metaObject;
 
 private:
+    int _id;
     QString _fullTypeName;
     QString _baseType;
     QString _className;
