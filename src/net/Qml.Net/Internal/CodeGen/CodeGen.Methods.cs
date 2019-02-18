@@ -442,15 +442,7 @@ namespace Qml.Net.Internal.CodeGen
             {
                 using (var variant = list.Get(index))
                 {
-                    if (variant == null || variant.VariantType == NetVariantType.Invalid)
-                    {
-                        return null;
-                    }
-
-                    using (var instance = variant.Instance)
-                    {
-                        return instance?.Instance;
-                    }
+                    return variant?.AsObject();
                 }
             }
         }

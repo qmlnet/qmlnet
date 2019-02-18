@@ -93,6 +93,26 @@ namespace Qml.Net.Tests.CodeGen
             {
             }
 
+            public virtual void TestObjOfType(RandomType param)
+            {
+            }
+
+            public virtual void TestStruct(RandomStruct param)
+            {
+            }
+
+            public virtual void TestStructNullable(RandomStruct? param)
+            {
+            }
+
+            public virtual void TestEnum(RandomEnum param)
+            {
+            }
+
+            public virtual void TestEnumNullable(RandomEnum? param)
+            {
+            }
+
             public virtual void MultipleParams(int param1, long param2)
             {
             }
@@ -101,6 +121,21 @@ namespace Qml.Net.Tests.CodeGen
             {
                 return 0;
             }
+        }
+
+        public class RandomType
+        {
+        }
+
+        public struct RandomStruct
+        {
+            public int Value;
+        }
+
+        public enum RandomEnum
+        {
+            Value1,
+            Value2
         }
 
         [Fact]
@@ -190,6 +225,30 @@ namespace Qml.Net.Tests.CodeGen
         {
             var o = new object();
             Test(x => x.TestObj(It.Is<object>(v => v.Equals(o))), o);
+        }
+
+        [Fact]
+        public void Can_call_method_with_typed_object_parameter()
+        {
+            var o = new RandomType();
+            Test(x => x.TestObjOfType(It.Is<RandomType>(v => v.Equals(o))), o);
+        }
+
+        [Fact]
+        public void Can_call_method_with_struct_parameter()
+        {
+            var o = new RandomStruct { Value = 2 };
+            Test(x => x.TestStruct(It.Is<RandomStruct>(v => v.Equals(o))), o);
+            Test(x => x.TestStructNullable(It.Is<RandomStruct>(v => v.Equals(o))), o);
+            Test(x => x.TestStructNullable(It.Is<RandomStruct?>(v => v == null)), (RandomStruct?)null);
+        }
+
+        [Fact]
+        public void Can_call_method_with_enum()
+        {
+            Test(x => x.TestEnum(It.Is<RandomEnum>(v => v == RandomEnum.Value2)), RandomEnum.Value2);
+            Test(x => x.TestEnumNullable(It.Is<RandomEnum?>(v => v == RandomEnum.Value2)), RandomEnum.Value2);
+            Test(x => x.TestEnumNullable(It.Is<RandomEnum?>(v => v == null)), (RandomEnum?)null);
         }
 
         [Fact]

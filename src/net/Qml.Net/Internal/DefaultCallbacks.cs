@@ -15,6 +15,10 @@ namespace Qml.Net.Internal
 {
     internal class DefaultCallbacks : ICallbacks
     {
+        private Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate> _cachedReadProperties = new Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate>();
+        private Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate> _cachedSetProperties = new Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate>();
+        private Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate> _cachedInvokeMethods = new Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate>();
+
         public bool IsTypeValid(string typeName)
         {
             var t = Type.GetType(typeName);
@@ -174,6 +178,11 @@ namespace Qml.Net.Internal
                         propertyInfo.CanWrite,
                         notifySignal))
                     {
+                        foreach (var indexParameter in propertyInfo.GetIndexParameters())
+                        {
+                            property.AddIndexParameter(indexParameter.Name, NetTypeManager.GetTypeInfo(indexParameter.ParameterType));
+                        }
+
                         type.AddProperty(property);
                     }
                 }
@@ -221,22 +230,21 @@ namespace Qml.Net.Internal
             using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using (var result = new NetVariant(r))
             {
-                var o = target.Instance;
-
-                var propertInfo = o.GetType()
-                    .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-                if (propertInfo == null)
-                    throw new InvalidOperationException($"Invalid property {property.Name}");
-
-                if (indexParameter != null)
+                CodeGen.CodeGen.InvokeMethodDelegate del;
+                if (!_cachedReadProperties.TryGetValue(property.Id, out del))
                 {
-                    object indexParameterValue = null;
-                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
-                    Helpers.PackValue(propertInfo.GetValue(o, new[] { indexParameterValue }), result);
+                    del = CodeGen.CodeGen.BuildReadPropertyDelegate(property);
+                    _cachedReadProperties[property.Id] = del;
                 }
-                else
+
+                using (var list = indexParameter != null ? new NetVariantList() : null)
                 {
-                    Helpers.PackValue(propertInfo.GetValue(o), result);
+                    if (indexParameter != null)
+                    {
+                        list.Add(indexParameter);
+                    }
+
+                    del(target, list, result);
                 }
             }
         }
@@ -248,29 +256,22 @@ namespace Qml.Net.Internal
             using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using (var value = new NetVariant(v))
             {
-                var o = target.Instance;
-
-                var propertInfo = o.GetType()
-                    .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-
-                if (propertInfo == null)
-                    throw new InvalidOperationException($"Invalid property {property.Name}");
-
-                object newValue = null;
-                Helpers.Unpackvalue(ref newValue, value);
-
-                if (indexParameter != null)
+                CodeGen.CodeGen.InvokeMethodDelegate del;
+                if (!_cachedSetProperties.TryGetValue(property.Id, out del))
                 {
-                    // TODO: Type coercion?
-                    object indexParameterValue = null;
-                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
-                    propertInfo.SetValue(o, newValue, new[] { indexParameterValue });
+                    del = CodeGen.CodeGen.BuildSetPropertyDelegate(property);
+                    _cachedSetProperties[property.Id] = del;
                 }
-                else
+
+                using (var list = new NetVariantList())
                 {
-                    var propertyType = propertInfo.PropertyType;
-                    var underlyingType = Nullable.GetUnderlyingType(propertyType);
-                    propertInfo.SetValue(o, Converter.To(newValue, underlyingType ?? propertyType));
+                    if (indexParameter != null)
+                    {
+                        list.Add(indexParameter);
+                    }
+
+                    list.Add(value);
+                    del(target, list, null);
                 }
             }
         }
@@ -282,84 +283,14 @@ namespace Qml.Net.Internal
             using (var parameters = new NetVariantList(p))
             using (var result = r != IntPtr.Zero ? new NetVariant(r) : null)
             {
-                var instance = target.Instance;
-
-                List<object> methodParameters = null;
-
-                if (parameters.Count > 0)
+                CodeGen.CodeGen.InvokeMethodDelegate del;
+                if (!_cachedInvokeMethods.TryGetValue(method.Id, out del))
                 {
-                    methodParameters = new List<object>();
-                    var parameterCount = parameters.Count;
-                    for (var x = 0; x < parameterCount; x++)
-                    {
-                        object v = null;
-                        Helpers.Unpackvalue(ref v, parameters.Get(x));
-                        methodParameters.Add(v);
-                    }
+                    del = CodeGen.CodeGen.BuildInvokeMethodDelegate(method);
+                    _cachedInvokeMethods[method.Id] = del;
                 }
 
-                MethodInfo methodInfo = null;
-                var methodName = method.MethodName;
-                var methods = instance.GetType()
-                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(x => x.Name == methodName)
-                    .ToList();
-
-                if (methods.Count == 1)
-                {
-                    methodInfo = methods[0];
-                }
-                else if (methods.Count > 1)
-                {
-                    // This is an overload.
-
-                    // TODO: Make this more performant. https://github.com/pauldotknopf/Qml.Net/issues/39
-
-                    // Get all the parameters for the method we are invoking.
-                    var parameterTypes = method.GetAllParameters().Select(x => x.Type.FullTypeName).ToList();
-
-                    // And find a good method to invoke.
-                    foreach (var potentialMethod in methods)
-                    {
-                        var potentialMethodParameters = potentialMethod.GetParameters();
-                        if (potentialMethodParameters.Length != parameterTypes.Count)
-                        {
-                            continue;
-                        }
-
-                        bool valid = true;
-                        for (var x = 0; x < potentialMethodParameters.Length; x++)
-                        {
-                            if (potentialMethodParameters[x].ParameterType.AssemblyQualifiedName != parameterTypes[x])
-                            {
-                                valid = false;
-                                break;
-                            }
-                        }
-
-                        if (valid)
-                        {
-                            methodInfo = potentialMethod;
-                            break;
-                        }
-                    }
-                }
-
-                if (methodInfo == null)
-                {
-                    throw new InvalidOperationException($"Invalid method name {method.MethodName}");
-                }
-
-                var returnObject = methodInfo.Invoke(instance, methodParameters?.ToArray());
-
-                if (result == null)
-                {
-                    // this method doesn't have return type
-                }
-                else
-                {
-                    Helpers.PackValue(returnObject, result);
-                }
+                del(target, parameters, result);
             }
         }
 

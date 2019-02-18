@@ -113,6 +113,30 @@ namespace Qml.Net.Tests.CodeGen
             {
                 return null;
             }
+
+            public virtual RandomType ReturnTypeObjectTyped()
+            {
+                return null;
+            }
+
+            public virtual RandomStruct ReturnTypeStruct()
+            {
+                return new RandomStruct();
+            }
+
+            public virtual RandomStruct? ReturnTypeStructNullable()
+            {
+                return null;
+            }
+        }
+
+        public class RandomType
+        {
+        }
+
+        public struct RandomStruct
+        {
+            public int Value1;
         }
 
         [Fact]
@@ -317,6 +341,41 @@ namespace Qml.Net.Tests.CodeGen
                 result.Instance.Instance.Should().BeSameAs(o);
             });
             Test(x => x.ReturnTypeObject(), null, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Invalid);
+            });
+        }
+
+        [Fact]
+        public void Can_return_typed_object()
+        {
+            var o = new RandomType();
+            Test(x => x.ReturnTypeObjectTyped(), o, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Object);
+                result.Instance.Instance.Should().BeSameAs(o);
+            });
+            Test(x => x.ReturnTypeObjectTyped(), null, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Invalid);
+            });
+        }
+
+        [Fact]
+        public void Can_return_struct()
+        {
+            var value = new RandomStruct();
+            Test(x => x.ReturnTypeStruct(), value, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Object);
+                result.Instance.Instance.Should().Be(value);
+            });
+            Test(x => x.ReturnTypeStructNullable(), value, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Object);
+                result.Instance.Instance.Should().Be(value);
+            });
+            Test(x => x.ReturnTypeStructNullable(), null, result =>
             {
                 result.VariantType.Should().Be(NetVariantType.Invalid);
             });

@@ -2,6 +2,7 @@
 #define NET_TYPE_INFO_PROPERTY_H
 
 #include <QmlNet/types/NetTypeInfo.h>
+#include <QmlNet/types/NetMethodInfo.h>
 
 class NetPropertyInfo {
 public:
@@ -19,6 +20,9 @@ public:
     bool canWrite();
     QSharedPointer<NetSignalInfo> getNotifySignal();
     void setNotifySignal(QSharedPointer<NetSignalInfo> signal);
+    void addIndexParameter(QString name, QSharedPointer<NetTypeInfo> typeInfo);
+    int getIndexParameterCount();
+    QSharedPointer<NetMethodInfoArguement> getIndexParameter(int index);
 private:
     int _id;
     QSharedPointer<NetTypeInfo> _parentType;
@@ -27,6 +31,7 @@ private:
     bool _canRead;
     bool _canWrite;
     QSharedPointer<NetSignalInfo> _notifySignal;
+    QList<QSharedPointer<NetMethodInfoArguement>> _indexParameters;
 };
 
 struct NetPropertyInfoContainer {
