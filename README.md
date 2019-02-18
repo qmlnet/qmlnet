@@ -189,12 +189,11 @@ ApplicationWindow {
 - [x] ```async``` and ```await``` with support for awaiting and getting the result from Qml.
 - [x] Passing dynamic javascript objects to .NET as ```dynamic```.
 - [x] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
+- [x] Dynamically compiled delegates for increased performance.
 
 # Not implemented (but planned)
 
 - [ ] Compiling Qml resource files and bundling them within .NET.
 - [ ] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 - [ ] .NET Events to signals
-- [ ] General perf improvements (particularly with reflection).
 - [ ] Qml debugger for VS and VS Code.
-- [ ] Yocto meta-layer for .NET Core and Qml.Net (for embedded Linux development).
