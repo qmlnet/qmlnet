@@ -14,25 +14,37 @@ namespace Qml.Net.Internal.CodeGen
     {
         public delegate void InvokeMethodDelegate(NetReference reference, NetVariantList parameters, NetVariant result);
 
-        public delegate void ReadPropertyDelegate(NetReference reference, NetVariant result);
-
-        public delegate void SetPropertyDelegate(NetReference reference, NetVariant value);
-
         public static InvokeMethodDelegate BuildInvokeMethodDelegate(NetMethodInfo methodInfo)
         {
             var invokeType = Type.GetType(methodInfo.ParentType.FullTypeName);
-            var invokeMethod = invokeType.GetMethod(methodInfo.MethodName);
+            var parameterTypes = new List<Type>();
+            for (var x = 0; x < methodInfo.ParameterCount; x++)
+            {
+                using (var p = methodInfo.GetParameter(x))
+                using (var t = p.Type)
+                {
+                    parameterTypes.Add(Type.GetType(t.FullTypeName));
+                }
+            }
+            var invokeMethod = invokeType.GetMethod(methodInfo.MethodName, parameterTypes.ToArray());
+            return BuildInvokeMethodDelegate(invokeMethod);
+        }
+
+        public static InvokeMethodDelegate BuildInvokeMethodDelegate(MethodInfo methodInfo)
+        {
+            var invokeType = methodInfo.DeclaringType;
 
             var dynamicMethod = new DynamicMethod(
                 "method",
                 typeof(void),
                 new[] { typeof(NetReference), typeof(NetVariantList), typeof(NetVariant) });
 
-            if (invokeMethod.ReturnType != null && invokeMethod.ReturnType != typeof(void))
+            bool box = false;
+            if (methodInfo.ReturnType != null && methodInfo.ReturnType != typeof(void))
             {
                 MethodInfo returnMethod = null;
                 var isNullable = false;
-                switch (GetPrefVariantType(invokeMethod.ReturnType, ref isNullable))
+                switch (GetPrefVariantType(methodInfo.ReturnType, ref isNullable))
                 {
                     case NetVariantType.Bool:
                         returnMethod = isNullable ? LoadMethods.LoadBoolNullableMethod : LoadMethods.LoadBoolMethod;
@@ -66,6 +78,7 @@ namespace Qml.Net.Internal.CodeGen
                         break;
                     case NetVariantType.Object:
                         returnMethod = LoadMethods.LoadObjectMethod;
+                        box = methodInfo.ReturnType.IsValueType;
                         break;
                     case NetVariantType.JsValue:
                         throw new NotImplementedException();
@@ -82,9 +95,15 @@ namespace Qml.Net.Internal.CodeGen
                 il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
                 il.Emit(OpCodes.Castclass, invokeType);
 
-                InvokeParameters(il, invokeMethod);
+                InvokeParameters(il, methodInfo);
 
-                il.Emit(OpCodes.Callvirt, invokeMethod);
+                il.Emit(OpCodes.Callvirt, methodInfo);
+
+                if (box)
+                {
+                    il.Emit(OpCodes.Box, methodInfo.ReturnType);
+                }
+
                 il.Emit(OpCodes.Call, returnMethod);
 
                 il.Emit(OpCodes.Ret);
@@ -96,9 +115,9 @@ namespace Qml.Net.Internal.CodeGen
                 il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
                 il.Emit(OpCodes.Castclass, invokeType);
 
-                InvokeParameters(il, invokeMethod);
+                InvokeParameters(il, methodInfo);
 
-                il.Emit(OpCodes.Callvirt, invokeMethod);
+                il.Emit(OpCodes.Callvirt, methodInfo);
 
                 il.Emit(OpCodes.Ret);
             }
@@ -106,141 +125,42 @@ namespace Qml.Net.Internal.CodeGen
             return (InvokeMethodDelegate)dynamicMethod.CreateDelegate(typeof(InvokeMethodDelegate));
         }
 
-        public static ReadPropertyDelegate BuildReadPropertyDelegate(NetPropertyInfo propertyInfo)
+        public static InvokeMethodDelegate BuildReadPropertyDelegate(NetPropertyInfo propertyInfo)
         {
             var invokeType = Type.GetType(propertyInfo.ParentType.FullTypeName);
-            var invokeProperty = invokeType.GetProperty(propertyInfo.Name);
 
-            MethodInfo loadMethod = null;
-            var isNullable = false;
-            switch (GetPrefVariantType(invokeProperty.PropertyType, ref isNullable))
+            var parameterTypes = new List<Type>();
+            for (var x = 0; x < propertyInfo.IndexParameterCount; x++)
             {
-                case NetVariantType.Bool:
-                    loadMethod = isNullable ? LoadMethods.LoadBoolNullableMethod : LoadMethods.LoadBoolMethod;
-                    break;
-                case NetVariantType.Char:
-                    loadMethod = isNullable ? LoadMethods.LoadCharNullableMethod : LoadMethods.LoadCharMethod;
-                    break;
-                case NetVariantType.Int:
-                    loadMethod = isNullable ? LoadMethods.LoadIntNullableMethod : LoadMethods.LoadIntMethod;
-                    break;
-                case NetVariantType.UInt:
-                    loadMethod = isNullable ? LoadMethods.LoadUIntNullableMethod : LoadMethods.LoadUIntMethod;
-                    break;
-                case NetVariantType.Long:
-                    loadMethod = isNullable ? LoadMethods.LoadLongNullableMethod : LoadMethods.LoadLongMethod;
-                    break;
-                case NetVariantType.ULong:
-                    loadMethod = isNullable ? LoadMethods.LoadULongNullableMethod : LoadMethods.LoadULongMethod;
-                    break;
-                case NetVariantType.Float:
-                    loadMethod = isNullable ? LoadMethods.LoadFloatNullableMethod : LoadMethods.LoadFloatMethod;
-                    break;
-                case NetVariantType.Double:
-                    loadMethod = isNullable ? LoadMethods.LoadDoubleNullableMethod : LoadMethods.LoadDoubleMethod;
-                    break;
-                case NetVariantType.String:
-                    loadMethod = LoadMethods.LoadStringMethod;
-                    break;
-                case NetVariantType.DateTime:
-                    loadMethod = isNullable ? LoadMethods.LoadDateTimeNullableMethod : LoadMethods.LoadDateTimeMethod;
-                    break;
-                case NetVariantType.Object:
-                    loadMethod = LoadMethods.LoadObjectMethod;
-                    break;
-                case NetVariantType.JsValue:
-                    throw new NotImplementedException();
-                case NetVariantType.Invalid:
-                    throw new Exception("invalid type");
-                default:
-                    throw new Exception("unknown type");
+                using (var p = propertyInfo.GetIndexParameter(x))
+                using (var t = p.Type)
+                {
+                    parameterTypes.Add(Type.GetType(t.FullTypeName));
+                }
             }
 
-            var dynamicMethod = new DynamicMethod(
-                "method",
-                typeof(void),
-                new[] { typeof(NetReference), typeof(NetVariant) });
+            var invokeProperty = invokeType.GetProperty(propertyInfo.Name);
 
-            var il = dynamicMethod.GetILGenerator();
-
-            il.Emit(OpCodes.Ldarg_1); // result
-            il.Emit(OpCodes.Ldarg_0); // net reference
-            il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
-            il.Emit(OpCodes.Castclass, invokeType);
-            il.Emit(OpCodes.Callvirt, invokeProperty.GetMethod);
-            il.Emit(OpCodes.Call, loadMethod);
-            il.Emit(OpCodes.Ret);
-
-            return (ReadPropertyDelegate)dynamicMethod.CreateDelegate(typeof(ReadPropertyDelegate));
+            return BuildInvokeMethodDelegate(invokeProperty.GetMethod);
         }
 
-        public static SetPropertyDelegate BuildSetPropertyDelegate(NetPropertyInfo propertyInfo)
+        public static InvokeMethodDelegate BuildSetPropertyDelegate(NetPropertyInfo propertyInfo)
         {
             var invokeType = Type.GetType(propertyInfo.ParentType.FullTypeName);
-            var invokeProperty = invokeType.GetProperty(propertyInfo.Name);
 
-            MethodInfo getMethod = null;
-            var isNullable = false;
-            switch (GetPrefVariantType(invokeProperty.PropertyType, ref isNullable))
+            var parameterTypes = new List<Type>();
+            for (var x = 0; x < propertyInfo.IndexParameterCount; x++)
             {
-                case NetVariantType.Bool:
-                    getMethod = isNullable ? GetMethods.BoolNullableMethod : GetMethods.BoolMethod;
-                    break;
-                case NetVariantType.Char:
-                    getMethod = isNullable ? GetMethods.CharNullableMethod : GetMethods.CharMethod;
-                    break;
-                case NetVariantType.Int:
-                    getMethod = isNullable ? GetMethods.IntNullableMethod : GetMethods.IntMethod;
-                    break;
-                case NetVariantType.UInt:
-                    getMethod = isNullable ? GetMethods.UIntNullableMethod : GetMethods.UIntMethod;
-                    break;
-                case NetVariantType.Long:
-                    getMethod = isNullable ? GetMethods.LongNullableMethod : GetMethods.LongMethod;
-                    break;
-                case NetVariantType.ULong:
-                    getMethod = isNullable ? GetMethods.ULongNullableMethod : GetMethods.LongMethod;
-                    break;
-                case NetVariantType.Float:
-                    getMethod = isNullable ? GetMethods.FloatNullableMethod : GetMethods.FloatMethod;
-                    break;
-                case NetVariantType.Double:
-                    getMethod = isNullable ? GetMethods.DoubleNullableMethod : GetMethods.DoubleMethod;
-                    break;
-                case NetVariantType.String:
-                    getMethod = GetMethods.StringMethod;
-                    break;
-                case NetVariantType.DateTime:
-                    getMethod = isNullable ? GetMethods.DateTimeNullableMethod : GetMethods.DateTimeMethod;
-                    break;
-                case NetVariantType.Object:
-                    getMethod = GetMethods.ObjMethod;
-                    break;
-                case NetVariantType.JsValue:
-                    throw new NotImplementedException();
-                case NetVariantType.Invalid:
-                    throw new Exception("invalid type");
-                default:
-                    throw new Exception("unknown type");
+                using (var p = propertyInfo.GetIndexParameter(x))
+                using (var t = p.Type)
+                {
+                    parameterTypes.Add(Type.GetType(t.FullTypeName));
+                }
             }
 
-            var dynamicMethod = new DynamicMethod(
-                "method",
-                typeof(void),
-                new[] { typeof(NetReference), typeof(NetVariant) });
+            var invokeProperty = invokeType.GetProperty(propertyInfo.Name);
 
-            var il = dynamicMethod.GetILGenerator();
-
-            il.Emit(OpCodes.Ldarg_0); // net reference
-            il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
-            il.Emit(OpCodes.Castclass, invokeType);
-            il.Emit(OpCodes.Ldarg_1); // variant
-            il.Emit(OpCodes.Call, getMethod);
-            il.Emit(OpCodes.Callvirt, invokeProperty.SetMethod);
-
-            il.Emit(OpCodes.Ret);
-
-            return (SetPropertyDelegate)dynamicMethod.CreateDelegate(typeof(SetPropertyDelegate));
+            return BuildInvokeMethodDelegate(invokeProperty.SetMethod);
         }
 
         private static void InvokeParameters(ILGenerator il, MethodInfo methodInfo)
@@ -253,6 +173,7 @@ namespace Qml.Net.Internal.CodeGen
 
                 MethodInfo returnMethod = null;
                 var isNullable = false;
+                var unbox = false;
                 switch (GetPrefVariantType(parameter.ParameterType, ref isNullable))
                 {
                     case NetVariantType.Bool:
@@ -287,6 +208,7 @@ namespace Qml.Net.Internal.CodeGen
                         break;
                     case NetVariantType.Object:
                         returnMethod = ListMethods.ObjectAtMethod;
+                        unbox = parameter.ParameterType.IsValueType;
                         break;
                     case NetVariantType.JsValue:
                         throw new NotImplementedException();
@@ -297,6 +219,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
 
                 il.Emit(OpCodes.Call, returnMethod);
+
+                if (unbox)
+                {
+                    il.Emit(OpCodes.Unbox_Any, parameter.ParameterType);
+                }
+
                 parameterIndex++;
             }
         }
@@ -331,6 +259,11 @@ namespace Qml.Net.Internal.CodeGen
                 // ReSharper disable TailRecursiveCall
                 return GetPrefVariantType(typeInfo.GetGenericArguments()[0], ref isNullable);
                 // ReSharper restore TailRecursiveCall
+            }
+
+            if (typeInfo.IsEnum)
+            {
+                return GetPrefVariantType(Enum.GetUnderlyingType(typeInfo), ref isNullable);
             }
 
             return NetVariantType.Object;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Qml.Net.Internal.Types
@@ -70,6 +71,31 @@ namespace Qml.Net.Internal.Types
             }
         }
 
+        public void AddIndexParameter(string name, NetTypeInfo type)
+        {
+            Interop.NetPropertyInfo.AddIndexParameter(Handle, name, type.Handle);
+        }
+
+        public int IndexParameterCount => Interop.NetPropertyInfo.GetIndexParameterCount(Handle);
+
+        public NetMethodInfoParameter GetIndexParameter(int index)
+        {
+            var result = Interop.NetPropertyInfo.GetIndexParameter(Handle, index);
+            if (result == IntPtr.Zero) return null;
+            return new NetMethodInfoParameter(result);
+        }
+
+        public List<NetMethodInfoParameter> GetAllIndexParameters()
+        {
+            var result = new List<NetMethodInfoParameter>();
+            var count = IndexParameterCount;
+            for (var x = 0; x < count; x++)
+            {
+                result.Add(GetIndexParameter(x));
+            }
+            return result;
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetPropertyInfo.Destroy(ptr);
@@ -133,5 +159,20 @@ namespace Qml.Net.Internal.Types
         public SetNotifySignalDel SetNotifySignal { get; set; }
 
         public delegate void SetNotifySignalDel(IntPtr property, IntPtr signal);
+
+        [NativeSymbol(Entrypoint = "property_info_addIndexParameter")]
+        public AddIndexParameterDel AddIndexParameter { get; set; }
+
+        public delegate void AddIndexParameterDel(IntPtr method, [MarshalAs(UnmanagedType.LPWStr)]string name, IntPtr type);
+
+        [NativeSymbol(Entrypoint = "property_info_getIndexParameterCount")]
+        public GetIndexParameterCountDel GetIndexParameterCount { get; set; }
+
+        public delegate int GetIndexParameterCountDel(IntPtr method);
+
+        [NativeSymbol(Entrypoint = "property_info_getIndexParameter")]
+        public GetIndexParameterDel GetIndexParameter { get; set; }
+
+        public delegate IntPtr GetIndexParameterDel(IntPtr method, int index);
     }
 }

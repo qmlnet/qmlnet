@@ -397,5 +397,29 @@ namespace Qml.Net.Tests.Types
 
             type1.Id.Should().NotBe(type2.Id);
         }
+
+        public class TestType19
+        {
+            public object this[int index]
+            {
+                get => null;
+                set { }
+            }
+        }
+
+        [Fact]
+        public void Can_get_index_parameters()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType19>();
+            type.EnsureLoaded();
+
+            var prop = type.GetProperty(0);
+            prop.Name.Should().Be("Item");
+
+            var indexParameters = prop.GetAllIndexParameters();
+            indexParameters.Count.Should().Be(1);
+            indexParameters[0].Name.Should().Be("index");
+            indexParameters[0].Type.FullTypeName.Should().Be(typeof(int).AssemblyQualifiedName);
+        }
     }
 }

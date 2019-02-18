@@ -12,6 +12,12 @@ namespace Qml.Net.Tests.CodeGen
     {
         public class TestObject
         {
+            public virtual int this[int index]
+            {
+                get => 0;
+                set { }
+            }
+
             public virtual bool Bool { get; set; }
 
             public virtual bool? BoolNullable { get; set; }
@@ -51,6 +57,63 @@ namespace Qml.Net.Tests.CodeGen
             public virtual DateTimeOffset? DateTimeNullable { get; set; }
 
             public virtual object Obj { get; set; }
+
+            public virtual RandomType ObjTyped { get; set; }
+
+            public virtual RandomStruct Struct { get; set; }
+
+            public virtual RandomStruct? StructNullable { get; set; }
+
+            public virtual RandomEnum Enum { get; set; }
+
+            public virtual RandomEnum? EnumNullable { get; set; }
+        }
+
+        public class RandomType
+        {
+        }
+
+        public struct RandomStruct
+        {
+            public int Value;
+        }
+
+        public enum RandomEnum
+        {
+            Value1,
+            Value2
+        }
+
+        [Fact]
+        public void Can_use_indexer()
+        {
+            _mock.SetupGet(x => x[10]).Returns(20);
+
+            var del = (Net.Internal.CodeGen.CodeGen.InvokeMethodDelegate)BuildReadPropertyDelegate("Item");
+
+            using (var netReference = NetReference.CreateForObject(_mock.Object))
+            {
+                using (var result = new NetVariant())
+                {
+                    del(netReference, NetVariantList.From(NetVariant.From(10)), result);
+                    result.VariantType.Should().Be(NetVariantType.Int);
+                    result.Int.Should().Be(20);
+                }
+            }
+
+            _mock.Reset();
+            _mock.SetupSet(x => x[10] = 20);
+
+            del = (Net.Internal.CodeGen.CodeGen.InvokeMethodDelegate)BuildSetPropertyDelegate("Item");
+
+            using (var netReference = NetReference.CreateForObject(_mock.Object))
+            {
+                using (var result = new NetVariant())
+                {
+                    del(netReference, NetVariantList.From(NetVariant.From(10), NetVariant.From(20)), null);
+                    _mock.VerifySet(x => x[10] = 20);
+                }
+            }
         }
 
         [Fact]
@@ -305,18 +368,84 @@ namespace Qml.Net.Tests.CodeGen
             TestSet(x => x.Obj, NetVariant.From(o), x => x.Obj = o);
         }
 
+        [Fact]
+        public void Can_use_prop_typed_object()
+        {
+            var o = new RandomType();
+            TestGet(x => x.ObjTyped, o, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Object);
+                result.Instance.Instance.Should().BeSameAs(o);
+            });
+            TestGet(x => x.ObjTyped, null, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Invalid);
+            });
+
+            TestSet(x => x.ObjTyped, NetVariant.From((RandomType)null), x => x.ObjTyped = null);
+            TestSet(x => x.ObjTyped, NetVariant.From(o), x => x.ObjTyped = o);
+        }
+
+        [Fact]
+        public void Can_use_prop_struct()
+        {
+            var o = new RandomStruct();
+            o.Value = 3;
+            TestGet(x => x.Struct, o, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Object);
+                result.Instance.Instance.Should().Be(o);
+            });
+            TestGet(x => x.StructNullable, o, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Object);
+                result.Instance.Instance.Should().Be(o);
+            });
+            TestGet(x => x.StructNullable, null, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Invalid);
+            });
+
+            TestSet(x => x.Struct, NetVariant.From(o), x => x.Struct = o);
+            TestSet(x => x.StructNullable, NetVariant.From(o), x => x.StructNullable = o);
+            TestSet(x => x.StructNullable, new NetVariant(), x => x.StructNullable = null);
+        }
+
+        [Fact]
+        public void Can_use_prop_enum()
+        {
+            TestGet(x => x.Enum, RandomEnum.Value2, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Int);
+                result.Int.Should().Be((int)RandomEnum.Value2);
+            });
+            TestGet(x => x.EnumNullable, RandomEnum.Value2, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Int);
+                result.Int.Should().Be((int)RandomEnum.Value2);
+            });
+            TestGet(x => x.EnumNullable, null, result =>
+            {
+                result.VariantType.Should().Be(NetVariantType.Invalid);
+            });
+
+            TestSet(x => x.Enum, NetVariant.From(RandomEnum.Value2), x => x.Enum = RandomEnum.Value2);
+            TestSet(x => x.EnumNullable, NetVariant.From(RandomEnum.Value2), x => x.EnumNullable = RandomEnum.Value2);
+            TestSet(x => x.EnumNullable, new NetVariant(), x => x.EnumNullable = null);
+        }
+
         private void TestGet<TProperty>(Expression<Func<TestObject, TProperty>> expression, TProperty value, Action<NetVariant> assert)
         {
             _mock.Reset();
             _mock.SetupGet(expression).Returns(value);
 
-            var del = (Net.Internal.CodeGen.CodeGen.ReadPropertyDelegate)BuildReadPropertyDelegate(((MemberExpression)expression.Body).Member.Name);
+            var del = (Net.Internal.CodeGen.CodeGen.InvokeMethodDelegate)BuildReadPropertyDelegate(((MemberExpression)expression.Body).Member.Name);
 
             using (var netReference = NetReference.CreateForObject(_mock.Object))
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, result);
+                    del(netReference, null, result);
                     _mock.VerifyGet(expression);
                     assert(result);
                 }
@@ -330,11 +459,15 @@ namespace Qml.Net.Tests.CodeGen
             _mock.SetupSet(expression);
             #pragma warning restore CS0618
 
-            var del = (Net.Internal.CodeGen.CodeGen.SetPropertyDelegate)BuildSetPropertyDelegate(((MemberExpression)expression.Body).Member.Name);
+            var del = (Net.Internal.CodeGen.CodeGen.InvokeMethodDelegate)BuildSetPropertyDelegate(((MemberExpression)expression.Body).Member.Name);
 
             using (var netReference = NetReference.CreateForObject(_mock.Object))
             {
-                del(netReference, value);
+                using (var list = NetVariantList.From(value))
+                {
+                    del(netReference, list, null);
+                }
+
                 _mock.VerifySet(verify, Times.Once);
             }
         }
