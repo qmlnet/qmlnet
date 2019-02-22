@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Qml.Net.Internal;
@@ -74,6 +76,17 @@ namespace Qml.Net
             storage = value;
             instance.ActivateNotifySignal(propertyName);
             return true;
+        }
+
+        public static bool ActivateProperty<T, TProperty>(this T instance, Expression<Func<T, TProperty>> expression)
+        {
+            var propExpression = expression.Body as MemberExpression;
+            if (propExpression == null)
+            {
+                throw new Exception("Invalid expression");
+            }
+
+            return ActivateNotifySignal(instance, propExpression.Member.Name);
         }
 
         public static void AttachToSignal(this object instance, string signalName, System.Delegate del)
