@@ -1,4 +1,4 @@
-QT += gui qml core-private quickcontrols2 widgets
+QT += gui qml core-private quickcontrols2 widgets testlib
 
 CONFIG(enable-webengine) {
     QT += webengine
