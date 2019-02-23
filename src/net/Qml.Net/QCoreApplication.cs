@@ -15,7 +15,7 @@ namespace Qml.Net
         private SynchronizationContext _oldSynchronizationContext;
         private GCHandle _triggerHandle;
         private GCHandle _aboutToQuitHandle;
-        private List<AboutToQuitEventHandler> _aboutToQuitEventHandlers = new List<AboutToQuitEventHandler>();
+        private readonly List<AboutToQuitEventHandler> _aboutToQuitEventHandlers = new List<AboutToQuitEventHandler>();
         private int _threadId;
 
         protected QCoreApplication(IntPtr handle, bool ownsHandle)

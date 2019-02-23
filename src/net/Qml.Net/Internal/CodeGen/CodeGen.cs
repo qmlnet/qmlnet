@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.CSharp;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
@@ -12,7 +13,7 @@ namespace Qml.Net.Internal.CodeGen
 {
     internal partial class CodeGen
     {
-        public delegate void InvokeMethodDelegate(NetReference reference, NetVariantList parameters, NetVariant result);
+        public delegate void InvokeMethodDelegate(NetReference reference, NetVariantList parameters, NetVariant result, ref Task taskResult);
 
         public static InvokeMethodDelegate BuildInvokeMethodDelegate(NetMethodInfo methodInfo)
         {
@@ -37,7 +38,7 @@ namespace Qml.Net.Internal.CodeGen
             var dynamicMethod = new DynamicMethod(
                 "method",
                 typeof(void),
-                new[] { typeof(NetReference), typeof(NetVariantList), typeof(NetVariant) });
+                new[] { typeof(NetReference), typeof(NetVariantList), typeof(NetVariant), typeof(Task).MakeByRefType() });
 
             bool box = false;
             if (methodInfo.ReturnType != null && methodInfo.ReturnType != typeof(void))
@@ -90,21 +91,32 @@ namespace Qml.Net.Internal.CodeGen
 
                 var il = dynamicMethod.GetILGenerator();
 
-                il.Emit(OpCodes.Ldarg_2); // result
+                var tempValue = il.DeclareLocal(methodInfo.ReturnType);
+
+                // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
                 il.Emit(OpCodes.Ldarg_0); // net reference
                 il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
                 il.Emit(OpCodes.Castclass, invokeType);
-
                 InvokeParameters(il, methodInfo);
-
                 il.Emit(OpCodes.Callvirt, methodInfo);
+                il.Emit(OpCodes.Stloc, tempValue.LocalIndex);
 
+                // {LOADMETHOD}(result, tempvalue)
+                il.Emit(OpCodes.Ldarg_2);
+                il.Emit(OpCodes.Ldloc, tempValue.LocalIndex);
                 if (box)
                 {
                     il.Emit(OpCodes.Box, methodInfo.ReturnType);
                 }
-
                 il.Emit(OpCodes.Call, returnMethod);
+
+                if (methodInfo.ReturnType.IsAssignableFrom(typeof(Task)))
+                {
+                    // task = tempValue;
+                    il.Emit(OpCodes.Ldarg_3);
+                    il.Emit(OpCodes.Ldloc, tempValue.LocalIndex);
+                    il.Emit(OpCodes.Stind_Ref);
+                }
 
                 il.Emit(OpCodes.Ret);
             }

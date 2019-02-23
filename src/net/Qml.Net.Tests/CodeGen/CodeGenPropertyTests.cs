@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Qml.Net.Internal.Qml;
@@ -95,7 +96,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, NetVariantList.From(NetVariant.From(10)), result);
+                    Task task = null;
+                    del(netReference, NetVariantList.From(NetVariant.From(10)), result, ref task);
                     result.VariantType.Should().Be(NetVariantType.Int);
                     result.Int.Should().Be(20);
                 }
@@ -110,7 +112,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, NetVariantList.From(NetVariant.From(10), NetVariant.From(20)), null);
+                    Task task = null;
+                    del(netReference, NetVariantList.From(NetVariant.From(10), NetVariant.From(20)), null, ref task);
                     _mock.VerifySet(x => x[10] = 20);
                 }
             }
@@ -445,7 +448,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, null, result);
+                    Task task = null;
+                    del(netReference, null, result, ref task);
                     _mock.VerifyGet(expression);
                     assert(result);
                 }
@@ -465,7 +469,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var list = NetVariantList.From(value))
                 {
-                    del(netReference, list, null);
+                    Task task = null;
+                    del(netReference, list, null, ref task);
                 }
 
                 _mock.VerifySet(verify, Times.Once);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Castle.DynamicProxy.Internal;
 using FluentAssertions;
 using Moq;
@@ -125,6 +126,11 @@ namespace Qml.Net.Tests.CodeGen
             }
 
             public virtual RandomStruct? ReturnTypeStructNullable()
+            {
+                return null;
+            }
+
+            public virtual Task ReturnTypeTask()
             {
                 return null;
             }
@@ -381,6 +387,19 @@ namespace Qml.Net.Tests.CodeGen
             });
         }
 
+        [Fact]
+        public void Can_get_instance_of_task_if_return_type_task()
+        {
+            var del = (Net.Internal.CodeGen.CodeGen.InvokeMethodDelegate)BuildInvokeMethodDelegate(nameof(TestObject.ReturnTypeTask));
+            var task = Task.CompletedTask;
+            _mock.Setup(x => x.ReturnTypeTask()).Returns(task);
+
+            Task outputTask = null;
+            del(NetReference.CreateForObject(_mock.Object), NetVariantList.From(), new NetVariant(), ref outputTask);
+
+            outputTask.Should().Be(task);
+        }
+
         private void Test<TResult>(Expression<Func<TestObject, TResult>> expression, TResult value, Action<NetVariant> assert)
         {
             _mock.Reset();
@@ -392,7 +411,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, NetVariantList.From(), result);
+                    Task task = null;
+                    del(netReference, NetVariantList.From(), result, ref task);
                     _mock.Verify(expression, Times.Once);
                     assert(result);
                 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Qml.Net.Internal.Qml;
@@ -260,7 +261,8 @@ namespace Qml.Net.Tests.CodeGen
 
             using (var netReference = NetReference.CreateForObject(_mock.Object))
             {
-                del(netReference, NetVariantList.From(NetVariant.From(20), NetVariant.From<long>(100)), null);
+                Task task = null;
+                del(netReference, NetVariantList.From(NetVariant.From(20), NetVariant.From<long>(100)), null, ref task);
                 _mock.Verify(x => x.MultipleParams(20, 100));
             }
         }
@@ -274,7 +276,8 @@ namespace Qml.Net.Tests.CodeGen
 
             using (var netReference = NetReference.CreateForObject(_mock.Object))
             {
-                del(netReference, NetVariantList.From(), null);
+                Task task = null;
+                del(netReference, NetVariantList.From(), null, ref task);
                 _mock.Verify(x => x.MultipleParams(default(int), default(long)));
             }
         }
@@ -290,7 +293,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, NetVariantList.From(NetVariant.From<int>(20), NetVariant.From<long>(30)), result);
+                    Task task = null;
+                    del(netReference, NetVariantList.From(NetVariant.From<int>(20), NetVariant.From<long>(30)), result, ref task);
                     _mock.Verify(x => x.MultipleParamsWithReturn(20, 30), Times.Once);
                     result.VariantType.Should().Be(NetVariantType.Int);
                     result.Int.Should().Be(40);
@@ -309,7 +313,8 @@ namespace Qml.Net.Tests.CodeGen
             {
                 using (var result = new NetVariant())
                 {
-                    del(netReference, NetVariantList.From(NetVariant.From(value)), result);
+                    Task task = null;
+                    del(netReference, NetVariantList.From(NetVariant.From(value)), result, ref task);
                     _mock.Verify(expression, Times.Once);
                 }
             }

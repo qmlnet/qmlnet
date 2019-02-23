@@ -244,7 +244,8 @@ namespace Qml.Net.Internal
                         list.Add(indexParameter);
                     }
 
-                    del(target, list, result);
+                    Task resultTask = null;
+                    del(target, list, result, ref resultTask);
                 }
             }
         }
@@ -271,7 +272,8 @@ namespace Qml.Net.Internal
                     }
 
                     list.Add(value);
-                    del(target, list, null);
+                    Task resultTask = null;
+                    del(target, list, null, ref resultTask);
                 }
             }
         }
@@ -290,7 +292,18 @@ namespace Qml.Net.Internal
                     _cachedInvokeMethods[method.Id] = del;
                 }
 
-                del(target, parameters, result);
+                Task resultTask = null;
+                del(target, parameters, result, ref resultTask);
+
+                if (Tasks.ListenForExceptionsWhenInvokingTasks)
+                {
+                    resultTask?.ContinueWith(
+                        task =>
+                        {
+                            Tasks.RaiseUnhandledTaskException(task.Exception);
+                        },
+                        TaskContinuationOptions.OnlyOnFaulted);
+                }
             }
         }
 
