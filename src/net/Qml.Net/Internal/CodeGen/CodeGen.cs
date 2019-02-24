@@ -110,7 +110,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 il.Emit(OpCodes.Call, returnMethod);
 
-                if (methodInfo.ReturnType.IsAssignableFrom(typeof(Task)))
+                if (typeof(Task).IsAssignableFrom(methodInfo.ReturnType))
                 {
                     // task = tempValue;
                     il.Emit(OpCodes.Ldarg_3);
