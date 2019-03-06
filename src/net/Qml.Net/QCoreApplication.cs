@@ -82,6 +82,34 @@ namespace Qml.Net
             RequestTrigger();
         }
 
+        public Task DispatchAsync(Func<Task> action)
+        {
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
+            {
+                cts.Token.Register(tcs.SetCanceled);
+                Dispatch(() =>
+                {
+                    try
+                    {
+                        if (tcs.Task.IsCanceled)
+                        {
+                            return;
+                        }
+                        var task = action();
+                        task.ContinueWith((x) => tcs.SetResult(true), TaskContinuationOptions.NotOnFaulted);
+                        task.ContinueWith((x) => tcs.SetException(new OperationCanceledException()), TaskContinuationOptions.OnlyOnCanceled);
+                        task.ContinueWith((x) => tcs.SetException(x.Exception), TaskContinuationOptions.OnlyOnFaulted);
+                    }
+                    catch (Exception ex)
+                    {
+                        tcs.SetException(ex);
+                    }
+                });
+                return tcs.Task;
+            }
+        }
+
         public static void Exit(int returnCode = 0)
         {
             Interop.QCoreApplication.Exit(returnCode);
