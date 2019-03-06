@@ -84,6 +84,16 @@ namespace Qml.Net.Internal
                     }
                 }
 
+                if (typeof(IQmlComponentCompleted).IsAssignableFrom(typeInfo))
+                {
+                    type.HasComponentCompleted = true;
+                }
+
+                if (typeof(IQmlObjectDestroyed).IsAssignableFrom(typeInfo))
+                {
+                    type.HasObjectDestroyed = true;
+                }
+
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
@@ -220,6 +230,45 @@ namespace Qml.Net.Internal
             finally
             {
                 Interop.NetTypeInfo.Destroy(type);
+            }
+        }
+
+        public void CallComponentCompleted(IntPtr t)
+        {
+            using (var target = new NetReference(t))
+            {
+                var instance = target.Instance;
+                var componentCompelted = instance as IQmlComponentCompleted;
+                if (componentCompelted == null)
+                {
+                    throw new Exception($"Type {instance.GetType().FullName} doesn't implement IQmlComponentCompleted");
+                }
+
+                var result = componentCompelted.ComponentCompleted();
+                if (Tasks.ListenForExceptionsWhenInvokingTasks)
+                {
+                    result?.ContinueWith(
+                        task =>
+                        {
+                            Tasks.RaiseUnhandledTaskException(task.Exception);
+                        },
+                        TaskContinuationOptions.OnlyOnFaulted);
+                }
+            }
+        }
+
+        public void CallObjectDestroyed(IntPtr t)
+        {
+            using (var target = new NetReference(t))
+            {
+                var instance = target.Instance;
+                var objectDestroyed = instance as IQmlObjectDestroyed;
+                if (objectDestroyed == null)
+                {
+                    throw new Exception($"Type {instance.GetType().FullName} doesn't implement IQmlObjectDestroyed");
+                }
+
+                objectDestroyed.ObjectDestroyed();
             }
         }
 

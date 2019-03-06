@@ -1,7 +1,8 @@
-#include <QQmlEngine>
+﻿#include <QQmlEngine>
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetValueMetaObject.h>
 #include <QmlNet/types/NetSignalInfo.h>
+#include <QmlNet/types/Callbacks.h>
 #include <QDebug>
 #include <utility>
 
@@ -17,6 +18,11 @@ NetValue::~NetValue()
             delete collection;
         }
     }
+
+    if(this->instance->getTypeInfo()->hasObjectDestroyed()){
+        QmlNet::callObjectDestroyed(instance);
+    }
+
 #ifdef QMLNET_TRACE
     qDebug("netvalue: destroyed: for: %s", qPrintable(instance->displayName()));
 #endif
@@ -92,6 +98,18 @@ QList<NetValue*> NetValue::getAllLiveInstances(const QSharedPointer<NetReference
         return collection->netValues;
     }
     return QList<NetValue*>();
+}
+
+void NetValue::classBegin()
+{
+
+}
+
+void NetValue::componentComplete()
+{
+    if(this->instance->getTypeInfo()->hasComponentCompleted()){
+        QmlNet::callComponentCompleted(instance);
+    }
 }
 
 NetValue::NetValue(const QSharedPointer<NetReference>& instance, QObject *parent)

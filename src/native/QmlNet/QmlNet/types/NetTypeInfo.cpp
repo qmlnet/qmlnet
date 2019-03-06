@@ -19,6 +19,8 @@ NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     _variantType(NetVariantTypeEnum_Invalid),
     _isArray(false),
     _isList(false),
+    _hasComponentCompleted(false),
+    _hasObjectDestroyed(false),
     _arrayFacadeLoaded(false),
     _lazyLoaded(false),
     _isLoading(false)
@@ -85,6 +87,26 @@ bool NetTypeInfo::isList()
 void NetTypeInfo::setIsList(bool isList)
 {
     _isList = isList;
+}
+
+bool NetTypeInfo::hasComponentCompleted()
+{
+    return _hasComponentCompleted;
+}
+
+void NetTypeInfo::setHasComponentCompleted(bool hasComponentCompleted)
+{
+    _hasComponentCompleted = hasComponentCompleted;
+}
+
+bool NetTypeInfo::hasObjectDestroyed()
+{
+    return _hasObjectDestroyed;
+}
+
+void NetTypeInfo::setHasObjectDestroyed(bool hasObjectDestroyed)
+{
+    _hasObjectDestroyed = hasObjectDestroyed;
 }
 
 void NetTypeInfo::addMethod(const QSharedPointer<NetMethodInfo>& methodInfo) {
@@ -250,7 +272,7 @@ Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInf
     netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
-Q_DECL_EXPORT uchar type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
+Q_DECL_EXPORT uchar type_info_getIsArray(NetTypeInfoContainer* netTypeInfo)
 {
     if(netTypeInfo->netTypeInfo->isArray()) {
         return 1;
@@ -259,12 +281,12 @@ Q_DECL_EXPORT uchar type_info_setIsArray(NetTypeInfoContainer* netTypeInfo)
     }
 }
 
-Q_DECL_EXPORT void type_info_getIsArray(NetTypeInfoContainer* netTypeInfo, uchar isArray)
+Q_DECL_EXPORT void type_info_setIsArray(NetTypeInfoContainer* netTypeInfo, uchar isArray)
 {
     netTypeInfo->netTypeInfo->setIsArray(isArray == 1);
 }
 
-Q_DECL_EXPORT uchar type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
+Q_DECL_EXPORT uchar type_info_getIsList(NetTypeInfoContainer* netTypeInfo)
 {
     if(netTypeInfo->netTypeInfo->isList()) {
         return 1;
@@ -273,9 +295,37 @@ Q_DECL_EXPORT uchar type_info_setIsList(NetTypeInfoContainer* netTypeInfo)
     }
 }
 
-Q_DECL_EXPORT void type_info_getIsList(NetTypeInfoContainer* netTypeInfo, uchar isList)
+Q_DECL_EXPORT void type_info_setIsList(NetTypeInfoContainer* netTypeInfo, uchar isList)
 {
     netTypeInfo->netTypeInfo->setIsList(isList == 1);
+}
+
+Q_DECL_EXPORT uchar type_info_getHasComponentCompleted(NetTypeInfoContainer* netTypeInfo)
+{
+    if(netTypeInfo->netTypeInfo->hasComponentCompleted()) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+Q_DECL_EXPORT void type_info_setHasComponentCompleted(NetTypeInfoContainer* netTypeInfo, uchar hasComponentCompleted)
+{
+    netTypeInfo->netTypeInfo->setHasComponentCompleted(hasComponentCompleted == 1);
+}
+
+Q_DECL_EXPORT uchar type_info_getHasObjectDestroyed(NetTypeInfoContainer* netTypeInfo)
+{
+    if(netTypeInfo->netTypeInfo->hasObjectDestroyed()) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+Q_DECL_EXPORT void type_info_setHasObjectDestroyed(NetTypeInfoContainer* netTypeInfo, uchar hasObjectDestroyed)
+{
+    netTypeInfo->netTypeInfo->setHasObjectDestroyed(hasObjectDestroyed == 1);
 }
 
 Q_DECL_EXPORT void type_info_addMethod(NetTypeInfoContainer* netTypeInfo, NetMethodInfoContainer* methodInfo) {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Qml.Net.Internal.Types;
 using Xunit;
@@ -420,6 +421,56 @@ namespace Qml.Net.Tests.Types
             indexParameters.Count.Should().Be(1);
             indexParameters[0].Name.Should().Be("index");
             indexParameters[0].Type.FullTypeName.Should().Be(typeof(int).AssemblyQualifiedName);
+        }
+
+        public class TestType20
+        {
+            public class TestObject
+            {
+                
+            }
+
+            public class TestObjectWithComponentCompleted : IQmlComponentCompleted
+            {
+                public Task ComponentCompleted()
+                {
+                    return Task.CompletedTask;
+                }
+            }
+
+            public class TestObjectWithDestroyed : IQmlObjectDestroyed
+            {
+                public void ObjectDestroyed()
+                {
+                }
+            }
+        }
+
+        [Fact]
+        public void Can_detect_neither_completed_or_destroyed_events()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType20.TestObject>();
+            type.EnsureLoaded();
+            type.HasObjectDestroyed.Should().BeFalse();
+            type.HasComponentCompleted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Can_detect_component_completed()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType20.TestObjectWithComponentCompleted>();
+            type.EnsureLoaded();
+            type.HasObjectDestroyed.Should().BeFalse();
+            type.HasComponentCompleted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Can_detect_object_destroyed()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType20.TestObjectWithDestroyed>();
+            type.EnsureLoaded();
+            type.HasObjectDestroyed.Should().BeTrue();
+            type.HasComponentCompleted.Should().BeFalse();
         }
     }
 }

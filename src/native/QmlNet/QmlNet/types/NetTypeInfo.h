@@ -36,6 +36,12 @@ public:
     bool isList();
     void setIsList(bool isList);
 
+    bool hasComponentCompleted();
+    void setHasComponentCompleted(bool hasComponentCompleted);
+
+    bool hasObjectDestroyed();
+    void setHasObjectDestroyed(bool hasObjectDestroyed);
+
     void addMethod(const QSharedPointer<NetMethodInfo>& methodInfo);
     int getMethodCount();
     QSharedPointer<NetMethodInfo> getMethodInfo(int index);
@@ -70,6 +76,8 @@ private:
     NetVariantTypeEnum _variantType;
     bool _isArray;
     bool _isList;
+    bool _hasComponentCompleted;
+    bool _hasObjectDestroyed;
     QList<QSharedPointer<NetMethodInfo>> _methods;
     QList<QSharedPointer<NetMethodInfo>> _methodsLocal;
     QList<QSharedPointer<NetMethodInfo>> _methodsStatic;
