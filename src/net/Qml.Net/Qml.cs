@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Types;
@@ -9,6 +10,11 @@ namespace Qml.Net
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
             return QQmlApplicationEngine.RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
+        }
+
+        public static int RegisterType(Type type, string qmlName, string uri, int versionMajor = 1, int versionMinor = 0)
+        {
+            return QQmlApplicationEngine.RegisterType(NetTypeManager.GetTypeInfo(type), uri, qmlName, versionMajor, versionMinor);
         }
 
         public static int RegisterSingletonType(string url, string uri, int versionMajor, int versionMinor, string qmlName)
