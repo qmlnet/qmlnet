@@ -9,24 +9,32 @@ namespace Qml.Net
     {
         public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
-            return QQmlApplicationEngine.RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
+            return RegisterType(typeof(T), typeof(T).Name, uri, versionMajor, versionMinor);
         }
 
         public static int RegisterType(Type type, string qmlName, string uri, int versionMajor = 1, int versionMinor = 0)
         {
-            return QQmlApplicationEngine.RegisterType(NetTypeManager.GetTypeInfo(type), uri, qmlName, versionMajor, versionMinor);
+            using (var typeInfo = NetTypeManager.GetTypeInfo(type))
+            {
+                return QQmlApplicationEngine.RegisterType(typeInfo, uri, qmlName, versionMajor, versionMinor);
+            }
         }
 
-        public static int RegisterSingletonType(string url, string uri, int versionMajor, int versionMinor, string qmlName)
+        public static int RegisterSingletonType(string url, string qmlName, string uri, int versionMajor = 1, int versionMinor = 0)
         {
             return Interop.QQmlApplicationEngine.RegisterSingletonTypeQml(url, uri, versionMajor, versionMinor, qmlName);
         }
 
         public static int RegisterSingletonType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
         {
-            using (var type = NetTypeManager.GetTypeInfo<T>())
+            return RegisterSingletonType(typeof(T), typeof(T).Name, uri, versionMajor, versionMinor);
+        }
+
+        public static int RegisterSingletonType(Type type, string qmlName, string uri, int versionMajor = 1, int versionMinor = 0)
+        {
+            using (var typeInfo = NetTypeManager.GetTypeInfo(type))
             {
-                return Interop.QQmlApplicationEngine.RegisterSingletonTypeNet(type.Handle, uri, versionMajor, versionMinor, typeof(T).Name);
+                return Interop.QQmlApplicationEngine.RegisterSingletonTypeNet(typeInfo.Handle, uri, versionMajor, versionMinor, qmlName);
             }
         }
     }
