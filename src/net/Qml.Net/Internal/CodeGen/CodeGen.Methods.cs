@@ -204,16 +204,15 @@ namespace Qml.Net.Internal.CodeGen
             {
                 if (value != null)
                 {
-                    var type = value.GetType();
                     if (value is bool valueBool)
                     {
                         variant.Bool = valueBool;
                     }
-                    else if(value is char valueChar)
+                    else if (value is char valueChar)
                     {
                         variant.Char = valueChar;
                     }
-                    else if(value is int valueInt)
+                    else if (value is int valueInt)
                     {
                         variant.Int = valueInt;
                     }
