@@ -25,7 +25,7 @@ namespace Qml.Net.Tests.Qml
             {
             }
 
-            public object TestObjectProperty { get; set; }
+            public virtual object TestObjectProperty { get; set; }
 
             public virtual void TestObjectPropertyTest(string result)
             {
@@ -110,6 +110,38 @@ namespace Qml.Net.Tests.Qml
                 ");
 
             Mock.Verify(x => x.TestObjectPropertyTest("object"), Times.Once);
+        }
+
+        [Fact]
+        public void Verify_string_type()
+        {
+            Mock.SetupGet(x => x.TestObjectProperty).Returns("");
+            Mock.Setup(x => x.TestObjectPropertyTest(It.IsAny<string>()));
+
+            RunQmlTest(
+                "test",
+                @"
+                    var value = test.testObjectProperty
+                    test.testObjectPropertyTest(typeof value)
+                ");
+
+            Mock.Verify(x => x.TestObjectPropertyTest("string"), Times.Once);
+        }
+
+        [Fact]
+        public void Verify_int_type()
+        {
+            Mock.SetupGet(x => x.TestObjectProperty).Returns(1);
+            Mock.Setup(x => x.TestObjectPropertyTest(It.IsAny<string>()));
+
+            RunQmlTest(
+                "test",
+                @"
+                    var value = test.testObjectProperty
+                    test.testObjectPropertyTest(typeof value)
+                ");
+
+            Mock.Verify(x => x.TestObjectPropertyTest("number"), Times.Once);
         }
     }
 }

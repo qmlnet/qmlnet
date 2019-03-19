@@ -204,7 +204,55 @@ namespace Qml.Net.Internal.CodeGen
             {
                 if (value != null)
                 {
-                    variant.Instance = NetReference.CreateForObject(value);
+                    var type = value.GetType();
+                    if (value is bool valueBool)
+                    {
+                        variant.Bool = valueBool;
+                    }
+                    else if(value is char valueChar)
+                    {
+                        variant.Char = valueChar;
+                    }
+                    else if(value is int valueInt)
+                    {
+                        variant.Int = valueInt;
+                    }
+                    else if (value is uint valueUInt)
+                    {
+                        variant.UInt = valueUInt;
+                    }
+                    else if (value is long valueLong)
+                    {
+                        variant.Long = valueLong;
+                    }
+                    else if (value is ulong valueULong)
+                    {
+                        variant.ULong = valueULong;
+                    }
+                    else if (value is float valueFloat)
+                    {
+                        variant.Float = valueFloat;
+                    }
+                    else if (value is double valueDouble)
+                    {
+                        variant.Double = valueDouble;
+                    }
+                    else if (value is string valueString)
+                    {
+                        variant.String = valueString;
+                    }
+                    else if (value is DateTimeOffset valueDateTimeOffset)
+                    {
+                        variant.DateTime = valueDateTimeOffset;
+                    }
+                    else if (value is NetJsValue valueJsValue)
+                    {
+                        variant.JsValue = valueJsValue;
+                    }
+                    else
+                    {
+                        variant.Instance = NetReference.CreateForObject(value);
+                    }
                 }
                 else
                 {

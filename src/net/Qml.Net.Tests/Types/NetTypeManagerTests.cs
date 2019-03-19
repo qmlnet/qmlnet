@@ -427,7 +427,6 @@ namespace Qml.Net.Tests.Types
         {
             public class TestObject
             {
-                
             }
 
             public class TestObjectWithComponentCompleted : IQmlComponentCompleted
