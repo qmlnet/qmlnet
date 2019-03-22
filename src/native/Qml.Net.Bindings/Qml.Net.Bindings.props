@@ -1,27 +1,64 @@
 <Project>
 
     <PropertyGroup>
-        <BuildrootOutput>$(MSBuildProjectDirectory)/bin/buildroot-output</BuildrootOutput>
-        <BuildrootPath>$(MSBuildProjectDirectory)/../../buildroot-2019.02</BuildrootPath>
+        <BuildrootPath>$(MSBuildProjectDirectory)/bin/buildroot-2019.02</BuildrootPath>
         <EnableDefaultItems>false</EnableDefaultItems>
         <IsPackable>true</IsPackable>
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
+    <!-- Clean Everything related to native build -->
     <Target Name="CleanNative" BeforeTargets="Clean">
-        <RemoveDir Directories="$(BuildrootOutput);$(MSBuildProjectDirectory)/bin/native" />
+        <RemoveDir Directories="$(BuildrootPath);$(MSBuildProjectDirectory)/bin/native" />
     </Target>
 
-    <Target Name="BuildrootSdk" AfterTargets="Restore" BeforeTargets="Build">
-        <Copy SourceFiles="$(MSBuildProjectDirectory)/dotnet-$(RuntimeIdentifier)_defconfig" 
-            DestinationFolder="$(BuildrootPath)/configs" />
-        <Exec Command="make O=$(BuildrootOutput) dotnet-$(RuntimeIdentifier)_defconfig -s" 
-            WorkingDirectory="$(BuildrootPath)" />
-        <Exec Command="make O=$(BuildrootOutput) sdk -s" 
+    <!-- Download Buildroot -->
+    <Target Name="BuildrootDownload" AfterTargets="Restore">
+        <DownloadFile DestinationFolder="$(MSBuildProjectDirectory)/bin"
+            SourceUrl="https://github.com/buildroot/buildroot/archive/2019.02.zip">
+            <Output TaskParameter="DownloadedFile" ItemName="BuildrootZip" />
+        </DownloadFile>
+    </Target>
+
+    <!-- Extract Buildroot Zip -->
+    <Target Name="BuildrootExtract" DependsOnTargets="BuildrootDownload">
+        <Exec Command="unzip -o ./buildroot-2019.02.zip" 
+            WorkingDirectory="$(MSBuildProjectDirectory)/bin" />
+        <!--<Unzip
+            SourceFiles="$(MSBuildProjectDirectory)/bin/buildroot-2019.02.zip"
+            SkipUnchangedFiles="true"
+            DestinationFolder="$(MSBuildProjectDirectory)/bin/buildroot" />-->
+    </Target>
+
+    <!-- Configure Buildroot -->
+    <Target Name="BuildrootConfig" DependsOnTargets="BuildrootExtract">
+        <Copy DestinationFolder="$(BuildrootPath)/configs" 
+            SourceFiles="$(MSBuildProjectDirectory)/dotnet-$(RuntimeIdentifier)_defconfig" />
+        <Exec Command="make dotnet-$(RuntimeIdentifier)_defconfig -s" 
+            IgnoreExitCode="true"
             WorkingDirectory="$(BuildrootPath)" />
     </Target>
 
-    <Target Name="CxxCompile" AfterTargets="BuildrootSdk" BeforeTargets="Build">
+    <!-- Download Source Packages -->
+    <Target Name="BuildrootSource" AfterTargets="Restore" DependsOnTargets="BuildrootConfig" >
+        <Exec Command="make source -s" 
+            IgnoreExitCode="true"
+            WorkingDirectory="$(BuildrootPath)" />
+    </Target>
+
+    <Target Name="BuildrootToolchain" DependsOnTargets="BuildrootSource" >
+        <Exec Command="make toolchain -s" 
+            IgnoreExitCode="true"
+            WorkingDirectory="$(BuildrootPath)" />
+    </Target>
+
+    <Target Name="BuildrootSdk" DependsOnTargets="BuildrootToolchain">
+        <Exec Command="make sdk -s" 
+            IgnoreExitCode="true"
+            WorkingDirectory="$(BuildrootPath)" />
+    </Target>
+
+    <Target Name="CxxCompile" DependsOnTargets="BuildrootSdk" BeforeTargets="Build">
         <MakeDir Directories="$(MSBuildProjectDirectory)/bin/native" />
         <Exec Command="$(BuildrootOutput)/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
@@ -30,7 +67,10 @@
     </Target>
 
     <ItemGroup>
-        <Content CopyToOutputDirectory="PreserveNewest" Include="bin/native/libQmlNet.so" Pack="true" PackagePath="runtimes/$(RuntimeIdentifier)/native/" />
+        <Content CopyToOutputDirectory="PreserveNewest" 
+            Include="bin/native/libQmlNet.so" 
+            Pack="true" 
+            PackagePath="runtimes/$(RuntimeIdentifier)/native/" />
     </ItemGroup>
 
 </Project>

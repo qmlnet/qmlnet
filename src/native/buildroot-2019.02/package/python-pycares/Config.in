@@ -1,6 +1,0 @@
-config BR2_PACKAGE_PYTHON_PYCARES
-	bool "python-pycares"
-	help
-	  Python interface for c-ares.
-
-	  http://github.com/saghul/pycares
