@@ -1,6 +1,7 @@
 <Project>
 
     <PropertyGroup>
+        <BuildrootOutput>$(MSBuildProjectDirectory)/bin/buildroot-output</BuildrootOutput>
         <BuildrootPath>$(MSBuildProjectDirectory)/../../buildroot-2019.02</BuildrootPath>
         <EnableDefaultItems>false</EnableDefaultItems>
         <IsPackable>true</IsPackable>
@@ -8,21 +9,21 @@
     </PropertyGroup>
 
     <Target Name="CleanNative" BeforeTargets="Clean">
-        <RemoveDir Directories="$(MSBuildProjectDirectory)/bin/buildroot-output;$(MSBuildProjectDirectory)/bin/native" />
+        <RemoveDir Directories="$(BuildrootOutput);$(MSBuildProjectDirectory)/bin/native" />
     </Target>
 
     <Target Name="BuildrootSdk" AfterTargets="Restore" BeforeTargets="Build">
         <Copy SourceFiles="$(MSBuildProjectDirectory)/dotnet-$(RuntimeIdentifier)_defconfig" 
             DestinationFolder="$(BuildrootPath)/configs" />
-        <Exec Command="make O=$(MSBuildProjectDirectory)/bin/buildroot-output dotnet-$(RuntimeIdentifier)_defconfig" 
+        <Exec Command="make O=$(BuildrootOutput) dotnet-$(RuntimeIdentifier)_defconfig -s" 
             WorkingDirectory="$(BuildrootPath)" />
-        <Exec Command="make O=$(MSBuildProjectDirectory)/bin/buildroot-output sdk" 
+        <Exec Command="make O=$(BuildrootOutput) sdk -s" 
             WorkingDirectory="$(BuildrootPath)" />
     </Target>
 
     <Target Name="CxxCompile" AfterTargets="BuildrootSdk" BeforeTargets="Build">
         <MakeDir Directories="$(MSBuildProjectDirectory)/bin/native" />
-        <Exec Command="$(MSBuildProjectDirectory)/bin/buildroot-output/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
+        <Exec Command="$(BuildrootOutput)/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
         <Exec Command="make" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
