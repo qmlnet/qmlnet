@@ -10,6 +10,7 @@
     <!-- Clean Everything related to native build -->
     <Target Name="CleanNative" BeforeTargets="Clean">
         <RemoveDir Directories="$(BuildrootPath);$(MSBuildProjectDirectory)/bin/native" />
+        <Delete Files="$(MSBuildProjectDirectory)/bin/buildroot-2019.02.zip" />
     </Target>
 
     <!-- Download Buildroot -->
@@ -58,9 +59,9 @@
             WorkingDirectory="$(BuildrootPath)" />
     </Target>
 
-    <Target Name="CxxCompile" DependsOnTargets="BuildrootSdk" BeforeTargets="Build">
+    <Target Name="NativeBuild" DependsOnTargets="BuildrootSdk" BeforeTargets="Build">
         <MakeDir Directories="$(MSBuildProjectDirectory)/bin/native" />
-        <Exec Command="$(BuildrootOutput)/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
+        <Exec Command="$(BuildrootPath)/output/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
         <Exec Command="make" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
@@ -70,7 +71,7 @@
         <Content CopyToOutputDirectory="PreserveNewest" 
             Include="bin/native/libQmlNet.so" 
             Pack="true" 
-            PackagePath="runtimes/$(RuntimeIdentifier)/native/" />
+            PackagePath="runtimes/$(RuntimeIdentifier)/native/libQmlNet.so" />
     </ItemGroup>
 
 </Project>
