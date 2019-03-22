@@ -1,0 +1,54 @@
+config BR2_PACKAGE_LIBCURL
+	bool "libcurl"
+	help
+	  cURL is a tool for getting files from FTP, HTTP, Gopher,
+	  Telnet, and Dict servers, using any of the supported
+	  protocols.
+
+	  http://curl.haxx.se/
+
+if BR2_PACKAGE_LIBCURL
+
+config BR2_PACKAGE_CURL
+	bool "curl binary"
+	help
+	  Install curl binary as well
+
+config BR2_PACKAGE_LIBCURL_VERBOSE
+	bool "enable verbose strings"
+	help
+	  Enable verbose text strings
+
+config BR2_PACKAGE_LIBCURL_TLS_SUPPORT
+	bool
+	default y if BR2_PACKAGE_OPENSSL
+	default y if BR2_PACKAGE_GNUTLS
+	default y if BR2_PACKAGE_LIBNSS
+	default y if BR2_PACKAGE_MBEDTLS
+
+choice
+	prompt "SSL/TLS library to use"
+	depends on BR2_PACKAGE_LIBCURL_TLS_SUPPORT
+
+config BR2_PACKAGE_LIBCURL_OPENSSL
+	bool "OpenSSL"
+	depends on BR2_PACKAGE_OPENSSL
+
+config BR2_PACKAGE_LIBCURL_GNUTLS
+	bool "GnuTLS"
+	depends on BR2_PACKAGE_GNUTLS
+
+config BR2_PACKAGE_LIBCURL_LIBNSS
+	bool "NSS"
+	depends on BR2_PACKAGE_LIBNSS
+
+config BR2_PACKAGE_LIBCURL_MBEDTLS
+	bool "mbed TLS"
+	depends on BR2_PACKAGE_MBEDTLS
+
+endchoice
+
+comment "A TLS library is needed for SSL/TLS support"
+	depends on !BR2_PACKAGE_LIBCURL_TLS_SUPPORT
+
+endif
