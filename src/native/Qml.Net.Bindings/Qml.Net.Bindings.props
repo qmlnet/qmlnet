@@ -1,0 +1,18 @@
+<Project>
+
+    <PropertyGroup>
+        <BuildrootPath>$(MSBuildProjectDirectory)/../../buildroot-2019.02</BuildrootPath>
+        <EnableDefaultItems>false</EnableDefaultItems>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <Target Name="BuildrootSdk" AfterTargets="Restore" BeforeTargets="Build">
+        <Copy SourceFiles="$(MSBuildProjectDirectory)/dotnet-$(RuntimeIdentifier)_defconfig" 
+            DestinationFolder="$(BuildrootPath)/configs" />
+        <Exec Command="make O=$(MSBuildProjectDirectory)/bin/buildroot-output dotnet-$(RuntimeIdentifier)_defconfig" 
+            WorkingDirectory="$(BuildrootPath)" />
+        <Exec Command="make O=$(MSBuildProjectDirectory)/bin/buildroot-output sdk" 
+            WorkingDirectory="$(BuildrootPath)" />
+    </Target>
+
+</Project>

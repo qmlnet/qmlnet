@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="../Qml.Net.Bindings.props" />
+
+    <PropertyGroup>
+        <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="output/**/*">
+        <PackagePath>runtimes/linux-x64/native/</PackagePath>
+        <Pack>true</Pack>
+        </Content>
+    </ItemGroup>
+
+</Project>
