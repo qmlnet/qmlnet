@@ -3,7 +3,7 @@
     <Import Project="../Qml.Net.Bindings.props" />
 
     <PropertyGroup>
-        <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
+        <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
     </PropertyGroup>
 
 </Project>
