@@ -15,4 +15,12 @@
             WorkingDirectory="$(BuildrootPath)" />
     </Target>
 
+    <Target Name="CxxCompile" BeforeTargets="Build;BuildrootSdk">
+        <MakeDir Directories="$(MSBuildProjectDirectory)/bin/native" />
+        <Exec Command="$(MSBuildProjectDirectory)/bin/buildroot-output/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
+            WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
+        <Exec Command="make" 
+            WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
+    </Target>
+
 </Project>
