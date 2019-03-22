@@ -59,7 +59,7 @@
             WorkingDirectory="$(BuildrootPath)" />
     </Target>
 
-    <Target Name="NativeBuild" DependsOnTargets="BuildrootSdk" BeforeTargets="Build">
+    <Target Name="NativeBuild" DependsOnTargets="BuildrootSdk" BeforeTargets="Build;Pack">
         <MakeDir Directories="$(MSBuildProjectDirectory)/bin/native" />
         <Exec Command="$(BuildrootPath)/output/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
