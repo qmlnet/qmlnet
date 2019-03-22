@@ -7,6 +7,10 @@
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
+    <Target Name="CleanNative" BeforeTargets="Clean">
+        <RemoveDir Directories="$(MSBuildProjectDirectory)/bin/buildroot-output;$(MSBuildProjectDirectory)/bin/native" />
+    </Target>
+
     <Target Name="BuildrootSdk" AfterTargets="Restore" BeforeTargets="Build">
         <Copy SourceFiles="$(MSBuildProjectDirectory)/dotnet-$(RuntimeIdentifier)_defconfig" 
             DestinationFolder="$(BuildrootPath)/configs" />
