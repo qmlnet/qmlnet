@@ -24,4 +24,8 @@
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
     </Target>
 
+    <ItemGroup>
+        <Content CopyToOutputDirectory="PreserveNewest" Include="bin/native/libQmlNet.so" Pack="true" PackagePath="runtimes/$(RuntimeIdentifier)/native/" />
+    </ItemGroup>
+
 </Project>
