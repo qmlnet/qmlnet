@@ -13,6 +13,11 @@ namespace Qml.Net
     {
         public static bool ActivateSignal(this object instance, string signalName, params object[] args)
         {
+            if (!QCoreApplication.IsMainThread)
+            {
+                throw new Exception("An attempt was made to activate a signal from a non-UI thread.");
+            }
+
             var existing = NetReference.CreateForObject(instance, false /*Ignore if not tagged*/);
             if (existing != null && existing.ActivateSignal(signalName, args))
             {
