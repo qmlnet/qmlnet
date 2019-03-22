@@ -3,6 +3,7 @@
     <PropertyGroup>
         <BuildrootPath>$(MSBuildProjectDirectory)/../../buildroot-2019.02</BuildrootPath>
         <EnableDefaultItems>false</EnableDefaultItems>
+        <IsPackable>true</IsPackable>
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
@@ -15,7 +16,7 @@
             WorkingDirectory="$(BuildrootPath)" />
     </Target>
 
-    <Target Name="CxxCompile" BeforeTargets="Build;BuildrootSdk">
+    <Target Name="CxxCompile" AfterTargets="BuildrootSdk" BeforeTargets="Build">
         <MakeDir Directories="$(MSBuildProjectDirectory)/bin/native" />
         <Exec Command="$(MSBuildProjectDirectory)/bin/buildroot-output/host/bin/qmake ../../../../QmlNet/QmlNet.pro" 
             WorkingDirectory="$(MSBuildProjectDirectory)/bin/native" />
