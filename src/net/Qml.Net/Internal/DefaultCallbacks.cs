@@ -245,12 +245,12 @@ namespace Qml.Net.Internal
                 }
 
                 var result = componentCompelted.ComponentCompleted();
-                if (Tasks.ListenForExceptionsWhenInvokingTasks)
+                if (QmlNetConfig.ListenForExceptionsWhenInvokingTasks)
                 {
                     result?.ContinueWith(
                         task =>
                         {
-                            Tasks.RaiseUnhandledTaskException(task.Exception);
+                            QmlNetConfig.RaiseUnhandledTaskException(task.Exception);
                         },
                         TaskContinuationOptions.OnlyOnFaulted);
                 }
@@ -344,12 +344,12 @@ namespace Qml.Net.Internal
                 Task resultTask = null;
                 del(target, parameters, result, ref resultTask);
 
-                if (Tasks.ListenForExceptionsWhenInvokingTasks)
+                if (QmlNetConfig.ListenForExceptionsWhenInvokingTasks)
                 {
                     resultTask?.ContinueWith(
                         task =>
                         {
-                            Tasks.RaiseUnhandledTaskException(task.Exception);
+                            QmlNetConfig.RaiseUnhandledTaskException(task.Exception);
                         },
                         TaskContinuationOptions.OnlyOnFaulted);
                 }
