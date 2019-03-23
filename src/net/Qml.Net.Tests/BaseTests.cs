@@ -9,6 +9,7 @@ namespace Qml.Net.Tests
 
         protected BaseTests()
         {
+            QmlNetConfig.ShouldEnsureUIThread = false; // Not need for unit tests.
             Monitor.Enter(LockObject);
         }
 

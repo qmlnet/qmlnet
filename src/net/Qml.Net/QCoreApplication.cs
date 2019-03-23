@@ -16,7 +16,7 @@ namespace Qml.Net
         private GCHandle _triggerHandle;
         private GCHandle _aboutToQuitHandle;
         private readonly List<AboutToQuitEventHandler> _aboutToQuitEventHandlers = new List<AboutToQuitEventHandler>();
-        private static int _threadId;
+        private static int? _threadId;
 
         protected QCoreApplication(IntPtr handle, bool ownsHandle)
             : base(handle, ownsHandle)
@@ -66,7 +66,18 @@ namespace Qml.Net
             SynchronizationContext.SetSynchronizationContext(new QtSynchronizationContext(this));
         }
 
-        public static bool IsMainThread => Environment.CurrentManagedThreadId == _threadId;
+        public static bool IsMainThread
+        {
+            get
+            {
+                if (!_threadId.HasValue)
+                {
+                    throw new Exception("QCoreApplication hasn't been created yet, can't determine what thread is the main thread.");
+                }
+
+                return Environment.CurrentManagedThreadId == _threadId;
+            }
+        }
 
         public int Exec()
         {

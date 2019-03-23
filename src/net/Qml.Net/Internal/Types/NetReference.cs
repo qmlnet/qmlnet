@@ -25,6 +25,7 @@ namespace Qml.Net.Internal.Types
                 {
                     return obj;
                 }
+
                 throw new InvalidOperationException($"No object found for object id {ObjectId}");
             }
         }
@@ -33,6 +34,8 @@ namespace Qml.Net.Internal.Types
 
         public bool ActivateSignal(string signalName, params object[] parameters)
         {
+            QmlNetConfig.EnsureUIThread();
+
             if (parameters != null && parameters.Length > 0)
             {
                 using (var list = new NetVariantList())
@@ -45,6 +48,7 @@ namespace Qml.Net.Internal.Types
                             list.Add(variant);
                         }
                     }
+
                     return Interop.NetReference.ActivateSignal(Handle, signalName, list.Handle) == 1;
                 }
             }
