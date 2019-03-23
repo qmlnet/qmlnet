@@ -288,7 +288,6 @@ namespace Qml.Net
 
             public override void Post(SendOrPostCallback d, object state)
             {
-                Console.WriteLine("Dispatched");
                 _app.Dispatch(() => d.Invoke(state));
             }
         }
