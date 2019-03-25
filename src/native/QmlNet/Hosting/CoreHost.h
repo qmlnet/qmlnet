@@ -26,6 +26,7 @@ public:
         QString entryPoint;
         QString managedExe;
         QList<QString> args;
+        QString nativeModule;
     };
 
     enum LoadHostFxrResult
