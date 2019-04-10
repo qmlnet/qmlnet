@@ -22,7 +22,8 @@ static QString nativeModule;
 
 static void* getExportedFunction(const char* symbolName) {
 #ifdef _WIN32
-    HMODULE library = GetModuleHandle(nativeModule.toLocal8Bit());
+    HMODULE library = GetModuleHandle(nativeModule.isNull() || nativeModule.isEmpty() ? nullptr
+                                                                                     : nativeModule.toLocal8Bit());
     FARPROC symbol = GetProcAddress(library, symbolName);
     return (void*)symbol;
 #else
