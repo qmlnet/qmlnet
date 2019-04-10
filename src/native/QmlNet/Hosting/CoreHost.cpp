@@ -27,7 +27,8 @@ static void* getExportedFunction(const char* symbolName) {
     FARPROC symbol = GetProcAddress(library, symbolName);
     return (void*)symbol;
 #else
-    void* dll = dlopen(nullptr, RTLD_LAZY);
+    void* dll = dlopen(nativeModule.isNull() || nativeModule.isEmpty() ? nullptr : nativeModule.toLocal8Bit(),
+                       RTLD_LAZY);
     void* result = dlsym(dll, symbolName);
     dlclose(dll);
     return result;
