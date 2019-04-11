@@ -6,8 +6,6 @@ matrix:
       dotnet: 2.2
       os: linux
       dist: xenial
-      sudo: required
-      services: docker
     - name: "OSX Qt 5.12.0"
       dotnet: 2.2.101
       os: osx
