@@ -1,7 +1,8 @@
 image: Visual Studio 2017
 before_build:
-  - ps: Invoke-WebRequest -Uri https://github.com/qmlnet/qmlnet/releases/download/ci/qt-5.12-windows-x64.zip -OutFile C:\qt.zip
-  - cmd: 7z x C:\qt.zip -oC:\Qt5120
+  - ps: Invoke-WebRequest -Uri https://github.com/qmlnet/qt-runtimes/releases/download/releases/qt-5.12.2-de3f7b1-win-x64-dev.tar.gz -OutFile C:\qmlnet-qt.tar.gz
+  - cmd: 7z x C:\qmlnet-qt.tar.gz -oC:\
+  - cmd: 7z x C:\qmlnet-qt.tar -oC:\qmlnet-qt
   - cmd: rm -r C:\Tools\GitVersion\
   - cmd: dotnet tool install -g GitVersion.Tool --version 4.0.1-beta1-58
   - cmd: dotnet gitversion > version.json
