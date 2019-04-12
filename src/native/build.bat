@@ -7,7 +7,7 @@ mkdir %BATCHDIR%output
 
 cd %BATCHDIR%build
 set PREFIX=%BATCHDIR%output
-qmake ../QmlNet CONFIG+=install-qt-libs
+qmake ../QmlNet
 
 jom
 jom install
