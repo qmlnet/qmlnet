@@ -1,4 +1,6 @@
 using System;
+using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -7,7 +9,7 @@ using System.Threading;
 
 namespace Qml.Net.Runtimes
 {
-    public static class RuntimeManager
+    public static partial class RuntimeManager
     {
         public delegate string BuildRuntimeUrlDelegate(string qtVersion, RuntimeTarget target);
 
@@ -26,6 +28,8 @@ namespace Qml.Net.Runtimes
                     return "linux-x64";
                 case RuntimeTarget.OSX64:
                     return "osx-x64";
+                case RuntimeTarget.Unsupported:
+                    throw new Exception("Unsupported target");
                 default:
                     throw new Exception($"Unknown target {target}");
             }
@@ -33,13 +37,16 @@ namespace Qml.Net.Runtimes
 
         public delegate void ExtractTarGZStreamDelegate(Stream stream, string destinationDirectory);
 
+        // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
         public static ExtractTarGZStreamDelegate ExtractTarGZStream = Tar.ExtractTarFromGzipStream;
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public static RuntimeTarget GetCurrentRuntimeTarget()
         {
             if (IntPtr.Size != 8)
             {
-                throw new Exception("Only 64bit supported");
+                return RuntimeTarget.Unsupported;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -57,7 +64,7 @@ namespace Qml.Net.Runtimes
                 return RuntimeTarget.OSX64;
             }
 
-            throw new Exception("Unknown OS platform");
+            return RuntimeTarget.Unsupported;
         }
 
         public static void DownloadRuntimeToDirectory(
@@ -94,7 +101,7 @@ namespace Qml.Net.Runtimes
             });
         }
 
-        public static void GetUrlStream(string url, Action<Stream> action)
+        private static void GetUrlStream(string url, Action<Stream> action)
         {
             var syncContext = SynchronizationContext.Current;
             try
@@ -112,147 +119,40 @@ namespace Qml.Net.Runtimes
             }
         }
 
-        public static void ConfigureRuntimeDirectory(string directory)
+        public static string FindSuitableQtRuntime(RuntimeSearchLocation runtimeSearchLocation = RuntimeSearchLocation.All)
         {
-            if (string.IsNullOrEmpty(directory))
+            var potentials = GetPotentialRuntimesDirectories(runtimeSearchLocation);
+            return FindQtRuntime(potentials, QmlNetConfig.QtBuildVersion, GetCurrentRuntimeTarget());
+        }
+
+        public static void DiscoverOrDownloadSuitableQtRuntime(RuntimeSearchLocation runtimeSearchLocation = RuntimeSearchLocation.All)
+        {
+            var suitableRuntime = FindSuitableQtRuntime(runtimeSearchLocation);
+            if (!string.IsNullOrEmpty(suitableRuntime))
             {
-                throw new ArgumentNullException(nameof(directory));
+                // Found one!
+                ConfigureRuntimeDirectory(suitableRuntime);
+                return;
             }
 
-            if (!Directory.Exists(directory))
+            var currentTarget = GetCurrentRuntimeTarget();
+            var version = $"{QmlNetConfig.QtBuildVersion}-{RuntimeTargetToString(currentTarget)}";
+
+            // Let's try to download and install the Qt runtime into the users directory.
+            var destinationDirectory = Path.Combine(GetPotentialRuntimesDirectories(RuntimeSearchLocation.UserDirectory).Single(), version);
+            var destinationTmpDirectory = $"{destinationDirectory}-{Guid.NewGuid().ToString().Replace("-", "")}";
+
+            Directory.CreateDirectory(destinationTmpDirectory);
+            DownloadRuntimeToDirectory(QmlNetConfig.QtBuildVersion, currentTarget, destinationTmpDirectory);
+
+            if (Directory.Exists(destinationDirectory))
             {
-                throw new Exception("The directory doesn't exist.");
+                Directory.Delete(destinationDirectory, true);
             }
 
-            var versionFile = Path.Combine(directory, "version.txt");
+            Directory.Move(destinationTmpDirectory, destinationDirectory);
 
-            if (!File.Exists(versionFile))
-            {
-                throw new Exception("The version.txt file doesn't exist in the directory.");
-            }
-
-            var version = File.ReadAllText(versionFile).TrimEnd(Environment.NewLine.ToCharArray());
-            var expectedVersion = $"{QmlNetConfig.QtBuildVersion}-{RuntimeTargetToString(GetCurrentRuntimeTarget())}";
-
-            if (version != expectedVersion)
-            {
-                throw new Exception($"The version of the runtime directory was {versionFile}, but expected {expectedVersion}");
-            }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                var pluginsDirectory = Path.Combine(directory, "qt", "plugins");
-                if (!Directory.Exists(pluginsDirectory))
-                {
-                    throw new Exception($"Plugins directory didn't exist: {pluginsDirectory}");
-                }
-                Environment.SetEnvironmentVariable("QT_PLUGIN_PATH", pluginsDirectory);
-
-                var qmlDirectory = Path.Combine(directory, "qt", "qml");
-                if (!Directory.Exists(qmlDirectory))
-                {
-                    throw new Exception($"QML directory didn't exist: {qmlDirectory}");
-                }
-                Environment.SetEnvironmentVariable("QML2_IMPORT_PATH", qmlDirectory);
-
-                var libDirectory = Path.Combine(directory, "qt", "lib");
-                if (!Directory.Exists(libDirectory))
-                {
-                    throw new Exception($"The lib directory didn't exist: {libDirectory}");
-                }
-
-                var preloadPath = Path.Combine(libDirectory, "preload.txt");
-                if (!File.Exists(preloadPath))
-                {
-                    throw new Exception($"The preload.txt file didn't exist: {preloadPath}");
-                }
-
-                var libsToPreload = File.ReadAllLines(preloadPath).Where(x => !string.IsNullOrEmpty(x))
-                    .Select(x => Path.Combine(libDirectory, x))
-                    .ToList();
-                var platformLoader = NetNativeLibLoader.Loader.PlatformLoaderBase.SelectPlatformLoader();
-                foreach (var libToPreload in libsToPreload)
-                {
-                    var libHandler = platformLoader.LoadLibrary(libToPreload);
-                    if (libHandler == IntPtr.Zero)
-                    {
-                        throw new Exception($"Unabled to preload library: {libToPreload}");
-                    }
-                }
-            }
-            
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                var pluginsDirectory = Path.Combine(directory, "qt", "plugins");
-                if (!Directory.Exists(pluginsDirectory))
-                {
-                    throw new Exception($"Plugins directory didn't exist: {pluginsDirectory}");
-                }
-                Environment.SetEnvironmentVariable("QT_PLUGIN_PATH", pluginsDirectory);
-
-                var qmlDirectory = Path.Combine(directory, "qt", "qml");
-                if (!Directory.Exists(qmlDirectory))
-                {
-                    throw new Exception($"QML directory didn't exist: {qmlDirectory}");
-                }
-                Environment.SetEnvironmentVariable("QML2_IMPORT_PATH", qmlDirectory);
-
-                var libDirectory = Path.Combine(directory, "qt", "lib");
-                if (!Directory.Exists(libDirectory))
-                {
-                    throw new Exception($"The lib directory didn't exist: {libDirectory}");
-                }
-
-                var preloadPath = Path.Combine(libDirectory, "preload.txt");
-                if (!File.Exists(preloadPath))
-                {
-                    throw new Exception($"The preload.txt file didn't exist: {preloadPath}");
-                }
-
-                var libsToPreload = File.ReadAllLines(preloadPath).Where(x => !string.IsNullOrEmpty(x))
-                    .Select(x => Path.Combine(libDirectory, x))
-                    .ToList();
-                var platformLoader = NetNativeLibLoader.Loader.PlatformLoaderBase.SelectPlatformLoader();
-                foreach (var libToPreload in libsToPreload)
-                {
-                    var libHandler = platformLoader.LoadLibrary(libToPreload);
-                    if (libHandler == IntPtr.Zero)
-                    {
-                        throw new Exception($"Unabled to preload library: {libToPreload}");
-                    }
-                }
-            }
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var pluginsDirectory = Path.Combine(directory, "qt", "plugins");
-                if (!Directory.Exists(pluginsDirectory))
-                {
-                    throw new Exception($"Plugins directory didn't exist: {pluginsDirectory}");
-                }
-                Environment.SetEnvironmentVariable("QT_PLUGIN_PATH", pluginsDirectory);
-
-                var qmlDirectory = Path.Combine(directory, "qt", "qml");
-                if (!Directory.Exists(qmlDirectory))
-                {
-                    throw new Exception($"QML directory didn't exist: {qmlDirectory}");
-                }
-                Environment.SetEnvironmentVariable("QML2_IMPORT_PATH", qmlDirectory);
-
-                var binDirectory = Path.Combine(directory, "qt", "bin");
-                if (!Directory.Exists(binDirectory))
-                {
-                    throw new Exception($"The bin directory didn't exist: {binDirectory}");
-                }
-
-                Environment.SetEnvironmentVariable("PATH", $"{binDirectory};{Environment.GetEnvironmentVariable("PATH")}");
-
-                var preloadPath = Path.Combine(binDirectory, "preload.txt");
-                if (!File.Exists(preloadPath))
-                {
-                    throw new Exception($"The preload.txt file didn't exist: {preloadPath}");
-                }
-            }
+            ConfigureRuntimeDirectory(destinationDirectory);
         }
     }
 }

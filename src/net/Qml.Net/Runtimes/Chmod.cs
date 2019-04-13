@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Qml.Net.Runtimes
 {
-    internal class Chmod
+    internal static class Chmod
     {
         [DllImport("libc", SetLastError = true)]
         private static extern int chmod(string pathname, int mode);

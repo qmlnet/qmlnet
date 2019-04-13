@@ -4,6 +4,7 @@ namespace Qml.Net.Runtimes
     {
         LinuxX64,
         OSX64,
-        Windows64
+        Windows64,
+        Unsupported
     }
 }

@@ -10,7 +10,7 @@ using Newtonsoft.Json.Schema;
 
 namespace Qml.Net.Runtimes
 {
-    internal class Tar
+    internal static class Tar
     {
         public enum EntryType : byte
         {
@@ -31,7 +31,7 @@ namespace Qml.Net.Runtimes
             // ReSharper restore UnusedMember.Global
         }
 
-        public static Header ReadHeader(Stream stream)
+        private static Header ReadHeader(Stream stream)
         {
             var buffer = new byte[512];
             var bytesRead = stream.Read(buffer, 0, buffer.Length);
@@ -70,7 +70,7 @@ namespace Qml.Net.Runtimes
             return header;
         }
 
-        public class Header
+        private class Header
         {
             public EntryType EntryType { get; set; }
 
