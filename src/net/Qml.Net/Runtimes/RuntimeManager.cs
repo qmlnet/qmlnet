@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -12,21 +13,23 @@ namespace Qml.Net.Runtimes
 
         // ReSharper disable once MemberCanBePrivate.Global
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
-        public static BuildRuntimeUrlDelegate BuildRuntimeUrl = (qtVersion, target) =>
+        public static BuildRuntimeUrlDelegate BuildRuntimeUrl = (qtVersion, target)
+            => $"https://github.com/qmlnet/qt-runtimes/releases/download/releases/{qtVersion}-{RuntimeTargetToString(target)}-runtime.tar.gz";
+
+        private static string RuntimeTargetToString(RuntimeTarget target)
         {
-            var url = $"https://github.com/qmlnet/qt-runtimes/releases/download/releases/{qtVersion}-{{target}}-runtime.tar.gz";
             switch (target)
             {
                 case RuntimeTarget.Windows64:
-                    return url.Replace("{target}", "win-x64");
+                    return "win-x64";
                 case RuntimeTarget.LinuxX64:
-                    return url.Replace("{target}", "linux-x64");
+                    return "linux-x64";
                 case RuntimeTarget.OSX64:
-                    return url.Replace("{target}", "osx-x64");
+                    return "osx-x64";
                 default:
                     throw new Exception($"Unknown target {target}");
             }
-        };
+        }
 
         public delegate void ExtractTarGZStreamDelegate(Stream stream, string destinationDirectory);
 
@@ -129,40 +132,51 @@ namespace Qml.Net.Runtimes
             }
 
             var version = File.ReadAllText(versionFile).TrimEnd(Environment.NewLine.ToCharArray());
-            var expectedVersion = $"{QmlNetConfig.QtBuildVersion}-{GetCurrentRuntimeTarget()}";
+            var expectedVersion = $"{QmlNetConfig.QtBuildVersion}-{RuntimeTargetToString(GetCurrentRuntimeTarget())}";
 
             if (version != expectedVersion)
             {
                 throw new Exception($"The version of the runtime directory was {versionFile}, but expected {expectedVersion}");
             }
 
-            var pluginsDirectory = Path.Combine(directory, "plugins");
+            var pluginsDirectory = Path.Combine(directory, "qt", "plugins");
             if (!Directory.Exists(pluginsDirectory))
             {
                 throw new Exception($"Plugins directory didn't exist: {pluginsDirectory}");
             }
             Environment.SetEnvironmentVariable("QT_PLUGIN_PATH", pluginsDirectory);
 
-            var qmlDirectory = Path.Combine(directory, "qml");
+            var qmlDirectory = Path.Combine(directory, "qt", "qml");
             if (!Directory.Exists(qmlDirectory))
             {
                 throw new Exception($"QML directory didn't exist: {qmlDirectory}");
             }
             Environment.SetEnvironmentVariable("QML2_IMPORT_PATH", qmlDirectory);
 
-            /*if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            var libDirectory = Path.Combine(directory, "qt", "lib");
+            if (!Directory.Exists(libDirectory))
             {
-                if (!string.IsNullOrEmpty(libDirectory) && Directory.Exists(libDirectory))
+                throw new Exception($"The lib directory didn't exist: {libDirectory}");
+            }
+
+            var preloadPath = Path.Combine(libDirectory, "preload.txt");
+            if (!File.Exists(preloadPath))
+            {
+                throw new Exception($"The preload.txt file didn't exist: {preloadPath}");
+            }
+
+            var libsToPreload = File.ReadAllLines(preloadPath).Where(x => !string.IsNullOrEmpty(x))
+                .Select(x => Path.Combine(libDirectory, x))
+                .ToList();
+            var platformLoader = NetNativeLibLoader.Loader.PlatformLoaderBase.SelectPlatformLoader();
+            foreach (var libToPreload in libsToPreload)
+            {
+                var libHandler = platformLoader.LoadLibrary(libToPreload);
+                if (libHandler == IntPtr.Zero)
                 {
-                    // Even though we opened up the native dll correctly, we need to add
-                    // the folder to the path. The reason is because QML plugins aren't
-                    // in the same directory and have trouble finding dependencies
-                    // that are within our lib folder.
-                    Environment.SetEnvironmentVariable(
-                        "PATH",
-                        Environment.GetEnvironmentVariable("PATH") + $";{libDirectory}");
+                    throw new Exception($"Unabled to preload library: {libToPreload}");
                 }
-            }*/
+            }
         }
     }
 }
