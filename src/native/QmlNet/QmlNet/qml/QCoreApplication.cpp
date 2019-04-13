@@ -3,6 +3,7 @@
 #include <QGuiApplication>
 #include <QApplication>
 #include <QQmlApplicationEngine>
+#include <QmlNetUtilities.h>
 
 GuiThreadContextTriggerCallback::GuiThreadContextTriggerCallback() :
     _callbacks(nullptr)
@@ -172,6 +173,26 @@ Q_DECL_EXPORT void qapp_exit(int returnCode)
 Q_DECL_EXPORT QCoreApplication* qapp_internalPointer(QGuiApplicationContainer* container)
 {
     return container->app;
+}
+
+Q_DECL_EXPORT void qapp_setOrganizationName(LPWCSTR organizationName)
+{
+    QCoreApplication::setOrganizationName(QString::fromUtf16(organizationName));
+}
+
+Q_DECL_EXPORT QmlNetStringContainer* qapp_getOrganizationName()
+{
+    return createString(QCoreApplication::organizationName());
+}
+
+Q_DECL_EXPORT QCoreApplication* qapp_setOrganizationDomain(LPWCSTR organizationDomain)
+{
+    QCoreApplication::setOrganizationDomain(QString::fromUtf16(organizationDomain));
+}
+
+Q_DECL_EXPORT QmlNetStringContainer* qapp_getOrganizationDomain()
+{
+    return createString(QCoreApplication::organizationDomain());
 }
 
 }

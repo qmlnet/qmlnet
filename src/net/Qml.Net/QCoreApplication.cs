@@ -242,6 +242,18 @@ namespace Qml.Net
             }
         }
 
+        public static string OrganizationName
+        {
+            get => Utilities.ContainerToString(Interop.QCoreApplication.GetOrganizationName());
+            set => Interop.QCoreApplication.SetOrganizationName(value);
+        }
+        
+        public static string OrganizationDomain
+        {
+            get => Utilities.ContainerToString(Interop.QCoreApplication.GetOrganizationDomain());
+            set => Interop.QCoreApplication.SetOrganizationDomain(value);
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
@@ -367,5 +379,25 @@ namespace Qml.Net
         public InternalPointerDel InternalPointer { get; set; }
 
         public delegate IntPtr InternalPointerDel(IntPtr app);
+        
+        [NativeSymbol(Entrypoint = "qapp_setOrganizationName")]
+        public SetOrganizationNameDel SetOrganizationName { get; set; }
+        
+        public delegate void SetOrganizationNameDel([MarshalAs(UnmanagedType.LPWStr)]string organizationName);
+        
+        [NativeSymbol(Entrypoint = "qapp_getOrganizationName")]
+        public GetOrganizationNameDel GetOrganizationName { get; set; }
+        
+        public delegate IntPtr GetOrganizationNameDel();
+        
+        [NativeSymbol(Entrypoint = "qapp_setOrganizationDomain")]
+        public SetOrganizationDomainDel SetOrganizationDomain { get; set; }
+        
+        public delegate void SetOrganizationDomainDel([MarshalAs(UnmanagedType.LPWStr)]string organizationDomain);
+        
+        [NativeSymbol(Entrypoint = "qapp_getOrganizationDomain")]
+        public GetOrganizationDomainDel GetOrganizationDomain { get; set; }
+        
+        public delegate IntPtr GetOrganizationDomainDel();
     }
 }
