@@ -19,7 +19,7 @@ namespace Qml.Net.Tests
         }
 
         [Fact]
-        public void Can_download_windows_untime()
+        public void Can_download_windows_runtime()
         {
             RuntimeManager.DownloadRuntimeToDirectory(QmlNetConfig.QtBuildVersion, RuntimeTarget.Windows64, _tempDirectory);
             File.ReadAllText(Path.Combine(_tempDirectory, "version.txt")).Should().Be($"{QmlNetConfig.QtBuildVersion}-win-x64");
@@ -40,6 +40,9 @@ namespace Qml.Net.Tests
                 permissions.Should().Be(FileAccessPermissions.UserReadWriteExecute
                                         | FileAccessPermissions.GroupRead | FileAccessPermissions.GroupExecute
                                         | FileAccessPermissions.OtherRead | FileAccessPermissions.OtherExecute);
+
+                // Make sure links are setup correctly.
+                File.Exists(Path.Combine(_tempDirectory, "qt", "lib", "libQt5Xml.so.5")).Should().BeTrue();
             }
         }
 
@@ -54,10 +57,12 @@ namespace Qml.Net.Tests
                 var permissions = UnixFileInfo
                     .GetFileSystemEntry(Path.Combine(_tempDirectory, "qt", "lib", "QtXml.framework", "Versions", "5", "QtXml"))
                     .FileAccessPermissions;
-
                 permissions.Should().Be(FileAccessPermissions.UserReadWriteExecute
                                         | FileAccessPermissions.GroupRead | FileAccessPermissions.GroupExecute
                                         | FileAccessPermissions.OtherRead | FileAccessPermissions.OtherExecute);
+
+                // Make sure links are setup correctly.
+                Directory.Exists(Path.Combine(_tempDirectory, "qt", "lib", "QtXml.framework", "Versions", "Current")).Should().BeTrue();
             }
         }
 
