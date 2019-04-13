@@ -22,16 +22,16 @@ namespace Qml.Net.Runtimes
                 case RuntimeTarget.LinuxX64:
                     return url.Replace("{target}", "linux-x64");
                 case RuntimeTarget.OSX64:
-                    return url.Replace("{target}", "osx-64");
+                    return url.Replace("{target}", "osx-x64");
                 default:
                     throw new Exception($"Unknown target {target}");
             }
         };
-        
+
         public delegate void ExtractTarGZStreamDelegate(Stream stream, string destinationDirectory);
 
-        public static ExtractTarGZStreamDelegate ExtractTarGZStream;
-        
+        public static ExtractTarGZStreamDelegate ExtractTarGZStream = Tar.ExtractTarFromGzipStream;
+
         public static RuntimeTarget GetCurrentRuntimeTarget()
         {
             if (IntPtr.Size != 8)
@@ -43,21 +43,22 @@ namespace Qml.Net.Runtimes
             {
                 return RuntimeTarget.Windows64;
             }
-            
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 return RuntimeTarget.LinuxX64;
             }
-            
-            if(RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 return RuntimeTarget.OSX64;
             }
-            
+
             throw new Exception("Unknown OS platform");
         }
 
-        public static void DownloadRuntimeToDirectory(string qtVersion,
+        public static void DownloadRuntimeToDirectory(
+            string qtVersion,
             RuntimeTarget runtimeTarget,
             string destinationDirectory)
         {
@@ -83,7 +84,7 @@ namespace Qml.Net.Runtimes
             }
 
             var url = BuildRuntimeUrl(qtVersion, runtimeTarget);
-            
+
             GetUrlStream(url, stream =>
             {
                 extractTarGZStreamDel(stream, destinationDirectory);
@@ -108,40 +109,13 @@ namespace Qml.Net.Runtimes
             }
         }
 
-//
-//        private static string GetRuntimeContainerDirectory()
-//        {
-//            var homeDirectory = (Environment.OSVersion.Platform == PlatformID.Unix || 
-//                               Environment.OSVersion.Platform == PlatformID.MacOSX)
-//                ? Environment.GetEnvironmentVariable("HOME")
-//                : Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-//            var runtimeDirector = Path.Combine(homeDirectory, ".qmlnet-runtimes");
-//            if (!Directory.Exists(runtimeDirector))
-//            {
-//                
-//            }
-//        }
-//        
-//        public static string GetRuntimeDirectory()
-//        {
-//            var runtimePath = Environment.GetEnvironmentVariable("QMLNET_QT_RUNTIME_DIR");
-//            if (!string.IsNullOrEmpty(runtimePath))
-//            {
-//                // There is already one ready for us to start using!
-//                return runtimePath;
-//            }
-//            
-//            // We must now detect the proper version, download it, and return it's path.
-//            var url = $"https://github.com/qmlnet/qt-runtimes/releases/download/releases/{QmlNetConfig.QtBuildVersion}-{GetPlatformIdentifier()}-runtime.tar.gz";
-//        }
-        
         public static void ConfigureRuntimeDirectory(string directory)
         {
             if (string.IsNullOrEmpty(directory))
             {
                 throw new ArgumentNullException(nameof(directory));
             }
-            
+
             if (!Directory.Exists(directory))
             {
                 throw new Exception("The directory doesn't exist.");
@@ -168,7 +142,7 @@ namespace Qml.Net.Runtimes
                 throw new Exception($"Plugins directory didn't exist: {pluginsDirectory}");
             }
             Environment.SetEnvironmentVariable("QT_PLUGIN_PATH", pluginsDirectory);
-            
+
             var qmlDirectory = Path.Combine(directory, "qml");
             if (!Directory.Exists(qmlDirectory))
             {

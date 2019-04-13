@@ -5,7 +5,7 @@ namespace Qml.Net
     public class QmlNetConfig
     {
         public static string QtBuildVersion => "qt-5.12.2-877b810";
-        
+
         public static bool ListenForExceptionsWhenInvokingTasks { get; set; }
 
         public static event Action<AggregateException> UnhandledTaskException;
