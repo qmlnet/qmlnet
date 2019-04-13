@@ -26,7 +26,7 @@ namespace Qml.Net.Runtimes
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return Path.Combine(Environment.GetEnvironmentVariable("%HOMEDRIVE%%HOMEPATH%"), ".qmlnet-qt-runtimes");
+                return Path.Combine($"{Environment.GetEnvironmentVariable("HOMEDRIVE")}{Environment.GetEnvironmentVariable("HOMEPATH")}", ".qmlnet-qt-runtimes");
             }
 
             throw new Exception("Unknown platform, can't get user runtimes directory");

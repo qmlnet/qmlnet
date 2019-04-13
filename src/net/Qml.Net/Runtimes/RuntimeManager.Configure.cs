@@ -146,12 +146,6 @@ namespace Qml.Net.Runtimes
 
                 Environment.SetEnvironmentVariable("PATH", $"{binDirectory};{Environment.GetEnvironmentVariable("PATH")}");
 
-                var preloadPath = Path.Combine(binDirectory, "preload.txt");
-                if (!File.Exists(preloadPath))
-                {
-                    throw new Exception($"The preload.txt file didn't exist: {preloadPath}");
-                }
-
                 return;
             }
 
