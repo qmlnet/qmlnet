@@ -2,9 +2,8 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using FluentAssertions;
+using Mono.Unix;
 using Qml.Net.Runtimes;
-using SharpCompress.Common;
-using SharpCompress.Readers;
 using Xunit;
 
 namespace Qml.Net.Tests
@@ -12,53 +11,56 @@ namespace Qml.Net.Tests
     public class RuntimeManagerTests : IDisposable
     {
         private readonly string _tempDirectory;
-        
+
         public RuntimeManagerTests()
         {
             _tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString().Replace("-", ""));
             Directory.CreateDirectory(_tempDirectory);
-
-            RuntimeManager.ExtractTarGZStream = (stream, directory) =>
-            {
-                using (var reader = ReaderFactory.Open(stream, new ReaderOptions()))
-                {
-                    while (reader.MoveToNextEntry())
-                    {
-                        if (!reader.Entry.IsDirectory)
-                        {
-                            reader.WriteEntryToDirectory(directory, new ExtractionOptions()
-                            {
-                                ExtractFullPath = true,
-                                Overwrite = true,
-                                WriteSymbolicLink = (sourcePath, targetPath) =>
-                                {
-                                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                                    {
-                                        throw new Exception("File links aren't supported.");
-                                    }
-
-                                    var link = new Mono.Unix.UnixSymbolicLinkInfo(sourcePath);
-                                    if (File.Exists(sourcePath))
-                                    {
-                                        link.Delete(); // equivalent to ln -s -f
-                                    }
-
-                                    link.CreateSymbolicLinkTo(targetPath);
-                                }
-                            });
-                        }
-                    }
-                }
-            };
         }
 
         [Fact]
-        public void Can_download_runtime()
+        public void Can_download_windows_untime()
         {
             RuntimeManager.DownloadRuntimeToDirectory(QmlNetConfig.QtBuildVersion, RuntimeTarget.Windows64, _tempDirectory);
             File.ReadAllText(Path.Combine(_tempDirectory, "version.txt")).Should().Be($"{QmlNetConfig.QtBuildVersion}-win-x64");
         }
-        
+
+        [Fact]
+        public void Can_download_linux_runtime()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                RuntimeManager.DownloadRuntimeToDirectory(QmlNetConfig.QtBuildVersion, RuntimeTarget.LinuxX64, _tempDirectory);
+                File.ReadAllText(Path.Combine(_tempDirectory, "version.txt")).Should().Be($"{QmlNetConfig.QtBuildVersion}-linux-x64");
+
+                // Make sure the permissions are set correctly.
+                var permissions = UnixFileSystemInfo
+                    .GetFileSystemEntry(Path.Combine(_tempDirectory, "qt", "lib", "libQt5Xml.so.5.12.2"))
+                    .FileAccessPermissions;
+                permissions.Should().Be(FileAccessPermissions.UserReadWriteExecute
+                                        | FileAccessPermissions.GroupRead | FileAccessPermissions.GroupExecute
+                                        | FileAccessPermissions.OtherRead | FileAccessPermissions.OtherExecute);
+            }
+        }
+
+        [Fact]
+        public void Can_download_osx_runtime()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                RuntimeManager.DownloadRuntimeToDirectory(QmlNetConfig.QtBuildVersion, RuntimeTarget.OSX64, _tempDirectory);
+                File.ReadAllText(Path.Combine(_tempDirectory, "version.txt")).Should().Be($"{QmlNetConfig.QtBuildVersion}-osx-x64");
+
+                var permissions = UnixFileInfo
+                    .GetFileSystemEntry(Path.Combine(_tempDirectory, "qt", "lib", "QtXml.framework", "Versions", "5", "QtXml"))
+                    .FileAccessPermissions;
+
+                permissions.Should().Be(FileAccessPermissions.UserReadWriteExecute
+                                        | FileAccessPermissions.GroupRead | FileAccessPermissions.GroupExecute
+                                        | FileAccessPermissions.OtherRead | FileAccessPermissions.OtherExecute);
+            }
+        }
+
         public void Dispose()
         {
             if (Directory.Exists(_tempDirectory))
