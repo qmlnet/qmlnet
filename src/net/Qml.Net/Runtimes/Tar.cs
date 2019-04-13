@@ -12,7 +12,7 @@ namespace Qml.Net.Runtimes
 {
     internal class Tar
     {
-        internal enum EntryType : byte
+        public enum EntryType : byte
         {
             // ReSharper disable UnusedMember.Global
             File = 0,
@@ -87,6 +87,9 @@ namespace Qml.Net.Runtimes
         {
             using (var gstream = new GZipStream(stream, CompressionMode.Decompress))
             {
+                var isUnix = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                             RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
                 var fileBuffer = new byte[1024 * 4];
 
                 while (true)
@@ -98,10 +101,26 @@ namespace Qml.Net.Runtimes
                         break;
                     }
 
+                    var output = Path.Combine(destinationDirectory, header.Name);
+
+                    if (header.EntryType == EntryType.SymLink)
+                    {
+                        if (!isUnix)
+                        {
+                            throw new Exception("Cannot extract symlink on current platform.");
+                        }
+
+                        var parentDirectory = Path.GetDirectoryName(output);
+                        if (!Directory.Exists(parentDirectory))
+                        {
+                            Directory.CreateDirectory(parentDirectory);
+                        }
+
+                        Symlink.Create(header.LinkName, output);
+                    }
+
                     if (header.Size > 0)
                     {
-                        var output = Path.Combine(destinationDirectory, header.Name);
-
                         var parentDirectory = Path.GetDirectoryName(output);
                         if (!Directory.Exists(parentDirectory))
                         {
@@ -128,14 +147,10 @@ namespace Qml.Net.Runtimes
                             }
                         }
 
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                        if (isUnix)
                         {
                             // This OS supports file modes.
                             // Let's set them.
-                            if (Path.GetFileName(output) == "libQt5Xml.so.5.12.2")
-                            {
-                                Debugger.Break();
-                            }
                             Chmod.Set(output, header.Mode);
                         }
 
