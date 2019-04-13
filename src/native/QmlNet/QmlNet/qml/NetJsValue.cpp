@@ -39,7 +39,7 @@ QSharedPointer<NetVariant> NetJSValue::call(const QSharedPointer<NetVariantList>
     if(parameters != nullptr) {
         for(int x = 0; x < parameters->count(); x++) {
             QSharedPointer<NetVariant> netVariant = parameters->get(x);
-            jsValueList.append(netVariant->toQJSValue(_jsValue.engine()));
+            jsValueList.append(netVariant->toQJSValue());
         }
     }
 
@@ -62,7 +62,7 @@ void NetJSValue::setProperty(const QString& propertyName, const QSharedPointer<N
 {
     QJSValue value = QJSValue::NullValue;
     if(variant != nullptr) {
-        value = variant->toQJSValue(_jsValue.engine());
+        value = variant->toQJSValue();
     }
     _jsValue.setProperty(propertyName, value);
 }
@@ -71,7 +71,7 @@ void NetJSValue::setItemAtIndex(quint32 arrayIndex, const QSharedPointer<NetVari
 {
     QJSValue value = QJSValue::NullValue;
     if(variant != nullptr) {
-        value = variant->toQJSValue(_jsValue.engine());
+        value = variant->toQJSValue();
     }
     _jsValue.setProperty(arrayIndex, value);
 }

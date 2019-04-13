@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Qml.Net;
 using Qml.Net.Internal.Qml;
@@ -23,14 +24,11 @@ namespace Qml.Net.Sandbox
         {
             public void Method()
             {
-                Console.WriteLine("test");
             }
         }
 
         static int Main(string[] args)
         {
-            Qt.PutEnv("QV4_MM_AGGRESSIVE_GC", "1");
-
             using (var app = new QGuiApplication(args))
             {
                 using (var engine = new QQmlApplicationEngine())

@@ -8,6 +8,6 @@ OUTPUT_DIR=$DIR/output
 
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
-PREFIX=$OUTPUT_DIR qmake ../QmlNet CONFIG+=install-qt-libs
+PREFIX=$OUTPUT_DIR qmake ../QmlNet
 make
 make install

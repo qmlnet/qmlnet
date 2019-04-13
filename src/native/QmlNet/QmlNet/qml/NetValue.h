@@ -8,6 +8,7 @@
 #include <QmlNet/qml/NetVariantList.h>
 #include <QObject>
 #include <QSharedPointer>
+#include <QQmlParserStatus>
 
 class NetValueMetaObject;
 
@@ -19,10 +20,12 @@ struct NetValueInterface
 
 Q_DECLARE_INTERFACE(NetValueInterface, "netcoreqml.NetValueInterface")
 
-class NetValue : public QObject, NetValueInterface
+class NetValue : public QObject, NetValueInterface, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(NetValueInterface)
+    Q_INTERFACES(QQmlParserStatus)
+
 public:
     virtual ~NetValue();
     QSharedPointer<NetReference> getNetReference();
@@ -31,11 +34,14 @@ public:
     static NetValue* forInstance(const QSharedPointer<NetReference>& instance);
     static QList<NetValue*> getAllLiveInstances(const QSharedPointer<NetReference>& instance);
 
+    virtual void classBegin() override;
+    virtual void componentComplete() override;
+
 protected:
     NetValue(const QSharedPointer<NetReference>& instance, QObject *parent);
+    QSharedPointer<NetReference> instance;
 
 private:
-    QSharedPointer<NetReference> instance;
     NetValueMetaObject* valueMeta;
 
     struct NetValueCollection {

@@ -18,13 +18,17 @@
 #define HOSTFXR_DLL_NAME "libhostfxr.so"
 #endif
 
+static QString nativeModule;
+
 static void* getExportedFunction(const char* symbolName) {
 #ifdef _WIN32
-    HMODULE library = GetModuleHandle(nullptr);
+    HMODULE library = GetModuleHandle(nativeModule.isNull() || nativeModule.isEmpty() ? nullptr
+                                                                                     : nativeModule.toLocal8Bit());
     FARPROC symbol = GetProcAddress(library, symbolName);
     return (void*)symbol;
 #else
-    void* dll = dlopen(nullptr, RTLD_LAZY);
+    void* dll = dlopen(nativeModule.isNull() || nativeModule.isEmpty() ? nullptr : nativeModule.toLocal8Bit(),
+                       RTLD_LAZY);
     void* result = dlsym(dll, symbolName);
     dlclose(dll);
     return result;
@@ -132,6 +136,8 @@ CoreHost::HostFxrContext CoreHost::findHostFxr()
 
 int CoreHost::run(QGuiApplication& app, QQmlApplicationEngine& engine, runCallback runCallback, RunContext runContext)
 {
+    nativeModule = runContext.nativeModule;
+
     QList<QString> execArgs;
     execArgs.push_back(runContext.entryPoint);
     execArgs.push_back("exec");

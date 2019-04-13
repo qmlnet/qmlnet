@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using NetNativeLibLoader.Loader;
 using NetNativeLibLoader.PathResolver;
+using Qml.Net.Internal;
 
 namespace Qml.Net
 {
@@ -10,12 +12,6 @@ namespace Qml.Net
     {
         internal class Loader : IPlatformLoader, IPathResolver
         {
-            public T LoadFunction<T>(IntPtr library, string symbolName)
-            {
-                IntPtr symbol = GetExportedSymbol(symbolName);
-                return Marshal.GetDelegateForFunctionPointer<T>(symbol);
-            }
-
             public IntPtr LoadLibrary(string path)
             {
                 return IntPtr.Zero;
@@ -47,7 +43,7 @@ namespace Qml.Net
 
         public delegate int NetRunCallbackDelegate();
 
-        public static int Run(string[] args, Func<string[], QGuiApplication, QQmlApplicationEngine, NetRunCallbackDelegate, int> action)
+        public static int Run(string[] args, Func<string[], QCoreApplication, QQmlApplicationEngine, NetRunCallbackDelegate, int> action)
         {
             if (args.Length < 4)
             {
@@ -60,7 +56,23 @@ namespace Qml.Net
             var exportedSymbolPtr = new IntPtr((long)ulong.Parse(args[3]));
             GetExportedSymbol = Marshal.GetDelegateForFunctionPointer<GetExportedSymbolDelegate>(exportedSymbolPtr);
 
-            using (var app = new QGuiApplication(appPtr))
+            QCoreApplication app = null;
+            switch (Interop.QCoreApplication.GetAppType(IntPtr.Zero, appPtr))
+            {
+                case 0:
+                    app = new QCoreApplication(appPtr);
+                    break;
+                case 1:
+                    app = new QGuiApplication(appPtr);
+                    break;
+                case 2:
+                    app = new QApplication(appPtr);
+                    break;
+                default:
+                    throw new Exception("Invalid app type");
+            }
+
+            using (app)
             {
                 using (var engine = new QQmlApplicationEngine(enginePtr))
                 {
@@ -74,6 +86,36 @@ namespace Qml.Net
                     return action(args.Skip(2).ToArray(), app, engine, runCallback);
                 }
             }
+        }
+
+        public static Task<int> RunAsync(
+            string[] args,
+            Func<string[], QCoreApplication, QQmlApplicationEngine, NetRunCallbackDelegate, Task<int>> action)
+        {
+            return Task.FromResult(Run(args, (argsInner, application, engine, callback) =>
+            {
+                var result = action(argsInner, application, engine, callback);
+                bool completed = false;
+                var task = Task.Run(() =>
+                {
+                    var exitCode = -1;
+                    try
+                    {
+                        exitCode = result.GetAwaiter().GetResult();
+                    }
+                    finally
+                    {
+                        completed = true;
+                    }
+                    return exitCode;
+                });
+                while (!completed)
+                {
+                    QCoreApplication.ProcessEvents(QEventLoop.ProcessEventsFlag.EventLoopExec |
+                                                   QEventLoop.ProcessEventsFlag.WaitForMoreEvents);
+                }
+                return task.GetAwaiter().GetResult();
+            }));
         }
     }
 }

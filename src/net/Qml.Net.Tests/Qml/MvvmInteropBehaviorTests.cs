@@ -224,7 +224,7 @@ namespace Qml.Net.Tests.Qml
                 }
             ");
 
-            ExecApplicationWithTimeout(3000).Should().Be(0);
+            ExecApplicationWithTimeout(3000);
 
             Instance.TestResult.Should().Be(true);
         }

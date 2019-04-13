@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -13,6 +15,10 @@ namespace Qml.Net.Internal
 {
     internal class DefaultCallbacks : ICallbacks
     {
+        private Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate> _cachedReadProperties = new Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate>();
+        private Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate> _cachedSetProperties = new Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate>();
+        private Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate> _cachedInvokeMethods = new Dictionary<int, CodeGen.CodeGen.InvokeMethodDelegate>();
+
         public bool IsTypeValid(string typeName)
         {
             var t = Type.GetType(typeName);
@@ -27,6 +33,12 @@ namespace Qml.Net.Internal
                 if (typeInfo == null)
                 {
                     throw new InvalidOperationException();
+                }
+
+                var baseType = typeInfo.BaseType;
+                if (baseType != null)
+                {
+                    type.BaseType = baseType.AssemblyQualifiedName;
                 }
 
                 type.ClassName = typeInfo.Name;
@@ -72,10 +84,22 @@ namespace Qml.Net.Internal
                     }
                 }
 
+                if (typeof(IQmlComponentCompleted).IsAssignableFrom(typeInfo))
+                {
+                    type.HasComponentCompleted = true;
+                }
+
+                if (typeof(IQmlObjectDestroyed).IsAssignableFrom(typeInfo))
+                {
+                    type.HasObjectDestroyed = true;
+                }
+
                 foreach (var methodInfo in typeInfo.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static))
                 {
                     if (methodInfo.IsGenericMethod) continue; // No generics supported.
                     if (Helpers.IsPrimitive(methodInfo.DeclaringType)) continue;
+
+                    if (methodInfo.IsSpecialName) continue; // Ignore the property get/set methods.
 
                     NetTypeInfo returnType = null;
 
@@ -164,6 +188,11 @@ namespace Qml.Net.Internal
                         propertyInfo.CanWrite,
                         notifySignal))
                     {
+                        foreach (var indexParameter in propertyInfo.GetIndexParameters())
+                        {
+                            property.AddIndexParameter(indexParameter.Name, NetTypeManager.GetTypeInfo(indexParameter.ParameterType));
+                        }
+
                         type.AddProperty(property);
                     }
                 }
@@ -204,6 +233,45 @@ namespace Qml.Net.Internal
             }
         }
 
+        public void CallComponentCompleted(IntPtr t)
+        {
+            using (var target = new NetReference(t))
+            {
+                var instance = target.Instance;
+                var componentCompelted = instance as IQmlComponentCompleted;
+                if (componentCompelted == null)
+                {
+                    throw new Exception($"Type {instance.GetType().FullName} doesn't implement IQmlComponentCompleted");
+                }
+
+                var result = componentCompelted.ComponentCompleted();
+                if (QmlNetConfig.ListenForExceptionsWhenInvokingTasks)
+                {
+                    result?.ContinueWith(
+                        task =>
+                        {
+                            QmlNetConfig.RaiseUnhandledTaskException(task.Exception);
+                        },
+                        TaskContinuationOptions.OnlyOnFaulted);
+                }
+            }
+        }
+
+        public void CallObjectDestroyed(IntPtr t)
+        {
+            using (var target = new NetReference(t))
+            {
+                var instance = target.Instance;
+                var objectDestroyed = instance as IQmlObjectDestroyed;
+                if (objectDestroyed == null)
+                {
+                    throw new Exception($"Type {instance.GetType().FullName} doesn't implement IQmlObjectDestroyed");
+                }
+
+                objectDestroyed.ObjectDestroyed();
+            }
+        }
+
         public void ReadProperty(IntPtr p, IntPtr t, IntPtr ip, IntPtr r)
         {
             using (var property = new NetPropertyInfo(p))
@@ -211,22 +279,22 @@ namespace Qml.Net.Internal
             using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using (var result = new NetVariant(r))
             {
-                var o = target.Instance;
-
-                var propertInfo = o.GetType()
-                    .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-                if (propertInfo == null)
-                    throw new InvalidOperationException($"Invalid property {property.Name}");
-
-                if (indexParameter != null)
+                CodeGen.CodeGen.InvokeMethodDelegate del;
+                if (!_cachedReadProperties.TryGetValue(property.Id, out del))
                 {
-                    object indexParameterValue = null;
-                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
-                    Helpers.PackValue(propertInfo.GetValue(o, new[] { indexParameterValue }), result);
+                    del = CodeGen.CodeGen.BuildReadPropertyDelegate(property);
+                    _cachedReadProperties[property.Id] = del;
                 }
-                else
+
+                using (var list = indexParameter != null ? new NetVariantList() : null)
                 {
-                    Helpers.PackValue(propertInfo.GetValue(o), result);
+                    if (indexParameter != null)
+                    {
+                        list.Add(indexParameter);
+                    }
+
+                    Task resultTask = null;
+                    del(target, list, result, ref resultTask);
                 }
             }
         }
@@ -238,26 +306,23 @@ namespace Qml.Net.Internal
             using (var indexParameter = ip != IntPtr.Zero ? new NetVariant(ip) : null)
             using (var value = new NetVariant(v))
             {
-                var o = target.Instance;
-
-                var propertInfo = o.GetType()
-                    .GetProperty(property.Name, BindingFlags.Instance | BindingFlags.Public);
-
-                if (propertInfo == null)
-                    throw new InvalidOperationException($"Invalid property {property.Name}");
-
-                object newValue = null;
-                Helpers.Unpackvalue(ref newValue, value);
-
-                if (indexParameter != null)
+                CodeGen.CodeGen.InvokeMethodDelegate del;
+                if (!_cachedSetProperties.TryGetValue(property.Id, out del))
                 {
-                    object indexParameterValue = null;
-                    Helpers.Unpackvalue(ref indexParameterValue, indexParameter);
-                    propertInfo.SetValue(o, newValue, new[] { indexParameterValue });
+                    del = CodeGen.CodeGen.BuildSetPropertyDelegate(property);
+                    _cachedSetProperties[property.Id] = del;
                 }
-                else
+
+                using (var list = new NetVariantList())
                 {
-                    propertInfo.SetValue(o, newValue);
+                    if (indexParameter != null)
+                    {
+                        list.Add(indexParameter);
+                    }
+
+                    list.Add(value);
+                    Task resultTask = null;
+                    del(target, list, null, ref resultTask);
                 }
             }
         }
@@ -269,83 +334,24 @@ namespace Qml.Net.Internal
             using (var parameters = new NetVariantList(p))
             using (var result = r != IntPtr.Zero ? new NetVariant(r) : null)
             {
-                var instance = target.Instance;
-
-                List<object> methodParameters = null;
-
-                if (parameters.Count > 0)
+                CodeGen.CodeGen.InvokeMethodDelegate del;
+                if (!_cachedInvokeMethods.TryGetValue(method.Id, out del))
                 {
-                    methodParameters = new List<object>();
-                    var parameterCount = parameters.Count;
-                    for (var x = 0; x < parameterCount; x++)
-                    {
-                        object v = null;
-                        Helpers.Unpackvalue(ref v, parameters.Get(x));
-                        methodParameters.Add(v);
-                    }
+                    del = CodeGen.CodeGen.BuildInvokeMethodDelegate(method);
+                    _cachedInvokeMethods[method.Id] = del;
                 }
 
-                MethodInfo methodInfo = null;
-                var methodName = method.MethodName;
-                var methods = instance.GetType()
-                    .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(x => x.Name == methodName)
-                    .ToList();
+                Task resultTask = null;
+                del(target, parameters, result, ref resultTask);
 
-                if (methods.Count == 1)
+                if (QmlNetConfig.ListenForExceptionsWhenInvokingTasks)
                 {
-                    methodInfo = methods[0];
-                }
-                else if (methods.Count > 1)
-                {
-                    // This is an overload.
-
-                    // TODO: Make this more performant. https://github.com/pauldotknopf/Qml.Net/issues/39
-
-                    // Get all the parameters for the method we are invoking.
-                    var parameterTypes = method.GetAllParameters().Select(x => x.Type.FullTypeName).ToList();
-
-                    // And find a good method to invoke.
-                    foreach (var potentialMethod in methods)
-                    {
-                        var potentialMethodParameters = potentialMethod.GetParameters();
-                        if (potentialMethodParameters.Length != parameterTypes.Count)
+                    resultTask?.ContinueWith(
+                        task =>
                         {
-                            continue;
-                        }
-
-                        bool valid = true;
-                        for (var x = 0; x < potentialMethodParameters.Length; x++)
-                        {
-                            if (potentialMethodParameters[x].ParameterType.AssemblyQualifiedName != parameterTypes[x])
-                            {
-                                valid = false;
-                                break;
-                            }
-                        }
-
-                        if (valid)
-                        {
-                            methodInfo = potentialMethod;
-                            break;
-                        }
-                    }
-                }
-
-                if (methodInfo == null)
-                {
-                    throw new InvalidOperationException($"Invalid method name {method.MethodName}");
-                }
-
-                var returnObject = methodInfo.Invoke(instance, methodParameters?.ToArray());
-
-                if (result == null)
-                {
-                    // this method doesn't have return type
-                }
-                else
-                {
-                    Helpers.PackValue(returnObject, result);
+                            QmlNetConfig.RaiseUnhandledTaskException(task.Exception);
+                        },
+                        TaskContinuationOptions.OnlyOnFaulted);
                 }
             }
         }

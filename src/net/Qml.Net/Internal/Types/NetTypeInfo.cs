@@ -15,7 +15,15 @@ namespace Qml.Net.Internal.Types
         {
         }
 
+        public int Id => Interop.NetTypeInfo.GetId(Handle);
+
         public string FullTypeName => Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(Handle));
+
+        public string BaseType
+        {
+            get => Utilities.ContainerToString(Interop.NetTypeInfo.GetBaseType(Handle));
+            set => Interop.NetTypeInfo.SetBaseType(Handle, value);
+        }
 
         public string ClassName
         {
@@ -39,6 +47,18 @@ namespace Qml.Net.Internal.Types
         {
             get => Interop.NetTypeInfo.GetIsList(Handle) == 1;
             set => Interop.NetTypeInfo.SetIsList(Handle, value ? (byte)1 : (byte)0);
+        }
+
+        public bool HasComponentCompleted
+        {
+            get => Interop.NetTypeInfo.GetHasComponentCompleted(Handle) == 1;
+            set => Interop.NetTypeInfo.SetHasComponentCompleted(Handle, value ? (byte)1 : (byte)0);
+        }
+
+        public bool HasObjectDestroyed
+        {
+            get => Interop.NetTypeInfo.GetHasObjectDestroyed(Handle) == 1;
+            set => Interop.NetTypeInfo.SetHasObjectDestroyed(Handle, value ? (byte)1 : (byte)0);
         }
 
         public void AddMethod(NetMethodInfo methodInfo)
@@ -126,12 +146,27 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        public delegate int GetIdDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_getId")]
+        public GetIdDel GetId { get; set; }
+
         public delegate void DestroyDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getFullTypeName")]
         public GetFullTypeNameDel GetFullTypeName { get; set; }
 
         public delegate IntPtr GetFullTypeNameDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_getBaseType")]
+        public GetBaseTypeDel GetBaseType { get; set; }
+
+        public delegate IntPtr GetBaseTypeDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_setBaseType")]
+        public SetBaseTypeDel SetBaseType { get; set; }
+
+        public delegate void SetBaseTypeDel(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string baseType);
 
         [NativeSymbol(Entrypoint = "type_info_setClassName")]
         public SetClassNameDel SetClassName { get; set; }
@@ -153,25 +188,45 @@ namespace Qml.Net.Internal.Types
 
         public delegate NetVariantType GetPrefVariantTypeDel(IntPtr netTypeInfo);
 
-        [NativeSymbol(Entrypoint = "type_info_setIsArray")]
+        [NativeSymbol(Entrypoint = "type_info_getIsArray")]
         public GetIsArrayDel GetIsArray { get; set; }
 
         public delegate byte GetIsArrayDel(IntPtr netTypeInfo);
 
-        [NativeSymbol(Entrypoint = "type_info_getIsArray")]
+        [NativeSymbol(Entrypoint = "type_info_setIsArray")]
         public SetIsArrayDel SetIsArray { get; set; }
 
         public delegate void SetIsArrayDel(IntPtr netTypeInfo, byte isArray);
 
-        [NativeSymbol(Entrypoint = "type_info_setIsList")]
+        [NativeSymbol(Entrypoint = "type_info_getIsList")]
         public GetIsListDel GetIsList { get; set; }
 
         public delegate byte GetIsListDel(IntPtr netTypeInfo);
 
-        [NativeSymbol(Entrypoint = "type_info_getIsList")]
+        [NativeSymbol(Entrypoint = "type_info_setIsList")]
         public SetIsListDel SetIsList { get; set; }
 
         public delegate void SetIsListDel(IntPtr netTypeInfo, byte isList);
+
+        [NativeSymbol(Entrypoint = "type_info_getHasComponentCompleted")]
+        public GetHasComponentCompeltedDel GetHasComponentCompleted { get; set; }
+
+        public delegate byte GetHasComponentCompeltedDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_setHasComponentCompleted")]
+        public SetHasComponentCompletedDel SetHasComponentCompleted { get; set; }
+
+        public delegate void SetHasComponentCompletedDel(IntPtr netTypeInfo, byte isList);
+
+        [NativeSymbol(Entrypoint = "type_info_getHasObjectDestroyed")]
+        public GetHasObjectDestroyedDel GetHasObjectDestroyed { get; set; }
+
+        public delegate byte GetHasObjectDestroyedDel(IntPtr netTypeInfo);
+
+        [NativeSymbol(Entrypoint = "type_info_setHasObjectDestroyed")]
+        public SetHasObjectDestroyedDel SetHasObjectDestroyed { get; set; }
+
+        public delegate void SetHasObjectDestroyedDel(IntPtr netTypeInfo, byte isList);
 
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
         public AddMethodDel AddMethod { get; set; }

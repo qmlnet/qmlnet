@@ -74,7 +74,7 @@ namespace Qml.Net.Tests.Qml
                         }
                     }
                 ");
-            ExecApplicationWithTimeout(2000).Should().Be(0);
+            ExecApplicationWithTimeout(2000).Should().BeTrue();
 
             Assert.True(Instance.TestResult);
         }
@@ -106,7 +106,7 @@ namespace Qml.Net.Tests.Qml
                     }
                 ");
 
-            ExecApplicationWithTimeout(2000).Should().Be(0);
+            ExecApplicationWithTimeout(2000).Should().BeTrue();
 
             Assert.False(Instance.TestResult);
         }
@@ -143,7 +143,7 @@ namespace Qml.Net.Tests.Qml
                     }
                 ");
 
-            ExecApplicationWithTimeout(2000).Should().Be(0);
+            ExecApplicationWithTimeout(2000).Should().BeTrue();
 
             Assert.True(Instance.TestResult);
         }
@@ -181,7 +181,7 @@ namespace Qml.Net.Tests.Qml
                     }
                 ");
 
-            ExecApplicationWithTimeout(2000).Should().Be(0);
+            ExecApplicationWithTimeout(2000).Should().BeTrue();
 
             Assert.True(Instance.TestResult);
         }
@@ -230,7 +230,7 @@ namespace Qml.Net.Tests.Qml
                     }
                 ");
 
-            ExecApplicationWithTimeout(3000).Should().Be(0);
+            ExecApplicationWithTimeout(3000).Should().BeTrue();
 
             Assert.False(Instance.TestResult);
         }
@@ -273,7 +273,7 @@ namespace Qml.Net.Tests.Qml
                     }
                 ");
 
-            ExecApplicationWithTimeout(3000).Should().Be(0);
+            ExecApplicationWithTimeout(3000).Should().BeTrue();
 
             Assert.True(Instance.TestResult);
         }
@@ -322,7 +322,7 @@ namespace Qml.Net.Tests.Qml
                     }
                 ");
 
-            ExecApplicationWithTimeout(3000).Should().Be(0);
+            ExecApplicationWithTimeout(3000).Should().BeTrue();
 
             Assert.True(Instance.TestResult);
         }

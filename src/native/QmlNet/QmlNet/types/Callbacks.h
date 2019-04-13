@@ -25,6 +25,10 @@ void loadTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
 QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type);
 
+void callComponentCompleted(QSharedPointer<NetReference> target);
+
+void callObjectDestroyed(QSharedPointer<NetReference> target);
+
 void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, const QSharedPointer<NetVariant>& indexParameter, QSharedPointer<NetVariant> result);
 
 void writeProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, const QSharedPointer<NetVariant>& indexParameter, QSharedPointer<NetVariant> value);

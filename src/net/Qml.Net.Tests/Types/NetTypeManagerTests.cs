@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Qml.Net.Internal.Types;
 using Xunit;
@@ -26,8 +28,30 @@ namespace Qml.Net.Tests.Types
             typeInfo.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
             typeInfo.ClassName.Should().Be("TestType1");
             typeInfo.PrefVariantType.Should().Be(NetVariantType.Object);
-            typeInfo.MethodCount.Should().Be(3); // the property has a "getter" and "setter" method
+            typeInfo.MethodCount.Should().Be(1);
             typeInfo.PropertyCount.Should().Be(1);
+        }
+
+        [Fact]
+        public void Can_get_parent_type_on_method()
+        {
+            var typeInfo = NetTypeManager.GetTypeInfo<TestType1>();
+            typeInfo.EnsureLoaded();
+
+            var method = typeInfo.GetMethod(0);
+            method.MethodName.Should().Be("TestMethod");
+            method.ParentType.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
+        }
+
+        [Fact]
+        public void Can_get_parent_type_on_property()
+        {
+            var typeInfo = NetTypeManager.GetTypeInfo<TestType1>();
+            typeInfo.EnsureLoaded();
+
+            var property = typeInfo.GetProperty(0);
+            property.Name.Should().Be("TestProperty");
+            property.ParentType.FullTypeName.Should().Be(typeof(TestType1).AssemblyQualifiedName);
         }
 
         public class TestType2
@@ -297,6 +321,155 @@ namespace Qml.Net.Tests.Types
                     property.ReturnType.IsArray.Should().BeFalse();
                 }
             }
+        }
+
+        public class TestType15
+        {
+        }
+
+        public class TestType16 : TestType15
+        {
+        }
+
+        [Fact]
+        public void Can_detect_base_class()
+        {
+            var type1 = NetTypeManager.GetTypeInfo<TestType15>();
+            type1.BaseType.Should().StartWith("System.Object, ");
+            var type2 = NetTypeManager.GetTypeInfo<TestType16>();
+            type2.BaseType.Should().StartWith("Qml.Net.Tests.Types.NetTypeManagerTests+TestType15, ");
+            var type3 = NetTypeManager.GetTypeInfo<object>();
+            type3.BaseType.Should().BeNull();
+        }
+
+        public class TestType17
+        {
+            public void Method1()
+            {
+            }
+
+            public void Method2()
+            {
+            }
+        }
+
+        [Fact]
+        public void Can_get_unique_id_for_method()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType17>();
+            type.EnsureLoaded();
+
+            var methods = new List<NetMethodInfo>();
+            for (var x = 0; x < type.LocalMethodCount; x++)
+            {
+                methods.Add(type.GetMethod(x));
+            }
+
+            methods.Select(x => x.Id).Distinct().Count().Should().Be(2);
+        }
+
+        public class TestType18
+        {
+            public bool Prop1 { get; set; }
+
+            public bool Prop2 { get; set; }
+        }
+
+        [Fact]
+        public void Can_get_unique_id_for_property()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType18>();
+            type.EnsureLoaded();
+
+            var properties = new List<NetPropertyInfo>();
+            for (var x = 0; x < type.PropertyCount; x++)
+            {
+                properties.Add(type.GetProperty(x));
+            }
+
+            properties.Select(x => x.Id).Distinct().Count().Should().Be(2);
+        }
+
+        [Fact]
+        public void Can_get_unique_id_for_types()
+        {
+            var type1 = NetTypeManager.GetTypeInfo<TestType16>();
+            var type2 = NetTypeManager.GetTypeInfo<TestType17>();
+
+            type1.Id.Should().NotBe(type2.Id);
+        }
+
+        public class TestType19
+        {
+            public object this[int index]
+            {
+                get => null;
+                set { }
+            }
+        }
+
+        [Fact]
+        public void Can_get_index_parameters()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType19>();
+            type.EnsureLoaded();
+
+            var prop = type.GetProperty(0);
+            prop.Name.Should().Be("Item");
+
+            var indexParameters = prop.GetAllIndexParameters();
+            indexParameters.Count.Should().Be(1);
+            indexParameters[0].Name.Should().Be("index");
+            indexParameters[0].Type.FullTypeName.Should().Be(typeof(int).AssemblyQualifiedName);
+        }
+
+        public class TestType20
+        {
+            public class TestObject
+            {
+            }
+
+            public class TestObjectWithComponentCompleted : IQmlComponentCompleted
+            {
+                public Task ComponentCompleted()
+                {
+                    return Task.CompletedTask;
+                }
+            }
+
+            public class TestObjectWithDestroyed : IQmlObjectDestroyed
+            {
+                public void ObjectDestroyed()
+                {
+                }
+            }
+        }
+
+        [Fact]
+        public void Can_detect_neither_completed_or_destroyed_events()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType20.TestObject>();
+            type.EnsureLoaded();
+            type.HasObjectDestroyed.Should().BeFalse();
+            type.HasComponentCompleted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Can_detect_component_completed()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType20.TestObjectWithComponentCompleted>();
+            type.EnsureLoaded();
+            type.HasObjectDestroyed.Should().BeFalse();
+            type.HasComponentCompleted.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Can_detect_object_destroyed()
+        {
+            var type = NetTypeManager.GetTypeInfo<TestType20.TestObjectWithDestroyed>();
+            type.EnsureLoaded();
+            type.HasObjectDestroyed.Should().BeTrue();
+            type.HasComponentCompleted.Should().BeFalse();
         }
     }
 }

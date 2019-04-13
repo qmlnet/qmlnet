@@ -1,7 +1,11 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNetUtilities.h>
+#include <QMutex>
 #include <utility>
+
+static int nextPropertyId = 1;
+Q_GLOBAL_STATIC(QMutex, propertyIdMutex);
 
 NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
         QString name,
@@ -16,7 +20,15 @@ NetPropertyInfo::NetPropertyInfo(QSharedPointer<NetTypeInfo> parentType,
     _canWrite(canWrite),
     _notifySignal(std::move(notifySignal))
 {
+    propertyIdMutex->lock();
+    _id = nextPropertyId;
+    nextPropertyId++;
+    propertyIdMutex->unlock();
+}
 
+int NetPropertyInfo::getId()
+{
+    return _id;
 }
 
 QSharedPointer<NetTypeInfo> NetPropertyInfo::getParentType()
@@ -54,6 +66,23 @@ void NetPropertyInfo::setNotifySignal(QSharedPointer<NetSignalInfo> signal)
     _notifySignal = std::move(signal);
 }
 
+void NetPropertyInfo::addIndexParameter(QString name, QSharedPointer<NetTypeInfo> typeInfo)
+{
+    _indexParameters.append(QSharedPointer<NetMethodInfoArguement>(new NetMethodInfoArguement(std::move(name), std::move(typeInfo))));
+}
+
+int NetPropertyInfo::getIndexParameterCount()
+{
+    return _indexParameters.size();
+}
+
+QSharedPointer<NetMethodInfoArguement> NetPropertyInfo::getIndexParameter(int index)
+{
+    if(index < 0) return QSharedPointer<NetMethodInfoArguement>(nullptr);
+    if(index >= _indexParameters.length()) return QSharedPointer<NetMethodInfoArguement>(nullptr);
+    return _indexParameters.at(index);
+}
+
 extern "C" {
 
 Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContainer* parentTypeContainer,
@@ -79,6 +108,11 @@ Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContaine
 
 Q_DECL_EXPORT void property_info_destroy(NetTypeInfoContainer* container) {
     delete container;
+}
+
+Q_DECL_EXPORT int property_info_getId(NetPropertyInfoContainer* container)
+{
+    return container->property->getId();
 }
 
 Q_DECL_EXPORT NetTypeInfoContainer* property_info_getParentType(NetPropertyInfoContainer* container) {
@@ -127,6 +161,25 @@ Q_DECL_EXPORT void property_info_setNotifySignal(NetPropertyInfoContainer* conta
     container->property->setNotifySignal(signalContainer->signal);
 }
 
+Q_DECL_EXPORT void property_info_addIndexParameter(NetPropertyInfoContainer* container, LPWCSTR name, NetTypeInfoContainer* typeInfoContainer)
+{
+    container->property->addIndexParameter(QString::fromUtf16(name), typeInfoContainer->netTypeInfo);
+}
 
+Q_DECL_EXPORT int property_info_getIndexParameterCount(NetPropertyInfoContainer* container)
+{
+    return container->property->getIndexParameterCount();
+}
+
+Q_DECL_EXPORT NetMethodInfoArguementContainer* property_info_getIndexParameter(NetPropertyInfoContainer* container, int index)
+{
+    QSharedPointer<NetMethodInfoArguement> parameter = container->property->getIndexParameter(index);
+    if(parameter == nullptr) {
+        return nullptr;
+    }
+    NetMethodInfoArguementContainer* result = new NetMethodInfoArguementContainer();
+    result->methodArguement = parameter;
+    return result;
+}
 
 }

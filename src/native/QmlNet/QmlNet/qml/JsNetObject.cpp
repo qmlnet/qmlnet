@@ -2,7 +2,9 @@
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/types/NetTypeManager.h>
+#include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNet/qml/NetListModel.h>
+#include <QmlNet/qml/QQmlApplicationEngine.h>
 #include <QQmlEngine>
 #include <QDebug>
 
@@ -74,6 +76,50 @@ QVariant JsNetObject::toListModel(const QJSValue& value)
 
     QQmlEngine::setObjectOwnership(listModel, QQmlEngine::JavaScriptOwnership);
     return QVariant::fromValue(listModel);
+}
+
+Q_INVOKABLE QVariant JsNetObject::listForEach(const QJSValue& value, QJSValue callback)
+{
+    if(value.isNull() || value.isUndefined()) {
+        qWarning() << "Net.listForEach(): Instance parameter must not be null or undefined";
+        return QVariant();
+    }
+
+    if(callback.isNull() || callback.isUndefined()) {
+        qWarning() << "Net.listForEach(): Callback must not be null or undefined";
+        return QVariant();
+    }
+
+    if(!callback.isCallable()) {
+        qWarning() << "Net.listForEach(): Callback is not a function";
+        return QVariant();
+    }
+
+    QSharedPointer<NetVariant> netVaraint = NetVariant::fromQJSValue(value);
+    if(netVaraint->getVariantType() != NetVariantTypeEnum_Object) {
+        qWarning() << "Net.listForEach(): Parameter is not a .NET object";
+        return QVariant();
+    }
+
+    QSharedPointer<NetReference> netReference = netVaraint->getNetReference();
+
+    QSharedPointer<NetTypeArrayFacade> facade = netReference->getTypeInfo()->getArrayFacade();
+    if(facade == nullptr) {
+        qWarning() << "Net.listForEach(): Parameter is not a type that be enumerated.";
+        return QVariant();
+    }
+
+    uint count = facade->getLength(netReference);
+
+    for(uint x = 0; x < count; x++) {
+        QSharedPointer<NetVariant> item = facade->getIndexed(netReference, x);
+        QJSValueList args;
+        args.push_back(item->toQJSValue());
+        args.push_back(sharedQmlEngine()->toScriptValue<QVariant>(QVariant::fromValue(x)));
+        callback.call(args);
+    }
+
+    return QVariant::fromValue(count);
 }
 
 void JsNetObject::toJsArray()

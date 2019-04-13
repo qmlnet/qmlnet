@@ -140,9 +140,55 @@ namespace Qml.Net.Internal.Qml
             Interop.NetVariant.Clear(Handle);
         }
 
+        public object AsObject()
+        {
+            switch (VariantType)
+            {
+                case NetVariantType.Invalid:
+                    return null;
+                case NetVariantType.Bool:
+                    return Bool;
+                case NetVariantType.Char:
+                    return Char;
+                case NetVariantType.Int:
+                    return Int;
+                case NetVariantType.UInt:
+                    return UInt;
+                case NetVariantType.Long:
+                    return Long;
+                case NetVariantType.ULong:
+                    return ULong;
+                case NetVariantType.Float:
+                    return Float;
+                case NetVariantType.Double:
+                    return Double;
+                case NetVariantType.String:
+                    return String;
+                case NetVariantType.DateTime:
+                    return DateTime;
+                case NetVariantType.Object:
+                    using (var instance = Instance)
+                    {
+                        return instance.Instance;
+                    }
+
+                case NetVariantType.JsValue:
+                    return JsValue.AsDynamic();
+                default:
+                    throw new NotImplementedException($"unhandled type {VariantType}");
+            }
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             Interop.NetVariant.Destroy(ptr);
+        }
+
+        public static NetVariant From<T>(T value)
+        {
+            var variant = new NetVariant();
+            Helpers.Pack(value, variant, typeof(T));
+            return variant;
         }
     }
 

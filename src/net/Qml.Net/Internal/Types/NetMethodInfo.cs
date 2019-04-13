@@ -33,6 +33,10 @@ namespace Qml.Net.Internal.Types
                 isStatic ? (byte)1 : (byte)0);
         }
 
+        public int Id => Interop.NetMethodInfo.GetId(Handle);
+
+        public NetTypeInfo ParentType => new NetTypeInfo(Interop.NetMethodInfo.GetParentType(Handle));
+
         public string MethodName => Utilities.ContainerToString(Interop.NetMethodInfo.GetMethodName(Handle));
 
         public NetTypeInfo ReturnType
@@ -127,6 +131,16 @@ namespace Qml.Net.Internal.Types
 
         [NativeSymbol(Entrypoint = "method_info_destroy")]
         public DestroyDel Destroy { get; set; }
+
+        public delegate int GetIdDel(IntPtr method);
+
+        [NativeSymbol(Entrypoint = "method_info_getId")]
+        public GetIdDel GetId { get; set; }
+
+        public delegate IntPtr GetParentTypeDel(IntPtr method);
+
+        [NativeSymbol(Entrypoint = "method_info_getParentType")]
+        public GetParentTypeDel GetParentType { get; set; }
 
         public delegate void DestroyDel(IntPtr methodInfo);
 

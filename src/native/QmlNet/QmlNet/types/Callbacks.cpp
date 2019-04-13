@@ -6,6 +6,8 @@ namespace QmlNet {
 using isTypeValidCb = uchar (*)(LPWSTR);
 using createLazyTypeInfoCb = void (*)(NetTypeInfoContainer *);
 using loadTypeInfoCb = void (*)(NetTypeInfoContainer *);
+using callComponentCompletedCb = void (*)(NetReferenceContainer *);
+using callObjectDestroyedCb = void (*)(NetReferenceContainer *);
 using releaseNetReferenceCb = void (*)(uint64_t);
 using releaseNetDelegateGCHandleCb = void (*)(void *);
 using instantiateTypeCb = NetReferenceContainer *(*)(NetTypeInfoContainer *);
@@ -21,6 +23,8 @@ struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
     createLazyTypeInfoCb createLazyTypeInfo;
     loadTypeInfoCb loadTypeInfo;
+    callComponentCompletedCb callComponentCompleted;
+    callObjectDestroyedCb callObjectDestroyed;
     releaseNetReferenceCb releaseNetReference;
     releaseNetDelegateGCHandleCb releaseNetDelegateGCHandle;
     instantiateTypeCb instantiateType;
@@ -80,6 +84,16 @@ QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type) {
     }
 
     return result;
+}
+
+void callComponentCompleted(QSharedPointer<NetReference> target)
+{
+    sharedCallbacks.callComponentCompleted(new NetReferenceContainer{target});
+}
+
+void callObjectDestroyed(QSharedPointer<NetReference> target)
+{
+    sharedCallbacks.callObjectDestroyed(new NetReferenceContainer{target});
 }
 
 void readProperty(QSharedPointer<NetPropertyInfo> property, QSharedPointer<NetReference> target, const QSharedPointer<NetVariant>& indexParameter, QSharedPointer<NetVariant> result) {

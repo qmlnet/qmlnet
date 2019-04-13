@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace Qml.Net.Extensions
 {
@@ -17,23 +19,26 @@ namespace Qml.Net.Extensions
                 return null;
             }
 
+            var destinationConverter = TypeDescriptor.GetConverter(typeof(T));
+
             var list = new List<T>();
-            try
-            {
-                var length = (int)value.GetProperty("length");
 
-                for (var i = 0; i < length; i++)
+            var length = (int)value.GetProperty("length");
+
+            for (var i = 0; i < length; i++)
+            {
+                var item = value.GetItemAtIndex(i);
+                if (item is T casted)
                 {
-                    var item = value.GetItemAtIndex(i);
-                    list.Add((T)item);
+                    list.Add(casted);
                 }
+                else
+                {
+                    list.Add((T)destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, item));
+                }
+            }
 
-                return list;
-            }
-            catch
-            {
-                return null;
-            }
+            return list;
         }
     }
 }

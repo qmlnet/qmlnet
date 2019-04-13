@@ -31,6 +31,50 @@ namespace Qml.Net.Internal
             return false;
         }
 
+        public static void Pack(object source, NetVariant destination, Type type)
+        {
+            if (type == typeof(bool))
+                destination.Bool = (bool)source;
+            else if (type == typeof(char))
+                destination.Char = (char)source;
+            else if (type == typeof(float))
+                destination.Float = (float)source;
+            else if (type == typeof(double))
+                destination.Double = (double)source;
+            else if (type == typeof(int))
+                destination.Int = (int)source;
+            else if (type == typeof(uint))
+                destination.UInt = (uint)source;
+            else if (type == typeof(long))
+                destination.Long = (long)source;
+            else if (type == typeof(ulong))
+                destination.ULong = (ulong)source;
+            else if (type == typeof(string))
+                destination.String = (string)source;
+            else if (type == typeof(DateTimeOffset))
+                destination.DateTime = ((DateTimeOffset)source).DateTime;
+            else if (typeof(INetJsValue).IsAssignableFrom(type))
+                destination.JsValue = ((NetJsValue.NetJsValueDynamic)source).JsValue;
+            else
+            {
+                if (type.IsEnum)
+                {
+                    Pack(source, destination, type.GetEnumUnderlyingType());
+                }
+                else
+                {
+                    if (source == null)
+                    {
+                        destination.Clear();
+                    }
+                    else
+                    {
+                        destination.Instance = NetReference.CreateForObject(source);
+                    }
+                }
+            }
+        }
+
         public static void PackValue(object source, NetVariant destination)
         {
             if (source == null)
@@ -40,32 +84,7 @@ namespace Qml.Net.Internal
             else
             {
                 var type = source.GetType();
-                if (type == typeof(bool))
-                    destination.Bool = (bool)source;
-                else if (type == typeof(char))
-                    destination.Char = (char)source;
-                else if (type == typeof(float))
-                    destination.Float = (float)source;
-                else if (type == typeof(double))
-                    destination.Double = (double)source;
-                else if (type == typeof(int))
-                    destination.Int = (int)source;
-                else if (type == typeof(uint))
-                    destination.UInt = (uint)source;
-                else if (type == typeof(long))
-                    destination.Long = (long)source;
-                else if (type == typeof(ulong))
-                    destination.ULong = (ulong)source;
-                else if (type == typeof(string))
-                    destination.String = (string)source;
-                else if (type == typeof(DateTimeOffset))
-                    destination.DateTime = ((DateTimeOffset)source).DateTime;
-                else if (typeof(INetJsValue).IsAssignableFrom(type))
-                    destination.JsValue = ((NetJsValue.NetJsValueDynamic)source).JsValue;
-                else
-                {
-                    destination.Instance = NetReference.CreateForObject(source);
-                }
+                Pack(source, destination, type);
             }
         }
 

@@ -5,6 +5,17 @@
 #include <QmlNet/qml/JsNetObject.h>
 #include <QQmlContext>
 
+static QQmlApplicationEngine* sharedQmlEngineValue = nullptr;
+
+QQmlApplicationEngine* sharedQmlEngine()
+{
+    if(sharedQmlEngineValue == nullptr) {
+        qWarning("An attempt was made to get a shared application engine, but it is NULL. .NET needs to know about it. Returning null, but expect segfaults.");
+        return nullptr;
+    }
+    return sharedQmlEngineValue;
+}
+
 static int netValueTypeNumber = 0;
 
 #define NETVALUETYPE_CASE(N) \
@@ -27,6 +38,8 @@ Q_DECL_EXPORT QQmlApplicationEngineContainer* qqmlapplicationengine_create(QQmlA
         engine = new QQmlApplicationEngine();
         ownsEngine = true;
     }
+
+    sharedQmlEngineValue = engine;
 
     JsNetObject* netObject = new JsNetObject();
 

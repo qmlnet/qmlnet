@@ -10,6 +10,8 @@ namespace Qml.Net.Internal.Types
         public IntPtr IsTypeValid;
         public IntPtr CreateLazyTypeInfo;
         public IntPtr LoadTypeInfo;
+        public IntPtr CallComponentCompleted;
+        public IntPtr CallObjectDestroyed;
         public IntPtr ReleaseNetReference;
         public IntPtr ReleaseNetDelegateGCHandle;
         public IntPtr InstantiateType;
@@ -69,6 +71,10 @@ namespace Qml.Net.Internal.Types
 
         IntPtr InstantiateType(IntPtr type);
 
+        void CallComponentCompleted(IntPtr target);
+
+        void CallObjectDestroyed(IntPtr target);
+
         void ReadProperty(IntPtr property, IntPtr target, IntPtr indexProperty, IntPtr result);
 
         void WriteProperty(IntPtr property, IntPtr target, IntPtr indexProperty, IntPtr value);
@@ -90,6 +96,8 @@ namespace Qml.Net.Internal.Types
         IsTypeValidDelegate _isTypeValidDelegate;
         CreateLazyTypeInfoDelegate _createLazyTypeInfoDelegate;
         LoadTypeInfoDelegate _loadTypeInfoDelegate;
+        CallComponentCompletedDelegate _callComponentCompletedDelegate;
+        CallObjectDestroyedDelegate _callObjectDestroyedDelegate;
         ReleaseNetReferenceDelegate _releaseNetReferenceDelegate;
         ReleaseNetDelegateGCHandleDelegate _releaseNetDelegateGCHandleDelegate;
         InstantiateTypeDelgate _instantiateTypeDelgate;
@@ -109,6 +117,12 @@ namespace Qml.Net.Internal.Types
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void LoadTypeInfoDelegate(IntPtr typeInfo);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void CallComponentCompletedDelegate(IntPtr target);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void CallObjectDestroyedDelegate(IntPtr target);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void ReleaseNetReferenceDelegate(UInt64 objectId);
@@ -162,6 +176,12 @@ namespace Qml.Net.Internal.Types
             _instantiateTypeDelgate = InstantiateType;
             GCHandle.Alloc(_instantiateTypeDelgate);
 
+            _callComponentCompletedDelegate = CallComponentCompleted;
+            GCHandle.Alloc(_callComponentCompletedDelegate);
+
+            _callObjectDestroyedDelegate = CallObjectDestroyed;
+            GCHandle.Alloc(_callObjectDestroyedDelegate);
+
             _readPropertyDelegate = ReadProperty;
             GCHandle.Alloc(_readPropertyDelegate);
 
@@ -214,6 +234,16 @@ namespace Qml.Net.Internal.Types
             return _callbacks.InstantiateType(type);
         }
 
+        private void CallComponentCompleted(IntPtr target)
+        {
+            _callbacks.CallComponentCompleted(target);
+        }
+
+        private void CallObjectDestroyed(IntPtr target)
+        {
+            _callbacks.CallObjectDestroyed(target);
+        }
+
         private void ReadProperty(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr result)
         {
             _callbacks.ReadProperty(property, target, indexParameter, result);
@@ -259,6 +289,8 @@ namespace Qml.Net.Internal.Types
                 IsTypeValid = Marshal.GetFunctionPointerForDelegate(_isTypeValidDelegate),
                 CreateLazyTypeInfo = Marshal.GetFunctionPointerForDelegate(_createLazyTypeInfoDelegate),
                 LoadTypeInfo = Marshal.GetFunctionPointerForDelegate(_loadTypeInfoDelegate),
+                CallComponentCompleted = Marshal.GetFunctionPointerForDelegate(_callComponentCompletedDelegate),
+                CallObjectDestroyed = Marshal.GetFunctionPointerForDelegate(_callObjectDestroyedDelegate),
                 ReleaseNetReference = Marshal.GetFunctionPointerForDelegate(_releaseNetReferenceDelegate),
                 ReleaseNetDelegateGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetDelegateGCHandleDelegate),
                 InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),

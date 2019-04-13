@@ -7,21 +7,33 @@
 
 typedef void (*guiThreadTriggerCb)();
 
+using guiThreadTriggerCb = void (*)();
+using aboutToQuitCb = void (*)();
+
+struct Q_DECL_EXPORT QCoreAppCallbacks {
+    guiThreadTriggerCb guiThreadTrigger;
+    aboutToQuitCb aboutToQuit;
+};
+
 class GuiThreadContextTriggerCallback : public QObject {
     Q_OBJECT
 public:
     GuiThreadContextTriggerCallback();
-    guiThreadTriggerCb callback;
+    ~GuiThreadContextTriggerCallback();
+    void setCallbacks(QCoreAppCallbacks* callbacks);
 public slots:
     void trigger();
+    void aboutToQuit();
+private:
+    QCoreAppCallbacks* _callbacks;
 };
 
 struct QGuiApplicationContainer {
     int argCount;
     QList<QString> args;
     std::vector<char*> argsPointer;
-    QGuiApplication* guiApp;
-    bool ownsGuiApp;
+    QCoreApplication* app;
+    bool ownsApp;
     QSharedPointer<GuiThreadContextTriggerCallback> callback;
 };
 

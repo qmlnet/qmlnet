@@ -17,7 +17,12 @@ public:
     NetTypeInfo(QString fullTypeName);
     ~NetTypeInfo();
 
+    int getId();
+
     QString getFullTypeName();
+
+    QString getBaseType() const;
+    void setBaseType(const QString& baseType);
 
     QString getClassName();
     void setClassName(QString className);
@@ -30,6 +35,12 @@ public:
 
     bool isList();
     void setIsList(bool isList);
+
+    bool hasComponentCompleted();
+    void setHasComponentCompleted(bool hasComponentCompleted);
+
+    bool hasObjectDestroyed();
+    void setHasObjectDestroyed(bool hasObjectDestroyed);
 
     void addMethod(const QSharedPointer<NetMethodInfo>& methodInfo);
     int getMethodCount();
@@ -58,11 +69,15 @@ public:
     QMetaObject* metaObject;
 
 private:
+    int _id;
     QString _fullTypeName;
+    QString _baseType;
     QString _className;
     NetVariantTypeEnum _variantType;
     bool _isArray;
     bool _isList;
+    bool _hasComponentCompleted;
+    bool _hasObjectDestroyed;
     QList<QSharedPointer<NetMethodInfo>> _methods;
     QList<QSharedPointer<NetMethodInfo>> _methodsLocal;
     QList<QSharedPointer<NetMethodInfo>> _methodsStatic;

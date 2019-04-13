@@ -1,7 +1,11 @@
 #include <QmlNet/types/NetMethodInfo.h>
 #include <QmlNet/qml/NetValueMetaObjectPacker.h>
 #include <QmlNetUtilities.h>
+#include <QMutex>
 #include <utility>
+
+static int nextMethodId = 1;
+Q_GLOBAL_STATIC(QMutex, methodIdMutex);
 
 NetMethodInfoArguement::NetMethodInfoArguement(QString name,
                                                QSharedPointer<NetTypeInfo> type) :
@@ -29,6 +33,20 @@ NetMethodInfo::NetMethodInfo(QSharedPointer<NetTypeInfo> parentTypeInfo,
     _returnType(std::move(returnType)),
     _isStatic(isStatic)
 {
+    methodIdMutex->lock();
+    _id = nextMethodId;
+    nextMethodId++;
+    methodIdMutex->unlock();
+}
+
+int NetMethodInfo::getId()
+{
+    return _id;
+}
+
+QSharedPointer<NetTypeInfo> NetMethodInfo::getParentType()
+{
+    return _parentTypeInfo;
 }
 
 QString NetMethodInfo::getMethodName()
@@ -130,6 +148,16 @@ Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* p
 Q_DECL_EXPORT void method_info_destroy(NetMethodInfoContainer* container)
 {
     delete container;
+}
+
+Q_DECL_EXPORT int method_info_getId(NetMethodInfoContainer* container)
+{
+    return container->method->getId();
+}
+
+Q_DECL_EXPORT NetTypeInfoContainer* method_info_getParentType(NetMethodInfoContainer* container)
+{
+    return new NetTypeInfoContainer{container->method->getParentType()};
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* method_info_getMethodName(NetMethodInfoContainer* container)

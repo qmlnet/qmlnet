@@ -5,6 +5,8 @@
 #include <QQmlApplicationEngine>
 #include <QmlNet/qml/JsNetObject.h>
 
+QQmlApplicationEngine* sharedQmlEngine();
+
 struct QQmlApplicationEngineContainer {
     QQmlApplicationEngine* qmlEngine;
     JsNetObject* netObject;
