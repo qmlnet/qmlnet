@@ -186,7 +186,7 @@ Q_DECL_EXPORT QmlNetStringContainer* qapp_getOrganizationName()
     return createString(QCoreApplication::organizationName());
 }
 
-Q_DECL_EXPORT QCoreApplication* qapp_setOrganizationDomain(LPWCSTR organizationDomain)
+Q_DECL_EXPORT void qapp_setOrganizationDomain(LPWCSTR organizationDomain)
 {
     QCoreApplication::setOrganizationDomain(QString::fromUtf16(organizationDomain));
 }
