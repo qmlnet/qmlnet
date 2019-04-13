@@ -254,6 +254,16 @@ namespace Qml.Net
             set => Interop.QCoreApplication.SetOrganizationDomain(value);
         }
 
+        public static void SetAttribute(ApplicationAttribute attribute, bool on)
+        {
+            Interop.QCoreApplication.SetAttribute((int) attribute, on);
+        }
+
+        public static bool TestAttribute(ApplicationAttribute attribute)
+        {
+            return Interop.QCoreApplication.TestAttribute((int) attribute) == 1;
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
@@ -399,5 +409,15 @@ namespace Qml.Net
         public GetOrganizationDomainDel GetOrganizationDomain { get; set; }
         
         public delegate IntPtr GetOrganizationDomainDel();
+        
+        [NativeSymbol(Entrypoint = "qapp_setAttribute")]
+        public SetAttributeDel SetAttribute { get; set; }
+        
+        public delegate void SetAttributeDel(int attribute, bool on);
+        
+        [NativeSymbol(Entrypoint = "qapp_testAttribute")]
+        public TestAttributeDel TestAttribute { get; set; }
+        
+        public delegate byte TestAttributeDel(int attribute);
     }
 }
