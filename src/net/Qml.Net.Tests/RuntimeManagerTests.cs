@@ -66,6 +66,12 @@ namespace Qml.Net.Tests
             }
         }
 
+        [Fact]
+        public void Test()
+        {
+            var potential = RuntimeManager.GetPotentialRuntimesDirectories();
+        }
+
         public void Dispose()
         {
             if (Directory.Exists(_tempDirectory))

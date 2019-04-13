@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Qml.Net.Runtimes
 {
-    internal class Symlink
+    internal static class Symlink
     {
         [DllImport("libc")]
         private static extern int symlink(string path1, string path2);
