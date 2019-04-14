@@ -23,7 +23,7 @@ namespace Build
             var options = ParseOptions<Options>(args);
             
             var nugetApiKey = Environment.GetEnvironmentVariable("PRIVATE_NUGET_KEY");
-            var nugetSource = "https://feeds.pknopf.com/nuget/qmlnet";
+            var nugetSource = "https://www.myget.org/F/qmlnet/api/v3/index.json";
             var gitversion = GetGitVersion(ExpandPath("./"));
             var commandBuildArgs = $"--configuration {options.Configuration} /p:Platform=\"Any CPU\"";
             var commandBuildArgsWithVersion = commandBuildArgs;
