@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../../../build/mono.props" />
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
   </PropertyGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="NetNativeLibLoader" Version="0.2.0-alpha.5" />
