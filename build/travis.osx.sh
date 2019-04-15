@@ -10,7 +10,7 @@ wget -O- -q https://github.com/qmlnet/qt-runtimes/releases/download/releases/qt-
 
 # Needed to reference net472 in our native packages.
 wget --retry-connrefused --waitretry=1 -O /tmp/mono.pkg https://download.mono-project.com/archive/5.20.1/macos-10-universal/MonoFramework-MDK-5.20.1.19.macos10.xamarin.universal.pkg
-installer -pkg /tmp/mono.pkg -target /
+sudo installer -pkg /tmp/mono.pkg -target /
 
 export PATH=$QT_DIR/qt/bin:$PATH
 export DYLD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/src/native/output:$QT_DIR/qt/lib
