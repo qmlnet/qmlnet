@@ -19,6 +19,6 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     version: '2.2.203'
-- cmd: dotnet tool install -g GitVersion.Tool --version 5.0.0-beta2-64
-- cmd: dotnet gitversion > version.json
+- script: dotnet tool install -g GitVersion.Tool --version 5.0.0-beta2-64
+- script: dotnet gitversion > version.json
 - script: dotnet --version
