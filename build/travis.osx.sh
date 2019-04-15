@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+exit 1
+
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 QT_DIR=$SCRIPT_DIR/Qt
 
