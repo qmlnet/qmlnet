@@ -9,7 +9,7 @@ mkdir -p $QT_DIR
 wget -O- -q https://github.com/qmlnet/qt-runtimes/releases/download/releases/qt-5.12.2-ad0689c-osx-x64-dev.tar.gz | tar xpz -C $QT_DIR
 
 # Needed to reference net472 in our native packages.
-wget -O- -q https://download.mono-project.com/archive/5.20.1/macos-10-universal/MonoFramework-MDK-5.20.1.19.macos10.xamarin.universal.pkg > /tmp/mono.pkg
+wget --retry-connrefused --waitretry=1 -O /tmp/mono.pkg https://download.mono-project.com/archive/5.20.1/macos-10-universal/MonoFramework-MDK-5.20.1.19.macos10.xamarin.universal.pkg
 installer -pkg /tmp/mono.pkg -target /
 
 export PATH=$QT_DIR/qt/bin:$PATH
