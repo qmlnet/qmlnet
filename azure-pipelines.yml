@@ -3,17 +3,22 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- master
-
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: $(imageName)
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.2.203'
+- cmd: dotnet tool install -g GitVersion.Tool --version 5.0.0-beta2-64
+- cmd: dotnet gitversion > version.json
+- script: dotnet --version
