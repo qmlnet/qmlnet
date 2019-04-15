@@ -80,17 +80,17 @@ namespace Build
                 if (IsWindows())
                 {
                     // Deploy our Windows binaries NuGet package.
-                    RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.WindowsBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
+                    RunShell($"dotnet pack {ExpandPath("src/native/nuget/Qml.Net.WindowsBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
                 }
                 if (IsOSX())
                 {
                     // Deploy our OSX binaries NuGet package.
-                    RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.OSXBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
+                    RunShell($"dotnet pack {ExpandPath("src/native/nuget/Qml.Net.OSXBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
                 }
                 if (IsLinux())
                 {
                     // Deploy our Linux binaries NuGet package.
-                    RunShell($"dotnet pack {ExpandPath("src/native/Qml.Net.LinuxBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
+                    RunShell($"dotnet pack {ExpandPath("src/native/nuget/Qml.Net.LinuxBinaries.csproj")} --output {ExpandPath("./output")} {commandBuildArgsWithVersion}");
                 }
             });
             

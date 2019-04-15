@@ -12,7 +12,7 @@
     <ProjectReference Include="..\net\Qml.Net\Qml.Net.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="output/**/*">
+    <Content Include="../output/**/*">
       <PackagePath>runtimes/win-x64/native/</PackagePath>
       <Pack>true</Pack>
     </Content>
