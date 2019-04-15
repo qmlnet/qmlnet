@@ -4,13 +4,16 @@
 # https://aka.ms/yaml
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: $(imageName)
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-18.10'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
 
 steps:
 - script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
