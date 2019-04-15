@@ -10,7 +10,7 @@ strategy:
   matrix:
     linux:
       imageName: 'ubuntu-16.04'
-      ci-script: ./build/build.linux.sh
+      ciScript: ./build/build.linux.sh
     mac:
       imageName: 'macos-10.13'
       ciScript: ./build/build.osx.sh
