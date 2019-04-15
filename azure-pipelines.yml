@@ -10,15 +10,16 @@ strategy:
   matrix:
     linux:
       imageName: 'ubuntu-16.04'
+      ci-script: ./build.linux.sh
     mac:
       imageName: 'macos-10.13'
+      ci-script: ./build.osx.sh
     windows:
       imageName: 'vs2017-win2016'
+      ci-script: ./build.windows.bat
 
 steps:
 - task: DotNetCoreInstaller@0
   inputs:
     version: '2.2.203'
-- script: dotnet tool install -g GitVersion.Tool --version 5.0.0-beta2-64
-- script: dotnet gitversion > version.json
-- script: dotnet --version
+- script: $(ci-scipt)
