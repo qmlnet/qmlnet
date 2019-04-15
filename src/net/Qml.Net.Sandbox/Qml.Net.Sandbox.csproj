@@ -11,11 +11,11 @@
     <ProjectReference Include="..\Qml.Net\Qml.Net.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Program.Tests.cs" />
-    <None Include="Program.Tests.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="xunit.core" Version="2.4.1" />
     <PackageReference Include="xunit.runner.utility" Version="2.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Program.UI.cs" />
+    <None Include="Program.UI.cs" />
   </ItemGroup>
 </Project>

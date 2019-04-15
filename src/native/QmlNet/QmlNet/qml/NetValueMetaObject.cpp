@@ -5,6 +5,7 @@
 #include <QmlNet/types/NetPropertyInfo.h>
 #include <QmlNet/types/NetSignalInfo.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNet/types/NetTypeManager.h>
 #include <QQmlEngine>
 #include <QDebug>
 #include <private/qmetaobjectbuilder_p.h>
@@ -18,9 +19,16 @@ QMetaObject *metaObjectFor(const QSharedPointer<NetTypeInfo>& typeInfo)
     typeInfo->ensureLoaded();
 
     QMetaObjectBuilder mob;
-    mob.setSuperClass(&QObject::staticMetaObject);
     mob.setClassName(typeInfo->getClassName().toLatin1());
     mob.setFlags(QMetaObjectBuilder::DynamicMetaObject);
+
+    QString baseType = typeInfo->getBaseType();
+    if(baseType.isNull() || baseType.isEmpty()) {
+        mob.setSuperClass(&QObject::staticMetaObject);
+    } else {
+        auto baseTypeInfo = NetTypeManager::getTypeInfo(baseType);
+        mob.setSuperClass(metaObjectFor(baseTypeInfo));
+    }
 
     // register all the signals for the type
     for(int index = 0; index <= typeInfo->getSignalCount() - 1; index++)
@@ -100,15 +108,48 @@ NetValueMetaObject::NetValueMetaObject(QObject *value,
 
 int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
 {
+#ifdef QMLNET_TRACE
+    switch(c) {
+    case ReadProperty:
+    {
+        auto prop = property(idx);
+        qDebug() << this->className() << ": reading property: " << idx << ": " << prop.name();
+    }
+        break;
+    case WriteProperty:
+    {
+        auto prop = property(idx);
+        qDebug() << this->className() << ": writing property: " << idx << ": " << prop.name();
+    }
+        break;
+    case  InvokeMetaMethod:
+    {
+        auto meth = method(idx);
+        qDebug() << this->className() << ": invoking method: " << idx << ": " << meth.name();
+    }
+        break;
+    default:
+        break; // Unhandled.
+    }
+#endif
+    return metaCallRecursive(c, idx, idx, a, instance->getTypeInfo());
+}
+
+int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, int idx, void **a, QSharedPointer<NetTypeInfo> typeInfo)
+{
     switch(c) {
     case ReadProperty:
     {
         int offset = propertyOffset();
         if (idx < offset) {
+            auto baseType = NetTypeManager::getBaseType(typeInfo);
+            if(baseType != nullptr) {
+                return metaCallRecursive(c, originalIdx, idx, a, baseType);
+            }
             return value->qt_metacall(c, idx, a);
         }
 
-        QSharedPointer<NetPropertyInfo> propertyInfo = instance->getTypeInfo()->getProperty(idx - offset);
+        QSharedPointer<NetPropertyInfo> propertyInfo = typeInfo->getProperty(idx - offset);
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> result = QSharedPointer<NetVariant>(new NetVariant());
@@ -133,10 +174,14 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
     {
         int offset = propertyOffset();
         if (idx < offset) {
+            auto baseType = NetTypeManager::getBaseType(typeInfo);
+            if(baseType != nullptr) {
+                return metaCallRecursive(c, originalIdx, idx, a, baseType);
+            }
             return value->qt_metacall(c, idx, a);
         }
 
-        QSharedPointer<NetPropertyInfo> propertyInfo = instance->getTypeInfo()->getProperty(idx - offset);
+        QSharedPointer<NetPropertyInfo> propertyInfo = typeInfo->getProperty(idx - offset);
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
@@ -149,22 +194,26 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
     {
         int offset = methodOffset();
         if (idx < offset) {
+            auto baseType = NetTypeManager::getBaseType(typeInfo);
+            if(baseType != nullptr) {
+                return metaCallRecursive(c, originalIdx, idx + ((baseType->getSignalCount() * 2) + baseType->getLocalMethodCount()), a, baseType);
+            }
             return value->qt_metacall(c, idx, a);
         }
 
         idx -= offset;
-        if(idx < instance->getTypeInfo()->getSignalCount()) {
+        if(idx < typeInfo->getSignalCount()) {
             // This is a signal call, activate it!
-            activate(value, idx + offset, a);
+            activate(value, originalIdx, a);
             return -1;
         }
 
-        idx -= instance->getTypeInfo()->getSignalCount();
+        idx -= typeInfo->getSignalCount();
 
-        if(idx < instance->getTypeInfo()->getLocalMethodCount()) {
+        if(idx < typeInfo->getLocalMethodCount()) {
             // This is a method call!
 
-            QSharedPointer<NetMethodInfo> methodInfo = instance->getTypeInfo()->getLocalMethodInfo(idx);
+            QSharedPointer<NetMethodInfo> methodInfo = typeInfo->getLocalMethodInfo(idx);
             QSharedPointer<NetVariantList> parameters = QSharedPointer<NetVariantList>(new NetVariantList());
 
             for(int index = 0; index <= methodInfo->getParameterCount() - 1; index++)
@@ -204,12 +253,12 @@ int NetValueMetaObject::metaCall(QMetaObject::Call c, int idx, void **a)
             return -1;
         }
 
-        idx -= instance->getTypeInfo()->getLocalMethodCount();
+        idx -= typeInfo->getLocalMethodCount();
 
         {
             // This is a slot invocation, likely the built-in handlers that are used
             // to trigger NET delegates for any signals.
-            QSharedPointer<NetSignalInfo> signalInfo = instance->getTypeInfo()->getSignal(idx);
+            QSharedPointer<NetSignalInfo> signalInfo = typeInfo->getSignal(idx);
             QSharedPointer<NetVariantList> parameters;
 
             if(signalInfo->getParameterCount() > 0) {
