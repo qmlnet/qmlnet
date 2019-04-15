@@ -1,5 +1,6 @@
 <Project>
     <Import Project="version.props" />
+    <Import Project="mono.props" />
     <PropertyGroup>
         <Authors>Paul Knopf</Authors>
         <Description>A cross-platform QML/.NET integration for Mono/.NET/.NET Core</Description>
