@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-ls /usr/lib/mono/
-exit 1
-
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 QT_DIR=$SCRIPT_DIR/Qt
 
@@ -20,6 +17,9 @@ sudo apt-get install -y apt-transport-https ca-certificates
 "deb https://download.mono-project.com/repo/ubuntu stable-xenial main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
 sudo apt-get update
 sudo apt-get install -y mono-complete
+
+ls /usr/lib/mono/
+exit 1
 
 export PATH=$QT_DIR/qt/bin:$PATH
 export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/src/native/output:$QT_DIR/qt/lib
