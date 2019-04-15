@@ -10,13 +10,13 @@ strategy:
   matrix:
     linux:
       imageName: 'ubuntu-16.04'
-      ci-script: ./build.linux.sh
+      ci-script: ./build/build.linux.sh
     mac:
       imageName: 'macos-10.13'
-      ciScript: ./build.osx.sh
+      ciScript: ./build/build.osx.sh
     windows:
       imageName: 'vs2017-win2016'
-      ciScript: ./build.windows.bat
+      ciScript: ./build/build.windows.bat
 
 steps:
 - task: DotNetCoreInstaller@0
