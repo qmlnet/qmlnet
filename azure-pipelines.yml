@@ -13,13 +13,13 @@ strategy:
       ci-script: ./build.linux.sh
     mac:
       imageName: 'macos-10.13'
-      ci-script: ./build.osx.sh
+      ciScript: ./build.osx.sh
     windows:
       imageName: 'vs2017-win2016'
-      ci-script: ./build.windows.bat
+      ciScript: ./build.windows.bat
 
 steps:
 - task: DotNetCoreInstaller@0
   inputs:
     version: '2.2.203'
-- script: $(ci-scipt)
+- script: $(ciScript)
