@@ -16,4 +16,9 @@ strategy:
       imageName: 'vs2017-win2016'
 
 steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.2.203'
+
+steps:
 - script: echo Hello, world!
