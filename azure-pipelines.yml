@@ -19,4 +19,4 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     version: '2.2.203'
-- script: echo Hello, world!
+- script: dotnet --version
