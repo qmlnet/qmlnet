@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- net-472
 
 pool:
   vmImage: 'Ubuntu-16.04'
