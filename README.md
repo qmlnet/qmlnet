@@ -78,16 +78,6 @@ public class QmlType
     public void TestMethod(QmlType parameter)
     {
     }
-
-    /// <summary>
-    /// Qml can also pass Qml/C++ objects that can be invoked from .NET
-    /// </summary>
-    /// <param name="qObject"></param>
-    public void TestMethodWithQObject(dynamic qObject)
-    {
-        string result = qObject.PropertyDefinedInCpp;
-        qObject.MethodDefinedInCpp(result);
-    }
     
     /// <summary>
     /// Async methods can be invoked with continuations happening on Qt's main thread.
