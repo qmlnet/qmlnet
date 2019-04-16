@@ -17,6 +17,8 @@ protected:
     int metaCall(QMetaObject::Call c, int id, void **a);
 
 private:
+    int metaCallRecursive(QMetaObject::Call c, int originalIdx, int idx, void **a, QSharedPointer<NetTypeInfo> typeInfo);
+
     QObject *value;
     QSharedPointer<NetReference> instance;
 };

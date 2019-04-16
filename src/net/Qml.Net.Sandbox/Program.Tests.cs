@@ -33,7 +33,6 @@ namespace Qml.Net.Sandbox
     {
         public void Dispose()
         {
-            
         }
 
         public bool OnMessageWithTypes(IMessageSinkMessage message, HashSet<string> messageTypes)
