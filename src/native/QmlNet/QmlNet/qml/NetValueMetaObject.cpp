@@ -144,7 +144,7 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
         if (idx < offset) {
             auto baseType = NetTypeManager::getBaseType(typeInfo);
             if(baseType != nullptr) {
-                return metaCallRecursive(c, originalIdx, idx, a, baseType);
+                return metaCallRecursive(c, originalIdx, idx + baseType->getPropertyCount(), a, baseType);
             }
             return value->qt_metacall(c, idx, a);
         }
@@ -176,7 +176,7 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
         if (idx < offset) {
             auto baseType = NetTypeManager::getBaseType(typeInfo);
             if(baseType != nullptr) {
-                return metaCallRecursive(c, originalIdx, idx, a, baseType);
+                return metaCallRecursive(c, originalIdx, idx + baseType->getPropertyCount(), a, baseType);
             }
             return value->qt_metacall(c, idx, a);
         }

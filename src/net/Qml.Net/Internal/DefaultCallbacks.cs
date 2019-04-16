@@ -142,7 +142,7 @@ namespace Qml.Net.Internal
                     signals.Add(signal.Name, signal);
                 }
 
-                foreach (var propertyInfo in typeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                foreach (var propertyInfo in typeInfo.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
                 {
                     if (Helpers.IsPrimitive(propertyInfo.DeclaringType)) continue;
 
