@@ -24,6 +24,8 @@ https://qmlnet.github.io/
 # Getting started
 
 ```bash
+dotnet new sln
+dotnet new console
 dotnet add package Qml.Net
 ```
 
