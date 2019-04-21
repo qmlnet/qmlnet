@@ -94,6 +94,29 @@ public class QmlType
     }
     
     /// <summary>
+    /// Qml can also pass Qml/C++ objects that can be invoked from .NET
+    /// </summary>
+    /// <param name="qObject"></param>
+    public void TestMethodWithQObject(dynamic o)
+    {
+        string result = o.PropertyDefinedInCpp;
+        o.MethodDefinedInCpp(result);
+        
+        // You can also listen to signals on QObjects.
+        var qObject = o as INetQObject.
+        var handler = qObject.AttachSignal("signalName", parameters => {
+            // parameters is a list of arguements passed to the signal.
+        });
+        handle.Dispose() // When you are done listening to signal.
+        
+        // You can also listen to when a property changes (notify signal).
+        var handler = qObject.AttachNotifySignal("propertySignal", parameters => {
+            // parameters is a list of arguements passed to the signal.
+        });
+        handle.Dispose() // When you are done listening to signal.
+    }
+    
+    /// <summary>
     /// .NET can activate signals to send notifications to Qml.
     /// </summary>
     public void ActivateCustomSignal(string message)
@@ -180,10 +203,10 @@ ApplicationWindow {
 - [x] Passing dynamic javascript objects to .NET as ```dynamic```.
 - [x] Custom V8 type that looks like an array, but wraps a .NET ```IList<T>``` instance, for modification of list in Qml, and performance.
 - [x] Dynamically compiled delegates for increased performance.
+- [x] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 
 # Not implemented (but planned)
 
 - [ ] Compiling Qml resource files and bundling them within .NET.
-- [ ] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 - [ ] .NET Events to signals
 - [ ] Qml debugger for VS and VS Code.
