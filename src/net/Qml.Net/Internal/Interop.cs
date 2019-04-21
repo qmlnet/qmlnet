@@ -49,10 +49,18 @@ namespace Qml.Net.Internal
 
             if (!result.IsSuccess)
             {
-                throw new Exception("Couldn't find the native Qml.Net library.");
+                throw new Exception("Unable to find the native Qml.Net library." +
+                                    " Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");;
             }
 
             var library = loader.LoadLibrary(result.Path);
+
+            if (library == IntPtr.Zero)
+            {
+                throw new Exception("Unable to load native Qml.Net library." +
+                                    " Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");;
+            }
+            
             Callbacks = LoadInteropType<CallbacksInterop>(library, loader);
             NetTypeInfo = LoadInteropType<NetTypeInfoInterop>(library, loader);
             NetJsValue = LoadInteropType<NetJsValueInterop>(library, loader);
