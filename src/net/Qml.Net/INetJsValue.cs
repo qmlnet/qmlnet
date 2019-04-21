@@ -10,6 +10,8 @@ namespace Qml.Net
 
         object GetProperty(string propertyName);
 
+        void SetProperty(string propertyName, object value);
+
         object GetItemAtIndex(int arrayIndex);
 
         object Call(params object[] parameters);

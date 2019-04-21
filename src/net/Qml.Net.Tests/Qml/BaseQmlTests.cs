@@ -66,7 +66,8 @@ namespace Qml.Net.Tests.Qml
                     import tests 1.0
                     {0} {{
                         id: {1}
-                        Component.onCompleted: function() {{
+                        property var testQObject: null
+                        function runTest() {{
                             {2}
                         }}
                     }}

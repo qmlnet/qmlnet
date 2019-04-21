@@ -9,7 +9,6 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual void DerivedMethod()
             {
-                
             }
         }
 
@@ -17,7 +16,6 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual void BaseMethod()
             {
-                
             }
         }
 

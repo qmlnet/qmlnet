@@ -1,6 +1,8 @@
 #include <QmlNet/qml/NetValueMetaObjectPacker.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetValue.h>
+#include <QmlNet/qml/NetJsValue.h>
+#include <QmlNet/qml/NetQObject.h>
 #include <QDebug>
 
 const char* NetValueTypePacker::getQmlType()
@@ -54,6 +56,9 @@ void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* de
     }
     case NetVariantTypeEnum_JSValue:
         destinationVariant->setValue(source->getJsValue()->getJsValue());
+        break;
+    case NetVariantTypeEnum_QObject:
+        destinationVariant->setValue(source->getQObject()->getQObject());
         break;
     }
 }
@@ -116,8 +121,11 @@ void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, v
             NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
             if(netValue) {
                 destination->setNetReference(netValue->getNetReference());
-                return;
+            } else {
+                QSharedPointer<NetQObject> netQObject(new NetQObject(value));
+                destination->setQObject(netQObject);
             }
+            return;
         }
         break;
     }
@@ -130,6 +138,12 @@ void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, v
         }
         // TODO: Try to convert other types to JS Value.
         break;
+    }
+    case NetVariantTypeEnum_QObject:
+    {
+        if(sourceVariant->userType() == QMetaType::QObjectStar) {
+            QSharedPointer<NetQObject> netQObject(new NetQObject(sourceVariant->value<QObject*>()));
+        }
     }
     }
 
@@ -192,6 +206,7 @@ NetValueMetaObjectPacker::NetValueMetaObjectPacker()
         case NetVariantTypeEnum_DateTime:
         case NetVariantTypeEnum_Object:
         case NetVariantTypeEnum_JSValue:
+        case NetVariantTypeEnum_QObject:
             packers[type] = variantPacker;
             break;
         case NetVariantTypeEnum_String:

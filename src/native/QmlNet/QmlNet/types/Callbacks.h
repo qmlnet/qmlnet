@@ -8,6 +8,7 @@
 #include <QmlNet/types/NetReference.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetVariantList.h>
+#include <QmlNet/qml/NetJsValue.h>
 #include <QSharedPointer>
 #include <QString>
 
@@ -42,6 +43,8 @@ bool raiseNetSignals(QSharedPointer<NetReference> target, const QString& signalN
 void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> successCallback, const QSharedPointer<NetJSValue>& failureCallback);
 
 bool serializeNetToString(QSharedPointer<NetReference> instance, QSharedPointer<NetVariant> result);
+
+void invokeDelegate(QSharedPointer<NetReference> del, QSharedPointer<NetVariantList> parameters);
 
 }
 
