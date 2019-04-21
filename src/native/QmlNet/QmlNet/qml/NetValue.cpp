@@ -2,6 +2,7 @@
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetValueMetaObject.h>
 #include <QmlNet/types/NetSignalInfo.h>
+#include <QmlNet/types/NetTypeManager.h>
 #include <QmlNet/types/Callbacks.h>
 #include <QDebug>
 #include <utility>
@@ -133,23 +134,32 @@ NetValue::NetValue(const QSharedPointer<NetReference>& instance, QObject *parent
     }
     collection->netValues.append(this);
 
-    // Auto wire up all of our signal handlers that will invoke .NET delegates.
-    for(int index = 0; index <= instance->getTypeInfo()->getSignalCount() - 1; index++)
-    {
-        QSharedPointer<NetSignalInfo> signalInfo = instance->getTypeInfo()->getSignal(index);
+    QList<QSharedPointer<NetTypeInfo>> types;
 
-        QString signalSig = signalInfo->getSignature();
-        QString slotSig = signalInfo->getSlotSignature();
+    auto type = instance->getTypeInfo();
 
-        int signalIndex = valueMeta->indexOfSignal(signalSig.toLatin1().data());
-        int slotIndex = valueMeta->indexOfSlot(slotSig.toLatin1().data());
+    while(type != nullptr) {
+        types.insert(0, type);
+        type = NetTypeManager::getBaseType(type);
+    }
 
-        QMetaMethod signalMethod = valueMeta->method(signalIndex);
-        QMetaMethod slotMethod = valueMeta->method(slotIndex);
+    for(QSharedPointer<NetTypeInfo> type : types) {
+        for(int index = 0; index <= type->getSignalCount() - 1; index++) {
+            QSharedPointer<NetSignalInfo> signalInfo = type->getSignal(index);
 
-        QObject::connect(this, signalMethod,
-                         this, slotMethod);
-    };
+            QString signalSig = signalInfo->getSignature();
+            QString slotSig = signalInfo->getSlotSignature();
+
+            int signalIndex = valueMeta->indexOfSignal(signalSig.toLatin1().data());
+            int slotIndex = valueMeta->indexOfSlot(slotSig.toLatin1().data());
+
+            QMetaMethod signalMethod = valueMeta->method(signalIndex);
+            QMetaMethod slotMethod = valueMeta->method(slotIndex);
+
+            QObject::connect(this, signalMethod,
+                     this, slotMethod);
+        }
+    }
 }
 
 QMap<uint64_t, NetValue::NetValueCollection*> NetValue::objectIdNetValuesMap = QMap<uint64_t, NetValue::NetValueCollection*>();

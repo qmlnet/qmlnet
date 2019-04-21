@@ -471,5 +471,56 @@ namespace Qml.Net.Tests.Types
             type.HasObjectDestroyed.Should().BeTrue();
             type.HasComponentCompleted.Should().BeFalse();
         }
+
+        public class TestType21
+        {
+            public void Method1()
+            {
+            }
+        }
+
+        public class TestType22 : TestType21
+        {
+            public void Method2()
+            {
+            }
+        }
+        
+        [Fact]
+        public void Only_methods_on_class_are_returned()
+        {
+            var type1 = NetTypeManager.GetTypeInfo<TestType21>();
+            type1.EnsureLoaded();
+            type1.MethodCount.Should().Be(1);
+            type1.GetMethod(0).MethodName.Should().Be("Method1");
+
+            var type2 = NetTypeManager.GetTypeInfo<TestType22>();
+            type2.EnsureLoaded();
+            type2.MethodCount.Should().Be(1);
+            type2.GetMethod(0).MethodName.Should().Be("Method2");
+        }
+
+        [Signal("firstSignal")]
+        public class TestType23
+        {
+        }
+
+        [Signal("secondSignal")]
+        public class TestType24 : TestType23
+        {
+        }
+
+        [Fact]
+        public void Can_ignore_inherited_signals()
+        {
+            var type1 = NetTypeManager.GetTypeInfo<TestType23>();
+            type1.EnsureLoaded();
+            type1.SignalCount.Should().Be(1);
+            type1.GetSignal(0).Name.Should().Be("firstSignal");
+            var type2 = NetTypeManager.GetTypeInfo<TestType24>();
+            type2.EnsureLoaded();
+            type2.SignalCount.Should().Be(1);
+            type2.GetSignal(0).Name.Should().Be("secondSignal");
+        }
     }
 }

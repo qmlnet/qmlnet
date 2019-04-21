@@ -256,12 +256,12 @@ namespace Qml.Net
 
         public static void SetAttribute(ApplicationAttribute attribute, bool on)
         {
-            Interop.QCoreApplication.SetAttribute((int) attribute, on);
+            Interop.QCoreApplication.SetAttribute((int)attribute, on);
         }
 
         public static bool TestAttribute(ApplicationAttribute attribute)
         {
-            return Interop.QCoreApplication.TestAttribute((int) attribute) == 1;
+            return Interop.QCoreApplication.TestAttribute((int)attribute) == 1;
         }
 
         protected override void DisposeUnmanaged(IntPtr ptr)

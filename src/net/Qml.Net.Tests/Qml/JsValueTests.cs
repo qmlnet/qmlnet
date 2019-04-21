@@ -228,7 +228,7 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_read_properties_from_js_object()
         {
-            var testObject = new JsValueTests.JsTestsQml.TestObject();
+            var testObject = new JsTestsQml.TestObject();
             dynamic result = null;
             Mock.Setup(x => x.Method(It.IsAny<INetJsValue>())).Callback(new Action<dynamic>(jsValue =>
                 {

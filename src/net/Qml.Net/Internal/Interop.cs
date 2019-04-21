@@ -49,10 +49,18 @@ namespace Qml.Net.Internal
 
             if (!result.IsSuccess)
             {
-                throw new Exception("Couldn't find the native Qml.Net library.");
+                throw new Exception("Unable to find the native Qml.Net library." +
+                                    " Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");;
             }
 
             var library = loader.LoadLibrary(result.Path);
+
+            if (library == IntPtr.Zero)
+            {
+                throw new Exception("Unable to load native Qml.Net library." +
+                                    " Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");;
+            }
+            
             Callbacks = LoadInteropType<CallbacksInterop>(library, loader);
             NetTypeInfo = LoadInteropType<NetTypeInfoInterop>(library, loader);
             NetJsValue = LoadInteropType<NetJsValueInterop>(library, loader);
@@ -73,6 +81,8 @@ namespace Qml.Net.Internal
             Utilities = LoadInteropType<UtilitiesInterop>(library, loader);
             QtWebEngine = LoadInteropType<QtWebEngineInterop>(library, loader);
             QTest = LoadInteropType<QTestInterop>(library, loader);
+            NetQObject = LoadInteropType<NetQObjectInterop>(library, loader);
+            NetQObjectSignalConnection = LoadInteropType<NetQObjectSignalConnectionInterop>(library, loader);
 
             // RuntimeManager.ConfigureRuntimeDirectory may set these environment variables.
             // However, they only really work when called with Qt.PutEnv.
@@ -122,6 +132,10 @@ namespace Qml.Net.Internal
         public static QtWebEngineInterop QtWebEngine { get; }
 
         public static QTestInterop QTest { get; }
+        
+        public static NetQObjectInterop NetQObject { get; }
+        
+        public static NetQObjectSignalConnectionInterop NetQObjectSignalConnection { get; set; }
 
         private static T LoadInteropType<T>(IntPtr library, IPlatformLoader loader)
             where T : new()

@@ -26,6 +26,15 @@ QSharedPointer<NetTypeInfo> NetTypeManager::getTypeInfo(const QString& typeName)
     return typeInfo;
 }
 
+QSharedPointer<NetTypeInfo> NetTypeManager::getBaseType(QSharedPointer<NetTypeInfo> typeInfo)
+{
+    auto baseType = typeInfo->getBaseType();
+    if(baseType.isNull() || baseType.isEmpty()) {
+        return nullptr;
+    }
+    return NetTypeManager::getTypeInfo(baseType);
+}
+
 extern "C" {
 
 Q_DECL_EXPORT NetTypeInfoContainer* type_manager_getTypeInfo(LPWSTR fullTypeName) {

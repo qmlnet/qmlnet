@@ -1,6 +1,8 @@
+#include <QmlNet/types/NetReference.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetJsValue.h>
+#include <QmlNet/qml/NetQObject.h>
 #include <QmlNetUtilities.h>
 #include <QDateTime>
 #include <QDebug>
@@ -18,15 +20,22 @@ struct NetJsValueQmlContainer
 {
     QSharedPointer<NetJSValue> jsValue;
 };
+
+struct NetQObjectQmlContainer
+{
+    QSharedPointer<NetQObject> netQObject;
+};
 }
 
 Q_DECLARE_METATYPE(NetReferenceQmlContainer)
 Q_DECLARE_METATYPE(NetJsValueQmlContainer)
+Q_DECLARE_METATYPE(NetQObjectQmlContainer)
 
 namespace
 {
 const int NetReferenceQmlContainerTypeId = qMetaTypeId<NetReferenceQmlContainer>();
 const int NetJsValueQmlContainerTypeId = qMetaTypeId<NetJsValueQmlContainer>();
+const int NetQObjectQmlContainerTypeId = qMetaTypeId<NetQObjectQmlContainer>();
 }
 
 NetVariant::NetVariant() = default;
@@ -68,7 +77,11 @@ NetVariantTypeEnum NetVariant::getVariantType() const
         }
         else if(type == NetJsValueQmlContainerTypeId) {
             return NetVariantTypeEnum_JSValue;
-        } else {
+        }
+        else if(type == NetQObjectQmlContainerTypeId) {
+            return NetVariantTypeEnum_QObject;
+        }
+        else {
             qWarning() << "Unknown type for NetVariant: " << variant.typeName();
             return NetVariantTypeEnum_Invalid;
         }
@@ -206,6 +219,16 @@ QSharedPointer<NetJSValue> NetVariant::getJsValue() const
     return getValue<NetJsValueQmlContainer>().jsValue;
 }
 
+void NetVariant::setQObject(QSharedPointer<NetQObject> netQObject)
+{
+    setValue(NetQObjectQmlContainer{ std::move(netQObject) });
+}
+
+QSharedPointer<NetQObject> NetVariant::getQObject() const
+{
+    return getValue<NetQObjectQmlContainer>().netQObject;
+}
+
 void NetVariant::clear()
 {
     clearNetReference();
@@ -274,13 +297,23 @@ void NetVariant::fromQVariant(const QVariant* variant, const QSharedPointer<NetV
     case QMetaType::QDateTime:
         destination->setValueVariant(*variant);
         break;
+    case QMetaType::ULong:
+        destination->setULong(variant->value<quint64>());
+        break;
+    case QMetaType::Long:
+        destination->setLong(variant->value<qint64>());
+        break;
     case QMetaType::QObjectStar: {
         QObject* value = variant->value<QObject*>();
+        if(value == nullptr) {
+            destination->clear();
+            return;
+        }
         NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
         if(netValue) {
             destination->setNetReference(netValue->getNetReference());
         } else {
-            qDebug() << "Unsupported variant type: " << variant->type() << variant->typeName();
+            destination->setQObject(QSharedPointer<NetQObject>(new NetQObject(value)));
         }
         break;
     }
@@ -314,6 +347,8 @@ QVariant NetVariant::toQVariant() const
         return getJsValue()->getJsValue().toVariant();
     case NetVariantTypeEnum_Object:
         return QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
+    case NetVariantTypeEnum_QObject:
+        return QVariant::fromValue<QObject*>(this->getQObject()->getQObject());
     default:
         return variant;
     }
@@ -339,6 +374,10 @@ void NetVariant::clearNetReference()
     }
     else if(variant.canConvert<NetJsValueQmlContainer>()) {
         variant.value<NetJsValueQmlContainer>().jsValue.clear();
+        variant.clear();
+    }
+    else if(variant.canConvert<NetQObjectQmlContainer>()) {
+        variant.value<NetQObjectQmlContainer>().netQObject.clear();
         variant.clear();
     }
 }
@@ -556,6 +595,24 @@ Q_DECL_EXPORT NetJSValueContainer* net_variant_getJsValue(NetVariantContainer* c
     }
     NetJSValueContainer* result = new NetJSValueContainer();
     result->jsValue = instance;
+    return result;
+}
+
+Q_DECL_EXPORT void net_variant_setQObject(NetVariantContainer* container, NetQObjectContainer* qObjectContainer) {
+    if(qObjectContainer == nullptr) {
+        container->variant->setQObject(nullptr);
+    } else {
+        container->variant->setQObject(qObjectContainer->qObject);
+    }
+}
+
+Q_DECL_EXPORT NetQObjectContainer* net_variant_getQObject(NetVariantContainer* container) {
+    const QSharedPointer<NetQObject>& instance = container->variant->getQObject();
+    if(instance == nullptr) {
+        return nullptr;
+    }
+    NetQObjectContainer* result = new NetQObjectContainer();
+    result->qObject = instance;
     return result;
 }
 
