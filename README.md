@@ -107,13 +107,13 @@ public class QmlType
         var handler = qObject.AttachSignal("signalName", parameters => {
             // parameters is a list of arguements passed to the signal.
         });
-        handler.Dispose() // When you are done listening to signal.
+        handler.Dispose(); // When you are done listening to signal.
         
         // You can also listen to when a property changes (notify signal).
         handler = qObject.AttachNotifySignal("property", parameters => {
             // parameters is a list of arguements passed to the signal.
         });
-        handler.Dispose() // When you are done listening to signal.
+        handler.Dispose(); // When you are done listening to signal.
     }
     
     /// <summary>
@@ -121,7 +121,7 @@ public class QmlType
     /// </summary>
     public void ActivateCustomSignal(string message)
     {
-        this.ActivateSignal("customSignal", message)
+        this.ActivateSignal("customSignal", message);
     }
 }
 ```
