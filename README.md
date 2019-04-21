@@ -90,7 +90,7 @@ public class QmlType
             // On the background thread
         });
         // On the UI thread
-        return "async result!"
+        return "async result!";
     }
     
     /// <summary>
