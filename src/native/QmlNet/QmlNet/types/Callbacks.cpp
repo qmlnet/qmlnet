@@ -18,6 +18,7 @@ using gcCollectCb = void (*)(int);
 using raiseNetSignalsCb = uchar (*)(NetReferenceContainer *, LPWCSTR, NetVariantListContainer *);
 using awaitTaskCb = void (*)(NetReferenceContainer *, NetJSValueContainer *, NetJSValueContainer *);
 using serializeNetToStringCb = uchar (*)(NetReferenceContainer *, NetVariantContainer *);
+using invokeDelegateCb = void (*)(NetReferenceContainer *, NetVariantListContainer *);
 
 struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     isTypeValidCb isTypeValid;
@@ -35,6 +36,7 @@ struct Q_DECL_EXPORT NetTypeInfoManagerCallbacks {
     raiseNetSignalsCb raiseNetSignals;
     awaitTaskCb awaitTask;
     serializeNetToStringCb serializeNetToString;
+    invokeDelegateCb invokeDelegate;
 };
 
 static NetTypeInfoManagerCallbacks sharedCallbacks;
@@ -173,6 +175,12 @@ bool serializeNetToString(QSharedPointer<NetReference> instance, QSharedPointer<
 {
     return sharedCallbacks.serializeNetToString(new NetReferenceContainer{std::move(instance)},
                                                 new NetVariantContainer{std::move(result)}) == 1;
+}
+
+void invokeDelegate(QSharedPointer<NetReference> del, QSharedPointer<NetVariantList> parameters)
+{
+    sharedCallbacks.invokeDelegate(new NetReferenceContainer{std::move(del)},
+                                   new NetVariantListContainer{std::move(parameters)});
 }
 
 }

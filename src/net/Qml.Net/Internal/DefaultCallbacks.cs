@@ -462,6 +462,24 @@ namespace Qml.Net.Internal
             }
         }
 
+        public void InvokeDelegate(IntPtr del, IntPtr parameters)
+        {
+            using (var netReference = new NetReference(del))
+            {
+                using (var netParameters = new NetVariantList(parameters))
+                {
+                    var o = netReference.Instance;
+                    var oDel = o as Del;
+                    if (oDel == null)
+                    {
+                        throw new Exception($"NetReferecnce is invalid type: {o.GetType().FullName}");
+                    }
+
+                    oDel.Raise(netParameters);
+                }
+            }
+        }
+
         private NetVariantType GetPrefVariantType(Type typeInfo)
         {
             if (typeInfo == typeof(bool))

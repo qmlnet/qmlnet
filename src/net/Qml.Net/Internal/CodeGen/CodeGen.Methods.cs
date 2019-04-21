@@ -248,6 +248,10 @@ namespace Qml.Net.Internal.CodeGen
                     {
                         variant.JsValue = valueJsValue;
                     }
+                    else if (value is NetQObject valueQObject)
+                    {
+                        variant.QObject = valueQObject;
+                    }
                     else
                     {
                         variant.Instance = NetReference.CreateForObject(value);

@@ -121,6 +121,22 @@ namespace Qml.Net.Internal.Qml
                 return unpacked;
             }
 
+            public void SetProperty(string propertyName, object value)
+            {
+                if (value == null)
+                {
+                    _jsValue.SetProperty(propertyName, null);
+                }
+                else
+                {
+                    using (var variant = new NetVariant())
+                    {
+                        Helpers.Pack(value, variant, value.GetType());
+                        _jsValue.SetProperty(propertyName, variant);
+                    }
+                }
+            }
+            
             public object GetItemAtIndex(int arrayIndex)
             {
                 var result = _jsValue.GetItemAtIndex(arrayIndex);
@@ -170,19 +186,7 @@ namespace Qml.Net.Internal.Qml
 
             public override bool TrySetMember(SetMemberBinder binder, object value)
             {
-                if (value == null)
-                {
-                    _jsValue.SetProperty(binder.Name, null);
-                }
-                else
-                {
-                    using (var variant = new NetVariant())
-                    {
-                        Helpers.PackValue(value, variant);
-                        _jsValue.SetProperty(binder.Name, variant);
-                    }
-                }
-
+                SetProperty(binder.Name, value);
                 return true;
             }
         }

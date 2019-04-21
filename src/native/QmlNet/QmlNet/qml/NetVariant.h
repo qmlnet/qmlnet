@@ -1,11 +1,15 @@
 #ifndef NETVARIANT_H
 #define NETVARIANT_H
 
-#include <QmlNet/types/NetReference.h>
-#include <QmlNet/qml/NetJsValue.h>
+#include <QmlNet.h>
+#include <QSharedPointer>
 #include <QVariant>
 #include <QDateTime>
 #include <QJSValue>
+
+class NetJSValue;
+class NetQObject;
+class NetReference;
 
 class NetVariant
 {
@@ -38,6 +42,8 @@ public:
     QDateTime getDateTime() const;
     void setJsValue(QSharedPointer<NetJSValue> jsValue);
     QSharedPointer<NetJSValue> getJsValue() const;
+    void setQObject(QSharedPointer<NetQObject> netQObject);
+    QSharedPointer<NetQObject> getQObject() const;
     void clear();
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
     QJSValue toQJSValue() const;

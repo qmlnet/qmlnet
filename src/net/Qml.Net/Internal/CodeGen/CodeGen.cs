@@ -83,6 +83,8 @@ namespace Qml.Net.Internal.CodeGen
                         break;
                     case NetVariantType.JsValue:
                         throw new NotImplementedException();
+                    case NetVariantType.QObject:
+                        throw new NotImplementedException();
                     case NetVariantType.Invalid:
                         throw new Exception("invalid type");
                     default:
@@ -223,6 +225,8 @@ namespace Qml.Net.Internal.CodeGen
                         unbox = parameter.ParameterType.IsValueType;
                         break;
                     case NetVariantType.JsValue:
+                        throw new NotImplementedException();
+                    case NetVariantType.QObject:
                         throw new NotImplementedException();
                     case NetVariantType.Invalid:
                         throw new Exception("invalid type");

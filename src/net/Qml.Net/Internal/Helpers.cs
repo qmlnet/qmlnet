@@ -55,6 +55,8 @@ namespace Qml.Net.Internal
                 destination.DateTime = ((DateTimeOffset)source).DateTime;
             else if (typeof(INetJsValue).IsAssignableFrom(type))
                 destination.JsValue = ((NetJsValue.NetJsValueDynamic)source).JsValue;
+            else if (typeof(INetQObject).IsAssignableFrom(type))
+                destination.QObject = ((NetQObject.NetQObjectDynamic)source).QObject;
             else
             {
                 if (type.IsEnum)
@@ -130,6 +132,9 @@ namespace Qml.Net.Internal
                     break;
                 case NetVariantType.JsValue:
                     destination = source.JsValue.AsDynamic();
+                    break;
+                case NetVariantType.QObject:
+                    destination = source.QObject.AsDynamic();
                     break;
                 default:
                     throw new Exception("Unsupported variant type.");

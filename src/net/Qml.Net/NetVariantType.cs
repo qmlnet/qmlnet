@@ -15,5 +15,6 @@
         DateTime,
         Object,
         JsValue,
+        QObject
     }
 }
