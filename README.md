@@ -1,4 +1,4 @@
-# <p align="center"><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
+<p align="center"><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
 
 <p align="center">
     <a href="http://www.nuget.org/packages/Qml.Net/" rel="nofollow"><img src="https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net" alt="Qml.Net" style="max-width:100%;"></a>
