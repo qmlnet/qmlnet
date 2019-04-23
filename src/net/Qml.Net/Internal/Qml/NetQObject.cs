@@ -113,20 +113,6 @@ namespace Qml.Net.Internal.Qml
 
             public NetQObject QObject => _qObject;
             
-            public override bool TryGetMember(GetMemberBinder binder, out object result)
-            {
-                result = GetProperty(binder.Name);
-                // TODO: Check if this was actually a property
-                return true;
-            }
-
-            public override bool TrySetMember(SetMemberBinder binder, object value)
-            {
-                SetProperty(binder.Name, value);
-                // TODO: Check if this was actually a property
-                return true;
-            }
-
             public object GetProperty(string propertyName)
             {
                 var property = _qObject.GetProperty(propertyName);
@@ -231,6 +217,27 @@ namespace Qml.Net.Internal.Qml
                 };
                 
                 return _qObject.AttachNotifySignal(propertyName, del);
+            }
+            
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                result = GetProperty(binder.Name);
+                // TODO: Check if this was actually a property
+                return true;
+            }
+
+            public override bool TrySetMember(SetMemberBinder binder, object value)
+            {
+                SetProperty(binder.Name, value);
+                // TODO: Check if this was actually a property
+                return true;
+            }
+            
+            public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+            {
+                result = InvokeMethod(binder.Name, args);
+                // TODO: Check if this was actually a method.
+                return true;
             }
         }
     }
