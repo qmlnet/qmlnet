@@ -131,6 +131,17 @@ namespace Qml.Net.Tests.Qml
         }
 
         [Fact]
+        public void Can_invoke_method_on_qobject_as_dynamic()
+        {
+            AssertQObject(qObject =>
+            {
+                var d = (dynamic)qObject;
+                var result = (int)d.testSlotInt(23);
+                result.Should().Be(23);
+            });
+        }
+
+        [Fact]
         public void Can_set_random_types_on_property()
         {
             AssertQObject(qObject =>
