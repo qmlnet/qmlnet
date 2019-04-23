@@ -1,4 +1,4 @@
-<p align="center">
+# <p align="center">
   <img src="https://qmlnet.github.io/qmlnet.png" width="150">
 </p>
 
@@ -11,8 +11,6 @@
 </p>
 
 ------------------------
-
-# Qml.Net 
 
 A Qml integration with .NET
 
