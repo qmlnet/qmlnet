@@ -90,7 +90,7 @@ public class QmlType
             // On the background thread
         });
         // On the UI thread
-        return "async result!"
+        return "async result!";
     }
     
     /// <summary>
@@ -99,21 +99,21 @@ public class QmlType
     /// <param name="qObject"></param>
     public void TestMethodWithQObject(dynamic o)
     {
-        string result = o.PropertyDefinedInCpp;
-        o.MethodDefinedInCpp(result);
+        string result = o.propertyDefinedInCpp;
+        o.methodDefinedInCpp(result);
         
         // You can also listen to signals on QObjects.
         var qObject = o as INetQObject.
         var handler = qObject.AttachSignal("signalName", parameters => {
             // parameters is a list of arguements passed to the signal.
         });
-        handle.Dispose() // When you are done listening to signal.
+        handler.Dispose(); // When you are done listening to signal.
         
         // You can also listen to when a property changes (notify signal).
-        var handler = qObject.AttachNotifySignal("propertySignal", parameters => {
+        handler = qObject.AttachNotifySignal("property", parameters => {
             // parameters is a list of arguements passed to the signal.
         });
-        handle.Dispose() // When you are done listening to signal.
+        handler.Dispose(); // When you are done listening to signal.
     }
     
     /// <summary>
@@ -121,7 +121,7 @@ public class QmlType
     /// </summary>
     public void ActivateCustomSignal(string message)
     {
-        this.ActivateSignal("customSignal", message)
+        this.ActivateSignal("customSignal", message);
     }
 }
 ```
