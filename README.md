@@ -1,11 +1,16 @@
-# Qml.Net 
+<p align="center"><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
 
+<p align="center">
+    <a href="http://www.nuget.org/packages/Qml.Net/" rel="nofollow"><img src="https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net" alt="Qml.Net" style="max-width:100%;"></a>
+    <a href="https://travis-ci.com/qmlnet/qmlnet" rel="nofollow"><img src="https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop" alt="Build status" style="max-width:100%;"></a>
+    <a href="https://ci.appveyor.com/project/pauldotknopf/qmlnet/" rel="nofollow"><img src="https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true" alt="Build status" style="max-width:100%;"></a>
+    <a href="https://gitter.im/qmlnet/Lobby" rel="nofollow"><img src="https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat" alt="Gitter" style="max-width:100%;"></a>
+    <a href="https://paypal.me/pauldotknopf" rel="nofollow"><img src="https://img.shields.io/badge/Donate-PayPal-green.svg" alt="Build status" style="max-width:100%;"></a>
+</p>
 
-A Qml integration with .NET
+------------------------
 
-[![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
-[![Build status](https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop)](https://travis-ci.com/qmlnet/qmlnet) [![Build status](https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qmlnet/branch/develop)
-[![Gitter chat](https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat)](https://gitter.im/qmlnet/Lobby) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/pauldotknopf)
+A Qt/Qml integration with .NET
 
 Supported platforms/runtimes:
 * Runtimes:
@@ -16,6 +21,10 @@ Supported platforms/runtimes:
   * Linux
   * OSX
   * Windows
+
+# First look
+
+<img src="https://github.com/pauldotknopf/Qml.Net.Examples/blob/master/assets/features.gif" alt="" style="max-width:100%;" width="200">
 
 # Documentation
 
