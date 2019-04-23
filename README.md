@@ -24,7 +24,7 @@ Supported platforms/runtimes:
 
 # First look
 
-![](https://github.com/pauldotknopf/Qml.Net.Examples/blob/master/assets/features.gif)
+<img src="https://github.com/pauldotknopf/Qml.Net.Examples/blob/master/assets/features.gif" alt="" style="max-width:100%;" width="300">
 
 # Documentation
 
