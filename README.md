@@ -10,6 +10,8 @@
     <a href="https://paypal.me/pauldotknopf" rel="nofollow"><img src="https://img.shields.io/badge/Donate-PayPal-green.svg" alt="Build status" style="max-width:100%;"></a>
 </p>
 
+------------------------
+
 # Qml.Net 
 
 A Qml integration with .NET
