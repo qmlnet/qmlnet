@@ -15,6 +15,7 @@
         DateTime,
         Object,
         JsValue,
-        QObject
+        QObject,
+        NetVariantList
     }
 }

@@ -25,17 +25,24 @@ struct NetQObjectQmlContainer
 {
     QSharedPointer<NetQObject> netQObject;
 };
+
+struct NetVariantListQmlContainer
+{
+    QSharedPointer<NetVariantList> netVariantList;
+};
 }
 
 Q_DECLARE_METATYPE(NetReferenceQmlContainer)
 Q_DECLARE_METATYPE(NetJsValueQmlContainer)
 Q_DECLARE_METATYPE(NetQObjectQmlContainer)
+Q_DECLARE_METATYPE(NetVariantListQmlContainer)
 
 namespace
 {
 const int NetReferenceQmlContainerTypeId = qMetaTypeId<NetReferenceQmlContainer>();
 const int NetJsValueQmlContainerTypeId = qMetaTypeId<NetJsValueQmlContainer>();
 const int NetQObjectQmlContainerTypeId = qMetaTypeId<NetQObjectQmlContainer>();
+const int NetVariantListQmlContainerTypeId = qMetaTypeId<NetVariantListQmlContainer>();
 }
 
 NetVariant::NetVariant() = default;
@@ -80,6 +87,9 @@ NetVariantTypeEnum NetVariant::getVariantType() const
         }
         else if(type == NetQObjectQmlContainerTypeId) {
             return NetVariantTypeEnum_QObject;
+        }
+        else if(type == NetVariantListQmlContainerTypeId) {
+            return NetVariantTypeEnum_NetVariantList;
         }
         else {
             qWarning() << "Unknown type for NetVariant: " << variant.typeName();
@@ -227,6 +237,16 @@ void NetVariant::setQObject(QSharedPointer<NetQObject> netQObject)
 QSharedPointer<NetQObject> NetVariant::getQObject() const
 {
     return getValue<NetQObjectQmlContainer>().netQObject;
+}
+
+void NetVariant::setNetVariantList(QSharedPointer<NetVariantList> netVariantList)
+{
+    setValue(NetVariantListQmlContainer{ std::move(netVariantList) });
+}
+
+QSharedPointer<NetVariantList> NetVariant::getNetVariantList() const
+{
+    return getValue<NetVariantListQmlContainer>().netVariantList;
 }
 
 void NetVariant::clear()
@@ -614,6 +634,22 @@ Q_DECL_EXPORT NetQObjectContainer* net_variant_getQObject(NetVariantContainer* c
     NetQObjectContainer* result = new NetQObjectContainer();
     result->qObject = instance;
     return result;
+}
+
+Q_DECL_EXPORT void net_variant_setNetVariantList(NetVariantContainer* container, NetVariantListContainer* netVariantListContainer) {
+    if(netVariantListContainer == nullptr) {
+        container->variant->setNetVariantList(nullptr);
+    } else {
+        container->variant->setNetVariantList(netVariantListContainer->list);
+    }
+}
+
+Q_DECL_EXPORT NetVariantListContainer* net_variant_getNetVariantList(NetVariantContainer* container) {
+    const QSharedPointer<NetVariantList>& netVariantList = container->variant->getNetVariantList();
+    if(netVariantList == nullptr) {
+        return nullptr;
+    }
+    return new NetVariantListContainer { netVariantList };
 }
 
 Q_DECL_EXPORT void net_variant_clear(NetVariantContainer* container) {

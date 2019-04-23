@@ -50,7 +50,8 @@ enum NetVariantTypeEnum {
     NetVariantTypeEnum_DateTime,
     NetVariantTypeEnum_Object,
     NetVariantTypeEnum_JSValue,
-    NetVariantTypeEnum_QObject
+    NetVariantTypeEnum_QObject,
+    NetVariantTypeEnum_NetVariantList
 };
 
 

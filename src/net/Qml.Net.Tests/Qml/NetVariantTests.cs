@@ -153,6 +153,36 @@ namespace Qml.Net.Tests.Qml
         }
 
         [Fact]
+        public void Can_store_variant_list()
+        {
+            using (var variant = new NetVariant())
+            using (var variantList = new NetVariantList())
+            {
+                using (var value1 = NetVariant.From(3))
+                {
+                    variantList.Add(value1);
+                }
+
+                variant.VariantType.Should().Be(NetVariantType.Invalid);
+                variant.NetVariantList = variantList;
+                variant.VariantType.Should().Be(NetVariantType.NetVariantList);
+                
+                using (var resultVariantList = variant.NetVariantList)
+                {
+                    resultVariantList.Should().NotBeNull();
+                    resultVariantList.Count.Should().Be(variantList.Count);
+                    using (var value1 = resultVariantList.Get(0))
+                    using (var value2 = variantList.Get(0))
+                    {
+                        value1.Int.Should().Be(3);
+                        value2.Int.Should().Be(3);
+                    }
+                }
+            }
+            
+        }
+
+        [Fact]
         public void Can_clear_value()
         {
             var variant = new NetVariant();

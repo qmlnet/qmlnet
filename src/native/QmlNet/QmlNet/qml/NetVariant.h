@@ -10,6 +10,7 @@
 class NetJSValue;
 class NetQObject;
 class NetReference;
+class NetVariantList;
 
 class NetVariant
 {
@@ -44,6 +45,8 @@ public:
     QSharedPointer<NetJSValue> getJsValue() const;
     void setQObject(QSharedPointer<NetQObject> netQObject);
     QSharedPointer<NetQObject> getQObject() const;
+    void setNetVariantList(QSharedPointer<NetVariantList> netVariantList);
+    QSharedPointer<NetVariantList> getNetVariantList() const;
     void clear();
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
     QJSValue toQJSValue() const;

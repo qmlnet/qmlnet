@@ -145,6 +145,20 @@ namespace Qml.Net.Internal.Qml
             set => Interop.NetVariant.SetQObject(Handle, value?.Handle ?? IntPtr.Zero);
         }
 
+        public NetVariantList NetVariantList
+        {
+            get
+            {
+                var result = Interop.NetVariant.GetNetVariantList(Handle);
+                if (result == IntPtr.Zero)
+                {
+                    return null;
+                }
+                return new NetVariantList(result);
+            }
+            set => Interop.NetVariant.SetNetVariantList(Handle, value?.Handle ?? IntPtr.Zero);
+        }
+
         public void Clear()
         {
             Interop.NetVariant.Clear(Handle);
@@ -364,6 +378,16 @@ namespace Qml.Net.Internal.Qml
         
         public delegate IntPtr GetQObjectDel(IntPtr variant);
 
+        [NativeSymbol(Entrypoint = "net_variant_setNetVariantList")]
+        public SetNetVariantListDel SetNetVariantList { get; set; }
+        
+        public delegate void SetNetVariantListDel(IntPtr variant, IntPtr variantList);
+        
+        [NativeSymbol(Entrypoint = "net_variant_getNetVariantList")]
+        public GetNetVariantListDel GetNetVariantList { get; set; }
+        
+        public delegate IntPtr GetNetVariantListDel(IntPtr variant);
+        
         [NativeSymbol(Entrypoint = "net_variant_clear")]
         public ClearDel Clear { get; set; }
 
