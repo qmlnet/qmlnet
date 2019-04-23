@@ -10,7 +10,7 @@
 
 ------------------------
 
-A Qml integration with .NET
+A Qt/Qml integration with .NET
 
 Supported platforms/runtimes:
 * Runtimes:
@@ -21,6 +21,10 @@ Supported platforms/runtimes:
   * Linux
   * OSX
   * Windows
+
+# First look
+
+![](https://github.com/pauldotknopf/Qml.Net.Examples/blob/master/assets/features.gif)
 
 # Documentation
 
