@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="460" src="https://qmlnet.github.io/qmlnet.png">
+  <img src="https://qmlnet.github.io/qmlnet.png">
 </p>
 
 # Qml.Net 
