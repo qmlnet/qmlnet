@@ -1,4 +1,5 @@
 #include <QmlNet/types/NetReference.h>
+#include <QmlNet/types/NetTypeArrayFacade.h>
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetValue.h>
 #include <QmlNet/qml/NetJsValue.h>
@@ -255,6 +256,47 @@ void NetVariant::clear()
     variant.clear();
 }
 
+QVariantList NetVariant::toQVariantList() const
+{
+    NetVariantTypeEnum variantType = getVariantType();
+
+    if(variantType == NetVariantTypeEnum_NetVariantList) {
+        QVariantList list;
+
+        QSharedPointer<NetVariantList> netVariantList = getValue<NetVariantListQmlContainer>().netVariantList;
+        for(int x = 0; x < netVariantList->count(); x++) {
+            QSharedPointer<NetVariant> variant = netVariantList->get(x);
+            list.append(variant->toQVariant());
+        }
+
+        return list;
+    }
+
+    if(variantType == NetVariantTypeEnum_Object) {
+        // This may be a .NET list type.
+        // If it is, try to enumerate it.
+        QSharedPointer<NetReference> netReference = getNetReference();
+
+        QSharedPointer<NetTypeArrayFacade> facade = netReference->getTypeInfo()->getArrayFacade();
+        if(facade == nullptr) {
+            qWarning() << "The given .NET type" << netReference->getTypeInfo()->getClassName() << "can't be converted to a QVariantList";
+            return QVariantList();
+        }
+
+        QVariantList list;
+        uint count = facade->getLength(netReference);
+        for(uint x = 0; x < count; x++) {
+            QSharedPointer<NetVariant> item = facade->getIndexed(netReference, x);
+            list.append(item->toQVariant());
+        }
+        return list;
+    }
+
+    qWarning() << "Can't convert value" << variant << "from" << variant.typeName() << "to QVariantList";
+
+    return QVariantList();
+}
+
 QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
 {
     QSharedPointer<NetVariant> result;
@@ -337,6 +379,17 @@ void NetVariant::fromQVariant(const QVariant* variant, const QSharedPointer<NetV
         }
         break;
     }
+    case QMetaType::QVariantList: {
+        QSharedPointer<NetVariantList> netVariantList = QSharedPointer<NetVariantList>(new NetVariantList());
+        QVariantList list = variant->value<QVariantList>();
+        QVariantList::iterator i;
+        for (i = list.begin(); i != list.end(); ++i) {
+            QVariant item = *i;
+            netVariantList->add(NetVariant::fromQVariant(&item));
+        }
+        destination->setNetVariantList(netVariantList);
+        break;
+    }
     default:
         if(type == qMetaTypeId<QJSValue>()) {
             // TODO: Either serialize this type to a string, to be deserialized in .NET, or
@@ -369,6 +422,8 @@ QVariant NetVariant::toQVariant() const
         return QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
     case NetVariantTypeEnum_QObject:
         return QVariant::fromValue<QObject*>(this->getQObject()->getQObject());
+    case NetVariantTypeEnum_NetVariantList:
+        return QVariant::fromValue(toQVariantList());
     default:
         return variant;
     }
@@ -381,6 +436,8 @@ QString NetVariant::getDisplayValue() const
         return getJsValue()->getJsValue().toString();
     case NetVariantTypeEnum_Object:
         return getNetReference()->displayName();
+    case NetVariantTypeEnum_QObject:
+        return getQObject()->getQObject()->objectName();
     default:
         return variant.toString();
     }

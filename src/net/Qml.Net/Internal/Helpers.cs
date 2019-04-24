@@ -92,53 +92,7 @@ namespace Qml.Net.Internal
 
         public static void Unpackvalue(ref object destination, NetVariant source)
         {
-            switch (source.VariantType)
-            {
-                case NetVariantType.Invalid:
-                    destination = null;
-                    break;
-                case NetVariantType.Bool:
-                    destination = source.Bool;
-                    break;
-                case NetVariantType.Char:
-                    destination = source.Char;
-                    break;
-                case NetVariantType.Int:
-                    destination = source.Int;
-                    break;
-                case NetVariantType.UInt:
-                    destination = source.UInt;
-                    break;
-                case NetVariantType.Long:
-                    destination = source.Long;
-                    break;
-                case NetVariantType.ULong:
-                    destination = source.ULong;
-                    break;
-                case NetVariantType.Float:
-                    destination = source.Float;
-                    break;
-                case NetVariantType.Double:
-                    destination = source.Double;
-                    break;
-                case NetVariantType.String:
-                    destination = source.String;
-                    break;
-                case NetVariantType.DateTime:
-                    destination = source.DateTime;
-                    break;
-                case NetVariantType.Object:
-                    destination = source.Instance.Instance;
-                    break;
-                case NetVariantType.JsValue:
-                    destination = source.JsValue.AsDynamic();
-                    break;
-                case NetVariantType.QObject:
-                    destination = source.QObject.AsDynamic();
-                    break;
-                default:
-                    throw new Exception("Unsupported variant type.");
-            }
+            destination = source.AsObject();
         }
     }
 }

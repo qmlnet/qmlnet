@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -526,6 +527,31 @@ namespace Qml.Net.Tests.Qml
             {
                 AssertValue(qObject, "QUInt64", ulong.MinValue);
                 AssertValue(qObject, "QUInt64", ulong.MaxValue);
+            });
+        }
+
+        [Fact]
+        public void Can_use_variant_list_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                AssertValue(qObject, "QVariantList", new List<int>{ 3 }, result =>
+                {
+                    result.Should().NotBeNull();
+                    var list = result.Should().BeAssignableTo<IList<object>>().Subject;
+                    list.Should().HaveCount(1);
+                    list[0].Should().Be(3);
+                });
+
+                qObject.SetProperty("objectName", "tetttt");
+                AssertValue(qObject, "QVariantList", new List<object>{ qObject }, result =>
+                {
+                    result.Should().NotBeNull();
+                    var list = result.Should().BeAssignableTo<IList<object>>().Subject;
+                    list.Should().HaveCount(1);
+                    var resultQObject = list[0].Should().BeAssignableTo<INetQObject>().Subject;
+                    resultQObject.GetProperty("objectName").Should().Be("tetttt");
+                });
             });
         }
         

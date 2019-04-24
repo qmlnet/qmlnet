@@ -165,6 +165,12 @@ quint64 TestQObject::testSlotQUInt64(quint64 value)
     return value;
 }
 
+QVariantList TestQObject::testSlotQVariantList(QVariantList variantList)
+{
+    emit testSignalQVariantList(variantList);
+    return variantList;
+}
+
 extern "C" {
 
 Q_DECL_EXPORT void net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml) {

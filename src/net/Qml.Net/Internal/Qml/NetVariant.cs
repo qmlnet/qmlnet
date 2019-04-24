@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Qml.Net.Internal.Types;
 
@@ -200,6 +201,26 @@ namespace Qml.Net.Internal.Qml
                     return JsValue.AsDynamic();
                 case NetVariantType.QObject:
                     return QObject.AsDynamic();
+                case NetVariantType.NetVariantList:
+                    using (var netVariantList = NetVariantList)
+                    {
+                        if (netVariantList == null)
+                        {
+                            return null;
+                        }
+
+                        var result = new List<object>();
+                        var count = netVariantList.Count;
+                        for (var x = 0; x < count; x++)
+                        {
+                            using (var value = netVariantList.Get(x))
+                            {
+                                result.Add(value.AsObject());
+                            }
+                        }
+
+                        return result;
+                    }
                 default:
                     throw new NotImplementedException($"unhandled type {VariantType}");
             }

@@ -44,6 +44,7 @@ signals:
     void testSignalQUInt32(quint32 value);
     void testSignalQInt64(qint64 value);
     void testSignalQUInt64(quint64 value);
+    void testSignalQVariantList(QVariantList value);
 
 public slots:
     void testSlot();
@@ -64,6 +65,7 @@ public slots:
     quint32 testSlotQUInt32(quint32 value);
     qint64 testSlotQInt64(qint64 value);
     quint64 testSlotQUInt64(quint64 value);
+    QVariantList testSlotQVariantList(QVariantList variantList);
 private:
     int _writeOnly;
     int _readAndWrite;

@@ -106,6 +106,9 @@ void NetQObjectArg::pack()
     case QMetaType::QDateTime:
         _variant = QVariant::fromValue(_netVariant->getDateTime());
         break;
+    case QMetaType::QVariantList:
+        _variant = QVariant::fromValue<QVariantList>(_netVariant->toQVariantList());
+        break;
     case QMetaType::QObjectStar:
         switch(_netVariant->getVariantType()) {
         case NetVariantTypeEnum_Invalid:

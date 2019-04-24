@@ -48,12 +48,15 @@ public:
     void setNetVariantList(QSharedPointer<NetVariantList> netVariantList);
     QSharedPointer<NetVariantList> getNetVariantList() const;
     void clear();
+
+    QVariantList toQVariantList() const;
     static QSharedPointer<NetVariant> fromQJSValue(const QJSValue& qJsValue);
     QJSValue toQJSValue() const;
     static void fromQVariant(const QVariant* variant, const QSharedPointer<NetVariant>& destination);
     static QSharedPointer<NetVariant> fromQVariant(const QVariant* variant);
     QVariant toQVariant() const;
     QString getDisplayValue() const;
+
 private:
     void clearNetReference();
 
