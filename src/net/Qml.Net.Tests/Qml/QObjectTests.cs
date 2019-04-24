@@ -595,6 +595,16 @@ namespace Qml.Net.Tests.Qml
             });
         }
 
+        [Fact]
+        public void Exception_thrown_when_using_wrong_number_of_parameters()
+        {
+            AssertQObject(qObject =>
+            {
+                Assert.Throws<Exception>(() => { qObject.InvokeMethod("testSlotInt"); });
+                Assert.Throws<Exception>(() => { qObject.InvokeMethod("testSlotInt", 1, 1); });
+            });
+        }
+
         private void AssertValue(INetQObject qObject, string method, object value)
         {   
             var raised = false;
