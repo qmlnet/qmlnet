@@ -401,6 +401,17 @@ void NetVariant::fromQVariant(const QVariant* variant, const QSharedPointer<NetV
             break;
         }
 
+        QMetaType::TypeFlags flags = QMetaType::typeFlags(type);
+        if(flags & QMetaType::PointerToQObject) {
+            QObject* value = variant->value<QObject*>();
+            if(value == nullptr) {
+                destination->clear();
+                break;
+            }
+            destination->setQObject(QSharedPointer<NetQObject>(new NetQObject(value)));
+            break;
+        }
+
         qDebug() << "Unsupported variant type: " << variant->type() << variant->typeName();
         break;
     }

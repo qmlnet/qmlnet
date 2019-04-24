@@ -124,6 +124,34 @@ void NetQObjectArg::pack()
         }
         break;
     default:
+        QMetaType::TypeFlags flags = QMetaType::typeFlags(_metaTypeId);
+        if(flags & QMetaType::PointerToQObject) {
+            // If the netvariant is a QObject and is of the same type,
+            // let's use it.
+            QVariant possibleQObjectVariant = _netVariant->toQVariant();
+            if(possibleQObjectVariant.userType() == QMetaType::QObjectStar) {
+                QObject* value = possibleQObjectVariant.value<QObject*>();
+                if(value == nullptr) {
+                    _variant = QVariant(_metaTypeId, nullptr);
+                    break;
+                }
+
+                const QMetaObject* targetMetaObject = QMetaType::metaObjectForType(_metaTypeId);
+
+                QObject* casted = targetMetaObject->cast(value);
+
+                if(casted == nullptr) {
+                    qWarning() << "Can't convert " << value->metaObject()->className() << "to" << QMetaType::typeName(_metaTypeId);
+                    _variant = QVariant(_metaTypeId, nullptr);
+                    break;
+                }
+
+                _variant = qVariantFromValue(casted);
+
+                break;
+            }
+        }
+
         qWarning() << "Unsupported type: " << QMetaType::typeName(_metaTypeId);
         _variant = QVariant(_metaTypeId, nullptr);
         break;

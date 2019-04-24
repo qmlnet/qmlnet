@@ -473,6 +473,46 @@ namespace Qml.Net.Tests.Qml
         }
         
         [Fact]
+        public void Can_used_typed_base_qobject_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                qObject.SetProperty("objectName", "wer");
+                AssertValue(qObject, "TypedBaseQObject", qObject, result =>
+                {
+                    var resultQObject = result.Should().NotBeNull().And.BeAssignableTo<INetQObject>().Subject;
+                    resultQObject.GetProperty("objectName").Should().Be("wer");
+                });
+            });
+        }
+        
+        [Fact]
+        public void Can_used_typed_qobject_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                qObject.SetProperty("objectName", "wer");
+                AssertValue(qObject, "TypedQObject", qObject, result =>
+                {
+                    var resultQObject = result.Should().NotBeNull().And.BeAssignableTo<INetQObject>().Subject;
+                    resultQObject.GetProperty("objectName").Should().Be("wer");
+                });
+            });
+        }
+        
+        [Fact]
+        public void Value_is_null_when_using_invalid_qobject_type_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                AssertValue(qObject, "TypedDerivedQObject", qObject, result =>
+                {
+                    result.Should().BeNull();
+                });
+            });
+        }
+        
+        [Fact]
         public void Can_use_object_with_qobject()
         {
             AssertQObject(qObject =>
@@ -554,7 +594,7 @@ namespace Qml.Net.Tests.Qml
                 });
             });
         }
-        
+
         private void AssertValue(INetQObject qObject, string method, object value)
         {   
             var raised = false;

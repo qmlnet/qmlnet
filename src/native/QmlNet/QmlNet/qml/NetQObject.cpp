@@ -99,7 +99,16 @@ QSharedPointer<NetVariant> NetQObject::invokeMethod(QString methodName, QSharedP
         return nullptr;
     }
 
-    NetQObjectArg returnValue(method.returnType());
+    int returnType = method.returnType();
+    if(returnType == QMetaType::UnknownType) {
+        qWarning() << "Unable to return type" << method.typeName() << ", it wasn't registered with the meta object system";
+        if(wasSuccess) {
+            *wasSuccess = false;
+        }
+        return nullptr;
+    }
+
+    NetQObjectArg returnValue(returnType);
     NetQObjectArg val0;
     NetQObjectArg val1;
     NetQObjectArg val2;
