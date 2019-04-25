@@ -15,6 +15,11 @@ namespace Qml.Net.Tests.Qml
             {
                 return null;
             }
+            
+            public virtual TestNetObject[] GetNetObjectArray()
+            {
+                return null;
+            }
 
             public virtual void Test(object param)
             {
@@ -128,6 +133,50 @@ namespace Qml.Net.Tests.Qml
                 ");
 
             Mock.Verify(x => x.Test(null), Times.Exactly(2));
+        }
+
+        [Fact]
+        public void Can_get_items_from_list_model_from_net_array()
+        {
+            var list = new List<TestNetObject>();
+            list.Add(new TestNetObject());
+            list.Add(new TestNetObject());
+            list.Add(new TestNetObject());
+            var result = new List<TestNetObject>();
+            Mock.Setup(x => x.GetNetObjectArray()).Returns(list.ToArray);
+            Mock.Setup(x => x.Test(It.IsAny<object>())).Callback(new Action<object>(o => result.Add((TestNetObject)o)));
+
+            NetTestHelper.RunQml(
+                qmlApplicationEngine,
+                @"
+                    import QtQuick 2.0
+                    import tests 1.0
+                    Item {
+                        ListModelTestsQml {
+                            id: test
+                            Component.onCompleted: function() {
+                                var list = test.getNetObjectArray()
+                                var listModel = Net.toListModel(list)
+                                rep.model = listModel
+                            }
+                        }
+                        Repeater {
+                            id: rep
+                            Item {
+                                Component.onCompleted: {
+                                    test.test(modelData)
+                                }
+                            }
+                        }
+                    }
+                ");
+
+            Mock.Verify(x => x.GetNetObjectArray(), Times.Once);
+            Mock.Verify(x => x.Test(It.IsAny<object>()), Times.Exactly(3));
+            list.Count.Should().Be(result.Count);
+            list[0].Prop.Should().Be(result[0].Prop);
+            list[1].Prop.Should().Be(result[1].Prop);
+            list[2].Prop.Should().Be(result[2].Prop);
         }
     }
 }

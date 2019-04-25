@@ -5,12 +5,26 @@
 #include <QmlNet/qml/NetVariant.h>
 #include <QmlNet/qml/NetVariantList.h>
 #include <QmlNet/types/Callbacks.h>
+#include <QmlNet/types/NetTypeManager.h>
+#include <QDebug>
 
 NetTypeArrayFacade_Array::NetTypeArrayFacade_Array(const QSharedPointer<NetTypeInfo>& type) :
     _isIncomplete(false)
 {
-    for(int x = 0; x < type->getPropertyCount(); x++) {
-        QSharedPointer<NetPropertyInfo> property = type->getProperty(x);
+    QSharedPointer<NetTypeInfo> arrayType = type;
+
+    while(arrayType != nullptr && arrayType->getClassName() != "Array") {
+        arrayType = NetTypeManager::getBaseType(arrayType);
+    }
+
+    if(arrayType == nullptr) {
+        _isIncomplete = true;
+        qWarning() << "Couldn't get the base array type for" << type->getClassName();
+        return;
+    }
+
+    for(int x = 0; x < arrayType->getPropertyCount(); x++) {
+        QSharedPointer<NetPropertyInfo> property = arrayType->getProperty(x);
         if(property->getPropertyName().compare("Length") == 0) {
             _lengthProperty = property;
         }
@@ -29,6 +43,7 @@ NetTypeArrayFacade_Array::NetTypeArrayFacade_Array(const QSharedPointer<NetTypeI
         _getIndexed == nullptr ||
         _setIndexed == nullptr) {
         _isIncomplete = true;
+        qWarning() << "Couldn't all the array methods/properties for" << type->getClassName();
         return;
     }
 }
