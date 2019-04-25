@@ -304,12 +304,12 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
         // Nothing!
     }
     else if(qJsValue.isQObject()) {
+        result = QSharedPointer<NetVariant>(new NetVariant());
         QObject* qObject = qJsValue.toQObject();
         NetValueInterface* netValue = qobject_cast<NetValueInterface*>(qObject);
         if(!netValue) {
-            qWarning() << "Return type must be a JS type/object, or a .NET object.";
+            result->setQObject(QSharedPointer<NetQObject>(new NetQObject(qObject)));
         } else {
-            result = QSharedPointer<NetVariant>(new NetVariant());
             result->setNetReference(netValue->getNetReference());
         }
     }
