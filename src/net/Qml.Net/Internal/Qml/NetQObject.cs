@@ -91,6 +91,12 @@ namespace Qml.Net.Internal.Qml
                 return result == IntPtr.Zero ? null : new NetQObjectSignalConnection(result);
             }
         }
+
+        public static NetQObject BuildQObject(string className)
+        {
+            var result = Interop.NetQObject.BuildQObject(className, IntPtr.Zero);
+            return result == IntPtr.Zero ? null : new NetQObject(result);
+        }
         
         public dynamic AsDynamic()
         {
@@ -273,5 +279,10 @@ namespace Qml.Net.Internal.Qml
         public AttachNotifySignalDel AttachNotifySignal { get; set; }
         
         public delegate IntPtr AttachNotifySignalDel(IntPtr qObject, [MarshalAs(UnmanagedType.LPWStr)] string signalName, IntPtr del, ref byte result);
+
+        [NativeSymbol(Entrypoint = "net_qobject_buildQObject")]
+        public BuildQObjectDel BuildQObject { get; set; }
+        
+        public delegate IntPtr BuildQObjectDel([MarshalAs(UnmanagedType.LPWStr)] string className, IntPtr constructorParameters);
     }
 }

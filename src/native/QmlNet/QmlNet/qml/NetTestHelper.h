@@ -13,7 +13,7 @@ class TestBaseQObject : public QObject
 {
     Q_OBJECT
 public:
-    TestBaseQObject();
+    Q_INVOKABLE TestBaseQObject();
     ~TestBaseQObject();
 };
 
@@ -26,7 +26,7 @@ class TestQObject : public TestBaseQObject
     Q_PROPERTY(int propWithSignal READ getPropWithSignal WRITE setPropWithSignal NOTIFY propWithSignalChanged)
     Q_PROPERTY(QVariant variantProperty READ getVariantProperty WRITE setVariantProperty)
 public:
-    TestQObject();
+    Q_INVOKABLE TestQObject();
     ~TestQObject();
     int getReadOnly();
     void setWriteOnly(int value);
@@ -96,7 +96,7 @@ class TestDerivedQObject : public TestQObject
 {
     Q_OBJECT
 public:
-    TestDerivedQObject();
+    Q_INVOKABLE TestDerivedQObject();
     ~TestDerivedQObject();
 private:
 

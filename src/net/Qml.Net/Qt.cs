@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Qml.Net.Internal;
+using Qml.Net.Internal.Qml;
 
 namespace Qml.Net
 {
@@ -19,6 +20,11 @@ namespace Qml.Net
         public static Version GetQtVersion()
         {
             return Version.Parse(Utilities.ContainerToString(Interop.QtInterop.QtVersion()));
+        }
+
+        public static INetQObject BuildQObject(string className)
+        {
+            return NetQObject.BuildQObject(className)?.AsDynamic();
         }
     }
 

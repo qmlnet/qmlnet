@@ -17,6 +17,7 @@ NetQObject::~NetQObject()
 {
     if(_ownsObject) {
         _qObject->deleteLater();
+        _qObject = nullptr;
     }
 }
 
@@ -259,6 +260,36 @@ QSharedPointer<NetQObjectSignalConnection> NetQObject::attachNotifySignal(QStrin
     return signalConnection;
 }
 
+QSharedPointer<NetQObject> NetQObject::buildQObject(QString className, QSharedPointer<NetVariantList> constructorParameters)
+{
+    int typeId = QMetaType::type(className.toLocal8Bit().data());
+    if(typeId == QMetaType::UnknownType) {
+        qWarning() << "The class" << className << "isn't known to the meta type system.";
+        return nullptr;
+    }
+    if((QMetaType::typeFlags(typeId) & QMetaType::PointerToQObject) == 0) {
+        qWarning() << "The type" << className << "isn't a pointer to a QObject.";
+        return nullptr;
+    }
+
+    if(constructorParameters != nullptr) {
+        if(constructorParameters->count() > 0) {
+            qWarning() << "Support for contstructor parameters isn't supported yet.";
+            return nullptr;
+        }
+    }
+
+    const QMetaObject* metaObject = QMetaType::metaObjectForType(typeId);
+    QObject* result = metaObject->newInstance();
+
+    if(result == nullptr) {
+        qWarning() << "Couldn't create instance of" << className;
+        return nullptr;
+    }
+
+    return QSharedPointer<NetQObject>(new NetQObject(result, true));
+}
+
 extern "C" {
 
 Q_DECL_EXPORT void net_qobject_destroy(NetQObjectContainer* qObjectContainer)
@@ -343,6 +374,19 @@ Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachNotifySigna
         return nullptr;
     }
     return new NetQObjectSignalConnectionContainer { signalConnection };
+}
+
+Q_DECL_EXPORT NetQObjectContainer* net_qobject_buildQObject(LPWCSTR className, NetVariantListContainer* constructorParameters)
+{
+    QSharedPointer<NetVariantList> params;
+    if(constructorParameters) {
+        params = constructorParameters->list;
+    }
+    QSharedPointer<NetQObject> result = NetQObject::buildQObject(QString::fromUtf16(className), params);
+    if(result == nullptr) {
+        return nullptr;
+    }
+    return new NetQObjectContainer { result };
 }
 
 Q_DECL_EXPORT void net_qobject_signal_handler_destroy(NetQObjectSignalConnectionContainer* signalContainer)

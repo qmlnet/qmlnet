@@ -625,6 +625,28 @@ namespace Qml.Net.Tests.Qml
             });
         }
 
+        [Fact]
+        public void Can_build_qobject()
+        {
+            AssertQObject(_ =>
+            {
+                var qObject = Qt.BuildQObject("TestQObject*");
+                qObject.Should().NotBeNull();
+                qObject.Dispose();
+            });
+        }
+
+        [Fact]
+        public void Invalid_type_names_return_null_when_building_qobjects()
+        {
+            AssertQObject(_ =>
+            {
+                Qt.BuildQObject("sdfsdfsfsd").Should().BeNull();
+                Qt.BuildQObject("int").Should().BeNull();
+                Qt.BuildQObject("TestQObject").Should().BeNull(); // No * at end.
+            });
+        }
+
         private void AssertValue(INetQObject qObject, string method, object value)
         {   
             var raised = false;

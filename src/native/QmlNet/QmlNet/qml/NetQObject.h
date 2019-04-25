@@ -20,6 +20,7 @@ public:
     QSharedPointer<NetVariant> invokeMethod(QString methodName, QSharedPointer<NetVariantList> parameters, bool* wasSuccess);
     QSharedPointer<NetQObjectSignalConnection> attachSignal(QString signalName, QSharedPointer<NetReference> delegate, bool* wasSuccess);
     QSharedPointer<NetQObjectSignalConnection> attachNotifySignal(QString propertyName, QSharedPointer<NetReference> delegate, bool* wasSuccess);
+    static QSharedPointer<NetQObject> buildQObject(QString className, QSharedPointer<NetVariantList> constructorParameters);
 private:
     QObject* _qObject;
     bool _ownsObject;
