@@ -73,7 +73,7 @@ QSharedPointer<NetVariant> NetQObject::invokeMethod(QString methodName, QSharedP
     QMetaMethod method;
     for(int x = 0; x < _qObject->metaObject()->methodCount(); x++) {
         method = _qObject->metaObject()->method(x);
-        if(method.methodType() == QMetaMethod::Slot || method.methodType() == QMetaMethod::Method) {
+        if(method.methodType() == QMetaMethod::Slot || method.methodType() == QMetaMethod::Method || method.methodType() == QMetaMethod::Signal) {
             if(methodName.compare(method.name()) == 0) {
                 // make sure number of parameters match
                 if(method.parameterCount() == parameterCount) {

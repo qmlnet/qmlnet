@@ -605,6 +605,26 @@ namespace Qml.Net.Tests.Qml
             });
         }
 
+        [Fact]
+        public void Can_invoke_signal()
+        {
+            AssertQObject(qObject =>
+            {
+                var raised = false;
+                using (qObject.AttachSignal("testSignalInt", parameters =>
+                {
+                    raised = true;
+                    parameters.Count.Should().Be(1);
+                    parameters[0].Should().Be(3);
+                }))
+                {
+                    qObject.InvokeMethod("testSignalInt", 3).Should().BeNull();
+                }
+
+                raised.Should().BeTrue();
+            });
+        }
+
         private void AssertValue(INetQObject qObject, string method, object value)
         {   
             var raised = false;
