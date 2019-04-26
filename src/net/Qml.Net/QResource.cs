@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal;
 
 namespace Qml.Net
@@ -21,11 +22,15 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qresource_registerResource")]
         public RegisterResourceDel RegisterResource { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte RegisterResourceDel([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
 
         [NativeSymbol(Entrypoint = "qresource_unregisterResource")]
         public UnregisterResourceDel UnregisterResource { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte UnregisterResourceDel([MarshalAs(UnmanagedType.LPWStr)]string rccFileName, [MarshalAs(UnmanagedType.LPWStr)]string resourceRoot);
     }
 }

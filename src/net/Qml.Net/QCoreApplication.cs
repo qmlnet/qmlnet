@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Qml.Net.Internal;
@@ -338,86 +339,120 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qapp_fromExisting")]
         public FromExistingDel FromExisting { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr FromExistingDel(IntPtr rawPointer);
 
         [NativeSymbol(Entrypoint = "qapp_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(IntPtr args, int flags, int type);
 
         [NativeSymbol(Entrypoint = "qapp_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr container);
 
         [NativeSymbol(Entrypoint = "qapp_getType")]
         public GetAppTypeDel GetAppType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetAppTypeDel(IntPtr container, IntPtr rawPointer);
 
         [NativeSymbol(Entrypoint = "qapp_processEvents")]
         public ProcessEventsDel ProcessEvents { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ProcessEventsDel(int flags);
 
         [NativeSymbol(Entrypoint = "qapp_processEventsWithTimeout")]
         public ProcessEventsWithTimeoutDel ProcessEventsWithTimeout { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ProcessEventsWithTimeoutDel(int flags, int timeout);
 
         [NativeSymbol(Entrypoint = "qapp_exec")]
         public ExecDel Exec { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int ExecDel();
 
         [NativeSymbol(Entrypoint = "qapp_addCallbacks")]
         public AddCallbacksDel AddCallbacks { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddCallbacksDel(IntPtr app, ref QCoreAppCallbacks callbacks);
 
         [NativeSymbol(Entrypoint = "qapp_requestTrigger")]
         public RequestTriggerDel RequestTrigger { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void RequestTriggerDel(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qapp_exit")]
         public ExitDel Exit { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ExitDel(int returnCode);
 
         [NativeSymbol(Entrypoint = "qapp_internalPointer")]
         public InternalPointerDel InternalPointer { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr InternalPointerDel(IntPtr app);
         
         [NativeSymbol(Entrypoint = "qapp_setOrganizationName")]
         public SetOrganizationNameDel SetOrganizationName { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetOrganizationNameDel([MarshalAs(UnmanagedType.LPWStr)]string organizationName);
         
         [NativeSymbol(Entrypoint = "qapp_getOrganizationName")]
         public GetOrganizationNameDel GetOrganizationName { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetOrganizationNameDel();
         
         [NativeSymbol(Entrypoint = "qapp_setOrganizationDomain")]
         public SetOrganizationDomainDel SetOrganizationDomain { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetOrganizationDomainDel([MarshalAs(UnmanagedType.LPWStr)]string organizationDomain);
         
         [NativeSymbol(Entrypoint = "qapp_getOrganizationDomain")]
         public GetOrganizationDomainDel GetOrganizationDomain { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetOrganizationDomainDel();
         
         [NativeSymbol(Entrypoint = "qapp_setAttribute")]
         public SetAttributeDel SetAttribute { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetAttributeDel(int attribute, bool on);
         
         [NativeSymbol(Entrypoint = "qapp_testAttribute")]
         public TestAttributeDel TestAttribute { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte TestAttributeDel(int attribute);
     }
 }

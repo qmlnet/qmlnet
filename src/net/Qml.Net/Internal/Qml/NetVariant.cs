@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal.Qml
@@ -257,161 +258,225 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_variant_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel();
 
         [NativeSymbol(Entrypoint = "net_variant_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         public GetVariantTypeDel GetVariantType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate NetVariantType GetVariantTypeDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setNetReference")]
         public SetNetReferenceDel SetNetReference { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetNetReferenceDel(IntPtr variant, IntPtr instance);
 
         [NativeSymbol(Entrypoint = "net_variant_getNetReference")]
         public GetNetReferenceDel GetNetReference { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetNetReferenceDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setBool")]
         public SetBoolDel SetBool { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetBoolDel(IntPtr variant, byte value);
 
         [NativeSymbol(Entrypoint = "net_variant_getBool")]
         public GetBoolDel GetBool { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte GetBoolDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setChar")]
         public SetCharDel SetChar { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetCharDel(IntPtr variant, ushort value);
 
         [NativeSymbol(Entrypoint = "net_variant_getChar")]
         public GetCharDel GetChar { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate ushort GetCharDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setInt")]
         public SetIntDel SetInt { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetIntDel(IntPtr variant, int value);
 
         [NativeSymbol(Entrypoint = "net_variant_getInt")]
         public GetIntDel GetInt { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIntDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setUInt")]
         public SetUIntDel SetUInt { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetUIntDel(IntPtr variant, uint value);
 
         [NativeSymbol(Entrypoint = "net_variant_getUInt")]
         public GetUIntDel GetUInt { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate uint GetUIntDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setLong")]
         public SetLongDel SetLong { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetLongDel(IntPtr variant, long value);
 
         [NativeSymbol(Entrypoint = "net_variant_getLong")]
         public GetLongDel GetLong { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate long GetLongDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setULong")]
         public SetULongDel SetULong { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetULongDel(IntPtr variant, ulong value);
 
         [NativeSymbol(Entrypoint = "net_variant_getULong")]
         public GetULongDel GetULong { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate ulong GetULongDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setFloat")]
         public SetFloatDel SetFloat { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetFloatDel(IntPtr variant, float value);
 
         [NativeSymbol(Entrypoint = "net_variant_getFloat")]
         public GetFloatDel GetFloat { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate float GetFloatDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setDouble")]
         public SetDoubleDel SetDouble { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetDoubleDel(IntPtr variant, double value);
 
         [NativeSymbol(Entrypoint = "net_variant_getDouble")]
         public GetDoubleDel GetDouble { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate double GetDoubleDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setString")]
         public SetStringDel SetString { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetStringDel(IntPtr variant, [MarshalAs(UnmanagedType.LPWStr)]string value);
 
         [NativeSymbol(Entrypoint = "net_variant_getString")]
         public GetStringDel GetString { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
         public SetDateTimeDel SetDateTime { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetDateTimeDel(IntPtr variant, ref DateTimeContainer dateTime);
 
         [NativeSymbol(Entrypoint = "net_variant_getDateTime")]
         public GetDateTimeDel GetDateTime { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void GetDateTimeDel(IntPtr variant, ref DateTimeContainer dateTime);
 
         [NativeSymbol(Entrypoint = "net_variant_setJsValue")]
         public SetJsValueDel SetJsValue { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetJsValueDel(IntPtr variant, IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_variant_getJsValue")]
         public GetJsValueDel GetJsValue { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetJsValueDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setQObject")]
         public SetQObjectDel SetQObject { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetQObjectDel(IntPtr variant, IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_variant_getQObject")]
         public GetQObjectDel GetQObject { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetQObjectDel(IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_setNetVariantList")]
         public SetNetVariantListDel SetNetVariantList { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetNetVariantListDel(IntPtr variant, IntPtr variantList);
         
         [NativeSymbol(Entrypoint = "net_variant_getNetVariantList")]
         public GetNetVariantListDel GetNetVariantList { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetNetVariantListDel(IntPtr variant);
         
         [NativeSymbol(Entrypoint = "net_variant_clear")]
         public ClearDel Clear { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ClearDel(IntPtr variant);
     }
 

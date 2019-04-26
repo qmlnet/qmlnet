@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Types
 {
@@ -141,171 +142,239 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
 
         [NativeSymbol(Entrypoint = "type_info_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIdDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getId")]
         public GetIdDel GetId { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getFullTypeName")]
         public GetFullTypeNameDel GetFullTypeName { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetFullTypeNameDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getBaseType")]
         public GetBaseTypeDel GetBaseType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetBaseTypeDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setBaseType")]
         public SetBaseTypeDel SetBaseType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetBaseTypeDel(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string baseType);
 
         [NativeSymbol(Entrypoint = "type_info_setClassName")]
         public SetClassNameDel SetClassName { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetClassNameDel(IntPtr netTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string className);
 
         [NativeSymbol(Entrypoint = "type_info_getClassName")]
         public GetClassNameDel GetClassName { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetClassNameDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setPrefVariantType")]
         public SetPrefVariantTypeDel SetPrefVariantType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetPrefVariantTypeDel(IntPtr netTypeInfo, NetVariantType variantType);
 
         [NativeSymbol(Entrypoint = "type_info_getPrefVariantType")]
         public GetPrefVariantTypeDel GetPrefVariantType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate NetVariantType GetPrefVariantTypeDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getIsArray")]
         public GetIsArrayDel GetIsArray { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte GetIsArrayDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setIsArray")]
         public SetIsArrayDel SetIsArray { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetIsArrayDel(IntPtr netTypeInfo, byte isArray);
 
         [NativeSymbol(Entrypoint = "type_info_getIsList")]
         public GetIsListDel GetIsList { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte GetIsListDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setIsList")]
         public SetIsListDel SetIsList { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetIsListDel(IntPtr netTypeInfo, byte isList);
 
         [NativeSymbol(Entrypoint = "type_info_getHasComponentCompleted")]
         public GetHasComponentCompeltedDel GetHasComponentCompleted { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte GetHasComponentCompeltedDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setHasComponentCompleted")]
         public SetHasComponentCompletedDel SetHasComponentCompleted { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetHasComponentCompletedDel(IntPtr netTypeInfo, byte isList);
 
         [NativeSymbol(Entrypoint = "type_info_getHasObjectDestroyed")]
         public GetHasObjectDestroyedDel GetHasObjectDestroyed { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte GetHasObjectDestroyedDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_setHasObjectDestroyed")]
         public SetHasObjectDestroyedDel SetHasObjectDestroyed { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetHasObjectDestroyedDel(IntPtr netTypeInfo, byte isList);
 
         [NativeSymbol(Entrypoint = "type_info_addMethod")]
         public AddMethodDel AddMethod { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddMethodDel(IntPtr typeInfo, IntPtr methodInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getMethodCount")]
         public GetMethodCountDel GetMethodCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetMethodCountDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getMethodInfo")]
         public GetMethodInfoDel GetMethodInfo { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetMethodInfoDel(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_getLocalMethodCount")]
         public GetLocalMethodCountDel GetLocalMethodCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetLocalMethodCountDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getLocalMethodInfo")]
         public GetLocalMethodInfoDel GetLocalMethodInfo { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetLocalMethodInfoDel(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_getStaticMethodCount")]
         public GetStaticMethodCountDel GetStaticMethodCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetStaticMethodCountDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getStaticMethodInfo")]
         public GetStaticMethodInfoDel GetStaticMethodInfo { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStaticMethodInfoDel(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_addProperty")]
         public AddPropertyDel AddProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddPropertyDel(IntPtr typeInfo, IntPtr property);
 
         [NativeSymbol(Entrypoint = "type_info_getPropertyCount")]
         public GetPropertyCountDel GetPropertyCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetPropertyCountDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getProperty")]
         public GetPropertyDel GetProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetPropertyDel(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_addSignal")]
         public AddSignalDel AddSignal { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddSignalDel(IntPtr typeInfo, IntPtr signal);
 
         [NativeSymbol(Entrypoint = "type_info_getSignalCount")]
         public GetSignalCountDel GetSignalCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetSignalCountDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getSignal")]
         public GetSignalDel GetSignal { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetSignalDel(IntPtr typeInfo, int index);
 
         [NativeSymbol(Entrypoint = "type_info_isLoaded")]
         public IsLoadedDel IsLoaded { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte IsLoadedDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_isLoading")]
         public IsLoadingDel IsLoading { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte IsLoadingDel(IntPtr typeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_ensureLoaded")]
         public EnsureLoadedDel EnsureLoaded { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void EnsureLoadedDel(IntPtr typeInfo);
     }
 }

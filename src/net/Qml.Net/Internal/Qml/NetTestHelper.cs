@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -16,6 +17,8 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_test_helper_runQml")]
         public RunQmlDel RunQml { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void RunQmlDel(IntPtr qmlEngine, [MarshalAs(UnmanagedType.LPWStr)]string qml);
     }
 }

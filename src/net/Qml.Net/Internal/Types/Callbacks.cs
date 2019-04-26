@@ -1,6 +1,7 @@
 using System;
 using System.Dynamic;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace Qml.Net.Internal.Types
@@ -31,31 +32,43 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_info_callbacks_registerCallbacks")]
         public RegisterCallbacksDel RegisterCallbacks { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void RegisterCallbacksDel(ref Callbacks callbacks);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_isTypeValid")]
         public IsTypeValidDel IsTypeValid { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate bool IsTypeValidDel([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetReferenceGCHandle")]
         public ReleaseNetReferenceDel ReleaseNetReference { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ReleaseNetReferenceDel(UInt64 objectId);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_releaseNetDelegateGCHandle")]
         public ReleaseNetDelegateGCHandleDel ReleaseNetDelegateGCHandle { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ReleaseNetDelegateGCHandleDel(IntPtr handle);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_instantiateType")]
         public InstantiateTypeDel InstantiateType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr InstantiateTypeDel(IntPtr type);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_invokeMethod")]
         public InvokeMethodDel InvokeMethod { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void InvokeMethodDel(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
     }
 
@@ -115,51 +128,67 @@ namespace Qml.Net.Internal.Types
         InvokeDelegateDelegate _invokeDelegateDelegate;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate byte IsTypeValidDelegate([MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void CreateLazyTypeInfoDelegate(IntPtr typeInfo);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void LoadTypeInfoDelegate(IntPtr typeInfo);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void CallComponentCompletedDelegate(IntPtr target);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void CallObjectDestroyedDelegate(IntPtr target);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void ReleaseNetReferenceDelegate(UInt64 objectId);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void ReleaseNetDelegateGCHandleDelegate(IntPtr handle);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate IntPtr InstantiateTypeDelgate(IntPtr type);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void ReadPropertyDelegate(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr result);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void WritePropertyDelegate(IntPtr property, IntPtr target, IntPtr indexParameter, IntPtr value);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void InvokeMethodDelegate(IntPtr method, IntPtr target, IntPtr variants, IntPtr result);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void GCCollectDelegate(int maxGeneration);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate byte RaiseNetSignalsDelegate(IntPtr target, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr parameters);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void AwaitTaskDelegate(IntPtr target, IntPtr successCallback, IntPtr failureCallback);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate byte SerializeDelegate(IntPtr instance, IntPtr result);
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [SuppressUnmanagedCodeSecurity]
         delegate void InvokeDelegateDelegate(IntPtr del, IntPtr parameters);
 
         public CallbacksImpl(ICallbacks callbacks)

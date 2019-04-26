@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Types
 {
@@ -112,66 +113,92 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "method_info_parameter_destroy")]
         public DestroyParameterDel DestroyParameter { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyParameterDel(IntPtr parameter);
 
         [NativeSymbol(Entrypoint = "method_info_parameter_getName")]
         public GetParameterNameDel GetParameterName { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetParameterNameDel(IntPtr methodParameter);
 
         [NativeSymbol(Entrypoint = "method_info_parameter_getType")]
         public GetParameterTypeDel GetParameterType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetParameterTypeDel(IntPtr methodParameter);
 
         [NativeSymbol(Entrypoint = "method_info_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(IntPtr parentTypeInfo, [MarshalAs(UnmanagedType.LPWStr)]string methodName, IntPtr returnTypeInfo, byte isStatic);
 
         [NativeSymbol(Entrypoint = "method_info_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetIdDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_getId")]
         public GetIdDel GetId { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetParentTypeDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_getParentType")]
         public GetParentTypeDel GetParentType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr methodInfo);
 
         [NativeSymbol(Entrypoint = "method_info_getMethodName")]
         public GetMethodNameDel GetMethodName { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetMethodNameDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_getReturnType")]
         public GetReturnTypeDel GetReturnType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetReturnTypeDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_isStatic")]
         public GetIsStaticDel GetIsStatic { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte GetIsStaticDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_addParameter")]
         public AddParameterDel AddParameter { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddParameterDel(IntPtr method, [MarshalAs(UnmanagedType.LPWStr)]string name, IntPtr type);
 
         [NativeSymbol(Entrypoint = "method_info_getParameterCount")]
         public GetParameterCountDel GetParameterCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetParameterCountDel(IntPtr method);
 
         [NativeSymbol(Entrypoint = "method_info_getParameter")]
         public GetParameterDel GetParameter { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetParameterDel(IntPtr method, int index);
     }
 }

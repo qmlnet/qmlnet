@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -33,16 +34,22 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qt_putenv")]
         public PutEnvDel PutEnv { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte PutEnvDel([MarshalAs(UnmanagedType.LPStr)]string name, [MarshalAs(UnmanagedType.LPStr)]string value);
 
         [NativeSymbol(Entrypoint = "qt_getenv")]
         public GetEnvDel GetEnv { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetEnvDel(string name);
 
         [NativeSymbol(Entrypoint = "qt_version")]
         public QtVersionDel QtVersion { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr QtVersionDel();
     }
 }

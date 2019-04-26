@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal;
 
 namespace Qml.Net
@@ -32,6 +33,8 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "freeString")]
         public FreeStringDel FreeString { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FreeStringDel(IntPtr container);
     }
 }

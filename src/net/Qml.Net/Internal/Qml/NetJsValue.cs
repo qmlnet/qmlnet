@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Dynamic;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -197,36 +198,50 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_js_value_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_js_value_isCallable")]
         public IsCallableDel IsCallable { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte IsCallableDel(IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_js_value_isArray")]
         public IsArrayDel IsArray { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte IsArrayDel(IntPtr jsValue);
 
         [NativeSymbol(Entrypoint = "net_js_value_call")]
         public CallDel Call { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CallDel(IntPtr jsValue, IntPtr parameters);
 
         [NativeSymbol(Entrypoint = "net_js_value_getProperty")]
         public GetPropertyDel GetProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName);
 
         [NativeSymbol(Entrypoint = "net_js_value_getItemAtIndex")]
         public GetItemAtIndexDel GetItemAtIndex { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetItemAtIndexDel(IntPtr jsValue, int arrayIndex);
 
         [NativeSymbol(Entrypoint = "net_js_value_setProperty")]
         public SetPropertyDel SetProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetPropertyDel(IntPtr jsValue, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr value);
     }
 }
