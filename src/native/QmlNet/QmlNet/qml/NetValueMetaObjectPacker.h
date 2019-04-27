@@ -12,7 +12,6 @@ class NetValueTypePacker
 public:
     NetValueTypePacker() {}
     virtual ~NetValueTypePacker() {}
-    virtual const char* getQmlType();
     virtual void pack(const QSharedPointer<NetVariant>& source, void* destination);
     virtual void unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType);
 };
@@ -21,8 +20,6 @@ public:
     NetValueMetaObjectPacker::getInstance()->getPacker(type)->pack(source, destination)
 #define NetMetaValueUnpack(type, destination, source) \
     NetValueMetaObjectPacker::getInstance()->getPacker(type)->unpack(destination, source, type)
-#define NetMetaValueQmlType(type) \
-    NetValueMetaObjectPacker::getInstance()->getPacker(type)->getQmlType()
 
 class NetValueMetaObjectPacker
 {

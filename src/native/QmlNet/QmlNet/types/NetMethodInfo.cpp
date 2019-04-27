@@ -98,7 +98,7 @@ QString NetMethodInfo::getSignature()
         if(parameterIndex > 0) {
             signature.append(",");
         }
-        signature.append(NetMetaValueQmlType(parameterType->getPrefVariantType()));
+        signature.append("QVariant");
     }
 
     signature.append(")");

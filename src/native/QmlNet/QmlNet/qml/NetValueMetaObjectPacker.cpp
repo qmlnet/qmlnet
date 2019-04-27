@@ -5,11 +5,6 @@
 #include <QmlNet/qml/NetQObject.h>
 #include <QDebug>
 
-const char* NetValueTypePacker::getQmlType()
-{
-    return "QVariant";
-}
-
 void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* destination)
 {
     QVariant* destinationVariant = static_cast<QVariant*>(destination);
@@ -150,44 +145,9 @@ void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, v
     NetVariant::fromQVariant(sourceVariant, destination);
 }
 
-namespace
-{
-class StringValueTypePacker : public NetValueTypePacker
-{
-public:
-    const char* getQmlType() override
-    {
-        return "QString";
-    }
-    void pack(const QSharedPointer<NetVariant>& source, void* destination) override
-    {
-        Q_ASSERT(source->getVariantType() == NetVariantTypeEnum_String || source->getVariantType() == NetVariantTypeEnum_Invalid);
-        QString* destinationString = static_cast<QString*>(destination);
-        switch(source->getVariantType()){
-        case NetVariantTypeEnum_Invalid:
-            destinationString->clear();
-            break;
-        case NetVariantTypeEnum_String:
-            *destinationString = source->getString();
-            break;
-        default:
-            qWarning() << "Attempting to set a variant id" <<  source->getVariantType() << "to a QString";
-            break;
-        }
-    }
-    void unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType) override
-    {
-        Q_ASSERT(prefType == NetVariantTypeEnum_String);
-        QString* sourceString = static_cast<QString*>(source);
-        destination->setString(sourceString);
-    }
-};
-}
-
 NetValueMetaObjectPacker::NetValueMetaObjectPacker()
 {
     NetValueTypePacker* variantPacker = new NetValueTypePacker();
-    StringValueTypePacker* stringPacker = new StringValueTypePacker();
 
     //This is might not be pretty, but it does allow the compiler generate a warning if a value is missing.
     for (int typeInt = NetVariantTypeEnum_Invalid; typeInt <= NetVariantTypeEnum_JSValue; ++typeInt)
@@ -207,10 +167,8 @@ NetValueMetaObjectPacker::NetValueMetaObjectPacker()
         case NetVariantTypeEnum_Object:
         case NetVariantTypeEnum_JSValue:
         case NetVariantTypeEnum_QObject:
-            packers[type] = variantPacker;
-            break;
         case NetVariantTypeEnum_String:
-            packers[type] = stringPacker;
+            packers[type] = variantPacker;
             break;
         }
     }

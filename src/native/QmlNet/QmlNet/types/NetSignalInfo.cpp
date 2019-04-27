@@ -48,7 +48,7 @@ QString NetSignalInfo::getSignature()
         if(parameterIndex > 0) {
             signature.append(",");
         }
-        signature.append(NetMetaValueQmlType(_parameters.at(parameterIndex)));
+        signature.append("QVariant");
     }
 
     signature.append(")");
@@ -68,7 +68,7 @@ QString NetSignalInfo::getSlotSignature()
             if(parameterIndex > 0) {
                 signature.append(",");
             }
-            signature.append(NetMetaValueQmlType(_parameters.at(parameterIndex)));
+            signature.append("QVariant");
         }
     }
 
