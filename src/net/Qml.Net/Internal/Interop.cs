@@ -49,8 +49,7 @@ namespace Qml.Net.Internal
 
             if (!result.IsSuccess)
             {
-                throw new Exception("Unable to find the native Qml.Net library." +
-                                    " Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");;
+                throw new Exception("Unable to find the native Qml.Net library. Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");
             }
 
             var library = loader.LoadLibrary(result.Path);

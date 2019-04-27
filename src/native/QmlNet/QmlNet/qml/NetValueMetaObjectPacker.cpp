@@ -8,9 +8,10 @@
 void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* destination)
 {
     QVariant* destinationVariant = static_cast<QVariant*>(destination);
-    switch(source->getVariantType()) {
+    switch(source->getVariantType())
+    {
     case NetVariantTypeEnum_Invalid:
-        destinationVariant->setValue(QVariant::fromValue(nullptr));
+        destinationVariant->clear();
         break;
     case NetVariantTypeEnum_Null:
         destinationVariant->setValue(nullptr);
@@ -45,8 +46,7 @@ void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* de
     case NetVariantTypeEnum_DateTime:
         destinationVariant->setValue(source->getDateTime());
         break;
-    case NetVariantTypeEnum_Object:
-    {
+    case NetVariantTypeEnum_Object: {
         QSharedPointer<NetReference> newInstance = source->getNetReference();
         NetValue* netValue = NetValue::forInstance(newInstance);
         destinationVariant->setValue(netValue);
@@ -58,10 +58,14 @@ void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* de
     case NetVariantTypeEnum_QObject:
         destinationVariant->setValue(source->getQObject()->getQObject());
         break;
+    case NetVariantTypeEnum_NetVariantList:
+        destinationVariant->clear();
+        qWarning() << "TODO: Pack NetVariantList into a QVariantList";
+        break;
     }
 }
 
-void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType)
+void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, void* source)
 {
     QVariant* sourceVariant = static_cast<QVariant*>(source);
 
@@ -70,115 +74,12 @@ void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, v
         return;
     }
 
-    switch(prefType) {
-    case NetVariantTypeEnum_Invalid:
-        destination->clear();
-        return;
-    case NetVariantTypeEnum_Null:
-        destination->setNull();
-        break;
-    case NetVariantTypeEnum_Bool:
-        destination->setBool(sourceVariant->toBool());
-        return;
-    case NetVariantTypeEnum_Char:
-    {
-        const QString& v = sourceVariant->toString();
-        if(v.length() == 1) {
-            destination->setChar(v.at(0));
-        } else {
-            qDebug() << "Can't set string" << v << "to char.";
-            destination->setChar(QChar::Null);
-        }
-        return;
-    }
-    case NetVariantTypeEnum_Int:
-        destination->setInt(sourceVariant->value<qint32>());
-        return;
-    case NetVariantTypeEnum_UInt:
-        destination->setUInt(sourceVariant->value<quint32>());
-        return;
-    case NetVariantTypeEnum_Long:
-        destination->setLong(sourceVariant->value<qint64>());
-        return;
-    case NetVariantTypeEnum_ULong:
-        destination->setULong(sourceVariant->value<quint64>());
-        return;
-    case NetVariantTypeEnum_Float:
-        destination->setFloat(sourceVariant->toFloat());
-        return;
-    case NetVariantTypeEnum_Double:
-        destination->setDouble(sourceVariant->toDouble());
-        return;
-    case NetVariantTypeEnum_String:
-        destination->setString(sourceVariant->toString());
-        return;
-    case NetVariantTypeEnum_DateTime:
-        destination->setDateTime(sourceVariant->toDateTime());
-        return;
-    case NetVariantTypeEnum_Object:
-    {
-        if(sourceVariant->userType() == QMetaType::QObjectStar) {
-            QObject* value = sourceVariant->value<QObject*>();
-            NetValueInterface* netValue = qobject_cast<NetValueInterface*>(value);
-            if(netValue) {
-                destination->setNetReference(netValue->getNetReference());
-            } else {
-                QSharedPointer<NetQObject> netQObject(new NetQObject(value));
-                destination->setQObject(netQObject);
-            }
-            return;
-        }
-        break;
-    }
-    case NetVariantTypeEnum_JSValue:
-    {
-        if(sourceVariant->userType() == qMetaTypeId<QJSValue>()) {
-            QSharedPointer<NetJSValue> netJsValue(new NetJSValue(sourceVariant->value<QJSValue>()));
-            destination->setJsValue(netJsValue);
-            return;
-        }
-        // TODO: Try to convert other types to JS Value.
-        break;
-    }
-    case NetVariantTypeEnum_QObject:
-    {
-        if(sourceVariant->userType() == QMetaType::QObjectStar) {
-            QSharedPointer<NetQObject> netQObject(new NetQObject(sourceVariant->value<QObject*>()));
-        }
-    }
-    }
-
     NetVariant::fromQVariant(sourceVariant, destination);
 }
 
 NetValueMetaObjectPacker::NetValueMetaObjectPacker()
 {
-    NetValueTypePacker* variantPacker = new NetValueTypePacker();
-
-    //This is might not be pretty, but it does allow the compiler generate a warning if a value is missing.
-    for (int typeInt = NetVariantTypeEnum_Invalid; typeInt <= NetVariantTypeEnum_JSValue; ++typeInt)
-    {
-        NetVariantTypeEnum type = NetVariantTypeEnum(typeInt);
-        switch(type) {
-        case NetVariantTypeEnum_Invalid:
-        case NetVariantTypeEnum_Null:
-        case NetVariantTypeEnum_Bool:
-        case NetVariantTypeEnum_Char:
-        case NetVariantTypeEnum_Int:
-        case NetVariantTypeEnum_UInt:
-        case NetVariantTypeEnum_Long:
-        case NetVariantTypeEnum_ULong:
-        case NetVariantTypeEnum_Float:
-        case NetVariantTypeEnum_Double:
-        case NetVariantTypeEnum_DateTime:
-        case NetVariantTypeEnum_Object:
-        case NetVariantTypeEnum_JSValue:
-        case NetVariantTypeEnum_QObject:
-        case NetVariantTypeEnum_String:
-            packers[type] = variantPacker;
-            break;
-        }
-    }
+    _packer = new NetValueTypePacker();
 }
 
 NetValueMetaObjectPacker* NetValueMetaObjectPacker::getInstance()
@@ -187,8 +88,7 @@ NetValueMetaObjectPacker* NetValueMetaObjectPacker::getInstance()
     return &packer;
 }
 
-NetValueTypePacker* NetValueMetaObjectPacker::getPacker(NetVariantTypeEnum variantType)
+NetValueTypePacker* NetValueMetaObjectPacker::getPacker()
 {
-    Q_ASSERT(packers.contains(variantType));
-    return packers[variantType];
+    return _packer;
 }

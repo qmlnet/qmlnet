@@ -42,9 +42,7 @@ namespace Qml.Net.Internal
                 }
 
                 type.ClassName = typeInfo.Name;
-
-                type.PrefVariantType = GetPrefVariantType(typeInfo);
-
+                
                 // All the methods/properties/signals are later populated when needed.
             }
         }

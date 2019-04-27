@@ -179,7 +179,6 @@ namespace Qml.Net.Tests.Qml
                     }
                 }
             }
-            
         }
 
         [Fact]

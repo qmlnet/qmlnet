@@ -575,7 +575,7 @@ namespace Qml.Net.Tests.Qml
         {
             AssertQObject(qObject =>
             {
-                AssertValue(qObject, "QVariantList", new List<int>{ 3 }, result =>
+                AssertValue(qObject, "QVariantList", new List<int> { 3 }, result =>
                 {
                     result.Should().NotBeNull();
                     var list = result.Should().BeAssignableTo<IList<object>>().Subject;
@@ -584,7 +584,7 @@ namespace Qml.Net.Tests.Qml
                 });
 
                 qObject.SetProperty("objectName", "tetttt");
-                AssertValue(qObject, "QVariantList", new List<object>{ qObject }, result =>
+                AssertValue(qObject, "QVariantList", new List<object> { qObject }, result =>
                 {
                     result.Should().NotBeNull();
                     var list = result.Should().BeAssignableTo<IList<object>>().Subject;

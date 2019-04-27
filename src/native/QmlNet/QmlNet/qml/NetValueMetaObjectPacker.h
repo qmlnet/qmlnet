@@ -13,22 +13,22 @@ public:
     NetValueTypePacker() {}
     virtual ~NetValueTypePacker() {}
     virtual void pack(const QSharedPointer<NetVariant>& source, void* destination);
-    virtual void unpack(const QSharedPointer<NetVariant>& destination, void* source, NetVariantTypeEnum prefType);
+    virtual void unpack(const QSharedPointer<NetVariant>& destination, void* source);
 };
 
-#define NetMetaValuePack(type, source, destination) \
-    NetValueMetaObjectPacker::getInstance()->getPacker(type)->pack(source, destination)
-#define NetMetaValueUnpack(type, destination, source) \
-    NetValueMetaObjectPacker::getInstance()->getPacker(type)->unpack(destination, source, type)
+#define NetMetaValuePack(source, destination) \
+    NetValueMetaObjectPacker::getInstance()->getPacker()->pack(source, destination)
+#define NetMetaValueUnpack(destination, source) \
+    NetValueMetaObjectPacker::getInstance()->getPacker()->unpack(destination, source)
 
 class NetValueMetaObjectPacker
 {
 public:
     NetValueMetaObjectPacker();
     static NetValueMetaObjectPacker* getInstance();
-    NetValueTypePacker* getPacker(NetVariantTypeEnum variantType);
+    NetValueTypePacker* getPacker();
 private:
-    QMap<NetVariantTypeEnum, NetValueTypePacker*> packers;
+    NetValueTypePacker* _packer;
 };
 
 #endif // NETVALUEMETAOBJECTPACKER_H

@@ -166,7 +166,7 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
                qPrintable(result->getDisplayValue()));
 #endif
 
-        NetMetaValuePack(propertyType->getPrefVariantType(), result, a[0]);
+        NetMetaValuePack(result, a[0]);
     }
         break;
     case WriteProperty:
@@ -184,7 +184,7 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
         QSharedPointer<NetTypeInfo> propertyType = propertyInfo->getReturnType();
 
         QSharedPointer<NetVariant> newValue = QSharedPointer<NetVariant>(new NetVariant());
-        NetMetaValueUnpack(propertyType->getPrefVariantType(), newValue, a[0]);
+        NetMetaValueUnpack(newValue, a[0]);
 
         QmlNet::writeProperty(propertyInfo, instance, nullptr, newValue);
     }
@@ -220,7 +220,7 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
                 QSharedPointer<NetMethodInfoArguement> parameter = methodInfo->getParameter(index);
                 QSharedPointer<NetTypeInfo> parameterType = parameter->getType();
                 QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
-                NetMetaValueUnpack(parameterType->getPrefVariantType(), netVariant, a[index + 1]);
+                NetMetaValueUnpack(netVariant, a[index + 1]);
                 parameters->add(netVariant);
             }
 
@@ -246,7 +246,7 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
 #endif
 
             if(result != nullptr) {
-                NetMetaValuePack(returnType->getPrefVariantType(), result, a[0]);
+                NetMetaValuePack(result, a[0]);
             }
 
             return -1;
@@ -264,10 +264,8 @@ int NetValueMetaObject::metaCallRecursive(QMetaObject::Call c, int originalIdx, 
                 parameters = QSharedPointer<NetVariantList>(new NetVariantList());
                 for(int index = 0; index <= signalInfo->getParameterCount() - 1; index++)
                 {
-                    NetVariantTypeEnum parameterType = signalInfo->getParameter(index);
-
                     QSharedPointer<NetVariant> netVariant = QSharedPointer<NetVariant>(new NetVariant());
-                    NetMetaValueUnpack(parameterType, netVariant, a[index + 1]);
+                    NetMetaValueUnpack(netVariant, a[index + 1]);
                     parameters->add(netVariant);
                 }
             }

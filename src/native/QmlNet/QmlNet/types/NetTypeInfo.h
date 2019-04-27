@@ -27,9 +27,6 @@ public:
     QString getClassName();
     void setClassName(QString className);
 
-    NetVariantTypeEnum getPrefVariantType();
-    void setPrefVariantType(NetVariantTypeEnum variantType);
-
     bool isArray();
     void setIsArray(bool isArray);
 
@@ -73,7 +70,6 @@ private:
     QString _fullTypeName;
     QString _baseType;
     QString _className;
-    NetVariantTypeEnum _variantType;
     bool _isArray;
     bool _isList;
     bool _hasComponentCompleted;

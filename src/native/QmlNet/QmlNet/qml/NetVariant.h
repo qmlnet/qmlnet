@@ -56,6 +56,7 @@ public:
     static void fromQVariant(const QVariant* variant, const QSharedPointer<NetVariant>& destination);
     static QSharedPointer<NetVariant> fromQVariant(const QVariant* variant);
     QVariant toQVariant() const;
+    void toQVariant(QVariant* variant) const;
     QString getDisplayValue() const;
 
 private:
@@ -71,7 +72,7 @@ private:
     template<typename T>
     T getValue() const;
 
-    QVariant variant;
+    QVariant _variant;
 };
 
 struct NetVariantContainer {

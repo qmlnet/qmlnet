@@ -32,12 +32,6 @@ namespace Qml.Net.Internal.Types
             set => Interop.NetTypeInfo.SetClassName(Handle, value);
         }
 
-        public NetVariantType PrefVariantType
-        {
-            get => Interop.NetTypeInfo.GetPrefVariantType(Handle);
-            set => Interop.NetTypeInfo.SetPrefVariantType(Handle, value);
-        }
-
         public bool IsArray
         {
             get => Interop.NetTypeInfo.GetIsArray(Handle) == 1;
@@ -194,20 +188,6 @@ namespace Qml.Net.Internal.Types
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetClassNameDel(IntPtr netTypeInfo);
-
-        [NativeSymbol(Entrypoint = "type_info_setPrefVariantType")]
-        public SetPrefVariantTypeDel SetPrefVariantType { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetPrefVariantTypeDel(IntPtr netTypeInfo, NetVariantType variantType);
-
-        [NativeSymbol(Entrypoint = "type_info_getPrefVariantType")]
-        public GetPrefVariantTypeDel GetPrefVariantType { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate NetVariantType GetPrefVariantTypeDel(IntPtr netTypeInfo);
 
         [NativeSymbol(Entrypoint = "type_info_getIsArray")]
         public GetIsArrayDel GetIsArray { get; set; }

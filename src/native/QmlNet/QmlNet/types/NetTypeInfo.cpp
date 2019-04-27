@@ -16,7 +16,6 @@ Q_GLOBAL_STATIC(QMutex, typeIdMutex);
 NetTypeInfo::NetTypeInfo(QString fullTypeName) :
     metaObject(nullptr),
     _fullTypeName(std::move(fullTypeName)),
-    _variantType(NetVariantTypeEnum_Invalid),
     _isArray(false),
     _isList(false),
     _hasComponentCompleted(false),
@@ -59,14 +58,6 @@ QString NetTypeInfo::getClassName() {
 
 void NetTypeInfo::setClassName(QString className) {
     _className = std::move(className);
-}
-
-NetVariantTypeEnum NetTypeInfo::getPrefVariantType() {
-    return _variantType;
-}
-
-void NetTypeInfo::setPrefVariantType(NetVariantTypeEnum variantType) {
-    _variantType = variantType;
 }
 
 bool NetTypeInfo::isArray()
@@ -262,14 +253,6 @@ Q_DECL_EXPORT QmlNetStringContainer* type_info_getClassName(NetTypeInfoContainer
 
 Q_DECL_EXPORT void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {
     netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16(static_cast<const char16_t*>(className)));
-}
-
-Q_DECL_EXPORT NetVariantTypeEnum type_info_getPrefVariantType(NetTypeInfoContainer* netTypeInfo) {
-    return netTypeInfo->netTypeInfo->getPrefVariantType();
-}
-
-Q_DECL_EXPORT void type_info_setPrefVariantType(NetTypeInfoContainer* netTypeInfo, NetVariantTypeEnum variantType) {
-    netTypeInfo->netTypeInfo->setPrefVariantType(variantType);
 }
 
 Q_DECL_EXPORT uchar type_info_getIsArray(NetTypeInfoContainer* netTypeInfo)

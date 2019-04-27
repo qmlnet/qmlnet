@@ -55,7 +55,7 @@ NetVariant::~NetVariant()
 
 NetVariantTypeEnum NetVariant::getVariantType() const
 {
-    const int type = variant.userType();
+    const int type = _variant.userType();
     switch(type) {
     case QMetaType::UnknownType:
         return NetVariantTypeEnum_Invalid;
@@ -95,7 +95,7 @@ NetVariantTypeEnum NetVariant::getVariantType() const
             return NetVariantTypeEnum_NetVariantList;
         }
         else {
-            qWarning() << "Unknown type for NetVariant: " << variant.typeName();
+            qWarning() << "Unknown type for NetVariant: " << _variant.typeName();
             return NetVariantTypeEnum_Invalid;
         }
     }
@@ -104,13 +104,13 @@ NetVariantTypeEnum NetVariant::getVariantType() const
 void NetVariant::setNull()
 {
     clearNetReference();
-    variant.setValue(nullptr);
+    _variant.setValue(nullptr);
 }
 
 void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
 {
     clearNetReference();
-    variant.setValue(NetReferenceQmlContainer{ std::move(netReference) });
+    _variant.setValue(NetReferenceQmlContainer{ std::move(netReference) });
 }
 
 QSharedPointer<NetReference> NetVariant::getNetReference() const
@@ -135,6 +135,15 @@ void NetVariant::setChar(QChar value)
 
 QChar NetVariant::getChar() const
 {
+    // Try to convert the internal QString into a Char
+    if(_variant.userType() == QMetaType::QString) {
+        QString str = _variant.value<QString>();
+        if(str.length() == 1) {
+            return str.at(0);
+        }
+        qWarning() << "Can't convert '" << str << "' to QChar";
+        return QChar::Null;
+    }
     return getValue<QChar>();
 }
 
@@ -210,12 +219,7 @@ void NetVariant::setString(const QString& value)
 
 QString NetVariant::getString() const
 {
-    if(variant.userType() != QMetaType::QString) {
-        qDebug() << "Variant is not a string";
-        return QString();
-    }
-
-    return variant.toString();
+    return _variant.toString();
 }
 
 void NetVariant::setDateTime(const QDateTime& value)
@@ -261,7 +265,7 @@ QSharedPointer<NetVariantList> NetVariant::getNetVariantList() const
 void NetVariant::clear()
 {
     clearNetReference();
-    variant.clear();
+    _variant.clear();
 }
 
 QVariantList NetVariant::toQVariantList() const
@@ -300,7 +304,7 @@ QVariantList NetVariant::toQVariantList() const
         return list;
     }
 
-    qWarning() << "Can't convert value" << variant << "from" << variant.typeName() << "to QVariantList";
+    qWarning() << "Can't convert value" << _variant << "from" << _variant.typeName() << "to QVariantList";
 
     return QVariantList();
 }
@@ -327,7 +331,7 @@ QSharedPointer<NetVariant> NetVariant::fromQJSValue(const QJSValue& qJsValue)
     } else {
         result = QSharedPointer<NetVariant>(new NetVariant());
         QVariant variant = qJsValue.toVariant();
-        result->variant = variant;
+        result->_variant = variant;
     }
     return result;
 }
@@ -434,17 +438,29 @@ QSharedPointer<NetVariant> NetVariant::fromQVariant(const QVariant* variant)
 
 QVariant NetVariant::toQVariant() const
 {
+    QVariant variant;
+    toQVariant(&variant);
+    return variant;
+}
+
+void NetVariant::toQVariant(QVariant* variant) const
+{
     switch(getVariantType()) {
     case NetVariantTypeEnum_JSValue:
-        return getJsValue()->getJsValue().toVariant();
+        *variant = getJsValue()->getJsValue().toVariant();
+        break;
     case NetVariantTypeEnum_Object:
-        return QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
+        *variant = QVariant::fromValue<QObject*>(NetValue::forInstance(getNetReference()));
+        break;
     case NetVariantTypeEnum_QObject:
-        return QVariant::fromValue<QObject*>(this->getQObject()->getQObject());
+        *variant = QVariant::fromValue<QObject*>(this->getQObject()->getQObject());
+        break;
     case NetVariantTypeEnum_NetVariantList:
-        return QVariant::fromValue(toQVariantList());
+        *variant = QVariant::fromValue(toQVariantList());
+        break;
     default:
-        return variant;
+        *variant = _variant;
+        break;
     }
 }
 
@@ -458,23 +474,23 @@ QString NetVariant::getDisplayValue() const
     case NetVariantTypeEnum_QObject:
         return getQObject()->getQObject()->objectName();
     default:
-        return variant.toString();
+        return _variant.toString();
     }
 }
 
 void NetVariant::clearNetReference()
 {
-    if(variant.canConvert<NetReferenceQmlContainer>()) {
-        variant.value<NetReferenceQmlContainer>().netReference.clear();
-        variant.clear();
+    if(_variant.canConvert<NetReferenceQmlContainer>()) {
+        _variant.value<NetReferenceQmlContainer>().netReference.clear();
+        _variant.clear();
     }
-    else if(variant.canConvert<NetJsValueQmlContainer>()) {
-        variant.value<NetJsValueQmlContainer>().jsValue.clear();
-        variant.clear();
+    else if(_variant.canConvert<NetJsValueQmlContainer>()) {
+        _variant.value<NetJsValueQmlContainer>().jsValue.clear();
+        _variant.clear();
     }
-    else if(variant.canConvert<NetQObjectQmlContainer>()) {
-        variant.value<NetQObjectQmlContainer>().netQObject.clear();
-        variant.clear();
+    else if(_variant.canConvert<NetQObjectQmlContainer>()) {
+        _variant.value<NetQObjectQmlContainer>().netQObject.clear();
+        _variant.clear();
     }
 }
 
@@ -482,7 +498,7 @@ template<typename T>
 void NetVariant::setValue(const T& value)
 {
     clearNetReference();
-    variant.setValue(value);
+    _variant.setValue(value);
 }
 
 void NetVariant::setValueVariant(const QVariant& value)
@@ -491,7 +507,7 @@ void NetVariant::setValueVariant(const QVariant& value)
     Q_ASSERT(value.userType() != qMetaTypeId<QJSValue>());
     Q_ASSERT(value.userType() < QMetaType::User);
     clearNetReference();
-    variant = value;
+    _variant = value;
 }
 
 template<typename T>
@@ -507,10 +523,10 @@ void NetVariant::setValuePtr(const T* value)
 template<typename T>
 T NetVariant::getValue() const
 {
-    if(!variant.canConvert(qMetaTypeId<T>())) {
-        qDebug() << "Can't convert value" << variant << "from" << variant.typeName() << "to" << QMetaType::typeName(qMetaTypeId<T>());
+    if(!_variant.canConvert(qMetaTypeId<T>())) {
+        qDebug() << "Can't convert value" << _variant << "from" << _variant.typeName() << "to" << QMetaType::typeName(qMetaTypeId<T>());
     }
-    return variant.value<T>();
+    return _variant.value<T>();
 }
 
 extern "C" {
