@@ -183,6 +183,17 @@ namespace Qml.Net.Tests.Qml
         }
 
         [Fact]
+        public void Can_store_null()
+        {
+            using (var variant = new NetVariant())
+            {
+                variant.VariantType.Should().Be(NetVariantType.Invalid);
+                variant.SetNull();
+                variant.VariantType.Should().Be(NetVariantType.Null);
+            }
+        }
+
+        [Fact]
         public void Can_clear_value()
         {
             var variant = new NetVariant();

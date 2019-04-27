@@ -48,7 +48,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -65,7 +65,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -82,7 +82,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -99,7 +99,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -116,7 +116,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -133,7 +133,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -150,7 +150,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -167,7 +167,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -175,7 +175,7 @@ namespace Qml.Net.Internal.CodeGen
             {
                 if (value == null)
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
                 else
                 {
@@ -196,7 +196,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
 
@@ -259,7 +259,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
                 else
                 {
-                    variant.Clear();
+                    variant.SetNull();
                 }
             }
         }

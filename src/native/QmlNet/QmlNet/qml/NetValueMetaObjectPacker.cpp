@@ -12,6 +12,9 @@ void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* de
     case NetVariantTypeEnum_Invalid:
         destinationVariant->setValue(QVariant::fromValue(nullptr));
         break;
+    case NetVariantTypeEnum_Null:
+        destinationVariant->setValue(nullptr);
+        break;
     case NetVariantTypeEnum_Bool:
         destinationVariant->setValue(source->getBool());
         break;
@@ -71,6 +74,9 @@ void NetValueTypePacker::unpack(const QSharedPointer<NetVariant>& destination, v
     case NetVariantTypeEnum_Invalid:
         destination->clear();
         return;
+    case NetVariantTypeEnum_Null:
+        destination->setNull();
+        break;
     case NetVariantTypeEnum_Bool:
         destination->setBool(sourceVariant->toBool());
         return;
@@ -155,6 +161,7 @@ NetValueMetaObjectPacker::NetValueMetaObjectPacker()
         NetVariantTypeEnum type = NetVariantTypeEnum(typeInt);
         switch(type) {
         case NetVariantTypeEnum_Invalid:
+        case NetVariantTypeEnum_Null:
         case NetVariantTypeEnum_Bool:
         case NetVariantTypeEnum_Char:
         case NetVariantTypeEnum_Int:

@@ -160,7 +160,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeBoolNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -179,7 +179,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeCharNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -198,7 +198,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeIntNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -217,7 +217,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeUIntNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -236,7 +236,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeLongNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -255,7 +255,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeULongNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -274,7 +274,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeFloatNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -293,7 +293,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeDoubleNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -312,7 +312,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeString(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -333,7 +333,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeDateTimeNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -348,7 +348,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeObject(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -363,7 +363,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeObjectTyped(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 
@@ -383,7 +383,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             Test(x => x.ReturnTypeStructNullable(), null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
         }
 

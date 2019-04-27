@@ -20,6 +20,11 @@ namespace Qml.Net.Internal.Qml
 
         public NetVariantType VariantType => Interop.NetVariant.GetVariantType(Handle);
 
+        public void SetNull()
+        {
+            Interop.NetVariant.SetNull(Handle);
+        }
+        
         public NetReference Instance
         {
             get
@@ -272,6 +277,13 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_variant_getVariantType")]
         public GetVariantTypeDel GetVariantType { get; set; }
 
+        [NativeSymbol(Entrypoint = "net_variant_setNull")]
+        public SetNullDel SetNull { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SetNullDel(IntPtr variant);
+        
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate NetVariantType GetVariantTypeDel(IntPtr variant);

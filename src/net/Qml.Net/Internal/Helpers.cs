@@ -67,7 +67,7 @@ namespace Qml.Net.Internal
                 {
                     if (source == null)
                     {
-                        destination.Clear();
+                        destination.SetNull();
                     }
                     else
                     {
@@ -81,7 +81,7 @@ namespace Qml.Net.Internal
         {
             if (source == null)
             {
-                destination.Clear();
+                destination.SetNull();
             }
             else
             {

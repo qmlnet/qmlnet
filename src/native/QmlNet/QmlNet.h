@@ -38,6 +38,7 @@
 
 enum NetVariantTypeEnum {
     NetVariantTypeEnum_Invalid = 0,
+    NetVariantTypeEnum_Null,
     NetVariantTypeEnum_Bool,
     NetVariantTypeEnum_Char,
     NetVariantTypeEnum_Int,

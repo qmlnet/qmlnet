@@ -59,6 +59,8 @@ NetVariantTypeEnum NetVariant::getVariantType() const
     switch(type) {
     case QMetaType::UnknownType:
         return NetVariantTypeEnum_Invalid;
+    case QMetaType::Nullptr:
+        return NetVariantTypeEnum_Null;
     case QMetaType::Bool:
         return NetVariantTypeEnum_Bool;
     case QMetaType::QChar:
@@ -97,6 +99,12 @@ NetVariantTypeEnum NetVariant::getVariantType() const
             return NetVariantTypeEnum_Invalid;
         }
     }
+}
+
+void NetVariant::setNull()
+{
+    clearNetReference();
+    variant.setValue(nullptr);
 }
 
 void NetVariant::setNetReference(QSharedPointer<NetReference> netReference)
@@ -531,6 +539,10 @@ Q_DECL_EXPORT void net_variant_destroy(NetVariantContainer* container) {
 
 Q_DECL_EXPORT NetVariantTypeEnum net_variant_getVariantType(NetVariantContainer* container) {
     return container->variant->getVariantType();
+}
+
+Q_DECL_EXPORT void net_variant_setNull(NetVariantContainer* container) {
+    container->variant->setNull();
 }
 
 Q_DECL_EXPORT void net_variant_setNetReference(NetVariantContainer* container, NetReferenceContainer* instanceContainer) {

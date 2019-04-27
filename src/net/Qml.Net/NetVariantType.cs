@@ -3,6 +3,7 @@
     public enum NetVariantType
     {
         Invalid = 0,
+        Null,
         Bool,
         Char,
         Int,
