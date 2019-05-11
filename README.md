@@ -112,7 +112,7 @@ public class QmlType
         o.methodDefinedInCpp(result);
         
         // You can also listen to signals on QObjects.
-        var qObject = o as INetQObject.
+        var qObject = o as INetQObject;
         var handler = qObject.AttachSignal("signalName", parameters => {
             // parameters is a list of arguements passed to the signal.
         });
@@ -143,7 +143,7 @@ using (var app = new QGuiApplication(args))
     using (var engine = new QQmlApplicationEngine())
     {
         // Register our new type to be used in Qml
-        QQmlApplicationEngine.RegisterType<QmlType>("test", 1, 1);
+        Qml.Net.Qml.RegisterType<QmlType>("test", 1, 1);
         engine.Load("main.qml");
         return app.Exec();
     }
