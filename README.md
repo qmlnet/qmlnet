@@ -164,7 +164,7 @@ namespace QmlQuickOverview
                 {
                     // Register our new type to be used in Qml
                     Qml.Net.Qml.RegisterType<QmlType>("test", 1, 1);
-                    engine.Load("main.qml");
+                    engine.Load("Main.qml");
                     return app.Exec();
                 }
             }
@@ -177,6 +177,7 @@ namespace QmlQuickOverview
 **Use the .NET type in Qml**
 
 ```js
+//Main.qml
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
