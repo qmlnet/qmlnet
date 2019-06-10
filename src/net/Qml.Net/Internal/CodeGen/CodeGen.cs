@@ -95,13 +95,48 @@ namespace Qml.Net.Internal.CodeGen
 
                 var tempValue = il.DeclareLocal(methodInfo.ReturnType);
 
-                // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
-                il.Emit(OpCodes.Ldarg_0); // net reference
-                il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
-                il.Emit(OpCodes.Castclass, invokeType);
-                InvokeParameters(il, methodInfo);
-                il.Emit(OpCodes.Callvirt, methodInfo);
-                il.Emit(OpCodes.Stloc, tempValue.LocalIndex);
+                if (methodInfo.DeclaringType.IsValueType)
+                {
+                    // NOTE: This code isn't working, not sure why.
+                    throw new Exception("Can't operate on struct types yet. See: https://github.com/qmlnet/qmlnet/issues/135");
+                    
+                    //IL_0000: nop
+                    //IL_0001: ldarg.0
+                    //IL_0002: callvirt instance object C/NetReference::get_Instance()
+                    //IL_0007: unbox.any C/TestClass
+                    //IL_000c: stloc.1
+                    //IL_000d: ldloca.s 1
+                    //IL_000f: call instance string C/TestClass::Method()
+                    //IL_0014: stloc.0
+                    //IL_0015: ret
+                    // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
+                    il.Emit(OpCodes.Ldarg_0); // net reference
+                    il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
+                    //il.Emit(OpCodes.Castclass, invokeType);
+                    il.Emit(OpCodes.Unbox_Any, invokeType);
+                    il.Emit(OpCodes.Stloc, 1);
+                    il.Emit(OpCodes.Ldloca_S, 1);
+                    InvokeParameters(il, methodInfo);
+                    il.Emit(OpCodes.Callvirt, methodInfo);
+                    il.Emit(OpCodes.Stloc, tempValue.LocalIndex);
+                }
+                else
+                {
+                    //IL_0000: nop
+                    //IL_0001: ldarg.1
+                    //IL_0002: callvirt instance object C/NetReference::get_Instance()
+                    //IL_0007: castclass C/TestClass
+                    //IL_000c: callvirt instance string C/TestClass::get_Property()
+                    //IL_0011: stloc.0
+                    //IL_0012: ret
+                    // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
+                    il.Emit(OpCodes.Ldarg_0); // net reference
+                    il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
+                    il.Emit(OpCodes.Castclass, invokeType);
+                    InvokeParameters(il, methodInfo);
+                    il.Emit(OpCodes.Callvirt, methodInfo);
+                    il.Emit(OpCodes.Stloc, tempValue.LocalIndex);   
+                }
 
                 // {LOADMETHOD}(result, tempvalue)
                 il.Emit(OpCodes.Ldarg_2);
