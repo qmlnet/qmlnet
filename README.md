@@ -34,27 +34,13 @@ https://qmlnet.github.io/
 
 ```bash
 dotnet add package Qml.Net
-```
-
-**Windows**
-
-```bash
 dotnet add package Qml.Net.WindowsBinaries
-```
-
-**OSX**
-
-```bash
 dotnet add package Qml.Net.OSXBinaries
-```
-
-**Linux**
-
-```bash
 dotnet add package Qml.Net.LinuxBinaries
 ```
 
-Checkout the [examples](https://github.com/qmlnet/qmlnet-examples) for some inspiration.
+# Examples
+Checkout the [examples](https://github.com/qmlnet/qmlnet-examples) on how to do many things with Qml.Net.
 
 # Quick overview
 
