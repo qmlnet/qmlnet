@@ -28,7 +28,7 @@ namespace NetHost
                 
                 // Phase 6
                 // Register any .NET types that will be used.
-                QQmlApplicationEngine.RegisterType<TestObject>("test");
+		Qml.Net.Qml.RegisterType<TestObject>("test", 1);
 
                 // Phase 7
                 // This callback passes control back to C++ to perform
