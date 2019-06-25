@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/QTest.h \
     $$PWD/NetQObject.h \
     $$PWD/NetQObjectSignalConnection.h \
-    $$PWD/NetQObjectArg.h
+    $$PWD/NetQObjectArg.h \
+    $$PWD/QLocaleInterop.h
 
 SOURCES += \
     $$PWD/QQmlApplicationEngine.cpp \
@@ -40,4 +41,5 @@ SOURCES += \
     $$PWD/QTest.cpp \
     $$PWD/NetQObject.cpp \
     $$PWD/NetQObjectSignalConnection.cpp \
-    $$PWD/NetQObjectArg.cpp
+    $$PWD/NetQObjectArg.cpp \
+    $$PWD/QLocaleInterop.cpp

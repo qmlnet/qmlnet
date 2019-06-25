@@ -75,6 +75,7 @@ namespace Qml.Net.Internal
             QTest = LoadInteropType<QTestInterop>(library, loader);
             NetQObject = LoadInteropType<NetQObjectInterop>(library, loader);
             NetQObjectSignalConnection = LoadInteropType<NetQObjectSignalConnectionInterop>(library, loader);
+            QLocale = LoadInteropType<QLocaleInterop>(library, loader);
 
             // RuntimeManager.ConfigureRuntimeDirectory may set these environment variables.
             // However, they only really work when called with Qt.PutEnv.
@@ -127,7 +128,9 @@ namespace Qml.Net.Internal
         
         public static NetQObjectInterop NetQObject { get; }
         
-        public static NetQObjectSignalConnectionInterop NetQObjectSignalConnection { get; set; }
+        public static NetQObjectSignalConnectionInterop NetQObjectSignalConnection { get; }
+        
+        public static QLocaleInterop QLocale { get; set; }
 
         private static T LoadInteropType<T>(IntPtr library, IPlatformLoader loader)
             where T : new()
