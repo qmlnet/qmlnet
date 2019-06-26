@@ -15,6 +15,7 @@ public:
     Q_INVOKABLE QVariant cancelTokenSource();
     Q_INVOKABLE void gcCollect(int maxGeneration = 0);
     Q_INVOKABLE QVariant toListModel(const QJSValue& value);
+    Q_INVOKABLE QVariantList toVariantList(const QJSValue& value);
     Q_INVOKABLE QVariant listForEach(const QJSValue& value, QJSValue callback);
     Q_INVOKABLE void toJsArray();
     Q_INVOKABLE void await(const QJSValue& task, const QJSValue& successCallback, const QJSValue& failureCallback = QJSValue());

@@ -78,6 +78,22 @@ QVariant JsNetObject::toListModel(const QJSValue& value)
     return QVariant::fromValue(listModel);
 }
 
+Q_INVOKABLE QVariantList JsNetObject::toVariantList(const QJSValue& value)
+{
+    if(value.isNull() || value.isUndefined()) {
+        qWarning() << "Net.toVariantList(): Instance parameter must not be null or undefined";
+        return QVariantList();
+    }
+
+    QSharedPointer<NetVariant> netVaraint = NetVariant::fromQJSValue(value);
+    if(netVaraint->getVariantType() != NetVariantTypeEnum_Object) {
+        qWarning() << "Net.toVariantList(): Parameter is not a .NET object";
+        return QVariantList();
+    }
+
+    return netVaraint->toQVariantList();
+}
+
 Q_INVOKABLE QVariant JsNetObject::listForEach(const QJSValue& value, QJSValue callback)
 {
     if(value.isNull() || value.isUndefined()) {
