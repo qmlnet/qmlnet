@@ -31,6 +31,11 @@ bool NetTypeArrayFacade::isFixed()
     return false;
 }
 
+bool NetTypeArrayFacade::isReadOnly()
+{
+    return false;
+}
+
 uint NetTypeArrayFacade::getLength(const QSharedPointer<NetReference>&)
 {
     return 0;

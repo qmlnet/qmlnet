@@ -15,6 +15,7 @@ public:
     virtual ~NetTypeArrayFacade() {}
     static QSharedPointer<NetTypeArrayFacade> fromType(const QSharedPointer<NetTypeInfo>& type);
     virtual bool isFixed();
+    virtual bool isReadOnly();
     virtual uint getLength(const QSharedPointer<NetReference>& reference);
     virtual QSharedPointer<NetVariant> getIndexed(const QSharedPointer<NetReference>& reference, uint index);
     virtual void setIndexed(const QSharedPointer<NetReference>& reference, uint index, const QSharedPointer<NetVariant>& value);

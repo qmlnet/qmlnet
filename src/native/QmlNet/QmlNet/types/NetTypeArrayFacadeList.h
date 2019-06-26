@@ -12,6 +12,7 @@ public:
     NetTypeArrayFacade_List(const QSharedPointer<NetTypeInfo>& type);
     bool isIncomplete();
     bool isFixed() override;
+    bool isReadOnly() override;
     uint getLength(const QSharedPointer<NetReference>& reference) override;
     QSharedPointer<NetVariant> getIndexed(const QSharedPointer<NetReference>& reference, uint index) override;
     void setIndexed(const QSharedPointer<NetReference>& reference, uint index, const QSharedPointer<NetVariant>& value) override;
@@ -20,6 +21,7 @@ public:
     void deleteAt(const QSharedPointer<NetReference>& reference, uint index) override;
 private:
     bool _isIncomplete;
+    bool _isReadOnly;
     QSharedPointer<NetPropertyInfo> _lengthProperty;
     QSharedPointer<NetPropertyInfo> _itemProperty;
     QSharedPointer<NetMethodInfo> _removeAtMethod;
