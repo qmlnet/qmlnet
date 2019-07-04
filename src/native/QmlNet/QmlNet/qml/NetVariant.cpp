@@ -81,6 +81,8 @@ NetVariantTypeEnum NetVariant::getVariantType() const
         return NetVariantTypeEnum_String;
     case QMetaType::QDateTime:
         return NetVariantTypeEnum_DateTime;
+    case QMetaType::QByteArray:
+        return NetVariantTypeEnum_ByteArray;
     default:
         if(type == NetReferenceQmlContainerTypeId) {
             return NetVariantTypeEnum_Object;
@@ -220,6 +222,16 @@ void NetVariant::setString(const QString& value)
 QString NetVariant::getString() const
 {
     return _variant.toString();
+}
+
+void NetVariant::setBytes(QByteArray values)
+{
+    setValue(values);
+}
+
+QByteArray NetVariant::getBytes() const
+{
+    return _variant.toByteArray();
 }
 
 void NetVariant::setDateTime(const QDateTime& value)
@@ -368,6 +380,7 @@ void NetVariant::fromQVariant(const QVariant* variant, const QSharedPointer<NetV
     case QMetaType::Float:
     case QMetaType::Double:
     case QMetaType::QString:
+    case QMetaType::QByteArray:
     case QMetaType::QDateTime:
         destination->setValueVariant(*variant);
         break;
@@ -663,6 +676,20 @@ Q_DECL_EXPORT QmlNetStringContainer* net_variant_getString(NetVariantContainer* 
     return createString(string);
 }
 
+Q_DECL_EXPORT void net_variant_setBytes(NetVariantContainer* container, LPCSTR value, int count) {
+    if(value == nullptr) {
+        container->variant->setBytes(nullptr);
+    } else {
+        container->variant->setBytes(QByteArray::fromRawData(value, count));
+    }
+}
+
+Q_DECL_EXPORT LPCSTR net_variant_getBytes(NetVariantContainer* container, int &count) {
+    const QByteArray byteArray = container->variant->getBytes();
+    count = byteArray.count();;
+    return byteArray.constData();
+}
+
 Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, const DateTimeContainer* value) {
     if(value == nullptr || value->isNull) {
         container->variant->setDateTime(QDateTime());
@@ -672,6 +699,7 @@ Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, const
                                                   Qt::OffsetFromUTC, value->offsetSeconds));
     }
 }
+
 Q_DECL_EXPORT void net_variant_getDateTime(NetVariantContainer* container, DateTimeContainer* value) {
     const QDateTime& dt = container->variant->getDateTime();
     if(dt.isNull()) {

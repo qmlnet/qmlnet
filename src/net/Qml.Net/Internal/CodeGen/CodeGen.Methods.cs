@@ -31,6 +31,7 @@ namespace Qml.Net.Internal.CodeGen
             public static MethodInfo LoadDoubleMethod = typeof(LoadMethods).GetMethod(nameof(LoadDouble), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadDoubleNullableMethod = typeof(LoadMethods).GetMethod(nameof(LoadDoubleNullable), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadStringMethod = typeof(LoadMethods).GetMethod(nameof(LoadString), BindingFlags.Static | BindingFlags.NonPublic);
+            public static MethodInfo LoadByteArrayMethod = typeof(LoadMethods).GetMethod(nameof(LoadByteArray), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadDateTimeMethod = typeof(LoadMethods).GetMethod(nameof(LoadDateTime), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadDateTimeNullableMethod = typeof(LoadMethods).GetMethod(nameof(LoadDateTimeNullable), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadObjectMethod = typeof(LoadMethods).GetMethod(nameof(LoadObject), BindingFlags.Static | BindingFlags.NonPublic);
@@ -183,6 +184,18 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
+             private static void LoadByteArray(NetVariant variant, byte[] value)
+            {
+                if (value == null)
+                {
+                    variant.SetNull();
+                }
+                else
+                {
+                    variant.ByteArray = value;
+                }
+            }
+
             private static void LoadDateTime(NetVariant variant, DateTimeOffset value)
             {
                 variant.DateTime = value;
@@ -283,6 +296,7 @@ namespace Qml.Net.Internal.CodeGen
             public static MethodInfo DoubleAtMethod = typeof(ListMethods).GetMethod(nameof(DoubleAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo DoubleNullableAtMethod = typeof(ListMethods).GetMethod(nameof(DoubleNullableAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo StringAtMethod = typeof(ListMethods).GetMethod(nameof(StringAt), BindingFlags.Static | BindingFlags.NonPublic);
+            public static MethodInfo ByteArrayAtMethod = typeof(ListMethods).GetMethod(nameof(ByteArrayAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo DateTimeAtMethod = typeof(ListMethods).GetMethod(nameof(DateTimeAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo DateTimeNullableAtMethod = typeof(ListMethods).GetMethod(nameof(DateTimeNullableAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo ObjectAtMethod = typeof(ListMethods).GetMethod(nameof(ObjectAt), BindingFlags.Static | BindingFlags.NonPublic);
@@ -465,6 +479,19 @@ namespace Qml.Net.Internal.CodeGen
                     }
 
                     return variant.String;
+                }
+            }
+
+            private static byte[] ByteArrayAt(NetVariantList list, int index)
+            {
+                using (var variant = list.Get(index))
+                {
+                    if (variant == null || variant.VariantType == NetVariantType.Invalid)
+                    {
+                        return null;
+                    }
+
+                    return variant.ByteArray;
                 }
             }
 

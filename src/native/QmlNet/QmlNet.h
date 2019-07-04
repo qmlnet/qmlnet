@@ -52,7 +52,8 @@ enum NetVariantTypeEnum {
     NetVariantTypeEnum_Object,
     NetVariantTypeEnum_JSValue,
     NetVariantTypeEnum_QObject,
-    NetVariantTypeEnum_NetVariantList
+    NetVariantTypeEnum_NetVariantList,
+    NetVariantTypeEnum_ByteArray
 };
 
 

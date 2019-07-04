@@ -88,6 +88,22 @@ namespace Qml.Net.Internal.Qml
             get => Utilities.ContainerToString(Interop.NetVariant.GetString(Handle));
             set => Interop.NetVariant.SetString(Handle, value);
         }
+
+        public byte[] ByteArray
+        {
+            get {
+                int count;
+                IntPtr arrayHandle = Interop.NetVariant.GetBytes(Handle, out count);
+                byte[] managedArray = new byte[count];
+                Marshal.Copy(arrayHandle, managedArray, 0, count);
+                return managedArray;
+            } 
+            set {
+                GCHandle pinnedArray = GCHandle.Alloc(value, GCHandleType.Pinned);
+                IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+                Interop.NetVariant.SetBytes(Handle, pointer, value.Length);
+            }
+        }
         
         public DateTimeOffset? DateTime
         {
@@ -197,6 +213,8 @@ namespace Qml.Net.Internal.Qml
                     return String;
                 case NetVariantType.DateTime:
                     return DateTime;
+                case NetVariantType.ByteArray:
+                    return ByteArray;                    
                 case NetVariantType.Object:
                     using (var instance = Instance)
                     {
@@ -427,6 +445,36 @@ namespace Qml.Net.Internal.Qml
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringDel(IntPtr variant);
+
+
+
+
+        [NativeSymbol(Entrypoint = "net_variant_setBytes")]
+        public SetBytesDel SetBytes { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SetBytesDel(IntPtr variant, IntPtr array, int count);
+
+
+
+
+
+
+
+        [NativeSymbol(Entrypoint = "net_variant_getBytes")]
+        public GetBytesDel GetBytes { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr GetBytesDel(IntPtr variant, out int count);
+
+
+
+
+
+
+
 
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
         public SetDateTimeDel SetDateTime { get; set; }

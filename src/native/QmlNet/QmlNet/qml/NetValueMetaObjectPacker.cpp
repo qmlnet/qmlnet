@@ -43,6 +43,9 @@ void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* de
     case NetVariantTypeEnum_String:
         destinationVariant->setValue(source->getString());
         break;
+    case NetVariantTypeEnum_ByteArray:
+        destinationVariant->setValue(source->getBytes());
+        break;
     case NetVariantTypeEnum_DateTime:
         destinationVariant->setValue(source->getDateTime());
         break;

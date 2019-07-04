@@ -17,6 +17,7 @@
         Object,
         JsValue,
         QObject,
-        NetVariantList
+        NetVariantList,
+        ByteArray
     }
 }
