@@ -74,6 +74,9 @@ namespace Qml.Net.Internal.CodeGen
                     case NetVariantType.String:
                         returnMethod = LoadMethods.LoadStringMethod;
                         break;
+                    case NetVariantType.ByteArray:
+                        returnMethod = LoadMethods.LoadByteArrayMethod;
+                        break;                        
                     case NetVariantType.DateTime:
                         returnMethod = isNullable ? LoadMethods.LoadDateTimeNullableMethod : LoadMethods.LoadDateTimeMethod;
                         break;
@@ -252,6 +255,9 @@ namespace Qml.Net.Internal.CodeGen
                     case NetVariantType.String:
                         returnMethod = ListMethods.StringAtMethod;
                         break;
+                    case NetVariantType.ByteArray:
+                        returnMethod = ListMethods.ByteArrayAtMethod;
+                        break;                        
                     case NetVariantType.DateTime:
                         returnMethod = isNullable ? ListMethods.DateTimeNullableAtMethod : ListMethods.DateTimeAtMethod;
                         break;
@@ -300,6 +306,8 @@ namespace Qml.Net.Internal.CodeGen
                 return NetVariantType.Double;
             if (typeInfo == typeof(string))
                 return NetVariantType.String;
+            if (typeInfo == typeof(byte[]))
+                return NetVariantType.ByteArray;
             if (typeInfo == typeof(DateTimeOffset))
                 return NetVariantType.DateTime;
 

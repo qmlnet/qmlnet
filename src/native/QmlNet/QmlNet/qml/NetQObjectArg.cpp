@@ -103,6 +103,9 @@ void NetQObjectArg::pack()
     case QMetaType::QString:
         _variant = QVariant::fromValue(_netVariant->getString());
         break;
+    case QMetaType::QByteArray:
+        _variant = QVariant::fromValue(_netVariant->getBytes());
+        break;
     case QMetaType::QDateTime:
         _variant = QVariant::fromValue(_netVariant->getDateTime());
         break;

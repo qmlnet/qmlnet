@@ -51,6 +51,8 @@ namespace Qml.Net.Internal
                 destination.ULong = (ulong)source;
             else if (type == typeof(string))
                 destination.String = (string)source;
+            else if (type == typeof(byte[]))
+                destination.ByteArray = (byte[])source;
             else if (type == typeof(DateTimeOffset))
                 destination.DateTime = ((DateTimeOffset)source).DateTime;
             else if (typeof(INetJsValue).IsAssignableFrom(type))

@@ -40,6 +40,8 @@ public:
     void setString(const QString* value);
     void setString(const QString& value);
     QString getString() const;
+    void setBytes(QByteArray byteArray);
+    QByteArray getBytes() const;    
     void setDateTime(const QDateTime& value);
     QDateTime getDateTime() const;
     void setJsValue(QSharedPointer<NetJSValue> jsValue);
