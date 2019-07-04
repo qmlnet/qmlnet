@@ -446,9 +446,6 @@ namespace Qml.Net.Internal.Qml
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetStringDel(IntPtr variant);
 
-
-
-
         [NativeSymbol(Entrypoint = "net_variant_setBytes")]
         public SetBytesDel SetBytes { get; set; }
 
@@ -456,25 +453,12 @@ namespace Qml.Net.Internal.Qml
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetBytesDel(IntPtr variant, IntPtr array, int count);
 
-
-
-
-
-
-
         [NativeSymbol(Entrypoint = "net_variant_getBytes")]
         public GetBytesDel GetBytes { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetBytesDel(IntPtr variant, out int count);
-
-
-
-
-
-
-
 
         [NativeSymbol(Entrypoint = "net_variant_setDateTime")]
         public SetDateTimeDel SetDateTime { get; set; }
