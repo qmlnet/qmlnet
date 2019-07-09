@@ -686,8 +686,13 @@ Q_DECL_EXPORT void net_variant_setBytes(NetVariantContainer* container, LPCSTR v
 
 Q_DECL_EXPORT LPCSTR net_variant_getBytes(NetVariantContainer* container, int &count) {
     const QByteArray byteArray = container->variant->getBytes();
-    count = byteArray.count();;
-    return byteArray.constData();
+    if(byteArray.isNull()) {
+        count = 0;
+        return nullptr;
+    } else {
+        count = byteArray.count();;
+        return byteArray.constData();
+    }
 }
 
 Q_DECL_EXPORT void net_variant_setDateTime(NetVariantContainer* container, const DateTimeContainer* value) {
