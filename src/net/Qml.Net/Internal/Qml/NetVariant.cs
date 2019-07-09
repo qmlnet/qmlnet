@@ -91,17 +91,30 @@ namespace Qml.Net.Internal.Qml
 
         public byte[] ByteArray
         {
-            get {
-                int count;
-                IntPtr arrayHandle = Interop.NetVariant.GetBytes(Handle, out count);
+            get 
+            {
+                IntPtr arrayHandle = Interop.NetVariant.GetBytes(Handle, out var count);
+                if (arrayHandle == IntPtr.Zero)
+                {
+                    return null;
+                }
                 byte[] managedArray = new byte[count];
                 Marshal.Copy(arrayHandle, managedArray, 0, count);
                 return managedArray;
-            } 
-            set {
-                GCHandle pinnedArray = GCHandle.Alloc(value, GCHandleType.Pinned);
-                IntPtr pointer = pinnedArray.AddrOfPinnedObject();
-                Interop.NetVariant.SetBytes(Handle, pointer, value.Length);
+            }
+            
+            set
+            {
+                if (value == null)
+                {
+                    Interop.NetVariant.SetBytes(Handle, IntPtr.Zero, 0);
+                }
+                else
+                {
+                    GCHandle pinnedArray = GCHandle.Alloc(value, GCHandleType.Pinned);
+                    IntPtr pointer = pinnedArray.AddrOfPinnedObject();
+                    Interop.NetVariant.SetBytes(Handle, pointer, value.Length);
+                }
             }
         }
         

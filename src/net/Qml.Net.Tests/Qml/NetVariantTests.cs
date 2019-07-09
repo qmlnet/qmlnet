@@ -201,5 +201,20 @@ namespace Qml.Net.Tests.Qml
             variant.Clear();
             variant.VariantType.Should().Be(NetVariantType.Invalid);
         }
+        
+        [Fact]
+        public void Can_store_byte_array()
+        {
+            using (var variant = new NetVariant())
+            {
+                variant.VariantType.Should().Be(NetVariantType.Invalid);
+                variant.ByteArray.Should().BeNull();
+                variant.ByteArray = new byte[] { 3, 4 };
+                variant.VariantType.Should().Be(NetVariantType.ByteArray);
+                variant.ByteArray.Should().BeEquivalentTo(new byte[] { 3, 4 });
+                variant.ByteArray = null;
+                variant.ByteArray.Should().BeNull();
+            }
+        }
     }
 }
