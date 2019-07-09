@@ -1,13 +1,10 @@
 <p align="center"><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
 
-<p align="center">
-    <a href="http://www.nuget.org/packages/Qml.Net/" rel="nofollow"><img src="https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net" alt="Qml.Net" style="max-width:100%;"></a>
-    <a href="https://travis-ci.com/qmlnet/qmlnet" rel="nofollow"><img src="https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop" alt="Build status" style="max-width:100%;"></a>
-    <a href="https://ci.appveyor.com/project/pauldotknopf/qmlnet/" rel="nofollow"><img src="https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true" alt="Build status" style="max-width:100%;"></a>
-    <a href="https://gitter.im/qmlnet/Lobby" rel="nofollow"><img src="https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat" alt="Gitter" style="max-width:100%;"></a>
-    <a href="https://paypal.me/pauldotknopf" rel="nofollow"><img src="https://img.shields.io/badge/Donate-PayPal-green.svg" alt="Build status" style="max-width:100%;"></a>
-</p>
+<div style="text-align: center;">
 
+[![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/) [![Build status](https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop)](https://travis-ci.com/qmlnet/qmlnet) [![Build status](https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qmlnet/) [![Gitter](https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat)](https://gitter.im/qmlnet/Lobby) [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg)](#contributors) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/pauldotknopf)
+
+</div>
 ------------------------
 
 A Qt/Qml integration with .NET
@@ -225,8 +222,27 @@ ApplicationWindow {
 - [x] Dynamically compiled delegates for increased performance.
 - [x] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 
-# Not implemented (but planned)
+There aren't really any important features missing that are needed for prime-time. This product is currently used on embedded devices in the medical industry.
 
-- [ ] Compiling Qml resource files and bundling them within .NET.
-- [ ] .NET Events to signals
-- [ ] Qml debugger for VS and VS Code.
+## Contributors ✨
+
+Thanks goes to these wonderful people!
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="http://www.devmil.de"><img src="https://avatars1.githubusercontent.com/u/6693130?v=4" width="100px;" alt="Michael Lamers"/><br /><sub><b>Michael Lamers</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=devmil" title="Code">💻</a></td>
+    <td align="center"><a href="https://ymueller.de"><img src="https://avatars0.githubusercontent.com/u/2760830?v=4" width="100px;" alt="TripleWhy"/><br /><sub><b>TripleWhy</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=TripleWhy" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/MaxMommersteeg"><img src="https://avatars3.githubusercontent.com/u/9657173?v=4" width="100px;" alt="Max"/><br /><sub><b>Max</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=MaxMommersteeg" title="Code">💻</a> <a href="https://github.com/qmlnet/qmlnet/commits?author=MaxMommersteeg" title="Documentation">📖</a> <a href="#financial-MaxMommersteeg" title="Financial">💵</a></td>
+    <td align="center"><a href="https://github.com/geigertom"><img src="https://avatars0.githubusercontent.com/u/19152463?v=4" width="100px;" alt="geigertom"/><br /><sub><b>geigertom</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=geigertom" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jamesdavila"><img src="https://avatars0.githubusercontent.com/u/1946041?v=4" width="100px;" alt="James Davila"/><br /><sub><b>James Davila</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=jamesdavila" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/afillebrown"><img src="https://avatars2.githubusercontent.com/u/38264913?v=4" width="100px;" alt="Andy Fillebrown"/><br /><sub><b>Andy Fillebrown</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=afillebrown" title="Code">💻</a></td>
+    <td align="center"><a href="https://linkedin.com/in/vadimperetokin"><img src="https://avatars1.githubusercontent.com/u/110988?v=4" width="100px;" alt="Vadim Peretokin"/><br /><sub><b>Vadim Peretokin</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=vadi2" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Juhlinus"><img src="https://avatars0.githubusercontent.com/u/12988164?v=4" width="100px;" alt="Linus Juhlin"/><br /><sub><b>Linus Juhlin</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=Juhlinus" title="Documentation">📖</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
