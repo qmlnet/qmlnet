@@ -125,31 +125,31 @@ QSharedPointer<NetVariant> NetQObject::invokeMethod(QString methodName, QSharedP
         val0 = NetQObjectArg(method.parameterType(0), parameters->get(0));
     }
     if(parameterCount >= 2) {
-        val0 = NetQObjectArg(method.parameterType(1), parameters->get(1));
+        val1 = NetQObjectArg(method.parameterType(1), parameters->get(1));
     }
     if(parameterCount >= 3) {
-        val0 = NetQObjectArg(method.parameterType(2), parameters->get(2));
+        val2 = NetQObjectArg(method.parameterType(2), parameters->get(2));
     }
     if(parameterCount >= 4) {
-        val0 = NetQObjectArg(method.parameterType(3), parameters->get(3));
+        val3 = NetQObjectArg(method.parameterType(3), parameters->get(3));
     }
     if(parameterCount >= 5) {
-        val0 = NetQObjectArg(method.parameterType(4), parameters->get(4));
+        val4 = NetQObjectArg(method.parameterType(4), parameters->get(4));
     }
     if(parameterCount >= 6) {
-        val0 = NetQObjectArg(method.parameterType(5), parameters->get(5));
+        val5 = NetQObjectArg(method.parameterType(5), parameters->get(5));
     }
     if(parameterCount >= 7) {
-        val0 = NetQObjectArg(method.parameterType(6), parameters->get(6));
+        val6 = NetQObjectArg(method.parameterType(6), parameters->get(6));
     }
     if(parameterCount >= 8) {
-        val0 = NetQObjectArg(method.parameterType(7), parameters->get(7));
+        val7 = NetQObjectArg(method.parameterType(7), parameters->get(7));
     }
     if(parameterCount >= 9) {
-        val0 = NetQObjectArg(method.parameterType(8), parameters->get(8));
+        val8 = NetQObjectArg(method.parameterType(8), parameters->get(8));
     }
     if(parameterCount >= 10) {
-        val0 = NetQObjectArg(method.parameterType(9), parameters->get(9));
+        val9 = NetQObjectArg(method.parameterType(9), parameters->get(9));
     }
 
     if(!method.invoke(_qObject,
