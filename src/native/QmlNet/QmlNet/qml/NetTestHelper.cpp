@@ -1,6 +1,7 @@
 #include <QmlNet/qml/NetTestHelper.h>
 #include <QQmlComponent>
 #include <QDebug>
+#include <QCoreApplication>
 
 TestBaseQObject::TestBaseQObject()
     : QObject(nullptr)
@@ -209,7 +210,7 @@ TestDerivedQObject::~TestDerivedQObject()
 
 extern "C" {
 
-Q_DECL_EXPORT void net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml)
+Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml, uchar runEvents)
 {
     qRegisterMetaType<TestBaseQObject*>();
     qRegisterMetaType<TestQObject*>();
@@ -223,14 +224,20 @@ Q_DECL_EXPORT void net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEng
 
     if(object == nullptr) {
         qWarning() << "Couldn't create qml object.";
-        return;
+        return 0;
     }
 
     QSharedPointer<TestQObject> testQObject = QSharedPointer<TestQObject>(new TestQObject());
     object->setProperty("testQObject", QVariant::fromValue(testQObject.data()));
     QMetaObject::invokeMethod(object, "runTest");
 
+    if(runEvents == 1) {
+        QCoreApplication::processEvents(QEventLoop::AllEvents);
+    }
+
     delete object;
+
+    return 1;
 }
 
 }

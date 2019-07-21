@@ -6,9 +6,9 @@ namespace Qml.Net.Internal.Qml
 {
     internal class NetTestHelper
     {
-        public static void RunQml(QQmlApplicationEngine qmlEngine, string qml)
+        public static bool RunQml(QQmlApplicationEngine qmlEngine, string qml, bool runEvents = false)
         {
-            Interop.NetTestHelper.RunQml(qmlEngine.Handle, qml);
+            return Interop.NetTestHelper.RunQml(qmlEngine.Handle, qml, runEvents ? (byte) 1 : (byte) 0) == 1;
         }
     }
 
@@ -19,6 +19,6 @@ namespace Qml.Net.Internal.Qml
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void RunQmlDel(IntPtr qmlEngine, [MarshalAs(UnmanagedType.LPWStr)]string qml);
+        public delegate byte RunQmlDel(IntPtr qmlEngine, [MarshalAs(UnmanagedType.LPWStr)]string qml, byte runEvents);
     }
 }

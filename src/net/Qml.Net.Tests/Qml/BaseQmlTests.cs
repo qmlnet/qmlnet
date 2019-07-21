@@ -56,9 +56,9 @@ namespace Qml.Net.Tests.Qml
             return QTest.QWaitFor(() => testContext.Quited, timeoutMs);
         }
 
-        protected void RunQmlTest(string instanceId, string componentOnCompletedCode)
+        protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false)
         {
-            NetTestHelper.RunQml(
+            var result = NetTestHelper.RunQml(
                 qmlApplicationEngine,
                 string.Format(
                     @"
@@ -71,10 +71,15 @@ namespace Qml.Net.Tests.Qml
                             {2}
                         }}
                     }}
-            ",
-            typeof(TTypeToRegister).Name,
-            instanceId,
-            componentOnCompletedCode));
+                    ",
+                    typeof(TTypeToRegister).Name,
+                    instanceId,
+                    componentOnCompletedCode),
+                runEvents);
+            if (result == false)
+            {
+                throw new Exception($"Couldn't execute qml: {componentOnCompletedCode}");
+            }
         }
 
         public override void Dispose()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FluentAssertions;
 using Xunit;
 
@@ -57,10 +57,6 @@ namespace Qml.Net.Tests.Qml
                     import testContext 1.0
 
                     Item {
-                        TestContext {
-                            id: tc
-                        }
-
                         NetInteropTestQml {
                             id: test
                             Component.onCompleted: function() {
@@ -68,13 +64,11 @@ namespace Qml.Net.Tests.Qml
                                 var instance2 = test.parameter
 
                                 test.testResult = instance1.isSame(instance2)
-
-                                tc.quit()
                             }
                         }
                     }
                 ");
-            ExecApplicationWithTimeout(2000).Should().BeTrue();
+            //ExecApplicationWithTimeout(2000).Should().BeTrue();
 
             Assert.True(Instance.TestResult);
         }
@@ -82,108 +76,58 @@ namespace Qml.Net.Tests.Qml
         [Fact]
         public void Can_handle_different_instances_equality_qml()
         {
-            qmlApplicationEngine.LoadData(@"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    import testContext 1.0
+            RunQmlTest("test",
+                @"
+                    var instance1 = test.parameter;
+                    var instance2 = test.parameter2;
 
-                    Item {
-                        TestContext {
-                            id: tc
-                        }
-
-                        NetInteropTestQml {
-                            id: test
-                            Component.onCompleted: function() {
-                                var instance1 = test.parameter;
-                                var instance2 = test.parameter2;
-
-                                test.testResult = instance1.isSame(instance2);
-
-                                tc.quit()
-                            }
-                        }
-                    }
+                    test.testResult = instance1.isSame(instance2);
                 ");
-
-            ExecApplicationWithTimeout(2000).Should().BeTrue();
-
+            
             Assert.False(Instance.TestResult);
         }
 
         [Fact]
         public void Can_handle_instance_deref_of_one_ref_in_qml()
         {
-            qmlApplicationEngine.LoadData(@"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    import testContext 1.0
+            RunQmlTest("test",
+                @"
+                    var instance1 = test.parameter;
+                    var instance2 = test.parameter;
 
-                    Item {
-                        TestContext {
-                            id: tc
-                        }
-
-                        NetInteropTestQml {
-                            id: test
-                            Component.onCompleted: function() {
-                                var instance1 = test.parameter;
-                                var instance2 = test.parameter;
-
-                                //deref Parameter
-                                instance2 = null;
+                    //deref Parameter
+                    instance2 = null;
                             
-                                gc();
+                    gc();
 
-                                test.testResult = test.checkIsParameterAlive();
+                    Qt.callLater(function() {
+                        test.testResult = test.checkIsParameterAlive();
+                    })
+                ", true);
 
-                                tc.quit()
-                            }
-                        }
-                    }
-                ");
-
-            ExecApplicationWithTimeout(2000).Should().BeTrue();
-
-            Assert.True(Instance.TestResult);
+            Instance.TestResult.Should().BeTrue();
         }
 
         [Fact]
         public void Can_handle_instance_deref_of_all_refs_in_qml()
         {
-            qmlApplicationEngine.LoadData(@"
-                    import QtQuick 2.0
-                    import tests 1.0
-                    import testContext 1.0
+            RunQmlTest("test",
+                @"
+                    var instance1 = test.parameter;
+                    var instance2 = test.parameter;
 
-                    Item {
-                        TestContext {
-                            id: tc
-                        }
+                    //deref Parameter
+                    instance1 = null;
+                    instance2 = null;
 
-                        NetInteropTestQml {
-                            id: test
-                            Component.onCompleted: function() {
-                                var instance1 = test.parameter;
-                                var instance2 = test.parameter;
+                    gc();
 
-                                //deref Parameter
-                                instance1 = null;
-                                instance2 = null;
-                            
-                                gc();
+                    Qt.callLater(function() {
+                        test.testResult = test.checkIsParameterAlive();
+                    });
+                ", true);
 
-                                test.testResult = test.checkIsParameterAlive();
-
-                                tc.quit()
-                            }
-                        }
-                    }
-                ");
-
-            ExecApplicationWithTimeout(2000).Should().BeTrue();
-
-            Assert.True(Instance.TestResult);
+            Instance.TestResult.Should().BeTrue();   
         }
 
         [Fact]
