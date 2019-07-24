@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Bson;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -265,6 +266,23 @@ namespace Qml.Net
             return Interop.QCoreApplication.TestAttribute((int)attribute) == 1;
         }
 
+        public static void SendPostedEvents(INetQObject receiver = null, int eventType = 0)
+        {
+            if (receiver != null)
+            {
+                var netQObject = receiver as NetQObject.NetQObjectDynamic;
+                if (netQObject == null)
+                {
+                    throw new ArgumentException(nameof(receiver));
+                }
+                Interop.QCoreApplication.SendPostedEvent(netQObject.QObject.Handle, eventType);
+            }
+            else
+            {
+                Interop.QCoreApplication.SendPostedEvent(IntPtr.Zero, eventType);
+            }
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
@@ -454,5 +472,12 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte TestAttributeDel(int attribute);
+
+        [NativeSymbol(Entrypoint = "qapp_sendPostedEvents")]
+        public SendPostedEventsDel SendPostedEvent { get; set; }
+        
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SendPostedEventsDel(IntPtr netQObject, int eventType);
     }
 }

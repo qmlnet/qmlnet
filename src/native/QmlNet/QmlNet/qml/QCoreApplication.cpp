@@ -1,5 +1,6 @@
 #include <QmlNet/qml/QCoreApplication.h>
 #include <QmlNet/qml/NetVariantList.h>
+#include <QmlNet/qml/NetQObject.h>
 #include <QGuiApplication>
 #include <QApplication>
 #include <QQmlApplicationEngine>
@@ -207,6 +208,14 @@ Q_DECL_EXPORT uchar qapp_testAttribute(int attribute)
         return 1;
     } else {
         return 0;
+    }
+}
+
+Q_DECL_EXPORT void qapp_sendPostedEvents(NetQObjectContainer* netQObject, int eventType) {
+    if(netQObject == nullptr) {
+        QCoreApplication::sendPostedEvents(nullptr, eventType);
+    } else {
+        QCoreApplication::sendPostedEvents(netQObject->qObject->getQObject(), eventType);
     }
 }
 
