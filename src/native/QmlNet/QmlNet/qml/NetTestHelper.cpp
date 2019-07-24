@@ -232,6 +232,7 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
     QMetaObject::invokeMethod(object, "runTest");
 
     if(runEvents == 1) {
+        QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
         QCoreApplication::processEvents(QEventLoop::AllEvents);
     }
 

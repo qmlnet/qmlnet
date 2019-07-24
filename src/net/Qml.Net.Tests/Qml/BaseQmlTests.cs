@@ -9,16 +9,6 @@ using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Tests.Qml
 {
-    public class TestContext
-    {
-        public void Quit()
-        {
-            Quited = true;
-        }
-
-        public bool Quited { get; set; }
-    }
-
     public abstract class AbstractBaseQmlTests<TTypeToRegister> : BaseTests
     {
         private readonly QGuiApplication _coreApplication;
@@ -27,7 +17,6 @@ namespace Qml.Net.Tests.Qml
         protected MockTypeCreator TypeCreator { get;  private set; }
 
         readonly List<Type> _registeredTypes = new List<Type>();
-        static bool _testContextRegistered = false;
 
         protected AbstractBaseQmlTests()
         {
@@ -35,12 +24,6 @@ namespace Qml.Net.Tests.Qml
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
-            TypeCreator.SetInstance(typeof(TestContext), new TestContext());
-            if (!_testContextRegistered)
-            {
-                Net.Qml.RegisterType<TestContext>("testContext");
-                _testContextRegistered = true;
-            }
         }
 
         protected virtual void RegisterType<T>()
@@ -48,12 +31,6 @@ namespace Qml.Net.Tests.Qml
             if (_registeredTypes.Contains(typeof(T))) return;
             _registeredTypes.Add(typeof(T));
             Net.Qml.RegisterType<T>("tests");
-        }
-
-        protected bool ExecApplicationWithTimeout(int timeoutMs)
-        {
-            var testContext = TypeCreator.Create(typeof(TestContext)) as TestContext;
-            return QTest.QWaitFor(() => testContext.Quited, timeoutMs);
         }
 
         protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false)
