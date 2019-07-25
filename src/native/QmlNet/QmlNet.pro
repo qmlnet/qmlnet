@@ -10,7 +10,6 @@ CONFIG += plugin
 TARGET = QmlNet
 TEMPLATE = lib
 
-DEFINES += QMLNET_LIBRARY
 DEFINES += QT_DEPRECATED_WARNINGS
 
 include(QmlNet.pri)

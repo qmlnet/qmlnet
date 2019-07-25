@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qml.Net.Sandbox", "Qml.Net.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net.Benchmarks", "Qml.Net.Benchmarks\Qml.Net.Benchmarks.csproj", "{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net.Aot", "Qml.Net.Aot\Qml.Net.Aot.csproj", "{A5C9B58B-A3FD-468F-8696-1D05337B366C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qml.Net.Tests.AotGenerate", "Qml.Net.Tests.AotGenerate\Qml.Net.Tests.AotGenerate.csproj", "{F2BDD09C-B8C8-40C5-BEE9-6CB23B686A9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A83B453B-93F6-4ADE-BB6A-BC473AEF4158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C9B58B-A3FD-468F-8696-1D05337B366C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C9B58B-A3FD-468F-8696-1D05337B366C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C9B58B-A3FD-468F-8696-1D05337B366C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C9B58B-A3FD-468F-8696-1D05337B366C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2BDD09C-B8C8-40C5-BEE9-6CB23B686A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2BDD09C-B8C8-40C5-BEE9-6CB23B686A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2BDD09C-B8C8-40C5-BEE9-6CB23B686A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2BDD09C-B8C8-40C5-BEE9-6CB23B686A9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

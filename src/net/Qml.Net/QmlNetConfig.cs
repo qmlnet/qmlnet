@@ -4,6 +4,8 @@ namespace Qml.Net
 {
     public class QmlNetConfig
     {
+        public static string NativeLibName { get; set; } = "QmlNet";
+        
         public static string QtBuildVersion => "qt-5.12.2-ad0689c";
 
         public static bool ListenForExceptionsWhenInvokingTasks { get; set; }

@@ -45,7 +45,7 @@ namespace Qml.Net.Internal
                 }
             }
 
-            var result = pathResolver.Resolve("QmlNet");
+            var result = pathResolver.Resolve(QmlNetConfig.NativeLibName);
 
             if (!result.IsSuccess)
             {
