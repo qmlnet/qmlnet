@@ -21,7 +21,6 @@ class TestQObject : public TestBaseQObject
 {
     Q_OBJECT
     Q_PROPERTY(int readOnly READ getReadOnly)
-    Q_PROPERTY(int writeOnly WRITE setWriteOnly)
     Q_PROPERTY(int readAndWrite READ getReadAndWrite WRITE setReadAndWrite)
     Q_PROPERTY(int propWithSignal READ getPropWithSignal WRITE setPropWithSignal NOTIFY propWithSignalChanged)
     Q_PROPERTY(QVariant variantProperty READ getVariantProperty WRITE setVariantProperty)
