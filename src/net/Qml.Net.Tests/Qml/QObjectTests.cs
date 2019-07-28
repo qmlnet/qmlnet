@@ -100,17 +100,6 @@ namespace Qml.Net.Tests.Qml
         }
         
         [Fact]
-        public void Can_set_property_on_qobject()
-        {
-            AssertQObject(qObject =>
-            {
-                // No real way to test this.
-                // I suppose it doesn't throw, eh?
-                qObject.SetProperty("writeOnly", 3);
-            });
-        }
-        
-        [Fact]
         public void Can_set_and_get_property_on_qobject()
         {
             AssertQObject(qObject =>

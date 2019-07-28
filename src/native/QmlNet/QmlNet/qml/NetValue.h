@@ -27,8 +27,8 @@ class NetValue : public QObject, NetValueInterface, public QQmlParserStatus
     Q_INTERFACES(QQmlParserStatus)
 
 public:
-    virtual ~NetValue();
-    QSharedPointer<NetReference> getNetReference();
+    ~NetValue() override;
+    QSharedPointer<NetReference> getNetReference() override;
     bool activateSignal(const QString& signalName, const QSharedPointer<NetVariantList>& arguments);
 
     static NetValue* forInstance(const QSharedPointer<NetReference>& instance);

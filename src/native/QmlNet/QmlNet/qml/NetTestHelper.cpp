@@ -2,6 +2,7 @@
 #include <QQmlComponent>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QQmlContext>
 
 TestBaseQObject::TestBaseQObject()
     : QObject(nullptr)
@@ -15,8 +16,7 @@ TestBaseQObject::~TestBaseQObject()
 }
 
 TestQObject::TestQObject()
-    : _writeOnly(0),
-    _readAndWrite(0),
+    : _readAndWrite(0),
     _propWithSignal(0)
 {
 }
@@ -29,11 +29,6 @@ TestQObject::~TestQObject()
 int TestQObject::getReadOnly()
 {
     return 3;
-}
-
-void TestQObject::setWriteOnly(int value)
-{
-    _writeOnly = value;
 }
 
 int TestQObject::getReadAndWrite()
@@ -208,6 +203,44 @@ TestDerivedQObject::~TestDerivedQObject()
 
 }
 
+TestAssertions::TestAssertions() : failedAssertions(false)
+{
+
+}
+
+TestAssertions::~TestAssertions()
+{
+
+}
+
+void TestAssertions::isTrue(QJSValue del)
+{
+    if(del.isBool()) {
+        if(del.toBool() != true) {
+            failedAssertions = true;
+        }
+
+        return;
+    }
+
+    failedAssertions = true;
+    qWarning() << "Unknown type to assert.";
+}
+
+void TestAssertions::isFalse(QJSValue del)
+{
+    if(del.isBool()) {
+        if(del.toBool() != false) {
+            failedAssertions = true;
+        }
+
+        return;
+    }
+
+    failedAssertions = true;
+    qWarning() << "Unknown type to assert.";
+}
+
 extern "C" {
 
 Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml, uchar runEvents)
@@ -215,6 +248,7 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
     qRegisterMetaType<TestBaseQObject*>();
     qRegisterMetaType<TestQObject*>();
     qRegisterMetaType<TestDerivedQObject*>();
+    qRegisterMetaType<TestAssertions*>();
 
     QQmlComponent component(qmlEngineContainer->qmlEngine);
     QString qmlString = QString::fromUtf16(static_cast<const char16_t*>(qml));
@@ -227,8 +261,10 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
         return 0;
     }
 
+    QSharedPointer<TestAssertions> testAssertions = QSharedPointer<TestAssertions>(new TestAssertions());
     QSharedPointer<TestQObject> testQObject = QSharedPointer<TestQObject>(new TestQObject());
     object->setProperty("testQObject", QVariant::fromValue(testQObject.data()));
+    object->setProperty("assert", QVariant::fromValue(testAssertions.data()));
     QMetaObject::invokeMethod(object, "runTest");
 
     if(runEvents == 1) {
@@ -237,6 +273,11 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
     }
 
     delete object;
+
+    if(testAssertions->failedAssertions) {
+        qWarning() << "Failed assertions detected.";
+        return 0;
+    }
 
     return 1;
 }

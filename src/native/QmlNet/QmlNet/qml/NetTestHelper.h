@@ -4,6 +4,7 @@
 #include <QmlNet.h>
 #include <QmlNet/qml/QQmlApplicationEngine.h>
 #include <QDateTime>
+#include <QJsonValue>
 
 class TestBaseQObject;
 class TestQObject;
@@ -21,7 +22,6 @@ class TestQObject : public TestBaseQObject
 {
     Q_OBJECT
     Q_PROPERTY(int readOnly READ getReadOnly)
-    Q_PROPERTY(int writeOnly WRITE setWriteOnly)
     Q_PROPERTY(int readAndWrite READ getReadAndWrite WRITE setReadAndWrite)
     Q_PROPERTY(int propWithSignal READ getPropWithSignal WRITE setPropWithSignal NOTIFY propWithSignalChanged)
     Q_PROPERTY(QVariant variantProperty READ getVariantProperty WRITE setVariantProperty)
@@ -29,7 +29,6 @@ public:
     Q_INVOKABLE TestQObject();
     ~TestQObject();
     int getReadOnly();
-    void setWriteOnly(int value);
     int getReadAndWrite();
     void setReadAndWrite(int value);
     int getPropWithSignal();
@@ -86,7 +85,6 @@ public slots:
     QVariantList testSlotQVariantList(QVariantList variantList);
 
 private:
-    int _writeOnly;
     int _readAndWrite;
     int _propWithSignal;
     QVariant _variantValue;
@@ -100,6 +98,17 @@ public:
     ~TestDerivedQObject();
 private:
 
+};
+
+class TestAssertions : public QObject
+{
+    Q_OBJECT
+public:
+    Q_INVOKABLE TestAssertions();
+    ~TestAssertions();
+    Q_INVOKABLE void isTrue(QJSValue del);
+    Q_INVOKABLE void isFalse(QJSValue del);
+    bool failedAssertions;
 };
 
 Q_DECLARE_METATYPE(TestBaseQObject*);
