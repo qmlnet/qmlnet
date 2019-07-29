@@ -24,7 +24,7 @@ void createLazyTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
 void loadTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
-QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type);
+QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type, int aotTypeId);
 
 void callComponentCompleted(QSharedPointer<NetReference> target);
 

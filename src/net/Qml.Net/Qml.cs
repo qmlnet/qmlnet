@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Qml.Net.Aot;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Types;
 
@@ -14,6 +15,11 @@ namespace Qml.Net
 
         public static int RegisterType(Type type, string qmlName, string uri, int versionMajor = 1, int versionMinor = 0)
         {
+            if (AotTypes.TryGetAotTypeId(type, out int aotTypeId))
+            {
+                return QQmlApplicationEngine.RegisterType(aotTypeId, uri, qmlName, versionMajor, versionMinor);
+            }
+
             using (var typeInfo = NetTypeManager.GetTypeInfo(type))
             {
                 return QQmlApplicationEngine.RegisterType(typeInfo, uri, qmlName, versionMajor, versionMinor);
@@ -32,9 +38,14 @@ namespace Qml.Net
 
         public static int RegisterSingletonType(Type type, string qmlName, string uri, int versionMajor = 1, int versionMinor = 0)
         {
+            if (AotTypes.TryGetAotTypeId(type, out int aotTypeId))
+            {
+                return Interop.QQmlApplicationEngine.RegisterSingletonTypeNet(IntPtr.Zero, aotTypeId, uri, versionMajor, versionMinor, qmlName);
+            }
+
             using (var typeInfo = NetTypeManager.GetTypeInfo(type))
             {
-                return Interop.QQmlApplicationEngine.RegisterSingletonTypeNet(typeInfo.Handle, uri, versionMajor, versionMinor, qmlName);
+                return Interop.QQmlApplicationEngine.RegisterSingletonTypeNet(typeInfo.Handle, -1, uri, versionMajor, versionMinor, qmlName);
             }
         }
     }

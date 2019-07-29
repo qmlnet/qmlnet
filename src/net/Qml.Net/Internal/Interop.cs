@@ -14,70 +14,71 @@ namespace Qml.Net.Internal
     {
         static readonly CallbacksImpl DefaultCallbacks = new CallbacksImpl(new DefaultCallbacks());
 
+        internal static IPathResolver Resolver;
+        internal static IPlatformLoader Loader;
+        internal static IntPtr Library;
+        
         static Interop()
         {
             Environment.SetEnvironmentVariable("LD_LIBRARY_PATH", "/home/pknopf/git/qmlnet/src/native/build-QmlNet-Local-Debug");
             
-            IPathResolver pathResolver = null;
-            IPlatformLoader loader = null;
-
             if (Host.GetExportedSymbol != null)
             {
                 // We are loading exported functions from the currently running executable.
-                pathResolver = new Host.Loader();
-                loader = new Host.Loader();
+                Resolver = new Host.Loader();
+                Loader = new Host.Loader();
             }
             else
             {
-                pathResolver = new DynamicLinkLibraryPathResolver();
-                loader = PlatformLoaderBase.SelectPlatformLoader();
+                Resolver = new DynamicLinkLibraryPathResolver();
+                Loader = PlatformLoaderBase.SelectPlatformLoader();
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     // This custom path resolver attempts to do a DllImport to get the path that .NET decides.
                     // It may load a special dll from a NuGet package.
-                    pathResolver = new WindowsDllImportLibraryPathResolver(pathResolver);
+                    Resolver = new WindowsDllImportLibraryPathResolver(Resolver);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    pathResolver = new MacDllImportLibraryPathResolver(pathResolver);
+                    Resolver = new MacDllImportLibraryPathResolver(Resolver);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    pathResolver = new LinuxDllImportLibraryPathResolver(pathResolver);
+                    Resolver = new LinuxDllImportLibraryPathResolver(Resolver);
                 }
             }
 
-            var result = pathResolver.Resolve(QmlNetConfig.NativeLibName);
+            var result = Resolver.Resolve(QmlNetConfig.NativeLibName);
 
             if (!result.IsSuccess)
             {
                 throw new Exception("Unable to find the native Qml.Net library. Try calling \"RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();\" in Program.Main()");
             }
 
-            var library = loader.LoadLibrary(result.Path);
-            Callbacks = LoadInteropType<CallbacksInterop>(library, loader);
-            NetTypeInfo = LoadInteropType<NetTypeInfoInterop>(library, loader);
-            NetJsValue = LoadInteropType<NetJsValueInterop>(library, loader);
-            NetMethodInfo = LoadInteropType<NetMethodInfoInterop>(library, loader);
-            NetPropertyInfo = LoadInteropType<NetPropertyInfoInterop>(library, loader);
-            NetTypeManager = LoadInteropType<NetTypeManagerInterop>(library, loader);
-            QCoreApplication = LoadInteropType<QCoreApplicationInterop>(library, loader);
-            QQmlApplicationEngine = LoadInteropType<QQmlApplicationEngineInterop>(library, loader);
-            NetVariant = LoadInteropType<NetVariantInterop>(library, loader);
-            NetReference = LoadInteropType<NetReferenceInterop>(library, loader);
-            NetVariantList = LoadInteropType<NetVariantListInterop>(library, loader);
-            NetTestHelper = LoadInteropType<NetTestHelperInterop>(library, loader);
-            NetSignalInfo = LoadInteropType<NetSignalInfoInterop>(library, loader);
-            QResource = LoadInteropType<QResourceInterop>(library, loader);
-            NetDelegate = LoadInteropType<NetDelegateInterop>(library, loader);
-            QQuickStyle = LoadInteropType<QQuickStyleInterop>(library, loader);
-            QtInterop = LoadInteropType<QtInterop>(library, loader);
-            Utilities = LoadInteropType<UtilitiesInterop>(library, loader);
-            QtWebEngine = LoadInteropType<QtWebEngineInterop>(library, loader);
-            QTest = LoadInteropType<QTestInterop>(library, loader);
-            NetQObject = LoadInteropType<NetQObjectInterop>(library, loader);
-            NetQObjectSignalConnection = LoadInteropType<NetQObjectSignalConnectionInterop>(library, loader);
-            QLocale = LoadInteropType<QLocaleInterop>(library, loader);
+            Library = Loader.LoadLibrary(result.Path);
+            Callbacks = LoadInteropType<CallbacksInterop>(Library, Loader);
+            NetTypeInfo = LoadInteropType<NetTypeInfoInterop>(Library, Loader);
+            NetJsValue = LoadInteropType<NetJsValueInterop>(Library, Loader);
+            NetMethodInfo = LoadInteropType<NetMethodInfoInterop>(Library, Loader);
+            NetPropertyInfo = LoadInteropType<NetPropertyInfoInterop>(Library, Loader);
+            NetTypeManager = LoadInteropType<NetTypeManagerInterop>(Library, Loader);
+            QCoreApplication = LoadInteropType<QCoreApplicationInterop>(Library, Loader);
+            QQmlApplicationEngine = LoadInteropType<QQmlApplicationEngineInterop>(Library, Loader);
+            NetVariant = LoadInteropType<NetVariantInterop>(Library, Loader);
+            NetReference = LoadInteropType<NetReferenceInterop>(Library, Loader);
+            NetVariantList = LoadInteropType<NetVariantListInterop>(Library, Loader);
+            NetTestHelper = LoadInteropType<NetTestHelperInterop>(Library, Loader);
+            NetSignalInfo = LoadInteropType<NetSignalInfoInterop>(Library, Loader);
+            QResource = LoadInteropType<QResourceInterop>(Library, Loader);
+            NetDelegate = LoadInteropType<NetDelegateInterop>(Library, Loader);
+            QQuickStyle = LoadInteropType<QQuickStyleInterop>(Library, Loader);
+            QtInterop = LoadInteropType<QtInterop>(Library, Loader);
+            Utilities = LoadInteropType<UtilitiesInterop>(Library, Loader);
+            QtWebEngine = LoadInteropType<QtWebEngineInterop>(Library, Loader);
+            QTest = LoadInteropType<QTestInterop>(Library, Loader);
+            NetQObject = LoadInteropType<NetQObjectInterop>(Library, Loader);
+            NetQObjectSignalConnection = LoadInteropType<NetQObjectSignalConnectionInterop>(Library, Loader);
+            QLocale = LoadInteropType<QLocaleInterop>(Library, Loader);
 
             // RuntimeManager.ConfigureRuntimeDirectory may set these environment variables.
             // However, they only really work when called with Qt.PutEnv.

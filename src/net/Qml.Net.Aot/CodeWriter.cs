@@ -43,7 +43,7 @@ namespace Qml.Net.Aot
             }
             _streamWriter.WriteLine(value);
         }
-
+        
         private class IndentSession : IDisposable
         {
             private readonly CodeWriter _writer;

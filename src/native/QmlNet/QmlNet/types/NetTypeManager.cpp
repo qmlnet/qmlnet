@@ -6,7 +6,7 @@
 using namespace QmlNet;
 
 QMap<QString, QSharedPointer<NetTypeInfo>> NetTypeManager::types;
-QMap<int, const QMetaObject*> NetTypeManager::aotTypes;
+QMap<int, AotTypeInfo*> NetTypeManager::aotTypes;
 
 NetTypeManager::NetTypeManager() = default;
 
@@ -36,17 +36,19 @@ QSharedPointer<NetTypeInfo> NetTypeManager::getBaseType(QSharedPointer<NetTypeIn
     return NetTypeManager::getTypeInfo(baseType);
 }
 
-void NetTypeManager::registerAotObject(const QMetaObject* metaObject, int aotTypeId)
+bool NetTypeManager::registerAotObject(int aotTypeId, const QMetaObject* metaObject, AotTypeInfoRegisterQml registerQmlFunction, AotTypeInfoRegisterSingletonQml registerSingletonQmlFunction)
 {
     if(aotTypes.contains(aotTypeId)) {
         qWarning() << "Aot type id " << aotTypeId << " is already registered.";
-        return;
+        return false;
     }
 
-    aotTypes.insert(aotTypeId, metaObject);
+    aotTypes.insert(aotTypeId, new AotTypeInfo{ metaObject, registerQmlFunction, registerSingletonQmlFunction });
+
+    return true;
 }
 
-const QMetaObject* NetTypeManager::getAotMetaObject(int aotTypeId)
+AotTypeInfo* NetTypeManager::getAotInfo(int aotTypeId)
 {
     if(!aotTypes.contains(aotTypeId)) {
         qWarning() << "Aot type id " << aotTypeId << " doesn't exist.";

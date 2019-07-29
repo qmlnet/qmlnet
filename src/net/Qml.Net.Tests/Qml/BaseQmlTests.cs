@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -16,6 +17,8 @@ namespace Qml.Net.Tests.Qml
 
         public BaseQmlEngineTests()
         {
+            TestInterop.TestInterop.Register();
+
             _coreApplication = new QGuiApplication(new[] { "-platform", "offscreen" });
             qmlApplicationEngine = new QQmlApplicationEngine();
         }

@@ -10,7 +10,7 @@ using callComponentCompletedCb = void (*)(NetReferenceContainer *);
 using callObjectDestroyedCb = void (*)(NetReferenceContainer *);
 using releaseNetReferenceCb = void (*)(uint64_t);
 using releaseNetDelegateGCHandleCb = void (*)(void *);
-using instantiateTypeCb = NetReferenceContainer *(*)(NetTypeInfoContainer *);
+using instantiateTypeCb = NetReferenceContainer *(*)(NetTypeInfoContainer *, int);
 using readPropertyCb = void (*)(NetPropertyInfoContainer *, NetReferenceContainer *, NetVariantContainer *, NetVariantContainer *);
 using writePropertyCb = void (*)(NetPropertyInfoContainer *, NetReferenceContainer *, NetVariantContainer *, NetVariantContainer *);
 using invokeMethodCb = void (*)(NetMethodInfoContainer *, NetReferenceContainer *, NetVariantListContainer *, NetVariantContainer *);
@@ -70,9 +70,12 @@ void loadTypeInfo(QSharedPointer<NetTypeInfo> typeInfo) {
     sharedCallbacks.loadTypeInfo(container);
 }
 
-QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type) {
-    NetTypeInfoContainer* typeContainer = new NetTypeInfoContainer{ std::move(type) }; // .NET will delete this type
-    NetReferenceContainer* resultContainer = sharedCallbacks.instantiateType(typeContainer);
+QSharedPointer<NetReference> instantiateType(QSharedPointer<NetTypeInfo> type, int aotTypeId) {
+    NetTypeInfoContainer* typeContainer = nullptr;
+    if(type != nullptr) {
+        typeContainer = new NetTypeInfoContainer{ std::move(type) }; // .NET will delete this type
+    }
+    NetReferenceContainer* resultContainer = sharedCallbacks.instantiateType(typeContainer, aotTypeId);
 
     QSharedPointer<NetReference> result;
 
@@ -203,11 +206,14 @@ Q_DECL_EXPORT void type_info_callbacks_releaseNetDelegateGCHandle(NetGCHandle* h
     QmlNet::sharedCallbacks.releaseNetDelegateGCHandle(handle);
 }
 
-Q_DECL_EXPORT NetReferenceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* type) {
+Q_DECL_EXPORT NetReferenceContainer* type_info_callbacks_instantiateType(NetTypeInfoContainer* type, int aotTypeId) {
     // The parameters have to be copied to new containers, because the callback
     // will delete them.
-    NetTypeInfoContainer* typeCopy = new NetTypeInfoContainer{type->netTypeInfo};
-    return QmlNet::sharedCallbacks.instantiateType(typeCopy);
+    NetTypeInfoContainer* typeCopy = nullptr;
+    if(type != nullptr) {
+        typeCopy = new NetTypeInfoContainer{type->netTypeInfo};
+    }
+    return QmlNet::sharedCallbacks.instantiateType(typeCopy, aotTypeId);
 }
 
 Q_DECL_EXPORT void type_info_callbacks_invokeMethod(NetMethodInfoContainer* method, NetReferenceContainer* target, NetVariantListContainer* parameters, NetVariantContainer* result) {

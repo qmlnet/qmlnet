@@ -62,10 +62,9 @@ namespace Qml.Net.Aot
                 }
             }
 
-            var classes = _classes.ToList();
-            if (classes.All(x => x.Type != typeof(object)))
+            if (_classes.All(x => x.Type != typeof(object)))
             {
-                classes.Add(new AotClass(typeof(object), Interlocked.Increment(ref _aotTypeIdCounter)));
+                _classes.Add(new AotClass(typeof(object), Interlocked.Increment(ref _aotTypeIdCounter)));
             }
             
             var priFile = Path.Combine(directory, $"{_options.Name}.pri");
@@ -77,9 +76,16 @@ namespace Qml.Net.Aot
                 using (writer.BeginIndent())
                 {
                     writer.WriteLine("$$PWD/Register.h \\");
-                    foreach (var cls in classes)
+                    for (var x = 0; x < _classes.Count; x++)
                     {
-                        writer.WriteLine($"$$PWD/{cls.CppName}.h \\");
+                        if (x == _classes.Count - 1)
+                        {
+                            writer.WriteLine($"$$PWD/{_classes[x].CppName}.h");
+                        }
+                        else
+                        {
+                            writer.WriteLine($"$$PWD/{_classes[x].CppName}.h \\");
+                        }
                     }
                 }
 
@@ -87,16 +93,24 @@ namespace Qml.Net.Aot
                 using (writer.BeginIndent())
                 {
                     writer.WriteLine("$$PWD/Register.cpp \\");
-                    foreach (var cls in classes)
+                    for (var x = 0; x < _classes.Count; x++)
                     {
-                        writer.WriteLine($"$$PWD/{cls.CppName}.cpp \\");
+                        if (x == _classes.Count - 1)
+                        {
+                            writer.WriteLine($"$$PWD/{_classes[x].CppName}.cpp");
+                        }
+                        else
+                        {
+                            writer.WriteLine($"$$PWD/{_classes[x].CppName}.cpp \\");
+                        }
                     }
                 }
             }
 
             using (var writer = new CodeWriter(Path.Combine(directory, "Register.h")))
             {
-                writer.WriteLine("static void initAotTypes();");
+                writer.WriteLine("#include <QCoreApplication>");
+                writer.WriteLine("Q_DECL_EXPORT void initAotTypes();");
             }
             
             using (var writer = new CodeWriter(Path.Combine(directory, "Register.cpp")))
@@ -105,14 +119,14 @@ namespace Qml.Net.Aot
                 writer.WriteLine("#include <QCoreApplication>");
                 writer.WriteLine("#include <QMutex>");
                 writer.WriteLine("#include <QmlNet/types/NetTypeManager.h>");
-                foreach (var cls in classes)
+                foreach (var cls in _classes)
                 {
                     writer.WriteLine($"#include \"{cls.CppName}.h\"");
                 }
                 writer.WriteLine("static bool initAotTypesDone = false;");
                 writer.WriteLine("Q_GLOBAL_STATIC(QMutex, initAotTypesMutex);");
                 writer.WriteLine("");
-                writer.WriteLine("static void initAotTypes()");
+                writer.WriteLine("Q_DECL_EXPORT void initAotTypes()");
                 writer.WriteLine("{");
                 using (writer.BeginIndent())
                 {
@@ -124,9 +138,9 @@ namespace Qml.Net.Aot
                         writer.WriteLine("return;");
                     }
                     writer.WriteLine("}");
-                    foreach (var cls in classes)
+                    foreach (var cls in _classes)
                     {
-                        writer.WriteLine($"NetTypeManager::registerAotObject(&{cls.CppName}::staticMetaObject, {cls.TypeId});");
+                        writer.WriteLine($"NetTypeManager::registerAotObject({cls.TypeId}, &{cls.CppName}::staticMetaObject, {cls.CppName}::registerQml, {cls.CppName}::registerQmlSingleton);");
                     }
                     writer.WriteLine("initAotTypesDone = true;");
                     writer.WriteLine("initAotTypesMutex->unlock();");
@@ -136,9 +150,9 @@ namespace Qml.Net.Aot
                 writer.WriteLine("Q_COREAPP_STARTUP_FUNCTION(initAotTypes)");
             }
 
-            foreach (var cls in classes)
+            foreach (var cls in _classes)
             {
-                cls.WriteCpp(directory, classes);
+                cls.WriteCpp(directory, _classes);
             }
         }
 
@@ -161,12 +175,11 @@ namespace Qml.Net.Aot
                 }
             }
             
-            var classes = _classes.ToList();
-            if (classes.All(x => x.Type != typeof(object)))
+            if (_classes.All(x => x.Type != typeof(object)))
             {
-                classes.Add(new AotClass(typeof(object), Interlocked.Increment(ref _aotTypeIdCounter)));
+                _classes.Add(new AotClass(typeof(object), Interlocked.Increment(ref _aotTypeIdCounter)));
             }
-
+            
             using (var writer = new CodeWriter(Path.Combine(directory, $"{_options.Name}.cs")))
             {
                 writer.WriteLine("using Qml.Net.Aot;");
@@ -190,7 +203,7 @@ namespace Qml.Net.Aot
                             using (writer.BeginIndent())
                             {
                                 writer.WriteLine("if (_didRegister) return;");
-                                foreach (var cls in classes)
+                                foreach (var cls in _classes)
                                 {
                                     // ReSharper disable once PossibleNullReferenceException
                                     writer.WriteLine(

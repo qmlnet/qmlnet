@@ -55,7 +55,7 @@ namespace Qml.Net.Tests.Types
         {
             var type = NetTypeManager.GetTypeInfo<TestObject>();
 
-            using (var instance = new NetReference(Interop.Callbacks.InstantiateType(type.Handle), false))
+            using (var instance = new NetReference(Interop.Callbacks.InstantiateType(type.Handle, -1), false))
             {
                 instance.Instance.Should().NotBeNull();
                 instance.Instance.Should().BeOfType<TestObject>();

@@ -40,7 +40,7 @@ QVariant JsNetObject::cancelTokenSource()
         qWarning() << "Couldn't get cancellation token type for platform, please file a bug";
         return QVariant();
     }
-    QSharedPointer<NetReference> netReference = QmlNet::instantiateType(typeInfo);
+    QSharedPointer<NetReference> netReference = QmlNet::instantiateType(typeInfo, -1);
     if(netReference == nullptr) {
         qWarning() << "Couldn't create cancellation token for platform, please file a bug";
         return QVariant();

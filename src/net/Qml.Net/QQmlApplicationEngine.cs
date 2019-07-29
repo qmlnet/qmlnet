@@ -68,16 +68,15 @@ namespace Qml.Net
         }
 
         internal IntPtr InternalPointer => Interop.QQmlApplicationEngine.InternalPointer(Handle);
-
-        [Obsolete("Use Qml.RegisterType<T>() instead.", true)]
-        public static int RegisterType<T>(string uri, int versionMajor = 1, int versionMinor = 0)
-        {
-            return RegisterType(NetTypeManager.GetTypeInfo<T>(), uri, typeof(T).Name, versionMajor, versionMinor);
-        }
-
+        
         internal static int RegisterType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
         {
-            return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
+            return Interop.QQmlApplicationEngine.RegisterType(type.Handle, -1, uri, versionMajor, versionMinor, qmlName);
+        }
+        
+        internal static int RegisterType(int aotTypeId, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
+        {
+            return Interop.QQmlApplicationEngine.RegisterType(IntPtr.Zero, aotTypeId, uri, versionMajor, versionMinor, qmlName);
         }
 
         /// <summary>
@@ -135,7 +134,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int RegisterTypeDel(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
+        public delegate int RegisterTypeDel(IntPtr type, int aotTypeId, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerSingletonTypeQml")]
         public RegisterSingletonTypeQmlDel RegisterSingletonTypeQml { get; set; }
@@ -149,7 +148,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int RegisterSingletonTypeNetDel(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string typeName);
+        public delegate int RegisterSingletonTypeNetDel(IntPtr type, int aotTypeId, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
         public AddImportPathDel AddImportPath { get; set; }

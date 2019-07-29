@@ -62,7 +62,7 @@ namespace Qml.Net.Internal.Types
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate IntPtr InstantiateTypeDel(IntPtr type);
+        public delegate IntPtr InstantiateTypeDel(IntPtr type, int aotTypeId);
 
         [NativeSymbol(Entrypoint = "type_info_callbacks_invokeMethod")]
         public InvokeMethodDel InvokeMethod { get; set; }
@@ -84,7 +84,7 @@ namespace Qml.Net.Internal.Types
 
         void LoadTypeInfo(IntPtr typeInfo);
 
-        IntPtr InstantiateType(IntPtr type);
+        IntPtr InstantiateType(IntPtr type, int aotTypeId);
 
         void CallComponentCompleted(IntPtr target);
 
@@ -117,7 +117,7 @@ namespace Qml.Net.Internal.Types
         CallObjectDestroyedDelegate _callObjectDestroyedDelegate;
         ReleaseNetReferenceDelegate _releaseNetReferenceDelegate;
         ReleaseNetDelegateGCHandleDelegate _releaseNetDelegateGCHandleDelegate;
-        InstantiateTypeDelgate _instantiateTypeDelgate;
+        InstantiateTypeDelegate _instantiateTypeDelegate;
         ReadPropertyDelegate _readPropertyDelegate;
         WritePropertyDelegate _writePropertyDelegate;
         InvokeMethodDelegate _invokeMethodDelegate;
@@ -157,7 +157,7 @@ namespace Qml.Net.Internal.Types
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [SuppressUnmanagedCodeSecurity]
-        delegate IntPtr InstantiateTypeDelgate(IntPtr type);
+        delegate IntPtr InstantiateTypeDelegate(IntPtr type, int aotTypeId);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [SuppressUnmanagedCodeSecurity]
@@ -210,8 +210,8 @@ namespace Qml.Net.Internal.Types
             _loadTypeInfoDelegate = LoadTypeInfo;
             GCHandle.Alloc(_loadTypeInfoDelegate);
 
-            _instantiateTypeDelgate = InstantiateType;
-            GCHandle.Alloc(_instantiateTypeDelgate);
+            _instantiateTypeDelegate = InstantiateType;
+            GCHandle.Alloc(_instantiateTypeDelegate);
 
             _callComponentCompletedDelegate = CallComponentCompleted;
             GCHandle.Alloc(_callComponentCompletedDelegate);
@@ -269,9 +269,9 @@ namespace Qml.Net.Internal.Types
             _callbacks.LoadTypeInfo(type);
         }
 
-        private IntPtr InstantiateType(IntPtr type)
+        private IntPtr InstantiateType(IntPtr type, int aotTypeId)
         {
-            return _callbacks.InstantiateType(type);
+            return _callbacks.InstantiateType(type, aotTypeId);
         }
 
         private void CallComponentCompleted(IntPtr target)
@@ -338,7 +338,7 @@ namespace Qml.Net.Internal.Types
                 CallObjectDestroyed = Marshal.GetFunctionPointerForDelegate(_callObjectDestroyedDelegate),
                 ReleaseNetReference = Marshal.GetFunctionPointerForDelegate(_releaseNetReferenceDelegate),
                 ReleaseNetDelegateGCHandle = Marshal.GetFunctionPointerForDelegate(_releaseNetDelegateGCHandleDelegate),
-                InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelgate),
+                InstantiateType = Marshal.GetFunctionPointerForDelegate(_instantiateTypeDelegate),
                 ReadProperty = Marshal.GetFunctionPointerForDelegate(_readPropertyDelegate),
                 WriteProperty = Marshal.GetFunctionPointerForDelegate(_writePropertyDelegate),
                 InvokeMethod = Marshal.GetFunctionPointerForDelegate(_invokeMethodDelegate),

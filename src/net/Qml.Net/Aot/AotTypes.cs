@@ -29,5 +29,13 @@ namespace Qml.Net.Aot
                 return _aotTypesReversed.TryGetValue(type, out aotTypeId);
             }
         }
+
+        public static bool TryGetAotType(int aotTypeId, out Type type)
+        {
+            lock (_aotTypes)
+            {
+                return _aotTypes.TryGetValue(aotTypeId, out type);
+            }
+        }
     }
 }

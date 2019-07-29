@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.CSharp.RuntimeBinder;
+using Qml.Net.Aot;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
 
@@ -212,22 +213,44 @@ namespace Qml.Net.Internal
             NetDelegate.ReleaseGCHandle((GCHandle)handle);
         }
 
-        public IntPtr InstantiateType(IntPtr type)
+        public IntPtr InstantiateType(IntPtr type, int aotTypeId)
         {
             try
             {
-                var typeName = Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(type));
-                var typeInfo = Type.GetType(typeName);
-                if (typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
-                var netReference = NetReference.CreateForObject(TypeCreator.Create(typeInfo));
+                if (type == IntPtr.Zero)
+                {
+                    // This is an AOT type
+                    if(AotTypes.TryGetAotType(aotTypeId, out Type netType))
+                    {
+                        var netReference = NetReference.CreateForObject(TypeCreator.Create(netType));
 
-                // When .NET collects this NetReference, we don't want it to delete this
-                // handle. Ownership has been passed to the caller.
-                return Interop.NetReference.Clone(netReference.Handle);
+                        // When .NET collects this NetReference, we don't want it to delete this
+                        // handle. Ownership has been passed to the caller.
+                        return Interop.NetReference.Clone(netReference.Handle);   
+                    }
+                    else
+                    {
+                        throw new Exception($"Aot type {aotTypeId} isn't valid.");   
+                    }
+                }
+                else
+                {
+                    var typeName = Utilities.ContainerToString(Interop.NetTypeInfo.GetFullTypeName(type));
+                    var typeInfo = Type.GetType(typeName);
+                    if (typeInfo == null) throw new InvalidOperationException($"Invalid type {typeName}");
+                    var netReference = NetReference.CreateForObject(TypeCreator.Create(typeInfo));
+
+                    // When .NET collects this NetReference, we don't want it to delete this
+                    // handle. Ownership has been passed to the caller.
+                    return Interop.NetReference.Clone(netReference.Handle);
+                }
             }
             finally
             {
-                Interop.NetTypeInfo.Destroy(type);
+                if (type != IntPtr.Zero)
+                {
+                    Interop.NetTypeInfo.Destroy(type);
+                }
             }
         }
 

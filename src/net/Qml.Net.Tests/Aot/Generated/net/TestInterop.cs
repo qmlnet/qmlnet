@@ -12,7 +12,7 @@ namespace TestInterop
 			{
 				if (_didRegister) return;
 				AotTypes.AddAotType(1, typeof(global::Qml.Net.Tests.Aot.AotMethodInvocationTests.AotMethodInvocation));
-				AotTypes.AddAotType(3, typeof(global::System.Object));
+				AotTypes.AddAotType(2, typeof(global::System.Object));
 				_didRegister = true;
 			}
 		}
