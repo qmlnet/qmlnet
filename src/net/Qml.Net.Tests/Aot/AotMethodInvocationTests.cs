@@ -46,11 +46,9 @@ namespace Qml.Net.Tests.Aot
         {
             RunQmlTest("test",
                 @"
-                    console.log(test);
-                    return;
                     assert.isTrue(typeof test.method1 === 'function');
-                    assert.isTrue(typeof test.method2 !== 'function');
-                    assert.isTrue(typeof test.method3 === 'function');
+                    assert.isTrue(typeof test.method2 === 'function');
+                    assert.isTrue(typeof test.method3 === 'undefined');
                 ");
         }
     }

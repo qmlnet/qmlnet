@@ -73,14 +73,22 @@ namespace Qml.Net.Aot
                     writer.WriteLine($"class {CppName}: public QObject");
                 }
                 writer.WriteLine("{");
+                using (writer.BeginIndent())
+                {
+                    writer.WriteLine("Q_OBJECT");
+                }
                 writer.WriteLine("public:");
                 using (writer.BeginIndent())
                 {
                     writer.WriteLine($"{CppName}();");
                     writer.WriteLine($"{CppName}(bool);");
-                    writer.WriteLine("static int registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName);");
-                    writer.WriteLine("static int registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName);");
-                    writer.WriteLine("static QObject *build(QQmlEngine *engine, QJSEngine *scriptEngine);");
+                    writer.WriteLine("static int _registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName);");
+                    writer.WriteLine("static int _registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName);");
+                    writer.WriteLine("static QObject* _build(QQmlEngine* engine, QJSEngine* scriptEngine);");
+                    foreach (var method in _methods)
+                    {
+                        writer.WriteLine($"Q_INVOKABLE void {method.MethodName}();");
+                    }
                 }
 
                 if (aotBaseClass == null)
@@ -125,21 +133,21 @@ namespace Qml.Net.Aot
                 }
                 writer.WriteLine("{");
                 writer.WriteLine("}");
-                writer.WriteLine($"int {CppName}::registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName)");
+                writer.WriteLine($"int {CppName}::_registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName)");
                 writer.WriteLine("{");
                 using (writer.BeginIndent())
                 {
                     writer.WriteLine($"return qmlRegisterType<{CppName}>(uri, versionMajor, versionMinor, qmlName);");
                 }
                 writer.WriteLine("}");
-                writer.WriteLine($"int {CppName}::registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName)");
+                writer.WriteLine($"int {CppName}::_registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName)");
                 writer.WriteLine("{");
                 using (writer.BeginIndent())
                 {
-                    writer.WriteLine($"return qmlRegisterSingletonType<{CppName}>(uri, versionMajor, versionMinor, typeName, {CppName}::build);");
+                    writer.WriteLine($"return qmlRegisterSingletonType<{CppName}>(uri, versionMajor, versionMinor, typeName, {CppName}::_build);");
                 }
                 writer.WriteLine("}");
-                writer.WriteLine($"QObject* {CppName}::build(QQmlEngine *engine, QJSEngine *scriptEngine)");
+                writer.WriteLine($"QObject* {CppName}::_build(QQmlEngine *engine, QJSEngine *scriptEngine)");
                 writer.WriteLine("{");
                 using (writer.BeginIndent())
                 {
@@ -148,6 +156,12 @@ namespace Qml.Net.Aot
                     writer.WriteLine($"return new {CppName}();");
                 }
                 writer.WriteLine("}");
+                foreach (var method in _methods)
+                {
+                    writer.WriteLine($"void {CppName}::{method.MethodName}()");
+                    writer.WriteLine("{");
+                    writer.WriteLine("}");
+                }
             }
         }
     }

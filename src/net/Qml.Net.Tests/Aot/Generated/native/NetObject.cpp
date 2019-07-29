@@ -8,15 +8,15 @@ NetObject::NetObject() : QObject()
 NetObject::NetObject(bool) : QObject()
 {
 }
-int NetObject::registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName)
+int NetObject::_registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName)
 {
 	return qmlRegisterType<NetObject>(uri, versionMajor, versionMinor, qmlName);
 }
-int NetObject::registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName)
+int NetObject::_registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName)
 {
-	return qmlRegisterSingletonType<NetObject>(uri, versionMajor, versionMinor, typeName, NetObject::build);
+	return qmlRegisterSingletonType<NetObject>(uri, versionMajor, versionMinor, typeName, NetObject::_build);
 }
-QObject* NetObject::build(QQmlEngine *engine, QJSEngine *scriptEngine)
+QObject* NetObject::_build(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
 	Q_UNUSED(engine)
 	Q_UNUSED(scriptEngine)

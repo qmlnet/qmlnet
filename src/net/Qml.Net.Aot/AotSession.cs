@@ -140,7 +140,7 @@ namespace Qml.Net.Aot
                     writer.WriteLine("}");
                     foreach (var cls in _classes)
                     {
-                        writer.WriteLine($"NetTypeManager::registerAotObject({cls.TypeId}, &{cls.CppName}::staticMetaObject, {cls.CppName}::registerQml, {cls.CppName}::registerQmlSingleton);");
+                        writer.WriteLine($"NetTypeManager::registerAotObject({cls.TypeId}, &{cls.CppName}::staticMetaObject, {cls.CppName}::_registerQml, {cls.CppName}::_registerQmlSingleton);");
                     }
                     writer.WriteLine("initAotTypesDone = true;");
                     writer.WriteLine("initAotTypesMutex->unlock();");

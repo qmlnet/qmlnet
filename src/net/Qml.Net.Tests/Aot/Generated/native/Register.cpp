@@ -14,8 +14,8 @@ Q_DECL_EXPORT void initAotTypes()
 		initAotTypesMutex->unlock();
 		return;
 	}
-	NetTypeManager::registerAotObject(1, &NetAotMethodInvocation::staticMetaObject, NetAotMethodInvocation::registerQml, NetAotMethodInvocation::registerQmlSingleton);
-	NetTypeManager::registerAotObject(2, &NetObject::staticMetaObject, NetObject::registerQml, NetObject::registerQmlSingleton);
+	NetTypeManager::registerAotObject(1, &NetAotMethodInvocation::staticMetaObject, NetAotMethodInvocation::_registerQml, NetAotMethodInvocation::_registerQmlSingleton);
+	NetTypeManager::registerAotObject(2, &NetObject::staticMetaObject, NetObject::_registerQml, NetObject::_registerQmlSingleton);
 	initAotTypesDone = true;
 	initAotTypesMutex->unlock();
 }

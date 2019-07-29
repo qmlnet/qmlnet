@@ -8,17 +8,23 @@ NetAotMethodInvocation::NetAotMethodInvocation() : NetObject(false)
 NetAotMethodInvocation::NetAotMethodInvocation(bool) : NetObject(false)
 {
 }
-int NetAotMethodInvocation::registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName)
+int NetAotMethodInvocation::_registerQml(const char* uri, int versionMajor, int versionMinor, const char* qmlName)
 {
 	return qmlRegisterType<NetAotMethodInvocation>(uri, versionMajor, versionMinor, qmlName);
 }
-int NetAotMethodInvocation::registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName)
+int NetAotMethodInvocation::_registerQmlSingleton(const char* uri, int versionMajor, int versionMinor, const char* typeName)
 {
-	return qmlRegisterSingletonType<NetAotMethodInvocation>(uri, versionMajor, versionMinor, typeName, NetAotMethodInvocation::build);
+	return qmlRegisterSingletonType<NetAotMethodInvocation>(uri, versionMajor, versionMinor, typeName, NetAotMethodInvocation::_build);
 }
-QObject* NetAotMethodInvocation::build(QQmlEngine *engine, QJSEngine *scriptEngine)
+QObject* NetAotMethodInvocation::_build(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
 	Q_UNUSED(engine)
 	Q_UNUSED(scriptEngine)
 	return new NetAotMethodInvocation();
+}
+void NetAotMethodInvocation::method1()
+{
+}
+void NetAotMethodInvocation::method2()
+{
 }
