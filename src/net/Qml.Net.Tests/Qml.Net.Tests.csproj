@@ -18,7 +18,4 @@
     <ProjectReference Include="..\Qml.Net.Aot\Qml.Net.Aot.csproj" />
     <ProjectReference Include="..\Qml.Net\Qml.Net.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Aot\Generated" />
-  </ItemGroup>
 </Project>

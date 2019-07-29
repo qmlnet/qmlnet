@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
+using Qml.Net.Aot;
 using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Internal.Types
@@ -10,6 +11,11 @@ namespace Qml.Net.Internal.Types
     {
         private NetReference(UInt64 objectId, NetTypeInfo type, bool ownsHandle = true)
             : base(Interop.NetReference.Create(objectId, type.Handle), ownsHandle)
+        {
+        }
+        
+        private NetReference(UInt64 objectId, int aotTypeId, bool ownsHandle = true)
+            : base(Interop.NetReference.CreateAot(objectId, aotTypeId), ownsHandle)
         {
         }
 
@@ -64,6 +70,8 @@ namespace Qml.Net.Internal.Types
             Interop.NetReference.Destroy(ptr);
         }
 
+        public bool IsAot => Interop.NetReference.IsAot(Handle) == 1;
+
         #region Instance helpers
 
         private static Type GetUnproxiedType(Type type)
@@ -85,18 +93,32 @@ namespace Qml.Net.Internal.Types
                 return null;
             }
 
-            var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(value.GetType()));
-            if (typeInfo == null)
+            var type = value.GetType();
+            
+            if (AotTypes.TryGetAotTypeId(type, out int aotTypeId))
             {
-                throw new InvalidOperationException($"Couldn't create type info from {value.GetType().AssemblyQualifiedName}");
+                objectId = value.GetOrCreateTag();
+                var newNetReference = new NetReference(objectId.Value, aotTypeId);
+
+                ObjectIdReferenceTracker.OnReferenceCreated(value, objectId.Value);
+
+                return newNetReference;
             }
+            else
+            {
+                var typeInfo = NetTypeManager.GetTypeInfo(GetUnproxiedType(type));
+                if (typeInfo == null)
+                {
+                    throw new InvalidOperationException($"Couldn't create type info from {type.AssemblyQualifiedName}");
+                }
 
-            objectId = value.GetOrCreateTag();
-            var newNetReference = new NetReference(objectId.Value, typeInfo);
+                objectId = value.GetOrCreateTag();
+                var newNetReference = new NetReference(objectId.Value, typeInfo);
 
-            ObjectIdReferenceTracker.OnReferenceCreated(value, objectId.Value);
+                ObjectIdReferenceTracker.OnReferenceCreated(value, objectId.Value);
 
-            return newNetReference;
+                return newNetReference;
+            }
         }
 
         public static void OnRelease(UInt64 objectId)
@@ -115,6 +137,13 @@ namespace Qml.Net.Internal.Types
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(UInt64 objectId, IntPtr type);
+        
+        [NativeSymbol(Entrypoint = "net_instance_createAot")]
+        public CreateAotDel CreateAot { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr CreateAotDel(UInt64 objectId, int aotTypeId);
 
         [NativeSymbol(Entrypoint = "net_instance_destroy")]
         public DestroyDel Destroy { get; set; }
@@ -143,6 +172,13 @@ namespace Qml.Net.Internal.Types
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte ActivateSignalDel(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
+        
+        [NativeSymbol(Entrypoint = "net_instance_isAot")]
+        public IsAotDel IsAot { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate byte IsAotDel(IntPtr instance);
     }
 
     internal static class ObjectIdReferenceTracker

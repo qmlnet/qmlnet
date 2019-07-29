@@ -16,6 +16,8 @@ namespace Qml.Net.Internal
 
         static Interop()
         {
+            Environment.SetEnvironmentVariable("LD_LIBRARY_PATH", "/home/pknopf/git/qmlnet/src/native/build-QmlNet-Local-Debug");
+            
             IPathResolver pathResolver = null;
             IPlatformLoader loader = null;
 

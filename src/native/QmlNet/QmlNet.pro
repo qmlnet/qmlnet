@@ -13,6 +13,7 @@ TEMPLATE = lib
 DEFINES += QT_DEPRECATED_WARNINGS
 
 include(QmlNet.pri)
+include(../../net/Qml.Net.Tests/Aot/Generated/native/TestInterop.pri)
 
 target.path = $$(PREFIX)/
 INSTALLS += target

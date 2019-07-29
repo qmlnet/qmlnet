@@ -2,28 +2,41 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Qml.Net.Aot
 {
     public class AotSession : IDisposable
     {
-        private readonly string _name;
+        private readonly AotSessionOptions _options;
         private readonly List<AotClass> _classes = new List<AotClass>();
-
-        public AotSession(string name = "interop")
+        private static int _aotTypeIdCounter;
+        
+        public AotSession(AotSessionOptions options = null)
         {
-            if (string.IsNullOrEmpty(name))
+            if (options == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(name));
+                options = new AotSessionOptions();
+            }
+            
+            if (string.IsNullOrEmpty(options.Name))
+            {
+                throw new Exception("options.Name is required.");
             }
 
-            _name = name;
+            if (string.IsNullOrEmpty(options.NetNamespace))
+            {
+                throw new Exception("options.NetNamespace is required.");
+            }
+
+            _options = options;
         }
         
         public ClassMapper<T> MapClass<T>()
         {
-            var cls = new AotClass(typeof(T));
+            var cls = new AotClass(typeof(T), Interlocked.Increment(ref _aotTypeIdCounter));
             _classes.Add(cls);
             return new ClassMapper<T>(cls);
         }
@@ -49,33 +62,149 @@ namespace Qml.Net.Aot
                 }
             }
 
-            var priFile = Path.Combine(directory, $"{_name}-native.pri");
-            using (var stream = File.OpenWrite(priFile))
+            var classes = _classes.ToList();
+            if (classes.All(x => x.Type != typeof(object)))
             {
-                using (var writer = new StreamWriter(stream))
+                classes.Add(new AotClass(typeof(object), Interlocked.Increment(ref _aotTypeIdCounter)));
+            }
+            
+            var priFile = Path.Combine(directory, $"{_options.Name}.pri");
+            using (var writer = new CodeWriter(priFile))
+            {
+                writer.WriteLine("INCLUDEPATH += $$PWD");
+                
+                writer.WriteLine("HEADERS += \\");
+                using (writer.BeginIndent())
                 {
-                    writer.WriteLine("INCLUDEPATH += $$PWD");
-                    var headers = new StringBuilder();
-                    var sources = new StringBuilder();
-
-                    if (_classes.Count > 0)
+                    writer.WriteLine("$$PWD/Register.h \\");
+                    foreach (var cls in classes)
                     {
-                        for (var x = 0; x < _classes.Count; x++)
-                        {
-                            foreach (var cls in _classes)
-                            {
-                                headers.AppendLine($"    {cls.Type.Name}.h \\");
-                                sources.AppendLine($"    {cls.Type.Name}.cpp \\");
-                            }
-                        }
-
-                        writer.WriteLine("HEADERS += \\");
-                        writer.Write(headers);
-
-                        writer.WriteLine("SOURCES += \\");
-                        writer.Write(sources);
+                        writer.WriteLine($"$$PWD/{cls.CppName}.h \\");
                     }
                 }
+
+                writer.WriteLine("SOURCES += \\");
+                using (writer.BeginIndent())
+                {
+                    writer.WriteLine("$$PWD/Register.cpp \\");
+                    foreach (var cls in classes)
+                    {
+                        writer.WriteLine($"$$PWD/{cls.CppName}.cpp \\");
+                    }
+                }
+            }
+
+            using (var writer = new CodeWriter(Path.Combine(directory, "Register.h")))
+            {
+                writer.WriteLine("static void initAotTypes();");
+            }
+            
+            using (var writer = new CodeWriter(Path.Combine(directory, "Register.cpp")))
+            {
+                writer.WriteLine("#include \"Register.h\"");
+                writer.WriteLine("#include <QCoreApplication>");
+                writer.WriteLine("#include <QMutex>");
+                writer.WriteLine("#include <QmlNet/types/NetTypeManager.h>");
+                foreach (var cls in classes)
+                {
+                    writer.WriteLine($"#include \"{cls.CppName}.h\"");
+                }
+                writer.WriteLine("static bool initAotTypesDone = false;");
+                writer.WriteLine("Q_GLOBAL_STATIC(QMutex, initAotTypesMutex);");
+                writer.WriteLine("");
+                writer.WriteLine("static void initAotTypes()");
+                writer.WriteLine("{");
+                using (writer.BeginIndent())
+                {
+                    writer.WriteLine("initAotTypesMutex->lock();");
+                    writer.WriteLine("if(initAotTypesDone) {");
+                    using (writer.BeginIndent())
+                    {
+                        writer.WriteLine("initAotTypesMutex->unlock();");
+                        writer.WriteLine("return;");
+                    }
+                    writer.WriteLine("}");
+                    foreach (var cls in classes)
+                    {
+                        writer.WriteLine($"NetTypeManager::registerAotObject(&{cls.CppName}::staticMetaObject, {cls.TypeId});");
+                    }
+                    writer.WriteLine("initAotTypesDone = true;");
+                    writer.WriteLine("initAotTypesMutex->unlock();");
+                }
+                writer.WriteLine("}");
+                writer.WriteLine("");
+                writer.WriteLine("Q_COREAPP_STARTUP_FUNCTION(initAotTypes)");
+            }
+
+            foreach (var cls in classes)
+            {
+                cls.WriteCpp(directory, classes);
+            }
+        }
+
+        public void WriteNetCode(string directory)
+        {
+            if (string.IsNullOrEmpty(directory))
+            {
+                throw new ArgumentException(nameof(directory));
+            }
+            
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            else
+            {
+                if (Directory.GetFiles(directory).Length > 0 || Directory.GetDirectories(directory).Length > 0)
+                {
+                    throw new Exception($"The directory {directory} is not empty.");
+                }
+            }
+            
+            var classes = _classes.ToList();
+            if (classes.All(x => x.Type != typeof(object)))
+            {
+                classes.Add(new AotClass(typeof(object), Interlocked.Increment(ref _aotTypeIdCounter)));
+            }
+
+            using (var writer = new CodeWriter(Path.Combine(directory, $"{_options.Name}.cs")))
+            {
+                writer.WriteLine("using Qml.Net.Aot;");
+                writer.WriteLine("// ReSharper disable once CheckNamespace");
+                writer.WriteLine($"namespace {_options.NetNamespace}");
+                writer.WriteLine("{");
+                using (writer.BeginIndent())
+                {
+                    writer.WriteLine($"public class {_options.Name}");
+                    writer.WriteLine("{");
+                    using (writer.BeginIndent())
+                    {
+                        writer.WriteLine("private static bool _didRegister;");
+                        writer.WriteLine("private static readonly object Lock = new object();");
+                        writer.WriteLine("public static void Register()");
+                        writer.WriteLine("{");
+                        using (writer.BeginIndent())
+                        {
+                            writer.WriteLine("lock (Lock)");
+                            writer.WriteLine("{");
+                            using (writer.BeginIndent())
+                            {
+                                writer.WriteLine("if (_didRegister) return;");
+                                foreach (var cls in classes)
+                                {
+                                    // ReSharper disable once PossibleNullReferenceException
+                                    writer.WriteLine(
+                                        $"AotTypes.AddAotType({cls.TypeId}, typeof(global::{cls.Type.FullName.Replace("+", ".")}));");
+                                }
+                                writer.WriteLine("_didRegister = true;");
+                            }
+                            writer.WriteLine("}");
+                        }
+                        writer.WriteLine("}");
+                    }
+                    writer.WriteLine("}");
+                }
+                writer.WriteLine("}");
             }
         }
         

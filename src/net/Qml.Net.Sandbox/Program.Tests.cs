@@ -43,7 +43,11 @@ namespace Qml.Net.Sandbox
                     DiscoveryComplete.Set();
                     break;
                 case ITestCaseDiscoveryMessage testCaseDiscoveryMessage:
-                    TestCases.Add(testCaseDiscoveryMessage.TestCase);
+                    if (testCaseDiscoveryMessage.TestCase.DisplayName.Contains("Can_detect_only_registered_methods"))
+                    {
+                        TestCases.Add(testCaseDiscoveryMessage.TestCase);
+                    }
+
                     break;
             }
 

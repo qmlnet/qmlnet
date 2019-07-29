@@ -9,19 +9,34 @@ using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Tests.Qml
 {
-    public abstract class AbstractBaseQmlTests<TTypeToRegister> : BaseTests
+    public class BaseQmlEngineTests : BaseTests
     {
         private readonly QGuiApplication _coreApplication;
         protected readonly QQmlApplicationEngine qmlApplicationEngine;
 
+        public BaseQmlEngineTests()
+        {
+            _coreApplication = new QGuiApplication(new[] { "-platform", "offscreen" });
+            qmlApplicationEngine = new QQmlApplicationEngine();
+        }
+
+        public override void Dispose()
+        {
+            qmlApplicationEngine.Dispose();
+            _coreApplication.Dispose();
+            
+            base.Dispose();
+        }
+    }
+    
+    public abstract class AbstractBaseQmlTests<TTypeToRegister> : BaseQmlEngineTests
+    {
         protected MockTypeCreator TypeCreator { get;  private set; }
 
         readonly List<Type> _registeredTypes = new List<Type>();
 
         protected AbstractBaseQmlTests()
         {
-            _coreApplication = new QGuiApplication(new[] { "-platform", "offscreen" });
-            qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
         }
@@ -44,6 +59,7 @@ namespace Qml.Net.Tests.Qml
                     {0} {{
                         id: {1}
                         property var testQObject: null
+                        property var assert: null
                         function runTest() {{
                             {2}
                         }}
@@ -61,9 +77,6 @@ namespace Qml.Net.Tests.Qml
 
         public override void Dispose()
         {
-            qmlApplicationEngine.Dispose();
-            _coreApplication.Dispose();
-
             Net.TypeCreator.Current = null;
 
             base.Dispose();

@@ -6,6 +6,7 @@
 using namespace QmlNet;
 
 QMap<QString, QSharedPointer<NetTypeInfo>> NetTypeManager::types;
+QMap<int, const QMetaObject*> NetTypeManager::aotTypes;
 
 NetTypeManager::NetTypeManager() = default;
 
@@ -33,6 +34,26 @@ QSharedPointer<NetTypeInfo> NetTypeManager::getBaseType(QSharedPointer<NetTypeIn
         return nullptr;
     }
     return NetTypeManager::getTypeInfo(baseType);
+}
+
+void NetTypeManager::registerAotObject(const QMetaObject* metaObject, int aotTypeId)
+{
+    if(aotTypes.contains(aotTypeId)) {
+        qWarning() << "Aot type id " << aotTypeId << " is already registered.";
+        return;
+    }
+
+    aotTypes.insert(aotTypeId, metaObject);
+}
+
+const QMetaObject* NetTypeManager::getAotMetaObject(int aotTypeId)
+{
+    if(!aotTypes.contains(aotTypeId)) {
+        qWarning() << "Aot type id " << aotTypeId << " doesn't exist.";
+        return nullptr;
+    }
+
+    return aotTypes[aotTypeId];
 }
 
 extern "C" {
