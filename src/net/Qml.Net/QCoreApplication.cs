@@ -13,7 +13,7 @@ namespace Qml.Net
 {
     public class QCoreApplication : BaseDisposable
     {
-        private readonly Queue<Action> _actionQueue = new Queue<Action>();
+        private readonly Queue<QueuedAction> _actionQueue = new Queue<QueuedAction>();
         private SynchronizationContext _oldSynchronizationContext;
         private GCHandle _triggerHandle;
         private GCHandle _aboutToQuitHandle;
@@ -90,7 +90,7 @@ namespace Qml.Net
         {
             lock (_actionQueue)
             {
-                _actionQueue.Enqueue(action);
+                _actionQueue.Enqueue(new QueuedAction(action, ExecutionContext.Capture()));
             }
             RequestTrigger();
         }
@@ -142,12 +142,20 @@ namespace Qml.Net
 
         private void Trigger()
         {
-            Action action;
+            QueuedAction action;
             lock (_actionQueue)
             {
                 action = _actionQueue.Dequeue();
             }
-            action?.Invoke();
+            
+            if (action != null)
+            {
+                ExecutionContext.Run(action.ExecutionContext, state =>
+                {
+                    action.Action();
+                }, null);
+                action.ExecutionContext.Dispose();
+            }
         }
 
         public static void ProcessEvents(QEventLoop.ProcessEventsFlag flags, TimeSpan? timeout = null)
@@ -342,6 +350,19 @@ namespace Qml.Net
             {
                 _app.Dispatch(() => d.Invoke(state));
             }
+        }
+
+        private class QueuedAction
+        {
+            public QueuedAction(Action action, ExecutionContext ec)
+            {
+                Action = action;
+                ExecutionContext = ec;
+            }
+            
+            public Action Action { get; }
+            
+            public ExecutionContext ExecutionContext { get; }
         }
     }
 
