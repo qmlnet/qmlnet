@@ -8,7 +8,7 @@ namespace Qml.Net.Internal.Qml
     {
         public static bool RunQml(QQmlApplicationEngine qmlEngine, string qml, bool runEvents = false)
         {
-            return Interop.NetTestHelper.RunQml(qmlEngine.Handle, qml, runEvents ? (byte) 1 : (byte) 0) == 1;
+            return Interop.NetTestHelper.RunQml(qmlEngine.Handle, qml, runEvents ? (byte)1 : (byte)0) == 1;
         }
     }
 

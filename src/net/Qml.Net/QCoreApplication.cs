@@ -150,10 +150,13 @@ namespace Qml.Net
             
             if (action != null)
             {
-                ExecutionContext.Run(action.ExecutionContext, state =>
-                {
-                    action.Action();
-                }, null);
+                ExecutionContext.Run(
+                    action.ExecutionContext,
+                    state =>
+                    {
+                        action.Action();
+                    },
+                    null);
                 action.ExecutionContext.Dispose();
             }
         }
