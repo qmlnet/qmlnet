@@ -144,13 +144,13 @@ int CoreHost::run(QGuiApplication& app, QQmlApplicationEngine& engine, runCallba
     execArgs.push_back(runContext.managedExe);
 
     QString appPtr;
-    appPtr.sprintf("%llu", (quintptr)&app);
+    appPtr.asprintf("%llu", (quintptr)&app);
     QString enginePtr;
-    enginePtr.sprintf("%llu", (quintptr)&engine);
+    enginePtr.asprintf("%llu", (quintptr)&engine);
     QString callbackPtr;
-    callbackPtr.sprintf("%llu", (quintptr)runCallback);
+    callbackPtr.asprintf("%llu", (quintptr)runCallback);
     QString exportedSymbolPointer;
-    exportedSymbolPointer.sprintf("%llu", (quintptr)getExportedFunction);
+    exportedSymbolPointer.asprintf("%llu", (quintptr)getExportedFunction);
 
     execArgs.push_back(appPtr);
     execArgs.push_back(enginePtr);
