@@ -149,7 +149,7 @@ void NetQObjectArg::pack()
                     break;
                 }
 
-                _variant = qVariantFromValue(casted);
+                _variant = QVariant::fromValue(casted);
 
                 break;
             }
