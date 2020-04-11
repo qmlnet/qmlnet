@@ -2,10 +2,14 @@
 #include <QmlNet/qml/NetVariantList.h>
 #include <QmlNet/qml/NetQObject.h>
 #include <QGuiApplication>
-#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QmlNetUtilities.h>
 #include <QDebug>
+
+#if __has_include(<QApplication>)
+#define QMLNET_HAS_WIDGETS
+#include <QApplication>
+#endif
 
 GuiThreadContextTriggerCallback::GuiThreadContextTriggerCallback() :
     _callbacks(nullptr)
@@ -93,7 +97,11 @@ Q_DECL_EXPORT QGuiApplicationContainer* qapp_create(NetVariantListContainer* arg
         result->app = new QGuiApplication(result->argCount, &result->argsPointer[0], flags);
         break;
     case 2:
+#ifdef QMLNET_HAS_WIDGETS
         result->app = new QApplication(result->argCount, &result->argsPointer[0], flags);
+#else
+        qCritical("QtWidget support was disabled at compiletime");
+#endif
         break;
     default:
         qCritical("invalid app type %d", type);
@@ -132,9 +140,11 @@ Q_DECL_EXPORT int qapp_getType(QGuiApplicationContainer* container, QCoreApplica
     if(!rawPointer && container) {
         rawPointer = container->app;
     }
+#ifdef QMLNET_HAS_WIDGETS
     if (qobject_cast<QApplication*>(rawPointer) != nullptr){
         return 2;
     }
+#endif
     if (qobject_cast<QGuiApplication*>(rawPointer) != nullptr){
         return 1;
     }
