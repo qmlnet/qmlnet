@@ -36,7 +36,7 @@ dotnet add package Qml.Net.OSXBinaries
 dotnet add package Qml.Net.LinuxBinaries
 ```  
 
-**Note for Linux users**: Package `libc6-dev` is required to be installed because it contains `libdl.so` that needed to work
+**Note for Linux users**: Package `libc6-dev` is required to be installed because it contains `libdl.so` that is needed.
 
 # Examples
 Checkout the [examples](https://github.com/qmlnet/qmlnet-examples) on how to do many things with Qml.Net.
