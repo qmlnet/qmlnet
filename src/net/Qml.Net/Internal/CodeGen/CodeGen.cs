@@ -1,6 +1,10 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Drawing;
+#if NETSTANDARD2_1
+using System.Numerics;
+#endif
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -70,6 +74,44 @@ namespace Qml.Net.Internal.CodeGen
                         break;
                     case NetVariantType.Double:
                         returnMethod = isNullable ? LoadMethods.LoadDoubleNullableMethod : LoadMethods.LoadDoubleMethod;
+                        break;
+                    case NetVariantType.Size:
+                        returnMethod = isNullable ? LoadMethods.LoadSizeNullableMethod : LoadMethods.LoadSizeMethod;
+                        break;
+                    case NetVariantType.SizeF:
+                        returnMethod = isNullable ? LoadMethods.LoadSizeFNullableMethod : LoadMethods.LoadSizeFMethod;
+                        break;
+                    case NetVariantType.Rect:
+                        returnMethod = isNullable ? LoadMethods.LoadRectNullableMethod : LoadMethods.LoadRectMethod;
+                        break;
+                    case NetVariantType.RectF:
+                        returnMethod = isNullable ? LoadMethods.LoadRectFNullableMethod : LoadMethods.LoadRectFMethod;
+                        break;
+                    case NetVariantType.Point:
+                        returnMethod = isNullable ? LoadMethods.LoadPointNullableMethod : LoadMethods.LoadPointMethod;
+                        break;
+                    case NetVariantType.PointF:
+                        returnMethod = isNullable ? LoadMethods.LoadPointFNullableMethod : LoadMethods.LoadPointFMethod;
+                        break;
+#if NETSTANDARD2_1
+                    case NetVariantType.Vector2D:
+                        returnMethod = isNullable ? LoadMethods.LoadVector2DNullableMethod : LoadMethods.LoadVector2DMethod;
+                        break;
+                    case NetVariantType.Vector3D:
+                        returnMethod = isNullable ? LoadMethods.LoadVector3DNullableMethod : LoadMethods.LoadVector3DMethod;
+                        break;
+                    case NetVariantType.Vector4D:
+                        returnMethod = isNullable ? LoadMethods.LoadVector4DNullableMethod : LoadMethods.LoadVector4DMethod;
+                        break;
+                    case NetVariantType.Quaternion:
+                        returnMethod = isNullable ? LoadMethods.LoadQuaternionNullableMethod : LoadMethods.LoadQuaternionMethod;
+                        break;
+                    case NetVariantType.Matrix4x4:
+                        returnMethod = isNullable ? LoadMethods.LoadMatrix4x4NullableMethod : LoadMethods.LoadMatrix4x4Method;
+                        break;
+#endif
+                    case NetVariantType.Color:
+                        returnMethod = LoadMethods.LoadColorMethod;
                         break;
                     case NetVariantType.String:
                         returnMethod = LoadMethods.LoadStringMethod;
@@ -253,6 +295,44 @@ namespace Qml.Net.Internal.CodeGen
                     case NetVariantType.Double:
                         returnMethod = isNullable ? ListMethods.DoubleNullableAtMethod : ListMethods.DoubleAtMethod;
                         break;
+                    case NetVariantType.Size:
+                        returnMethod = isNullable ? ListMethods.SizeNullableAtMethod : ListMethods.SizeAtMethod;
+                        break;
+                    case NetVariantType.SizeF:
+                        returnMethod = isNullable ? ListMethods.SizeFNullableAtMethod : ListMethods.SizeFAtMethod;
+                        break;
+                    case NetVariantType.Rect:
+                        returnMethod = isNullable ? ListMethods.RectNullableAtMethod : ListMethods.RectAtMethod;
+                        break;
+                    case NetVariantType.RectF:
+                        returnMethod = isNullable ? ListMethods.RectFNullableAtMethod : ListMethods.RectFAtMethod;
+                        break;
+                    case NetVariantType.Point:
+                        returnMethod = isNullable ? ListMethods.PointNullableAtMethod : ListMethods.PointAtMethod;
+                        break;
+                    case NetVariantType.PointF:
+                        returnMethod = isNullable ? ListMethods.PointFNullableAtMethod : ListMethods.PointFAtMethod;
+                        break;
+#if NETSTANDARD2_1
+                    case NetVariantType.Vector2D:
+                        returnMethod = isNullable ? ListMethods.Vector2DNullableAtMethod : ListMethods.Vector2DAtMethod;
+                        break;
+                    case NetVariantType.Vector3D:
+                        returnMethod = isNullable ? ListMethods.Vector3DNullableAtMethod : ListMethods.Vector3DAtMethod;
+                        break;
+                    case NetVariantType.Vector4D:
+                        returnMethod = isNullable ? ListMethods.Vector4DNullableAtMethod : ListMethods.Vector4DAtMethod;
+                        break;
+                    case NetVariantType.Quaternion:
+                        returnMethod = isNullable ? ListMethods.QuaternionNullableAtMethod : ListMethods.QuaternionAtMethod;
+                        break;
+                    case NetVariantType.Matrix4x4:
+                        returnMethod = isNullable ? ListMethods.Matrix4x4NullableAtMethod : ListMethods.Matrix4x4AtMethod;
+                        break;
+#endif
+                    case NetVariantType.Color:
+                        returnMethod = ListMethods.ColorAtMethod;
+                        break;
                     case NetVariantType.String:
                         returnMethod = ListMethods.StringAtMethod;
                         break;
@@ -305,6 +385,32 @@ namespace Qml.Net.Internal.CodeGen
                 return NetVariantType.Float;
             if (typeInfo == typeof(double))
                 return NetVariantType.Double;
+            if (typeInfo == typeof(Size))
+                return NetVariantType.Size;
+            if (typeInfo == typeof(SizeF))
+                return NetVariantType.SizeF;
+            if (typeInfo == typeof(Rectangle))
+                return NetVariantType.Rect;
+            if (typeInfo == typeof(RectangleF))
+                return NetVariantType.RectF;
+            if (typeInfo == typeof(Point))
+                return NetVariantType.Point;
+            if (typeInfo == typeof(PointF))
+                return NetVariantType.PointF;
+#if NETSTANDARD2_1
+            if (typeInfo == typeof(Vector2))
+                return NetVariantType.Vector2D;
+            if (typeInfo == typeof(Vector3))
+                return NetVariantType.Vector3D;
+            if (typeInfo == typeof(Vector4))
+                return NetVariantType.Vector4D;
+            if (typeInfo == typeof(Quaternion))
+                return NetVariantType.Quaternion;
+            if (typeInfo == typeof(Matrix4x4))
+                return NetVariantType.Matrix4x4;
+#endif
+            if (typeInfo == typeof(Color))
+                return NetVariantType.Color;
             if (typeInfo == typeof(string))
                 return NetVariantType.String;
             if (typeInfo == typeof(byte[]))

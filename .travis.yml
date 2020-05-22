@@ -3,11 +3,11 @@ mono: none
 matrix:
   include:
     - name: "Linux Qt 5.12.0"
-      dotnet: 2.2
+      dotnet: 3.1.300
       os: linux
       dist: xenial
     - name: "OSX Qt 5.12.0"
-      dotnet: 2.2.101
+      dotnet: 3.1.300
       os: osx
       osx_image: xcode9.4
 if: tag IS blank

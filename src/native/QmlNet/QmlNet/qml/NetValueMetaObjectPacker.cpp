@@ -40,6 +40,42 @@ void NetValueTypePacker::pack(const QSharedPointer<NetVariant>& source, void* de
     case NetVariantTypeEnum_Double:
         destinationVariant->setValue(source->getDouble());
         break;
+    case NetVariantTypeEnum_Size:
+        destinationVariant->setValue(source->getSize());
+        break;
+    case NetVariantTypeEnum_SizeF:
+        destinationVariant->setValue(source->getSizeF());
+        break;
+    case NetVariantTypeEnum_Rect:
+        destinationVariant->setValue(source->getRect());
+        break;
+    case NetVariantTypeEnum_RectF:
+        destinationVariant->setValue(source->getRectF());
+        break;
+    case NetVariantTypeEnum_Point:
+        destinationVariant->setValue(source->getPoint());
+        break;
+    case NetVariantTypeEnum_PointF:
+        destinationVariant->setValue(source->getPointF());
+        break;
+    case NetVariantTypeEnum_Vector2D:
+        destinationVariant->setValue(source->getVector2D());
+        break;
+    case NetVariantTypeEnum_Vector3D:
+        destinationVariant->setValue(source->getVector3D());
+        break;
+    case NetVariantTypeEnum_Vector4D:
+        destinationVariant->setValue(source->getVector4D());
+        break;
+    case NetVariantTypeEnum_Quaternion:
+        destinationVariant->setValue(source->getQuaternion());
+        break;
+    case NetVariantTypeEnum_Matrix4x4:
+        destinationVariant->setValue(source->getMatrix4x4());
+        break;
+    case NetVariantTypeEnum_Color:
+        destinationVariant->setValue(source->getColor());
+        break;
     case NetVariantTypeEnum_String:
         destinationVariant->setValue(source->getString());
         break;
