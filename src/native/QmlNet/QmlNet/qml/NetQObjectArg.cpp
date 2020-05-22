@@ -100,6 +100,42 @@ void NetQObjectArg::pack()
     case QMetaType::Double:
         _variant = QVariant::fromValue(_netVariant->getDouble());
         break;
+    case QMetaType::QSize:
+        _variant = QVariant::fromValue(_netVariant->getSize());
+        break;
+    case QMetaType::QSizeF:
+        _variant = QVariant::fromValue(_netVariant->getSizeF());
+        break;
+    case QMetaType::QRect:
+        _variant = QVariant::fromValue(_netVariant->getRect());
+        break;
+    case QMetaType::QRectF:
+        _variant = QVariant::fromValue(_netVariant->getRectF());
+        break;
+    case QMetaType::QPoint:
+        _variant = QVariant::fromValue(_netVariant->getPoint());
+        break;
+    case QMetaType::QPointF:
+        _variant = QVariant::fromValue(_netVariant->getPointF());
+        break;
+    case QMetaType::QVector2D:
+        _variant = QVariant::fromValue(_netVariant->getVector2D());
+        break;
+    case QMetaType::QVector3D:
+        _variant = QVariant::fromValue(_netVariant->getVector3D());
+        break;
+    case QMetaType::QVector4D:
+        _variant = QVariant::fromValue(_netVariant->getVector4D());
+        break;
+    case QMetaType::QQuaternion:
+        _variant = QVariant::fromValue(_netVariant->getQuaternion());
+        break;
+    case QMetaType::QMatrix4x4:
+        _variant = QVariant::fromValue(_netVariant->getMatrix4x4());
+        break;
+    case QMetaType::QColor:
+        _variant = QVariant::fromValue(_netVariant->getColor());
+        break;
     case QMetaType::QString:
         _variant = QVariant::fromValue(_netVariant->getString());
         break;

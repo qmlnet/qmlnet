@@ -4,6 +4,7 @@
 #include <QmlNet/types/Callbacks.h>
 #include <QmlNet/qml/JsNetObject.h>
 #include <QQmlContext>
+#include <QAtomicInt>
 
 static QQmlApplicationEngine* sharedQmlEngineValue = nullptr;
 
@@ -16,7 +17,7 @@ QQmlApplicationEngine* sharedQmlEngine()
     return sharedQmlEngineValue;
 }
 
-static int netValueTypeNumber = 0;
+static QAtomicInt netValueTypeNumber;
 
 #define NETVALUETYPE_CASE(N) \
     case N: NetValueType<N>::init(typeInfo); return qmlRegisterType<NetValueType<(N)>>(uriString.toUtf8().data(), versionMajor, versionMinor, qmlNameString.toUtf8().data());
@@ -255,6 +256,26 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeC
         NETVALUETYPE_CASE(178)
         NETVALUETYPE_CASE(179)
         NETVALUETYPE_CASE(180)
+        NETVALUETYPE_CASE(181)
+        NETVALUETYPE_CASE(182)
+        NETVALUETYPE_CASE(183)
+        NETVALUETYPE_CASE(184)
+        NETVALUETYPE_CASE(185)
+        NETVALUETYPE_CASE(186)
+        NETVALUETYPE_CASE(187)
+        NETVALUETYPE_CASE(188)
+        NETVALUETYPE_CASE(189)
+        NETVALUETYPE_CASE(190)
+        NETVALUETYPE_CASE(191)
+        NETVALUETYPE_CASE(192)
+        NETVALUETYPE_CASE(193)
+        NETVALUETYPE_CASE(194)
+        NETVALUETYPE_CASE(195)
+        NETVALUETYPE_CASE(196)
+        NETVALUETYPE_CASE(197)
+        NETVALUETYPE_CASE(198)
+        NETVALUETYPE_CASE(199)
+        NETVALUETYPE_CASE(200)
     }
     qFatal("Too many registered types: %d", netValueTypeNumber);
     return -1;
@@ -455,6 +476,26 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeNet(NetTypeInfoCont
         NETVALUETYPESINGLETON_CASE(178)
         NETVALUETYPESINGLETON_CASE(179)
         NETVALUETYPESINGLETON_CASE(180)
+        NETVALUETYPESINGLETON_CASE(181)
+        NETVALUETYPESINGLETON_CASE(182)
+        NETVALUETYPESINGLETON_CASE(183)
+        NETVALUETYPESINGLETON_CASE(184)
+        NETVALUETYPESINGLETON_CASE(185)
+        NETVALUETYPESINGLETON_CASE(186)
+        NETVALUETYPESINGLETON_CASE(187)
+        NETVALUETYPESINGLETON_CASE(188)
+        NETVALUETYPESINGLETON_CASE(189)
+        NETVALUETYPESINGLETON_CASE(190)
+        NETVALUETYPESINGLETON_CASE(191)
+        NETVALUETYPESINGLETON_CASE(192)
+        NETVALUETYPESINGLETON_CASE(193)
+        NETVALUETYPESINGLETON_CASE(194)
+        NETVALUETYPESINGLETON_CASE(195)
+        NETVALUETYPESINGLETON_CASE(196)
+        NETVALUETYPESINGLETON_CASE(197)
+        NETVALUETYPESINGLETON_CASE(198)
+        NETVALUETYPESINGLETON_CASE(199)
+        NETVALUETYPESINGLETON_CASE(200)
     }
     qFatal("Too many registered types: %d", netValueTypeNumber);
     return -1;

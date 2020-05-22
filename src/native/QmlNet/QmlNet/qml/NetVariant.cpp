@@ -81,6 +81,30 @@ NetVariantTypeEnum NetVariant::getVariantType() const
         return NetVariantTypeEnum_String;
     case QMetaType::QDateTime:
         return NetVariantTypeEnum_DateTime;
+    case QMetaType::QSize:
+        return NetVariantTypeEnum_Size;
+    case QMetaType::QSizeF:
+        return NetVariantTypeEnum_SizeF;
+    case QMetaType::QRect:
+        return NetVariantTypeEnum_Rect;
+    case QMetaType::QRectF:
+        return NetVariantTypeEnum_RectF;
+    case QMetaType::QPoint:
+        return NetVariantTypeEnum_Point;
+    case QMetaType::QPointF:
+        return NetVariantTypeEnum_PointF;
+    case QMetaType::QVector2D:
+        return NetVariantTypeEnum_Vector2D;
+    case QMetaType::QVector3D:
+        return NetVariantTypeEnum_Vector3D;
+    case QMetaType::QVector4D:
+        return NetVariantTypeEnum_Vector4D;
+    case QMetaType::QQuaternion:
+        return NetVariantTypeEnum_Quaternion;
+    case QMetaType::QMatrix4x4:
+        return NetVariantTypeEnum_Matrix4x4;
+    case QMetaType::QColor:
+        return NetVariantTypeEnum_Color;
     case QMetaType::QByteArray:
         return NetVariantTypeEnum_ByteArray;
     default:
@@ -207,6 +231,104 @@ void NetVariant::setDouble(double value)
 double NetVariant::getDouble() const
 {
     return getValue<double>();
+}
+
+QSize NetVariant::getSize() const {
+    return getValue<QSize>();
+}
+
+void NetVariant::setSize(const QSize &value) {
+    setValue(value);
+}
+
+QSizeF NetVariant::getSizeF() const {
+    return getValue<QSizeF>();
+}
+
+void NetVariant::setSizeF(const QSizeF &value) {
+    setValue(value);
+}
+
+QRect NetVariant::getRect() const {
+    return getValue<QRect>();
+}
+
+void NetVariant::setRect(const QRect &value) {
+    setValue(value);
+}
+
+QRectF NetVariant::getRectF() const {
+    return getValue<QRectF>();
+}
+
+void NetVariant::setRectF(const QRectF &value) {
+    setValue(value);
+}
+
+QPoint NetVariant::getPoint() const {
+    return getValue<QPoint>();
+}
+
+void NetVariant::setPoint(const QPoint &value) {
+    setValue(value);
+}
+
+QPointF NetVariant::getPointF() const {
+    return getValue<QPointF>();
+}
+
+void NetVariant::setPointF(const QPointF &value) {
+    setValue(value);
+}
+
+QVector2D NetVariant::getVector2D() const {
+    return getValue<QVector2D>();
+}
+
+void NetVariant::setVector2D(const QVector2D &value) {
+    setValue(value);
+}
+
+QVector3D NetVariant::getVector3D() const {
+    return getValue<QVector3D>();
+}
+
+void NetVariant::setVector3D(const QVector3D &value) {
+    setValue(value);
+}
+
+QVector4D NetVariant::getVector4D() const {
+    return getValue<QVector4D>();
+}
+
+void NetVariant::setVector4D(const QVector4D &value) {
+    setValue(value);
+}
+
+QQuaternion NetVariant::getQuaternion() const {
+    return getValue<QQuaternion>();
+}
+
+void NetVariant::setQuaternion(const QQuaternion &value) {
+    setValue(value);
+}
+
+QMatrix4x4 NetVariant::getMatrix4x4() const {
+    return getValue<QMatrix4x4>();
+}
+
+void NetVariant::setMatrix4x4(const QMatrix4x4 &value) {
+    setValue(value);
+}
+
+void NetVariant::setColor(const QColor& value)
+{
+    setValue(value);
+}
+
+QColor NetVariant::getColor() const
+{
+    return getValue<QColor>();
 }
 
 void NetVariant::setString(const QString* value)
@@ -382,7 +504,26 @@ void NetVariant::fromQVariant(const QVariant* variant, const QSharedPointer<NetV
     case QMetaType::QString:
     case QMetaType::QByteArray:
     case QMetaType::QDateTime:
+    case QMetaType::QSize:
+    case QMetaType::QSizeF:
+    case QMetaType::QRect:
+    case QMetaType::QRectF:
+    case QMetaType::QPoint:
+    case QMetaType::QPointF:
+    case QMetaType::QVector2D:
+    case QMetaType::QVector3D:
+    case QMetaType::QVector4D:
+	case QMetaType::QQuaternion:
+    case QMetaType::QMatrix4x4:
+	case QMetaType::QColor:
         destination->setValueVariant(*variant);
+        break;
+    // Generally, we can convert from QUrl to QString.
+    // QML internally uses a string for the url basic type,
+    // but we can still get a QUrl if someone passes through
+    // a QUrl property found on a native QQuickItem (i.e. QQuickImage::source).
+    case QMetaType::QUrl:
+        destination->setValueVariant(variant->value<QUrl>().toString());
         break;
     case QMetaType::ULong:
         destination->setULong(variant->value<quint64>());
@@ -556,6 +697,14 @@ struct Q_DECL_EXPORT DateTimeContainer {
     int offsetSeconds;
 };
 
+struct ColorContainer {
+    uchar isNull;
+    quint8 r;
+    quint8 g;
+    quint8 b;
+    quint8 a;
+};
+
 Q_DECL_EXPORT NetVariantContainer* net_variant_create() {
     NetVariantContainer* result = new NetVariantContainer();
     result->variant = QSharedPointer<NetVariant>(new NetVariant());
@@ -658,6 +807,164 @@ Q_DECL_EXPORT void net_variant_setDouble(NetVariantContainer* container, double 
 
 Q_DECL_EXPORT double net_variant_getDouble(NetVariantContainer* container) {
     return container->variant->getDouble();
+}
+
+Q_DECL_EXPORT void net_variant_setSize(NetVariantContainer* container, int w, int h) {
+    container->variant->setSize(QSize(w, h));
+}
+
+Q_DECL_EXPORT void net_variant_getSize(NetVariantContainer* container, int *w, int *h) {
+    auto qtValue = container->variant->getSize();
+    *w = qtValue.width();
+    *h = qtValue.height();
+}
+
+Q_DECL_EXPORT void net_variant_setSizeF(NetVariantContainer* container, float w, float h) {
+    container->variant->setSizeF(QSizeF(w, h));
+}
+
+Q_DECL_EXPORT void net_variant_getSizeF(NetVariantContainer* container, float *w, float *h) {
+    auto qtValue = container->variant->getSizeF();
+    // .NET type is always single precision
+    *w = static_cast<float>(qtValue.width());
+    *h = static_cast<float>(qtValue.height());
+}
+
+Q_DECL_EXPORT void net_variant_setRect(NetVariantContainer* container, int x, int y, int w, int h) {
+    container->variant->setRect(QRect(x, y, w, h));
+}
+
+Q_DECL_EXPORT void net_variant_getRect(NetVariantContainer* container, int *x, int *y, int *w, int *h) {
+    auto qtValue = container->variant->getRect();
+    *x = qtValue.x();
+    *y = qtValue.y();
+    *w = qtValue.width();
+    *h = qtValue.height();
+}
+
+Q_DECL_EXPORT void net_variant_setRectF(NetVariantContainer* container, float x, float y, float w, float h) {
+    container->variant->setRectF(QRectF(x, y, w, h));
+}
+
+Q_DECL_EXPORT void net_variant_getRectF(NetVariantContainer* container, float *x, float *y, float *w, float *h) {
+    auto qtValue = container->variant->getRectF();
+    // .NET type is always single precision
+    *x = static_cast<float>(qtValue.x());
+    *y = static_cast<float>(qtValue.y());
+    *w = static_cast<float>(qtValue.width());
+    *h = static_cast<float>(qtValue.height());
+}
+
+Q_DECL_EXPORT void net_variant_setPoint(NetVariantContainer* container, int x, int y) {
+    container->variant->setPoint(QPoint(x, y));
+}
+
+Q_DECL_EXPORT void net_variant_getPoint(NetVariantContainer* container, int *x, int *y) {
+    auto qtValue = container->variant->getPoint();
+    *x = qtValue.x();
+    *y = qtValue.y();
+}
+
+Q_DECL_EXPORT void net_variant_setPointF(NetVariantContainer* container, float x, float y) {
+    container->variant->setPointF(QPointF(x, y));
+}
+
+Q_DECL_EXPORT void net_variant_getPointF(NetVariantContainer* container, float *x, float *y) {
+    auto qtValue = container->variant->getPointF();
+    // .NET type is always single precision
+    *x = static_cast<float>(qtValue.x());
+    *y = static_cast<float>(qtValue.y());
+}
+
+Q_DECL_EXPORT void net_variant_setVector2D(NetVariantContainer* container, float x, float y) {
+    container->variant->setVector2D(QVector2D(x, y));
+}
+
+Q_DECL_EXPORT void net_variant_getVector2D(NetVariantContainer* container, float *x, float *y) {
+    auto qtValue = container->variant->getVector2D();
+    *x = qtValue.x();
+    *y = qtValue.y();
+}
+
+Q_DECL_EXPORT void net_variant_setVector3D(NetVariantContainer* container, float x, float y, float z) {
+    container->variant->setVector3D(QVector3D(x, y, z));
+}
+
+Q_DECL_EXPORT void net_variant_getVector3D(NetVariantContainer* container, float *x, float *y, float *z) {
+    auto qtValue = container->variant->getVector3D();
+    *x = qtValue.x();
+    *y = qtValue.y();
+    *z = qtValue.z();
+}
+
+Q_DECL_EXPORT void net_variant_setVector4D(NetVariantContainer* container, float x, float y, float z, float w) {
+    container->variant->setVector4D(QVector4D(x, y, z, w));
+}
+
+Q_DECL_EXPORT void net_variant_getVector4D(NetVariantContainer* container, float *x, float *y, float *z, float *w) {
+    auto qtValue = container->variant->getVector4D();
+    *x = qtValue.x();
+    *y = qtValue.y();
+    *z = qtValue.z();
+    *w = qtValue.w();
+}
+
+Q_DECL_EXPORT void net_variant_setQuaternion(NetVariantContainer* container, float w, float x, float y, float z) {
+    container->variant->setQuaternion(QQuaternion(w, x, y, z));
+}
+
+Q_DECL_EXPORT void net_variant_getQuaternion(NetVariantContainer* container, float *w, float *x, float *y, float *z) {
+    auto qtValue = container->variant->getQuaternion();
+    *w = qtValue.scalar();
+    *x = qtValue.x();
+    *y = qtValue.y();
+    *z = qtValue.z();
+}
+
+Q_DECL_EXPORT void net_variant_setMatrix4x4(NetVariantContainer* container, float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44) {
+    container->variant->setMatrix4x4(QMatrix4x4(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44));
+}
+
+Q_DECL_EXPORT void net_variant_getMatrix4x4(NetVariantContainer* container, float* m11, float* m12, float* m13, float* m14, float* m21, float* m22, float* m23, float* m24, float* m31, float* m32, float* m33, float* m34, float* m41, float* m42, float* m43, float* m44) {
+    auto qtValue = container->variant->getMatrix4x4();
+    *m11 = qtValue(0, 0);
+    *m12 = qtValue(0, 1);
+    *m13 = qtValue(0, 2);
+    *m14 = qtValue(0, 3);
+    *m21 = qtValue(1, 0);
+    *m22 = qtValue(1, 1);
+    *m23 = qtValue(1, 2);
+    *m24 = qtValue(1, 3);
+    *m31 = qtValue(2, 0);
+    *m32 = qtValue(2, 1);
+    *m33 = qtValue(2, 2);
+    *m34 = qtValue(2, 3);
+    *m41 = qtValue(3, 0);
+    *m42 = qtValue(3, 1);
+    *m43 = qtValue(3, 2);
+    *m44 = qtValue(3, 3);
+}
+
+Q_DECL_EXPORT void net_variant_setColor(NetVariantContainer* container, const ColorContainer* value) {
+    if(value == nullptr || value->isNull) {
+        container->variant->setColor(QColor());
+    } else {
+        container->variant->setColor(QColor(value->r, value->g, value->b, value->a));
+    }
+}
+
+Q_DECL_EXPORT void net_variant_getColor(NetVariantContainer* container, ColorContainer* value) {
+    const QColor& c = container->variant->getColor();
+    if(!c.isValid()) {
+        value->isNull = 1;
+        return;
+    }
+    value->isNull = 0;
+    value->r = c.red();
+    value->g = c.green();
+    value->b = c.blue();
+    value->a = c.alpha();
+    return;
 }
 
 Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, QChar* value) {

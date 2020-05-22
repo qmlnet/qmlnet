@@ -22,7 +22,19 @@ enum NetVariantTypeEnum {
     NetVariantTypeEnum_JSValue,
     NetVariantTypeEnum_QObject,
     NetVariantTypeEnum_NetVariantList,
-    NetVariantTypeEnum_ByteArray
+    NetVariantTypeEnum_ByteArray,
+    NetVariantTypeEnum_Size,
+    NetVariantTypeEnum_SizeF,
+    NetVariantTypeEnum_Rect,
+    NetVariantTypeEnum_RectF,
+    NetVariantTypeEnum_Point,
+    NetVariantTypeEnum_PointF,
+    NetVariantTypeEnum_Color,
+    NetVariantTypeEnum_Vector2D,
+    NetVariantTypeEnum_Vector3D,
+    NetVariantTypeEnum_Vector4D,
+    NetVariantTypeEnum_Quaternion,
+    NetVariantTypeEnum_Matrix4x4,
 };
 
 
