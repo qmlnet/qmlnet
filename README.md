@@ -226,6 +226,14 @@ ApplicationWindow {
 
 There aren't really any important features missing that are needed for prime-time. This product is currently used on embedded devices in the medical industry.
 
+# Running Unit Tests
+
+The unit tests can be found in [src/native/Qml.Net.Tests](src/net/Qml.Net.Tests).
+
+They can be run directly from Visual Studio, or by using the `dotnet test` command line tool. 
+
+Since the tests rely on the native QmlNet library, you have to ensure the library is in the `PATH` (on Windows) or otherwise discoverable. If you are trying to run tests against the native library built from the same repository, you can put the `src/native/output` folder into your `PATH` or `LD_LIBRARY_PATH` after running the `build.bat` or `build.sh` script.
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people!
