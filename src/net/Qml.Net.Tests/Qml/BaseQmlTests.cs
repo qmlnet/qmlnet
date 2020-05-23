@@ -33,7 +33,7 @@ namespace Qml.Net.Tests.Qml
             Net.Qml.RegisterType<T>("tests");
         }
 
-        protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false)
+        protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false, bool failOnQmlWarnings = true)
         {
             var result = NetTestHelper.RunQml(
                 qmlApplicationEngine,
@@ -52,7 +52,8 @@ namespace Qml.Net.Tests.Qml
                     typeof(TTypeToRegister).Name,
                     instanceId,
                     componentOnCompletedCode),
-                runEvents);
+                runEvents,
+                failOnQmlWarnings);
             if (result == false)
             {
                 throw new Exception($"Couldn't execute qml: {componentOnCompletedCode}");
