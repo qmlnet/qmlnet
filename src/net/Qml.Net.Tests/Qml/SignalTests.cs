@@ -230,7 +230,8 @@ namespace Qml.Net.Tests.Qml
                         test.signalRaised = true
                     })
                     test.someBoolProperty = true
-                ");
+                ",
+                failOnQmlWarnings: false);
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Never);
         }

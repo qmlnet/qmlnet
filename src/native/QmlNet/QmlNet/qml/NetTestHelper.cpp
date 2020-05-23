@@ -210,11 +210,20 @@ TestDerivedQObject::~TestDerivedQObject()
 
 extern "C" {
 
-Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml, uchar runEvents)
+using WarningCallback = void(const QChar*);
+
+Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml, uchar runEvents, WarningCallback *warningCallback)
 {
     qRegisterMetaType<TestBaseQObject*>();
     qRegisterMetaType<TestQObject*>();
     qRegisterMetaType<TestDerivedQObject*>();
+
+    // Temporarily connect to QQmlEngine::warnings
+    auto connection = QObject::connect(qmlEngineContainer->qmlEngine, &QQmlEngine::warnings, [=](const QList<QQmlError> &warnings) {
+        for (const auto &qmlError : warnings) {
+            warningCallback(qmlError.toString().data());
+        }
+    });
 
     QQmlComponent component(qmlEngineContainer->qmlEngine);
     QString qmlString = QString::fromUtf16(static_cast<const char16_t*>(qml));
@@ -223,6 +232,7 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
     QObject *object = component.create();
 
     if(object == nullptr) {
+        QObject::disconnect(connection);
         qWarning() << "Couldn't create qml object.";
         return 0;
     }
@@ -238,6 +248,7 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
 
     delete object;
 
+    QObject::disconnect(connection);
     return 1;
 }
 
