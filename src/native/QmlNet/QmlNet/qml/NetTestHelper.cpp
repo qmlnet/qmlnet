@@ -212,7 +212,7 @@ extern "C" {
 
 using WarningCallback = void(const QChar*);
 
-Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, LPWSTR qml, uchar runEvents, WarningCallback *warningCallback)
+Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEngineContainer, QChar* qml, uchar runEvents, WarningCallback *warningCallback)
 {
     qRegisterMetaType<TestBaseQObject*>();
     qRegisterMetaType<TestQObject*>();
@@ -226,7 +226,7 @@ Q_DECL_EXPORT uchar net_test_helper_runQml(QQmlApplicationEngineContainer* qmlEn
     });
 
     QQmlComponent component(qmlEngineContainer->qmlEngine);
-    QString qmlString = QString::fromUtf16(static_cast<const char16_t*>(qml));
+    QString qmlString(qml);
     component.setData(qmlString.toUtf8(), QUrl());
 
     QObject *object = component.create();

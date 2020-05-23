@@ -3,14 +3,14 @@
 
 extern "C" {
 
-Q_DECL_EXPORT void qquickstyle_setFallbackStyle(LPWCSTR style)
+Q_DECL_EXPORT void qquickstyle_setFallbackStyle(const QChar* style)
 {
-    QQuickStyle::setFallbackStyle(QString::fromUtf16(style));
+    QQuickStyle::setFallbackStyle(QString(style));
 }
 
-Q_DECL_EXPORT void qquickstyle_setStyle(LPWCSTR style)
+Q_DECL_EXPORT void qquickstyle_setStyle(const QChar* style)
 {
-    QQuickStyle::setStyle(QString::fromUtf16(style));
+    QQuickStyle::setStyle(QString(style));
 }
 
 }

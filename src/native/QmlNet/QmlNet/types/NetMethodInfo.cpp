@@ -126,7 +126,7 @@ Q_DECL_EXPORT NetTypeInfoContainer* method_info_parameter_getType(NetMethodInfoA
     return result;
 }
 
-Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR methodName, NetTypeInfoContainer* returnTypeContainer, uchar isStatic)
+Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* parentTypeContainer, QChar* methodName, NetTypeInfoContainer* returnTypeContainer, uchar isStatic)
 {
     NetMethodInfoContainer* result = new NetMethodInfoContainer();
 
@@ -140,7 +140,7 @@ Q_DECL_EXPORT NetMethodInfoContainer* method_info_create(NetTypeInfoContainer* p
         returnType = returnTypeContainer->netTypeInfo;
     }
 
-    NetMethodInfo* instance = new NetMethodInfo(parentType, QString::fromUtf16(static_cast<const char16_t*>(methodName)), returnType, isStatic == 1 ? true : false);
+    NetMethodInfo* instance = new NetMethodInfo(parentType, QString(methodName), returnType, isStatic == 1 ? true : false);
     result->method = QSharedPointer<NetMethodInfo>(instance);
     return result;
 }
@@ -186,9 +186,9 @@ Q_DECL_EXPORT uchar method_info_isStatic(NetMethodInfoContainer* container)
     }
 }
 
-Q_DECL_EXPORT void method_info_addParameter(NetMethodInfoContainer* container, LPWSTR name, NetTypeInfoContainer* typeInfoContainer)
+Q_DECL_EXPORT void method_info_addParameter(NetMethodInfoContainer* container, QChar* name, NetTypeInfoContainer* typeInfoContainer)
 {
-    container->method->addParameter(QString::fromUtf16(static_cast<const char16_t*>(name)), typeInfoContainer->netTypeInfo);
+    container->method->addParameter(QString(name), typeInfoContainer->netTypeInfo);
 }
 
 Q_DECL_EXPORT int method_info_getParameterCount(NetMethodInfoContainer* container)

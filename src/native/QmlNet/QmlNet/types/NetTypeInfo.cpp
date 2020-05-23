@@ -206,13 +206,9 @@ void NetTypeInfo::ensureLoaded() {
 
 extern "C" {
 
-static_assert (std::is_pointer<LPWSTR>::value, "Check fromUtf16 calls below.");
-static_assert (!std::is_pointer<std::remove_pointer<LPWSTR>::type>::value, "Check fromUtf16 calls below.");
-static_assert (sizeof(std::remove_pointer<LPWSTR>::type) == sizeof(ushort), "Check fromUtf16 calls below.");
-
-Q_DECL_EXPORT NetTypeInfoContainer* type_info_create(LPWSTR fullTypeName) {
+Q_DECL_EXPORT NetTypeInfoContainer* type_info_create(QChar* fullTypeName) {
     NetTypeInfoContainer* result = new NetTypeInfoContainer();
-    result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString::fromUtf16(static_cast<const char16_t*>(fullTypeName))));
+    result->netTypeInfo = QSharedPointer<NetTypeInfo>(new NetTypeInfo(QString(fullTypeName)));
     return result;
 }
 
@@ -237,12 +233,12 @@ Q_DECL_EXPORT QmlNetStringContainer* type_info_getBaseType(NetTypeInfoContainer*
     return createString(result);
 }
 
-Q_DECL_EXPORT void type_info_setBaseType(NetTypeInfoContainer* netTypeInfo, LPWCSTR baseType)
+Q_DECL_EXPORT void type_info_setBaseType(NetTypeInfoContainer* netTypeInfo, const QChar* baseType)
 {
     if(baseType == nullptr) {
         netTypeInfo->netTypeInfo->setBaseType(QString());
     } else {
-        netTypeInfo->netTypeInfo->setBaseType(QString::fromUtf16(baseType));
+        netTypeInfo->netTypeInfo->setBaseType(QString(baseType));
     }
 }
 
@@ -251,8 +247,8 @@ Q_DECL_EXPORT QmlNetStringContainer* type_info_getClassName(NetTypeInfoContainer
     return createString(result);
 }
 
-Q_DECL_EXPORT void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, LPWSTR className) {
-    netTypeInfo->netTypeInfo->setClassName(QString::fromUtf16(static_cast<const char16_t*>(className)));
+Q_DECL_EXPORT void type_info_setClassName(NetTypeInfoContainer* netTypeInfo, QChar* className) {
+    netTypeInfo->netTypeInfo->setClassName(QString(className));
 }
 
 Q_DECL_EXPORT uchar type_info_getIsArray(NetTypeInfoContainer* netTypeInfo)

@@ -187,9 +187,9 @@ Q_DECL_EXPORT QCoreApplication* qapp_internalPointer(QGuiApplicationContainer* c
     return container->app;
 }
 
-Q_DECL_EXPORT void qapp_setOrganizationName(LPWCSTR organizationName)
+Q_DECL_EXPORT void qapp_setOrganizationName(const QChar* organizationName)
 {
-    QCoreApplication::setOrganizationName(QString::fromUtf16(organizationName));
+    QCoreApplication::setOrganizationName(QString(organizationName));
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* qapp_getOrganizationName()
@@ -197,9 +197,9 @@ Q_DECL_EXPORT QmlNetStringContainer* qapp_getOrganizationName()
     return createString(QCoreApplication::organizationName());
 }
 
-Q_DECL_EXPORT void qapp_setOrganizationDomain(LPWCSTR organizationDomain)
+Q_DECL_EXPORT void qapp_setOrganizationDomain(const QChar* organizationDomain)
 {
-    QCoreApplication::setOrganizationDomain(QString::fromUtf16(organizationDomain));
+    QCoreApplication::setOrganizationDomain(QString(organizationDomain));
 }
 
 Q_DECL_EXPORT QmlNetStringContainer* qapp_getOrganizationDomain()

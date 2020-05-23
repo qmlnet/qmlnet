@@ -55,14 +55,14 @@ Q_DECL_EXPORT uint64_t net_instance_getObjectId(NetReferenceContainer* container
     return container->instance->getObjectId();
 }
 
-Q_DECL_EXPORT uchar net_instance_activateSignal(NetReferenceContainer* container, LPWCSTR signalName, NetVariantListContainer* parametersContainer) {
+Q_DECL_EXPORT uchar net_instance_activateSignal(NetReferenceContainer* container, const QChar* signalName, NetVariantListContainer* parametersContainer) {
     QList<NetValue*> liveInstances = NetValue::getAllLiveInstances(container->instance);
     if(liveInstances.length() == 0) {
         // Not alive in the QML world, so no signals to raise
         return false;
     }
 
-    QString signalNameString = QString::fromUtf16(signalName);
+    QString signalNameString(signalName);
 
     QSharedPointer<NetVariantList> parameters;
     if(parametersContainer != nullptr) {

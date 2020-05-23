@@ -297,10 +297,10 @@ Q_DECL_EXPORT void net_qobject_destroy(NetQObjectContainer* qObjectContainer)
     delete qObjectContainer;
 }
 
-Q_DECL_EXPORT NetVariantContainer* net_qobject_getProperty(NetQObjectContainer* qObjectContainer, LPWCSTR propertyName, uchar* result)
+Q_DECL_EXPORT NetVariantContainer* net_qobject_getProperty(NetQObjectContainer* qObjectContainer, const QChar* propertyName, uchar* result)
 {
     bool wasSuccesful = false;
-    auto value = qObjectContainer->qObject->getProperty(QString::fromUtf16(propertyName), &wasSuccesful);
+    auto value = qObjectContainer->qObject->getProperty(QString(propertyName), &wasSuccesful);
     if(wasSuccesful) {
         *result = 1;
     } else {
@@ -312,13 +312,13 @@ Q_DECL_EXPORT NetVariantContainer* net_qobject_getProperty(NetQObjectContainer* 
     return new NetVariantContainer{ value };
 }
 
-Q_DECL_EXPORT void net_qobject_setProperty(NetQObjectContainer* qObjectContainer, LPWCSTR propertyName, NetVariantContainer* netVariantContainer, uchar* result)
+Q_DECL_EXPORT void net_qobject_setProperty(NetQObjectContainer* qObjectContainer, const QChar* propertyName, NetVariantContainer* netVariantContainer, uchar* result)
 {
     bool wasSuccesful = false;
     if(netVariantContainer == nullptr) {
-        qObjectContainer->qObject->setProperty(QString::fromUtf16(propertyName), nullptr, &wasSuccesful);
+        qObjectContainer->qObject->setProperty(QString(propertyName), nullptr, &wasSuccesful);
     } else {
-        qObjectContainer->qObject->setProperty(QString::fromUtf16(propertyName), netVariantContainer->variant, &wasSuccesful);
+        qObjectContainer->qObject->setProperty(QString(propertyName), netVariantContainer->variant, &wasSuccesful);
     }
     if(wasSuccesful) {
         *result = 1;
@@ -327,14 +327,14 @@ Q_DECL_EXPORT void net_qobject_setProperty(NetQObjectContainer* qObjectContainer
     }
 }
 
-Q_DECL_EXPORT NetVariantContainer* net_qobject_invokeMethod(NetQObjectContainer* qObjectContainer, LPWCSTR methodName, NetVariantListContainer* parametersContainer, uchar* result)
+Q_DECL_EXPORT NetVariantContainer* net_qobject_invokeMethod(NetQObjectContainer* qObjectContainer, const QChar* methodName, NetVariantListContainer* parametersContainer, uchar* result)
 {
     QSharedPointer<NetVariantList> parameters = nullptr;
     if(parametersContainer != nullptr) {
         parameters = parametersContainer->list;
     }
     bool wasSuccesful = false;
-    auto value = qObjectContainer->qObject->invokeMethod(QString::fromUtf16(methodName), parameters, &wasSuccesful);
+    auto value = qObjectContainer->qObject->invokeMethod(QString(methodName), parameters, &wasSuccesful);
     if(wasSuccesful) {
         *result = 1;
     } else {
@@ -346,10 +346,10 @@ Q_DECL_EXPORT NetVariantContainer* net_qobject_invokeMethod(NetQObjectContainer*
     return new NetVariantContainer { value };
 }
 
-Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachSignal(NetQObjectContainer* qObjectContainer, LPWCSTR signalName, NetReferenceContainer* delegate, uchar* result)
+Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachSignal(NetQObjectContainer* qObjectContainer, const QChar* signalName, NetReferenceContainer* delegate, uchar* result)
 {
     bool wasSuccesful = false;
-    auto signalConnection = qObjectContainer->qObject->attachSignal(QString::fromUtf16(signalName), delegate->instance, &wasSuccesful);
+    auto signalConnection = qObjectContainer->qObject->attachSignal(QString(signalName), delegate->instance, &wasSuccesful);
     if(wasSuccesful) {
         *result = 1;
     } else {
@@ -361,10 +361,10 @@ Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachSignal(NetQ
     return new NetQObjectSignalConnectionContainer { signalConnection };
 }
 
-Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachNotifySignal(NetQObjectContainer* qObjectContainer, LPWCSTR propertyName, NetReferenceContainer* delegate, uchar* result)
+Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachNotifySignal(NetQObjectContainer* qObjectContainer, const QChar* propertyName, NetReferenceContainer* delegate, uchar* result)
 {
     bool wasSuccesful = false;
-    auto signalConnection = qObjectContainer->qObject->attachNotifySignal(QString::fromUtf16(propertyName), delegate->instance, &wasSuccesful);
+    auto signalConnection = qObjectContainer->qObject->attachNotifySignal(QString(propertyName), delegate->instance, &wasSuccesful);
     if(wasSuccesful) {
         *result = 1;
     } else {
@@ -376,13 +376,13 @@ Q_DECL_EXPORT NetQObjectSignalConnectionContainer* net_qobject_attachNotifySigna
     return new NetQObjectSignalConnectionContainer { signalConnection };
 }
 
-Q_DECL_EXPORT NetQObjectContainer* net_qobject_buildQObject(LPWCSTR className, NetVariantListContainer* constructorParameters)
+Q_DECL_EXPORT NetQObjectContainer* net_qobject_buildQObject(const QChar* className, NetVariantListContainer* constructorParameters)
 {
     QSharedPointer<NetVariantList> params;
     if(constructorParameters) {
         params = constructorParameters->list;
     }
-    QSharedPointer<NetQObject> result = NetQObject::buildQObject(QString::fromUtf16(className), params);
+    QSharedPointer<NetQObject> result = NetQObject::buildQObject(QString(className), params);
     if(result == nullptr) {
         return nullptr;
     }

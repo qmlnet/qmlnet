@@ -80,10 +80,10 @@ QString NetSignalInfo::getSlotSignature()
 
 extern "C" {
 
-Q_DECL_EXPORT NetSignalInfoContainer* signal_info_create(NetTypeInfoContainer* parentTypeContainer, LPWSTR name)
+Q_DECL_EXPORT NetSignalInfoContainer* signal_info_create(NetTypeInfoContainer* parentTypeContainer, QChar* name)
 {
     NetSignalInfoContainer* result = new NetSignalInfoContainer();
-    NetSignalInfo* instance = new NetSignalInfo(parentTypeContainer->netTypeInfo, QString::fromUtf16(static_cast<const char16_t*>(name)));
+    NetSignalInfo* instance = new NetSignalInfo(parentTypeContainer->netTypeInfo, QString(name));
     result->signal = QSharedPointer<NetSignalInfo>(instance);
     return result;
 }

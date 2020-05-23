@@ -112,8 +112,8 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_call(NetJSValueContainer* jsValu
     return nullptr;
 }
 
-Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName) {
-    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString::fromUtf16(static_cast<const char16_t*>(propertyName)));
+Q_DECL_EXPORT NetVariantContainer* net_js_value_getProperty(NetJSValueContainer* jsValueContainer, QChar* propertyName) {
+    QSharedPointer<NetVariant> result = jsValueContainer->jsValue->getProperty(QString(propertyName));
     if(result == nullptr) {
         return nullptr;
     }
@@ -128,12 +128,12 @@ Q_DECL_EXPORT NetVariantContainer* net_js_value_getItemAtIndex(NetJSValueContain
     return new NetVariantContainer{result};
 }
 
-Q_DECL_EXPORT void net_js_value_setProperty(NetJSValueContainer* jsValueContainer, LPWSTR propertyName, NetVariantContainer* valueContainer) {
+Q_DECL_EXPORT void net_js_value_setProperty(NetJSValueContainer* jsValueContainer, QChar* propertyName, NetVariantContainer* valueContainer) {
     QSharedPointer<NetVariant> value;
     if(valueContainer != nullptr) {
         value = valueContainer->variant;
     }
-    jsValueContainer->jsValue->setProperty(QString::fromUtf16(static_cast<const char16_t*>(propertyName)), value);
+    jsValueContainer->jsValue->setProperty(QString(propertyName), value);
 }
 
 Q_DECL_EXPORT void net_js_value_setItemAtIndex(NetJSValueContainer* jsValueContainer, quint32 arrayIndex, NetVariantContainer* valueContainer) {

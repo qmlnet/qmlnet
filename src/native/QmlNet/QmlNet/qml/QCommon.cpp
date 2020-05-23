@@ -5,7 +5,7 @@
 
 extern "C" {
 
-Q_DECL_EXPORT uchar qt_putenv(LPCSTR name, LPCSTR value)
+Q_DECL_EXPORT uchar qt_putenv(const char* name, const char* value)
 {
     if(value == nullptr) {
         if(qunsetenv(name)) {
@@ -22,7 +22,7 @@ Q_DECL_EXPORT uchar qt_putenv(LPCSTR name, LPCSTR value)
     }
 }
 
-Q_DECL_EXPORT QmlNetStringContainer* qt_getenv(LPCSTR name)
+Q_DECL_EXPORT QmlNetStringContainer* qt_getenv(const char* name)
 {
     QByteArray result = qgetenv(name);
     if(result.isNull()) {
