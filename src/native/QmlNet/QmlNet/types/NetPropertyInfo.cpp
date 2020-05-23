@@ -86,7 +86,7 @@ QSharedPointer<NetMethodInfoArguement> NetPropertyInfo::getIndexParameter(int in
 extern "C" {
 
 Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContainer* parentTypeContainer,
-                                               LPWSTR name,
+                                               QChar* name,
                                                NetTypeInfoContainer* returnType,
                                                uchar canRead,
                                                uchar canWrite,
@@ -97,7 +97,7 @@ Q_DECL_EXPORT NetPropertyInfoContainer* property_info_create(NetTypeInfoContaine
         notifySignal = notifySignalContainer->signal;
     }
     NetPropertyInfo* instance = new NetPropertyInfo(parentTypeContainer->netTypeInfo,
-                                                    QString::fromUtf16(static_cast<const char16_t*>(name)),
+                                                    QString(name),
                                                     returnType->netTypeInfo,
                                                     canRead == 1 ? true  : false,
                                                     canWrite == 1 ? true : false,
@@ -161,9 +161,9 @@ Q_DECL_EXPORT void property_info_setNotifySignal(NetPropertyInfoContainer* conta
     container->property->setNotifySignal(signalContainer->signal);
 }
 
-Q_DECL_EXPORT void property_info_addIndexParameter(NetPropertyInfoContainer* container, LPWCSTR name, NetTypeInfoContainer* typeInfoContainer)
+Q_DECL_EXPORT void property_info_addIndexParameter(NetPropertyInfoContainer* container, const QChar* name, NetTypeInfoContainer* typeInfoContainer)
 {
-    container->property->addIndexParameter(QString::fromUtf16(name), typeInfoContainer->netTypeInfo);
+    container->property->addIndexParameter(QString(name), typeInfoContainer->netTypeInfo);
 }
 
 Q_DECL_EXPORT int property_info_getIndexParameterCount(NetPropertyInfoContainer* container)

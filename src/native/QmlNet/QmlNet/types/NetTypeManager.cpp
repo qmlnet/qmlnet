@@ -37,8 +37,8 @@ QSharedPointer<NetTypeInfo> NetTypeManager::getBaseType(QSharedPointer<NetTypeIn
 
 extern "C" {
 
-Q_DECL_EXPORT NetTypeInfoContainer* type_manager_getTypeInfo(LPWSTR fullTypeName) {
-    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo(QString::fromUtf16(static_cast<const char16_t*>(fullTypeName)));
+Q_DECL_EXPORT NetTypeInfoContainer* type_manager_getTypeInfo(QChar* fullTypeName) {
+    QSharedPointer<NetTypeInfo> typeInfo = NetTypeManager::getTypeInfo(QString(fullTypeName));
     if(typeInfo == nullptr) {
         return nullptr;
     }

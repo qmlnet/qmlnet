@@ -60,18 +60,18 @@ Q_DECL_EXPORT void qqmlapplicationengine_destroy(QQmlApplicationEngineContainer*
     delete container;
 }
 
-Q_DECL_EXPORT void qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, LPWSTR path) {
-    container->qmlEngine->load(QString::fromUtf16(static_cast<const char16_t*>(path)));
+Q_DECL_EXPORT void qqmlapplicationengine_load(QQmlApplicationEngineContainer* container, QChar* path) {
+    container->qmlEngine->load(QString(path));
 }
 
-Q_DECL_EXPORT void qqmlapplicationengine_loadData(QQmlApplicationEngineContainer* container, LPWSTR dataString) {
-    container->qmlEngine->loadData(QByteArray::fromStdString(QString::fromUtf16(static_cast<const char16_t*>(dataString)).toStdString()));
+Q_DECL_EXPORT void qqmlapplicationengine_loadData(QQmlApplicationEngineContainer* container, QChar* dataString) {
+    container->qmlEngine->loadData(QByteArray::fromStdString(QString(dataString).toStdString()));
 }
 
-Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeContainer, LPWSTR uri, int versionMajor, int versionMinor, LPWSTR qmlName) {
+Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeContainer, QChar* uri, int versionMajor, int versionMinor, QChar* qmlName) {
 
-    QString uriString = QString::fromUtf16(static_cast<const char16_t*>(uri));
-    QString qmlNameString = QString::fromUtf16(static_cast<const char16_t*>(qmlName));
+    QString uriString(uri);
+    QString qmlNameString(qmlName);
     QSharedPointer<NetTypeInfo> typeInfo = typeContainer->netTypeInfo;
 
     switch (++netValueTypeNumber) {
@@ -260,19 +260,19 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeC
     return -1;
 }
 
-Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeQml(LPWCSTR url, LPWCSTR uri, int versionMajor, int versionMinor, LPWCSTR qmlName)
+Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeQml(const QChar* url, const QChar* uri, int versionMajor, int versionMinor, const QChar* qmlName)
 {
-    QString urlString = QString::fromUtf16(url);
-    QString uriString = QString::fromUtf16(uri);
-    QString qmlNameString = QString::fromUtf16(qmlName);
+    QString urlString(url);
+    QString uriString(uri);
+    QString qmlNameString(qmlName);
     return qmlRegisterSingletonType(urlString, uriString.toUtf8().data(), versionMajor, versionMinor, qmlNameString.toUtf8().data());
 }
 
-Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeNet(NetTypeInfoContainer* typeContainer, LPWCSTR uri, int versionMajor, int versionMinor, LPWCSTR typeName)
+Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeNet(NetTypeInfoContainer* typeContainer, const QChar* uri, int versionMajor, int versionMinor, const QChar* typeName)
 {
     QSharedPointer<NetTypeInfo> typeInfo = typeContainer->netTypeInfo;
-    QString typeNameString = QString::fromUtf16(typeName);
-    QString uriString = QString::fromUtf16(uri);
+    QString typeNameString(typeName);
+    QString uriString(uri);
 
     switch (++netValueTypeNumber) {
         NETVALUETYPESINGLETON_CASE(1)
@@ -460,8 +460,8 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeNet(NetTypeInfoCont
     return -1;
 }
 
-Q_DECL_EXPORT void qqmlapplicationengine_addImportPath(QQmlApplicationEngineContainer* container, LPWSTR path) {
-    QString pathString = QString::fromUtf16(static_cast<const char16_t*>(path));
+Q_DECL_EXPORT void qqmlapplicationengine_addImportPath(QQmlApplicationEngineContainer* container, QChar* path) {
+    QString pathString = QString(path);
     container->qmlEngine->addImportPath(pathString);
 }
 
@@ -469,21 +469,21 @@ Q_DECL_EXPORT QQmlApplicationEngine* qqmlapplicationengine_internalPointer(QQmlA
     return container->qmlEngine;
 }
 
-Q_DECL_EXPORT NetVariantContainer* qqmlapplicationengine_getContextProperty(QQmlApplicationEngineContainer* container, LPWCSTR name)
+Q_DECL_EXPORT NetVariantContainer* qqmlapplicationengine_getContextProperty(QQmlApplicationEngineContainer* container, const QChar* name)
 {
-    QVariant result = container->qmlEngine->rootContext()->contextProperty(QString::fromUtf16(name));
+    QVariant result = container->qmlEngine->rootContext()->contextProperty(QString(name));
     return new NetVariantContainer {
         NetVariant::fromQVariant(&result)
     };
 }
 
-Q_DECL_EXPORT void qqmlapplicationengine_setContextProperty(QQmlApplicationEngineContainer* container, LPWCSTR name, NetVariantContainer* valueContainer)
+Q_DECL_EXPORT void qqmlapplicationengine_setContextProperty(QQmlApplicationEngineContainer* container, const QChar* name, NetVariantContainer* valueContainer)
 {
     if(valueContainer == nullptr) {
-        container->qmlEngine->rootContext()->setContextProperty(QString::fromUtf16(name), nullptr);
+        container->qmlEngine->rootContext()->setContextProperty(QString(name), nullptr);
     } else {
         QSharedPointer<NetVariant> value = valueContainer->variant;
-        container->qmlEngine->rootContext()->setContextProperty(QString::fromUtf16(name), value->toQVariant());
+        container->qmlEngine->rootContext()->setContextProperty(QString(name), value->toQVariant());
     }
 }
 

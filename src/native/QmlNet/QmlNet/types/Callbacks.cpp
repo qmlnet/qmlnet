@@ -3,7 +3,7 @@
 
 namespace QmlNet {
 
-using isTypeValidCb = uchar (*)(LPWSTR);
+using isTypeValidCb = uchar (*)(const QChar*);
 using createLazyTypeInfoCb = void (*)(NetTypeInfoContainer *);
 using loadTypeInfoCb = void (*)(NetTypeInfoContainer *);
 using callComponentCompletedCb = void (*)(NetReferenceContainer *);
@@ -15,7 +15,7 @@ using readPropertyCb = void (*)(NetPropertyInfoContainer *, NetReferenceContaine
 using writePropertyCb = void (*)(NetPropertyInfoContainer *, NetReferenceContainer *, NetVariantContainer *, NetVariantContainer *);
 using invokeMethodCb = void (*)(NetMethodInfoContainer *, NetReferenceContainer *, NetVariantListContainer *, NetVariantContainer *);
 using gcCollectCb = void (*)(int);
-using raiseNetSignalsCb = uchar (*)(NetReferenceContainer *, LPWCSTR, NetVariantListContainer *);
+using raiseNetSignalsCb = uchar (*)(NetReferenceContainer *, const QChar*, NetVariantListContainer *);
 using awaitTaskCb = void (*)(NetReferenceContainer *, NetJSValueContainer *, NetJSValueContainer *);
 using serializeNetToStringCb = uchar (*)(NetReferenceContainer *, NetVariantContainer *);
 using invokeDelegateCb = void (*)(NetReferenceContainer *, NetVariantListContainer *);
@@ -43,11 +43,15 @@ static NetTypeInfoManagerCallbacks sharedCallbacks;
 
 void buildTypeInfo(QSharedPointer<NetTypeInfo> typeInfo);
 
+inline const QChar* passStringToManaged(const QString &str) {
+    static_assert (std::is_pointer<decltype(str.data())>::value, "Check the cast below.");
+    static_assert (!std::is_pointer<std::remove_pointer<decltype(str.data())>::type>::value, "Check the cast below.");
+    static_assert (sizeof(std::remove_pointer<decltype(str.data())>::type) == 2, "Check the cast below.");
+    return str.data();
+}
+
 bool isTypeValid(const QString& type) {
-    static_assert (std::is_pointer<LPWSTR>::value, "Check the cast below.");
-    static_assert (!std::is_pointer<std::remove_pointer<LPWSTR>::type>::value, "Check the cast below.");
-    static_assert (sizeof(std::remove_pointer<LPWSTR>::type) == sizeof(ushort), "Check the cast below.");
-    return sharedCallbacks.isTypeValid(static_cast<LPWSTR>(const_cast<void*>(static_cast<const void*>(type.utf16())))) == 1;
+    return sharedCallbacks.isTypeValid(passStringToManaged(type)) == 1;
 }
 
 void releaseNetReference(uint64_t objectId) {
@@ -155,10 +159,7 @@ bool raiseNetSignals(QSharedPointer<NetReference> target, const QString& signalN
     if(parameters != nullptr) {
         parametersContainer = new NetVariantListContainer{parameters};
     }
-    static_assert (std::is_pointer<LPWCSTR>::value, "Check the cast below.");
-    static_assert (!std::is_pointer<std::remove_pointer<LPWCSTR>::type>::value, "Check the cast below.");
-    static_assert (sizeof(std::remove_pointer<LPWCSTR>::type) == sizeof(ushort), "Check the cast below.");
-    return sharedCallbacks.raiseNetSignals(targetContainer, static_cast<LPWCSTR>(static_cast<const void*>(signalName.utf16())), parametersContainer) == 1;
+    return sharedCallbacks.raiseNetSignals(targetContainer, passStringToManaged(signalName), parametersContainer) == 1;
 }
 
 void awaitTask(QSharedPointer<NetReference> target, QSharedPointer<NetJSValue> successCallback, const QSharedPointer<NetJSValue>& failureCallback) {
@@ -191,7 +192,7 @@ Q_DECL_EXPORT void type_info_callbacks_registerCallbacks(QmlNet::NetTypeInfoMana
     QmlNet::sharedCallbacks = *callbacks;
 }
 
-Q_DECL_EXPORT uchar type_info_callbacks_isTypeValid(LPWSTR typeName) {
+Q_DECL_EXPORT uchar type_info_callbacks_isTypeValid(QChar* typeName) {
     return QmlNet::sharedCallbacks.isTypeValid(typeName);
 }
 

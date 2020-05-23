@@ -5,7 +5,7 @@
 
 extern "C" {
 
-Q_DECL_EXPORT QmlNetStringContainer* qlocale_set_default_name(LPCSTR name)
+Q_DECL_EXPORT QmlNetStringContainer* qlocale_set_default_name(const char* name)
 {
     QLocale locale = QLocale(QString(name));
     QLocale::setDefault(locale);

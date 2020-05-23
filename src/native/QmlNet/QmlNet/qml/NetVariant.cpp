@@ -660,11 +660,11 @@ Q_DECL_EXPORT double net_variant_getDouble(NetVariantContainer* container) {
     return container->variant->getDouble();
 }
 
-Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, LPWSTR value) {
+Q_DECL_EXPORT void net_variant_setString(NetVariantContainer* container, QChar* value) {
     if(value == nullptr) {
         container->variant->setString(nullptr);
     } else {
-        container->variant->setString(QString::fromUtf16(static_cast<const char16_t*>(value)));
+        container->variant->setString(QString(value));
     }
 }
 
@@ -676,7 +676,7 @@ Q_DECL_EXPORT QmlNetStringContainer* net_variant_getString(NetVariantContainer* 
     return createString(string);
 }
 
-Q_DECL_EXPORT void net_variant_setBytes(NetVariantContainer* container, LPCSTR value, int count) {
+Q_DECL_EXPORT void net_variant_setBytes(NetVariantContainer* container, const char* value, int count) {
     if(value == nullptr) {
         container->variant->setBytes(nullptr);
     } else {
@@ -684,7 +684,7 @@ Q_DECL_EXPORT void net_variant_setBytes(NetVariantContainer* container, LPCSTR v
     }
 }
 
-Q_DECL_EXPORT LPCSTR net_variant_getBytes(NetVariantContainer* container, int &count) {
+Q_DECL_EXPORT const char* net_variant_getBytes(NetVariantContainer* container, int &count) {
     const QByteArray byteArray = container->variant->getBytes();
     if(byteArray.isNull()) {
         count = 0;

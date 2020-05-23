@@ -4,9 +4,9 @@
 
 extern "C" {
 
-Q_DECL_EXPORT uchar qresource_registerResource(LPWSTR rccFileName, LPWSTR resourceRoot) {
-    QString rccFileNameString = QString::fromUtf16(static_cast<const char16_t*>(rccFileName));
-    QString resourceRootString = QString::fromUtf16(static_cast<const char16_t*>(resourceRoot));
+Q_DECL_EXPORT uchar qresource_registerResource(QChar* rccFileName, QChar* resourceRoot) {
+    QString rccFileNameString(rccFileName);
+    QString resourceRootString(resourceRoot);
     if(QResource::registerResource(rccFileNameString, resourceRootString)) {
         return 1;
     } else{
@@ -14,9 +14,9 @@ Q_DECL_EXPORT uchar qresource_registerResource(LPWSTR rccFileName, LPWSTR resour
     }
 }
 
-Q_DECL_EXPORT uchar qresource_unregisterResource(LPWSTR rccFileName, LPWSTR resourceRoot) {
-    QString rccFileNameString = QString::fromUtf16(static_cast<const char16_t*>(rccFileName));
-    QString resourceRootString = QString::fromUtf16(static_cast<const char16_t*>(resourceRoot));
+Q_DECL_EXPORT uchar qresource_unregisterResource(QChar* rccFileName, QChar* resourceRoot) {
+    QString rccFileNameString(rccFileName);
+    QString resourceRootString(resourceRoot);
     if(QResource::unregisterResource(rccFileNameString, resourceRootString)) {
         return 1;
     } else {
