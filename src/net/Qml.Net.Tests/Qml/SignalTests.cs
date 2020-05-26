@@ -231,6 +231,7 @@ namespace Qml.Net.Tests.Qml
                     })
                     test.someBoolProperty = true
                 ",
+                // TODO: Review/remove the test
                 failOnQmlWarnings: false);
 
             Mock.VerifySet(x => x.SignalRaised = true, Times.Never);
