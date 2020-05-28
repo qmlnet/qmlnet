@@ -277,7 +277,7 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerType(NetTypeInfoContainer* typeC
         NETVALUETYPE_CASE(199)
         NETVALUETYPE_CASE(200)
     }
-    qFatal("Too many registered types: %d", netValueTypeNumber);
+    qFatal("Too many registered types: %d", static_cast<int>(netValueTypeNumber));
     return -1;
 }
 
@@ -497,7 +497,7 @@ Q_DECL_EXPORT int qqmlapplicationengine_registerSingletonTypeNet(NetTypeInfoCont
         NETVALUETYPESINGLETON_CASE(199)
         NETVALUETYPESINGLETON_CASE(200)
     }
-    qFatal("Too many registered types: %d", netValueTypeNumber);
+    qFatal("Too many registered types: %d", static_cast<int>(netValueTypeNumber));
     return -1;
 }
 
