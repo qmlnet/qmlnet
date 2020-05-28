@@ -4,7 +4,7 @@ before_build:
   - cmd: 7z x C:\qmlnet-qt.tar.gz -oC:\
   - cmd: 7z x C:\qmlnet-qt.tar -oC:\qmlnet-qt
   - cmd: rm -r C:\Tools\GitVersion\
-  - cmd: dotnet tool install -g GitVersion.Tool --version 4.0.1-beta1-58
+  - cmd: dotnet tool install -g GitVersion.Tool --version 5.3.4
   - cmd: dotnet gitversion > version.json
   - cmd: git submodule update --init
 build_script:
