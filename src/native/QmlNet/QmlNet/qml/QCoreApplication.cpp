@@ -1,6 +1,7 @@
 #include <QmlNet/qml/QCoreApplication.h>
 #include <QmlNet/qml/NetVariantList.h>
 #include <QmlNet/qml/NetQObject.h>
+#include <QmlNet/qml/NetTranslator.h>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QmlNetUtilities.h>
@@ -180,6 +181,92 @@ Q_DECL_EXPORT void qapp_requestTrigger(QGuiApplicationContainer* container)
 Q_DECL_EXPORT void qapp_exit(int returnCode)
 {
     QGuiApplication::exit(returnCode);
+}
+
+Q_DECL_EXPORT NetTranslator* qapp_installTranslator(NetGCHandle *callbackHandle, TranslateCallback callback)
+{
+    auto app = QCoreApplication::instance();
+    if (!app) {
+        qWarning() << "Cannot install a translator without a QCoreApplication";
+        return nullptr;
+    }
+
+    auto translator = new NetTranslator(callbackHandle, callback, app);
+    if (!QCoreApplication::installTranslator(translator)) {
+        qWarning() << "Failed to install translator";
+        delete translator;
+        return nullptr;
+    }
+
+    return translator;
+}
+
+Q_DECL_EXPORT bool qapp_removeTranslator(NetTranslator *translator)
+{
+    auto result = QCoreApplication::removeTranslator(translator);
+    delete translator;
+    return result;
+}
+
+Q_DECL_EXPORT bool qapp_loadTranslationData(const char *data, int dataLength, const QChar *directory)
+{
+    auto app = QCoreApplication::instance();
+    if (!app) {
+        qWarning() << "Cannot install a translator without a QCoreApplication";
+        return false;
+    }
+
+    QByteArray dataBuffer(data, dataLength);
+    auto translator = new NetDataTranslator(app);
+    if (!translator->load(std::move(dataBuffer), QString(directory))) {
+        qWarning() << "Failed to load translation data";
+        delete translator;
+        return false;
+    }
+
+    if (!QCoreApplication::installTranslator(translator)) {
+        qWarning() << "Failed to install translator";
+        delete translator;
+        return false;
+    }
+
+    return true;
+}
+
+Q_DECL_EXPORT bool qapp_loadTranslationFile(const QChar *locale, const QChar *filename, const QChar *prefix, const QChar *directory, const QChar *suffix)
+{
+    auto app = QCoreApplication::instance();
+    if (!app) {
+        qWarning() << "Cannot install a translator without a QCoreApplication";
+        return false;
+    }
+
+    auto translator = new QTranslator(app);
+    bool success;
+    if (locale) {
+        success = translator->load(QLocale(QString(locale)), QString(filename), QString(prefix), QString(directory), QString(suffix));
+    } else {
+        success = translator->load(QString(filename), QString(prefix), QString(directory), QString(suffix));
+    }
+
+    if (!success) {
+        qWarning() << "Failed to load translation data";
+        delete translator;
+        return false;
+    }
+
+    if (!QCoreApplication::installTranslator(translator)) {
+        qWarning() << "Failed to install translator";
+        delete translator;
+        return false;
+    }
+
+    return true;
+}
+
+Q_DECL_EXPORT QChar* qapp_translate(const char *context, const char *sourceText, const char *disambiguation, int n)
+{
+    return returnStringToDotNet(QCoreApplication::translate(context, sourceText, disambiguation, n));
 }
 
 Q_DECL_EXPORT QCoreApplication* qapp_internalPointer(QGuiApplicationContainer* container)
