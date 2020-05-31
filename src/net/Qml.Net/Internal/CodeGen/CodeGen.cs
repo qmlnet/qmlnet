@@ -7,11 +7,14 @@ using System.Numerics;
 #endif
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CSharp;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
+
+[assembly: InternalsVisibleTo("Anonymously Hosted DynamicMethods Assembly")]
 
 namespace Qml.Net.Internal.CodeGen
 {
