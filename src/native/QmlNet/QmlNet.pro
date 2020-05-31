@@ -17,3 +17,6 @@ include(QmlNet.pri)
 
 target.path = $$(PREFIX)/
 INSTALLS += target
+
+# Needed for CoTaskMemAlloc
+win32:LIBS += ole32.lib
