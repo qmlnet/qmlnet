@@ -1,5 +1,0 @@
-#ifndef QLOCALEINTEROP_H
-#define QLOCALEINTEROP_H
-
-
-#endif // QLOCALEINTEROP_H
