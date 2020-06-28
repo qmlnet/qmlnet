@@ -25,6 +25,7 @@ public:
         HostFxrContext hostFxrContext;
         QString entryPoint;
         QString managedExe;
+        QList<QString> argsPreAppend;
         QList<QString> args;
         QString nativeModule;
     };

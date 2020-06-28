@@ -148,6 +148,10 @@ int CoreHost::run(QGuiApplication& app, QQmlApplicationEngine& engine, runCallba
     auto callbackPtr = QString::number((quintptr)runCallback);
     auto exportedSymbolPointer = QString::number((quintptr)&getExportedFunction);
 
+    for (QString arg : runContext.argsPreAppend) {
+        execArgs.push_back(arg);
+    }
+
     execArgs.push_back(appPtr);
     execArgs.push_back(enginePtr);
     execArgs.push_back(callbackPtr);
