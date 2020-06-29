@@ -1,11 +1,9 @@
-<p align="center"><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
+<p><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
 
-<div style="text-align: center;">
 
 [![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/) [![Build status](https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop)](https://travis-ci.com/qmlnet/qmlnet) [![Build status](https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qmlnet/) [![Gitter](https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat)](https://gitter.im/qmlnet/Lobby) [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg)](#contributors) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/pauldotknopf)
 
-</div>
-------------------------
+<hr />
 
 A Qt/Qml integration with .NET
 
@@ -23,9 +21,16 @@ Supported platforms/runtimes:
 
 <img src="https://github.com/pauldotknopf/Qml.Net.Examples/blob/master/assets/features.gif" alt="" style="max-width:100%;" width="200">
 
+# Elevator pitch
+
+* Proven in production.
+* Established GUI/control framework, used in many industries, from desktop to embedded.
+* Excellent community with many open-sourced controls available.
+* Native rendering, done in native code. No expensive PInvoke calls for rendering/animations/etc. The only interop between .NET and Qt is the data models used to drive the GUI.
+
 # Documentation
 
-https://qmlnet.github.io/
+WIP: https://qmlnet.github.io/
 
 # Getting started
 
