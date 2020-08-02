@@ -35,7 +35,7 @@ namespace Qml.Net.Tests
 
                 // Make sure the permissions are set correctly.
                 var permissions = UnixFileSystemInfo
-                    .GetFileSystemEntry(Path.Combine(_tempDirectory, "qt", "lib", "libQt5Xml.so.5.12.2"))
+                    .GetFileSystemEntry(Path.Combine(_tempDirectory, "qt", "lib", "libQt5Xml.so.5.15.0"))
                     .FileAccessPermissions;
                 permissions.Should().Be(FileAccessPermissions.UserReadWriteExecute
                                         | FileAccessPermissions.GroupRead | FileAccessPermissions.GroupExecute
