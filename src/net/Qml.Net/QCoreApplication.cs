@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Bson;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Qml;
 
@@ -11,7 +13,7 @@ namespace Qml.Net
 {
     public class QCoreApplication : BaseDisposable
     {
-        private readonly Queue<Action> _actionQueue = new Queue<Action>();
+        private readonly Queue<QueuedAction> _actionQueue = new Queue<QueuedAction>();
         private SynchronizationContext _oldSynchronizationContext;
         private GCHandle _triggerHandle;
         private GCHandle _aboutToQuitHandle;
@@ -88,7 +90,7 @@ namespace Qml.Net
         {
             lock (_actionQueue)
             {
-                _actionQueue.Enqueue(action);
+                _actionQueue.Enqueue(new QueuedAction(action, ExecutionContext.Capture()));
             }
             RequestTrigger();
         }
@@ -140,12 +142,23 @@ namespace Qml.Net
 
         private void Trigger()
         {
-            Action action;
+            QueuedAction action;
             lock (_actionQueue)
             {
                 action = _actionQueue.Dequeue();
             }
-            action?.Invoke();
+            
+            if (action != null)
+            {
+                ExecutionContext.Run(
+                    action.ExecutionContext,
+                    state =>
+                    {
+                        action.Action();
+                    },
+                    null);
+                action.ExecutionContext.Dispose();
+            }
         }
 
         public static void ProcessEvents(QEventLoop.ProcessEventsFlag flags, TimeSpan? timeout = null)
@@ -264,6 +277,23 @@ namespace Qml.Net
             return Interop.QCoreApplication.TestAttribute((int)attribute) == 1;
         }
 
+        public static void SendPostedEvents(INetQObject receiver = null, int eventType = 0)
+        {
+            if (receiver != null)
+            {
+                var netQObject = receiver as NetQObject.NetQObjectDynamic;
+                if (netQObject == null)
+                {
+                    throw new ArgumentException(nameof(receiver));
+                }
+                Interop.QCoreApplication.SendPostedEvent(netQObject.QObject.Handle, eventType);
+            }
+            else
+            {
+                Interop.QCoreApplication.SendPostedEvent(IntPtr.Zero, eventType);
+            }
+        }
+
         protected override void DisposeUnmanaged(IntPtr ptr)
         {
             SynchronizationContext.SetSynchronizationContext(_oldSynchronizationContext);
@@ -324,6 +354,19 @@ namespace Qml.Net
                 _app.Dispatch(() => d.Invoke(state));
             }
         }
+
+        private class QueuedAction
+        {
+            public QueuedAction(Action action, ExecutionContext ec)
+            {
+                Action = action;
+                ExecutionContext = ec;
+            }
+            
+            public Action Action { get; }
+            
+            public ExecutionContext ExecutionContext { get; }
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -338,86 +381,127 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qapp_fromExisting")]
         public FromExistingDel FromExisting { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr FromExistingDel(IntPtr rawPointer);
 
         [NativeSymbol(Entrypoint = "qapp_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(IntPtr args, int flags, int type);
 
         [NativeSymbol(Entrypoint = "qapp_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr container);
 
         [NativeSymbol(Entrypoint = "qapp_getType")]
         public GetAppTypeDel GetAppType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetAppTypeDel(IntPtr container, IntPtr rawPointer);
 
         [NativeSymbol(Entrypoint = "qapp_processEvents")]
         public ProcessEventsDel ProcessEvents { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ProcessEventsDel(int flags);
 
         [NativeSymbol(Entrypoint = "qapp_processEventsWithTimeout")]
         public ProcessEventsWithTimeoutDel ProcessEventsWithTimeout { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ProcessEventsWithTimeoutDel(int flags, int timeout);
 
         [NativeSymbol(Entrypoint = "qapp_exec")]
         public ExecDel Exec { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int ExecDel();
 
         [NativeSymbol(Entrypoint = "qapp_addCallbacks")]
         public AddCallbacksDel AddCallbacks { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddCallbacksDel(IntPtr app, ref QCoreAppCallbacks callbacks);
 
         [NativeSymbol(Entrypoint = "qapp_requestTrigger")]
         public RequestTriggerDel RequestTrigger { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void RequestTriggerDel(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qapp_exit")]
         public ExitDel Exit { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ExitDel(int returnCode);
 
         [NativeSymbol(Entrypoint = "qapp_internalPointer")]
         public InternalPointerDel InternalPointer { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr InternalPointerDel(IntPtr app);
         
         [NativeSymbol(Entrypoint = "qapp_setOrganizationName")]
         public SetOrganizationNameDel SetOrganizationName { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetOrganizationNameDel([MarshalAs(UnmanagedType.LPWStr)]string organizationName);
         
         [NativeSymbol(Entrypoint = "qapp_getOrganizationName")]
         public GetOrganizationNameDel GetOrganizationName { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetOrganizationNameDel();
         
         [NativeSymbol(Entrypoint = "qapp_setOrganizationDomain")]
         public SetOrganizationDomainDel SetOrganizationDomain { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetOrganizationDomainDel([MarshalAs(UnmanagedType.LPWStr)]string organizationDomain);
         
         [NativeSymbol(Entrypoint = "qapp_getOrganizationDomain")]
         public GetOrganizationDomainDel GetOrganizationDomain { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetOrganizationDomainDel();
         
         [NativeSymbol(Entrypoint = "qapp_setAttribute")]
         public SetAttributeDel SetAttribute { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetAttributeDel(int attribute, bool on);
         
         [NativeSymbol(Entrypoint = "qapp_testAttribute")]
         public TestAttributeDel TestAttribute { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte TestAttributeDel(int attribute);
+
+        [NativeSymbol(Entrypoint = "qapp_sendPostedEvents")]
+        public SendPostedEventsDel SendPostedEvent { get; set; }
+        
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SendPostedEventsDel(IntPtr netQObject, int eventType);
     }
 }

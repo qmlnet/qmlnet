@@ -134,7 +134,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.BoolNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Bool, NetVariant.From(true), x => x.Bool = true);
@@ -157,7 +157,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.CharNullable, (char?)null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Char, NetVariant.From('C'), x => x.Char = 'C');
@@ -180,7 +180,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.IntNullable, (char?)null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Int, NetVariant.From(20), x => x.Int = 20);
@@ -203,7 +203,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.UIntNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.UInt, NetVariant.From(20), x => x.UInt = 20);
@@ -226,7 +226,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.LongNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Long, NetVariant.From((long)20), x => x.Long = 20);
@@ -249,7 +249,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.ULongNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.ULong, NetVariant.From((ulong)20), x => x.ULong = 20);
@@ -272,7 +272,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.FloatNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Float, NetVariant.From((float)20), x => x.Float = 20);
@@ -295,7 +295,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.DoubleNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Double, NetVariant.From((double)20), x => x.Double = 20);
@@ -318,7 +318,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.String, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.String, NetVariant.From(""), x => x.String = "");
@@ -344,7 +344,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.DateTimeNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.DateTime, NetVariant.From(time), x => x.DateTime = time);
@@ -364,7 +364,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.Obj, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Obj, NetVariant.From((object)null), x => x.Obj = null);
@@ -382,7 +382,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.ObjTyped, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.ObjTyped, NetVariant.From((RandomType)null), x => x.ObjTyped = null);
@@ -406,7 +406,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.StructNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Struct, NetVariant.From(o), x => x.Struct = o);
@@ -429,7 +429,7 @@ namespace Qml.Net.Tests.CodeGen
             });
             TestGet(x => x.EnumNullable, null, result =>
             {
-                result.VariantType.Should().Be(NetVariantType.Invalid);
+                result.VariantType.Should().Be(NetVariantType.Null);
             });
 
             TestSet(x => x.Enum, NetVariant.From(RandomEnum.Value2), x => x.Enum = RandomEnum.Value2);

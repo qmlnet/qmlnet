@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -e
+set -x
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # Before we run the build, get gitversion and generate a version.json.
-dotnet tool install -g GitVersion.Tool --version 4.0.1-beta1-58
+dotnet tool install -g GitVersion.Tool --version 5.3.4
 export PATH="$PATH:$HOME/.dotnet/tools"
 dotnet gitversion > version.json
 

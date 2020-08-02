@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -97,18 +98,7 @@ namespace Qml.Net.Tests.Qml
                 qObject.GetProperty("readOnly").Should().Be(3);
             });
         }
-        
-        [Fact]
-        public void Can_set_property_on_qobject()
-        {
-            AssertQObject(qObject =>
-            {
-                // No real way to test this.
-                // I suppose it doesn't throw, eh?
-                qObject.SetProperty("writeOnly", 3);
-            });
-        }
-        
+      
         [Fact]
         public void Can_set_and_get_property_on_qobject()
         {
@@ -472,6 +462,46 @@ namespace Qml.Net.Tests.Qml
         }
         
         [Fact]
+        public void Can_used_typed_base_qobject_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                qObject.SetProperty("objectName", "wer");
+                AssertValue(qObject, "TypedBaseQObject", qObject, result =>
+                {
+                    var resultQObject = result.Should().NotBeNull().And.BeAssignableTo<INetQObject>().Subject;
+                    resultQObject.GetProperty("objectName").Should().Be("wer");
+                });
+            });
+        }
+        
+        [Fact]
+        public void Can_used_typed_qobject_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                qObject.SetProperty("objectName", "wer");
+                AssertValue(qObject, "TypedQObject", qObject, result =>
+                {
+                    var resultQObject = result.Should().NotBeNull().And.BeAssignableTo<INetQObject>().Subject;
+                    resultQObject.GetProperty("objectName").Should().Be("wer");
+                });
+            });
+        }
+        
+        [Fact]
+        public void Value_is_null_when_using_invalid_qobject_type_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                AssertValue(qObject, "TypedDerivedQObject", qObject, result =>
+                {
+                    result.Should().BeNull();
+                });
+            });
+        }
+        
+        [Fact]
         public void Can_use_object_with_qobject()
         {
             AssertQObject(qObject =>
@@ -528,7 +558,84 @@ namespace Qml.Net.Tests.Qml
                 AssertValue(qObject, "QUInt64", ulong.MaxValue);
             });
         }
-        
+
+        [Fact]
+        public void Can_use_variant_list_with_qobject()
+        {
+            AssertQObject(qObject =>
+            {
+                AssertValue(qObject, "QVariantList", new List<int> { 3 }, result =>
+                {
+                    result.Should().NotBeNull();
+                    var list = result.Should().BeAssignableTo<IList<object>>().Subject;
+                    list.Should().HaveCount(1);
+                    list[0].Should().Be(3);
+                });
+
+                qObject.SetProperty("objectName", "tetttt");
+                AssertValue(qObject, "QVariantList", new List<object> { qObject }, result =>
+                {
+                    result.Should().NotBeNull();
+                    var list = result.Should().BeAssignableTo<IList<object>>().Subject;
+                    list.Should().HaveCount(1);
+                    var resultQObject = list[0].Should().BeAssignableTo<INetQObject>().Subject;
+                    resultQObject.GetProperty("objectName").Should().Be("tetttt");
+                });
+            });
+        }
+
+        [Fact]
+        public void Exception_thrown_when_using_wrong_number_of_parameters()
+        {
+            AssertQObject(qObject =>
+            {
+                Assert.Throws<Exception>(() => { qObject.InvokeMethod("testSlotInt"); });
+                Assert.Throws<Exception>(() => { qObject.InvokeMethod("testSlotInt", 1, 1); });
+            });
+        }
+
+        [Fact]
+        public void Can_invoke_signal()
+        {
+            AssertQObject(qObject =>
+            {
+                var raised = false;
+                using (qObject.AttachSignal("testSignalInt", parameters =>
+                {
+                    raised = true;
+                    parameters.Count.Should().Be(1);
+                    parameters[0].Should().Be(3);
+                }))
+                {
+                    qObject.InvokeMethod("testSignalInt", 3).Should().BeNull();
+                }
+
+                raised.Should().BeTrue();
+            });
+        }
+
+        [Fact]
+        public void Can_build_qobject()
+        {
+            AssertQObject(_ =>
+            {
+                var qObject = Qt.BuildQObject("TestQObject*");
+                qObject.Should().NotBeNull();
+                qObject.Dispose();
+            });
+        }
+
+        [Fact]
+        public void Invalid_type_names_return_null_when_building_qobjects()
+        {
+            AssertQObject(_ =>
+            {
+                Qt.BuildQObject("sdfsdfsfsd").Should().BeNull();
+                Qt.BuildQObject("int").Should().BeNull();
+                Qt.BuildQObject("TestQObject").Should().BeNull(); // No * at end.
+            });
+        }
+
         private void AssertValue(INetQObject qObject, string method, object value)
         {   
             var raised = false;

@@ -9,16 +9,6 @@ using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Tests.Qml
 {
-    public class TestContext
-    {
-        public void Quit()
-        {
-            Quited = true;
-        }
-
-        public bool Quited { get; set; }
-    }
-
     public abstract class AbstractBaseQmlTests<TTypeToRegister> : BaseTests
     {
         private readonly QGuiApplication _coreApplication;
@@ -27,7 +17,6 @@ namespace Qml.Net.Tests.Qml
         protected MockTypeCreator TypeCreator { get;  private set; }
 
         readonly List<Type> _registeredTypes = new List<Type>();
-        static bool _testContextRegistered = false;
 
         protected AbstractBaseQmlTests()
         {
@@ -35,12 +24,6 @@ namespace Qml.Net.Tests.Qml
             qmlApplicationEngine = new QQmlApplicationEngine();
             TypeCreator = new MockTypeCreator();
             Net.TypeCreator.Current = TypeCreator;
-            TypeCreator.SetInstance(typeof(TestContext), new TestContext());
-            if (!_testContextRegistered)
-            {
-                Net.Qml.RegisterType<TestContext>("testContext");
-                _testContextRegistered = true;
-            }
         }
 
         protected virtual void RegisterType<T>()
@@ -50,15 +33,9 @@ namespace Qml.Net.Tests.Qml
             Net.Qml.RegisterType<T>("tests");
         }
 
-        protected bool ExecApplicationWithTimeout(int timeoutMs)
+        protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false, bool failOnQmlWarnings = true)
         {
-            var testContext = TypeCreator.Create(typeof(TestContext)) as TestContext;
-            return QTest.QWaitFor(() => testContext.Quited, timeoutMs);
-        }
-
-        protected void RunQmlTest(string instanceId, string componentOnCompletedCode)
-        {
-            NetTestHelper.RunQml(
+            var result = NetTestHelper.RunQml(
                 qmlApplicationEngine,
                 string.Format(
                     @"
@@ -71,10 +48,16 @@ namespace Qml.Net.Tests.Qml
                             {2}
                         }}
                     }}
-            ",
-            typeof(TTypeToRegister).Name,
-            instanceId,
-            componentOnCompletedCode));
+                    ",
+                    typeof(TTypeToRegister).Name,
+                    instanceId,
+                    componentOnCompletedCode),
+                runEvents,
+                failOnQmlWarnings);
+            if (result == false)
+            {
+                throw new Exception($"Couldn't execute qml: {componentOnCompletedCode}");
+            }
         }
 
         public override void Dispose()

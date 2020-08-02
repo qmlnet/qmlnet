@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal.Qml;
 
 namespace Qml.Net.Internal.Types
@@ -111,26 +112,36 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "net_instance_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(UInt64 objectId, IntPtr type);
 
         [NativeSymbol(Entrypoint = "net_instance_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr instance);
 
         [NativeSymbol(Entrypoint = "net_instance_clone")]
         public CloneDel Clone { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CloneDel(IntPtr instance);
 
         [NativeSymbol(Entrypoint = "net_instance_getObjectId")]
         public GetObjectIdDel GetObjectId { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate UInt64 GetObjectIdDel(IntPtr instance);
 
         [NativeSymbol(Entrypoint = "net_instance_activateSignal")]
         public ActivateSignalDel ActivateSignal { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte ActivateSignalDel(IntPtr instance, [MarshalAs(UnmanagedType.LPWStr)]string signalName, IntPtr variants);
     }
 

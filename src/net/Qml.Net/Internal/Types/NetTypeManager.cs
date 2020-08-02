@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Types
 {
@@ -27,6 +28,8 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "type_manager_getTypeInfo")]
         public GetTypeInfoDel GetTypeInfo { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetTypeInfoDel([MarshalAs(UnmanagedType.LPWStr)]string fullTypeName);
     }
 }

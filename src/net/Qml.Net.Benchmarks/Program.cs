@@ -6,7 +6,7 @@ namespace Qml.Net.Benchmarks
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<ReferenceBenchmarks>();
+            BenchmarkRunner.Run<QObjectMethodBenchmarks>();
         }
     }
 }

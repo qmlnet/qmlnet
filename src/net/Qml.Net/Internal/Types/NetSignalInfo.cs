@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Types
 {
@@ -42,36 +43,50 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "signal_info_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(IntPtr parentType, [MarshalAs(UnmanagedType.LPWStr)] string name);
 
         [NativeSymbol(Entrypoint = "signal_info_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr signal);
 
         [NativeSymbol(Entrypoint = "signal_info_getParentType")]
         public GetParentTypeDel GetParentType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetParentTypeDel(IntPtr signal);
 
         [NativeSymbol(Entrypoint = "signal_info_getName")]
         public GetNameDel GetName { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetNameDel(IntPtr signal);
 
         [NativeSymbol(Entrypoint = "signal_info_addParameter")]
         public AddParameterDel AddParameter { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddParameterDel(IntPtr signal, NetVariantType type);
 
         [NativeSymbol(Entrypoint = "signal_info_getParameterCount")]
         public GetParameterCountDel GetParameterCount { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetParameterCountDel(IntPtr signal);
 
         [NativeSymbol(Entrypoint = "signal_info_getParameter")]
         public GetParameterDel GetParameter { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate NetVariantType GetParameterDel(IntPtr signal, int index);
     }
 }

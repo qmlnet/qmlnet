@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -61,36 +63,50 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_variant_list_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel();
 
         [NativeSymbol(Entrypoint = "net_variant_list_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr list);
 
         [NativeSymbol(Entrypoint = "net_variant_list_count")]
         public CountDel Count { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int CountDel(IntPtr list);
 
         [NativeSymbol(Entrypoint = "net_variant_list_add")]
         public AddDel Add { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddDel(IntPtr list, IntPtr variant);
 
         [NativeSymbol(Entrypoint = "net_variant_list_get")]
         public GetDel Get { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetDel(IntPtr list, int index);
 
         [NativeSymbol(Entrypoint = "net_variant_list_remove")]
         public RemoveDel Remove { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void RemoveDel(IntPtr list, int index);
 
         [NativeSymbol(Entrypoint = "net_variant_list_clear")]
         public ClearDel Clear { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void ClearDel(IntPtr list);
     }
 }

@@ -1,3 +1,6 @@
 [submodule "build/scripts/Buildary"]
 	path = build/scripts/Buildary
 	url = https://github.com/pauldotknopf/dotnet-buildary.git
+[submodule "src/native/QmlNet"]
+	path = src/native/QmlNet
+	url = https://github.com/qmlnet/qmlnet-native

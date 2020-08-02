@@ -1,4 +1,6 @@
 using System;
+using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Qml
 {
@@ -20,6 +22,8 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_qobject_signal_handler_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr signalHandler);
     }
 }

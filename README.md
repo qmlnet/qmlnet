@@ -1,11 +1,11 @@
-# Qml.Net 
+<p><a href="https://github.com/qmlnet/qmlnet" rel="nofollow"><img src="https://qmlnet.github.io/qmlnet.png" width="150"></a></p>
 
 
-A Qml integration with .NET
+[![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/) [![Build status](https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop)](https://travis-ci.com/qmlnet/qmlnet) [![Build status](https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qmlnet/) [![Gitter](https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat)](https://gitter.im/qmlnet/Lobby) [![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg)](#contributors) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/pauldotknopf)
 
-[![Qml.Net](https://img.shields.io/nuget/v/Qml.Net.svg?style=flat&label=Qml.Net)](http://www.nuget.org/packages/Qml.Net/)
-[![Build status](https://travis-ci.com/qmlnet/qmlnet.svg?branch=develop)](https://travis-ci.com/qmlnet/qmlnet) [![Build status](https://ci.appveyor.com/api/projects/status/l0hh7ranqawj682y/branch/develop?svg=true)](https://ci.appveyor.com/project/pauldotknopf/qmlnet/branch/develop)
-[![Gitter chat](https://img.shields.io/gitter/room/qmlnet/Lobby.svg?style=flat)](https://gitter.im/qmlnet/Lobby) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/pauldotknopf)
+<hr />
+
+A Qt/Qml integration with .NET
 
 Supported platforms/runtimes:
 * Runtimes:
@@ -17,133 +17,157 @@ Supported platforms/runtimes:
   * OSX
   * Windows
 
+# First look
+
+<img src="https://github.com/pauldotknopf/Qml.Net.Examples/blob/master/assets/features.gif" alt="" style="max-width:100%;" width="200">
+
+# Elevator pitch
+
+* Proven in production.
+* Established GUI/control framework, used in many industries, from desktop to embedded.
+* Excellent community with many open-sourced controls available.
+* Native rendering, done in native code. No expensive PInvoke calls for rendering/animations/etc. The only interop between .NET and Qt is the data models used to drive the GUI.
+
 # Documentation
 
-https://qmlnet.github.io/
+WIP: https://qmlnet.github.io/
 
 # Getting started
 
 ```bash
 dotnet add package Qml.Net
-```
-
-**Windows**
-
-```bash
 dotnet add package Qml.Net.WindowsBinaries
-```
-
-**OSX**
-
-```bash
 dotnet add package Qml.Net.OSXBinaries
-```
-
-**Linux**
-
-```bash
 dotnet add package Qml.Net.LinuxBinaries
-```
+```  
 
-Checkout the [examples](https://github.com/qmlnet/qmlnet-examples) for some inspiration.
+**Note for Linux users**: Package `libc6-dev` is required to be installed because it contains `libdl.so` that is needed.
+
+# Examples
+Checkout the [examples](https://github.com/qmlnet/qmlnet-examples) on how to do many things with Qml.Net.
 
 # Quick overview
 
 **Define a .NET type (POCO)**
 
 ```c#
-[Signal("customSignal", NetVariantType.String)] // You can define signals that Qml can listen to.
-public class QmlType
+//QmlType.cs
+using Qml.Net;
+using System.Threading.Tasks;
+
+namespace QmlQuickOverview
 {
-    /// <summary>
-    /// Properties are exposed to Qml.
-    /// </summary>
-    [NotifySignal("stringPropertyChanged")] // For Qml binding/MVVM.
-    public string StringProperty { get; set; }
+    [Signal("customSignal", NetVariantType.String)] // You can define signals that Qml can listen to.
+    public class QmlType
+    {
+        /// <summary>
+        /// Properties are exposed to Qml.
+        /// </summary>
+        [NotifySignal("stringPropertyChanged")] // For Qml binding/MVVM.
+        public string StringProperty { get; set; }
 
-    /// <summary>
-    /// Methods can return .NET types.
-    /// The returned type can be invoked from Qml (properties/methods/events/etc).
-    /// </summary>
-    /// <returns></returns>
-    public QmlType CreateNetObject()
-    {
-        return new QmlType();
-    }
-
-    /// <summary>
-    /// Qml can pass .NET types to .NET methods.
-    /// </summary>
-    /// <param name="parameter"></param>
-    public void TestMethod(QmlType parameter)
-    {
-    }
-    
-    /// <summary>
-    /// Async methods can be invoked with continuations happening on Qt's main thread.
-    /// </summary>
-    public async Task<string> TestAsync()
-    {
-        // On the UI thread
-        await Task.Run(() =>
+        /// <summary>
+        /// Methods can return .NET types.
+        /// The returned type can be invoked from Qml (properties/methods/events/etc).
+        /// </summary>
+        /// <returns></returns>
+        public QmlType CreateNetObject()
         {
-            // On the background thread
-        });
-        // On the UI thread
-        return "async result!"
-    }
-    
-    /// <summary>
-    /// Qml can also pass Qml/C++ objects that can be invoked from .NET
-    /// </summary>
-    /// <param name="qObject"></param>
-    public void TestMethodWithQObject(dynamic o)
-    {
-        string result = o.PropertyDefinedInCpp;
-        o.MethodDefinedInCpp(result);
+            return new QmlType();
+        }
+
+        /// <summary>
+        /// Qml can pass .NET types to .NET methods.
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void TestMethod(QmlType parameter)
+        {
+        }
         
-        // You can also listen to signals on QObjects.
-        var qObject = o as INetQObject.
-        var handler = qObject.AttachSignal("signalName", parameters => {
-            // parameters is a list of arguements passed to the signal.
-        });
-        handle.Dispose() // When you are done listening to signal.
+        /// <summary>
+        /// Async methods can be invoked with continuations happening on Qt's main thread.
+        /// </summary>
+        public async Task<string> TestAsync()
+        {
+            // On the UI thread
+            await Task.Run(() =>
+            {
+                // On the background thread
+            });
+            // On the UI thread
+            return "async result!";
+        }
         
-        // You can also listen to when a property changes (notify signal).
-        var handler = qObject.AttachNotifySignal("propertySignal", parameters => {
-            // parameters is a list of arguements passed to the signal.
-        });
-        handle.Dispose() // When you are done listening to signal.
-    }
-    
-    /// <summary>
-    /// .NET can activate signals to send notifications to Qml.
-    /// </summary>
-    public void ActivateCustomSignal(string message)
-    {
-        this.ActivateSignal("customSignal", message)
+        /// <summary>
+        /// Qml can also pass Qml/C++ objects that can be invoked from .NET
+        /// </summary>
+        /// <param name="qObject"></param>
+        public void TestMethodWithQObject(dynamic o)
+        {
+            string result = o.propertyDefinedInCpp;
+            o.methodDefinedInCpp(result);
+            
+            // You can also listen to signals on QObjects.
+            var qObject = o as INetQObject;
+            var handler = qObject.AttachSignal("signalName", parameters => {
+                // parameters is a list of arguements passed to the signal.
+            });
+            handler.Dispose(); // When you are done listening to signal.
+            
+            // You can also listen to when a property changes (notify signal).
+            handler = qObject.AttachNotifySignal("property", parameters => {
+                // parameters is a list of arguements passed to the signal.
+            });
+            handler.Dispose(); // When you are done listening to signal.
+        }
+        
+        /// <summary>
+        /// .NET can activate signals to send notifications to Qml.
+        /// </summary>
+        public void ActivateCustomSignal(string message)
+        {
+            this.ActivateSignal("customSignal", message);
+        }
     }
 }
+
 ```
 
 **Register your new type with Qml.**
 
 ```c#
-using (var app = new QGuiApplication(args))
+//QmlExample.cs
+using Qml.Net;
+using Qml.Net.Runtimes;
+
+namespace QmlQuickOverview
 {
-    using (var engine = new QQmlApplicationEngine())
+    class QmlExample
     {
-        // Register our new type to be used in Qml
-        QQmlApplicationEngine.RegisterType<QmlType>("test", 1, 1);
-        engine.Load("main.qml");
-        return app.Exec();
+        static int Main(string[] args)
+        {
+            RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();
+
+            using (var app = new QGuiApplication(args))
+            {
+                using (var engine = new QQmlApplicationEngine())
+                {
+                    // Register our new type to be used in Qml
+                    Qml.Net.Qml.RegisterType<QmlType>("test", 1, 1);
+                    engine.Load("Main.qml");
+                    return app.Exec();
+                }
+            }
+        }
     }
 }
+
 ```
 
 **Use the .NET type in Qml**
 
 ```js
+//Main.qml
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
@@ -205,8 +229,35 @@ ApplicationWindow {
 - [x] Dynamically compiled delegates for increased performance.
 - [x] Passing ```QObject``` types to .NET with support for interacting with signals/slots/properties on them.
 
-# Not implemented (but planned)
+There aren't really any important features missing that are needed for prime-time. This product is currently used on embedded devices in the medical industry.
 
-- [ ] Compiling Qml resource files and bundling them within .NET.
-- [ ] .NET Events to signals
-- [ ] Qml debugger for VS and VS Code.
+# Running Unit Tests
+
+The unit tests can be found in [src/native/Qml.Net.Tests](src/net/Qml.Net.Tests).
+
+They can be run directly from Visual Studio, or by using the `dotnet test` command line tool. 
+
+Since the tests rely on the native QmlNet library, you have to ensure the library is in the `PATH` (on Windows) or otherwise discoverable. If you are trying to run tests against the native library built from the same repository, you can put the `src/native/output` folder into your `PATH` or `LD_LIBRARY_PATH` after running the `build.bat` or `build.sh` script.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people!
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table>
+  <tr>
+    <td align="center"><a href="http://www.devmil.de"><img src="https://avatars1.githubusercontent.com/u/6693130?v=4" width="100px;" alt="Michael Lamers"/><br /><sub><b>Michael Lamers</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=devmil" title="Code">💻</a></td>
+    <td align="center"><a href="https://ymueller.de"><img src="https://avatars0.githubusercontent.com/u/2760830?v=4" width="100px;" alt="TripleWhy"/><br /><sub><b>TripleWhy</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=TripleWhy" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/MaxMommersteeg"><img src="https://avatars3.githubusercontent.com/u/9657173?v=4" width="100px;" alt="Max"/><br /><sub><b>Max</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=MaxMommersteeg" title="Code">💻</a> <a href="https://github.com/qmlnet/qmlnet/commits?author=MaxMommersteeg" title="Documentation">📖</a> <a href="#financial-MaxMommersteeg" title="Financial">💵</a></td>
+    <td align="center"><a href="https://github.com/geigertom"><img src="https://avatars0.githubusercontent.com/u/19152463?v=4" width="100px;" alt="geigertom"/><br /><sub><b>geigertom</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=geigertom" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jamesdavila"><img src="https://avatars0.githubusercontent.com/u/1946041?v=4" width="100px;" alt="James Davila"/><br /><sub><b>James Davila</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=jamesdavila" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/afillebrown"><img src="https://avatars2.githubusercontent.com/u/38264913?v=4" width="100px;" alt="Andy Fillebrown"/><br /><sub><b>Andy Fillebrown</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=afillebrown" title="Code">💻</a></td>
+    <td align="center"><a href="https://linkedin.com/in/vadimperetokin"><img src="https://avatars1.githubusercontent.com/u/110988?v=4" width="100px;" alt="Vadim Peretokin"/><br /><sub><b>Vadim Peretokin</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=vadi2" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Juhlinus"><img src="https://avatars0.githubusercontent.com/u/12988164?v=4" width="100px;" alt="Linus Juhlin"/><br /><sub><b>Linus Juhlin</b></sub></a><br /><a href="https://github.com/qmlnet/qmlnet/commits?author=Juhlinus" title="Documentation">📖</a></td>
+  </tr>
+</table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal.Types;
 
 namespace Qml.Net.Internal.Qml
@@ -90,6 +91,12 @@ namespace Qml.Net.Internal.Qml
 
                 return result == IntPtr.Zero ? null : new NetQObjectSignalConnection(result);
             }
+        }
+
+        public static NetQObject BuildQObject(string className)
+        {
+            var result = Interop.NetQObject.BuildQObject(className, IntPtr.Zero);
+            return result == IntPtr.Zero ? null : new NetQObject(result);
         }
         
         public dynamic AsDynamic()
@@ -247,31 +254,50 @@ namespace Qml.Net.Internal.Qml
         [NativeSymbol(Entrypoint = "net_qobject_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr qObject);
         
         [NativeSymbol(Entrypoint = "net_qobject_getProperty")]
         public GetPropertyDel GetProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetPropertyDel(IntPtr qObject, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, ref byte result);
 
         [NativeSymbol(Entrypoint = "net_qobject_setProperty")]
         public SetPropertyDel SetProperty { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr SetPropertyDel(IntPtr qObject, [MarshalAs(UnmanagedType.LPWStr)] string propertyName, IntPtr netVariant, ref byte result);
 
         [NativeSymbol(Entrypoint = "net_qobject_invokeMethod")]
         public InvokeMethodDel InvokeMethod { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr InvokeMethodDel(IntPtr qObject, [MarshalAs(UnmanagedType.LPWStr)] string methodName, IntPtr parameters, ref byte result);
         
         [NativeSymbol(Entrypoint = "net_qobject_attachSignal")]
         public AttachSignalDel AttachSignal { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr AttachSignalDel(IntPtr qObject, [MarshalAs(UnmanagedType.LPWStr)] string signalName, IntPtr del, ref byte result);
         
         [NativeSymbol(Entrypoint = "net_qobject_attachNotifySignal")]
         public AttachNotifySignalDel AttachNotifySignal { get; set; }
         
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr AttachNotifySignalDel(IntPtr qObject, [MarshalAs(UnmanagedType.LPWStr)] string signalName, IntPtr del, ref byte result);
+
+        [NativeSymbol(Entrypoint = "net_qobject_buildQObject")]
+        public BuildQObjectDel BuildQObject { get; set; }
+        
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr BuildQObjectDel([MarshalAs(UnmanagedType.LPWStr)] string className, IntPtr constructorParameters);
     }
 }

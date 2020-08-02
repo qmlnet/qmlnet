@@ -1,10 +1,10 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 before_build:
-  - ps: Invoke-WebRequest -Uri https://github.com/qmlnet/qt-runtimes/releases/download/releases/qt-5.12.2-ad0689c-win-x64-dev.tar.gz -OutFile C:\qmlnet-qt.tar.gz
+  - ps: Invoke-WebRequest -Uri https://github.com/qmlnet/qt-runtimes/releases/download/releases/qt-5.15.1-7fc8b10-win-x64-dev.tar.gz -OutFile C:\qmlnet-qt.tar.gz
   - cmd: 7z x C:\qmlnet-qt.tar.gz -oC:\
   - cmd: 7z x C:\qmlnet-qt.tar -oC:\qmlnet-qt
   - cmd: rm -r C:\Tools\GitVersion\
-  - cmd: dotnet tool install -g GitVersion.Tool --version 4.0.1-beta1-58
+  - cmd: dotnet tool install -g GitVersion.Tool --version 5.3.4
   - cmd: dotnet gitversion > version.json
   - cmd: git submodule update --init
 build_script:

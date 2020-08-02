@@ -116,7 +116,7 @@ namespace Qml.Net.Tests.Qml
         }
 
         [Fact]
-        public void Nullable_enum_is_null_type_is_js_when_null()
+        public void Nullable_enum_is_null_type_in_js_when_null()
         {
             Mock.Setup(x => x.ValueNullable).Returns((EnumTestsObject.TestEnum?)null);
             Mock.Setup(x => x.Test(It.IsAny<string>()));

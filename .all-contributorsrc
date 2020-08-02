@@ -1,0 +1,90 @@
+{
+  "projectName": "qmlnet",
+  "projectOwner": "qmlnet",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg)](#contributors)",
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "devmil",
+      "name": "Michael Lamers",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6693130?v=4",
+      "profile": "http://www.devmil.de",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "TripleWhy",
+      "name": "TripleWhy",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/2760830?v=4",
+      "profile": "https://ymueller.de",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "MaxMommersteeg",
+      "name": "Max",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9657173?v=4",
+      "profile": "https://github.com/MaxMommersteeg",
+      "contributions": [
+        "code",
+        "doc",
+        "financial"
+      ]
+    },
+    {
+      "login": "geigertom",
+      "name": "geigertom",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/19152463?v=4",
+      "profile": "https://github.com/geigertom",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jamesdavila",
+      "name": "James Davila",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1946041?v=4",
+      "profile": "https://github.com/jamesdavila",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "afillebrown",
+      "name": "Andy Fillebrown",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/38264913?v=4",
+      "profile": "https://github.com/afillebrown",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "vadi2",
+      "name": "Vadim Peretokin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/110988?v=4",
+      "profile": "https://linkedin.com/in/vadimperetokin",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Juhlinus",
+      "name": "Linus Juhlin",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12988164?v=4",
+      "profile": "https://github.com/Juhlinus",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

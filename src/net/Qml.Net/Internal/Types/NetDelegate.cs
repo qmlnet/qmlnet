@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Qml.Net.Internal.Types
 {
@@ -41,16 +42,22 @@ namespace Qml.Net.Internal.Types
         [NativeSymbol(Entrypoint = "delegate_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(IntPtr handle);
 
         [NativeSymbol(Entrypoint = "delegate_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr del);
 
         [NativeSymbol(Entrypoint = "delegate_getHandle")]
         public GetHandleDel GetHandle { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetHandleDel(IntPtr del);
     }
 }

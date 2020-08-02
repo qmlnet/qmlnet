@@ -1,13 +1,20 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Drawing;
+#if NETSTANDARD2_1
+using System.Numerics;
+#endif
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CSharp;
 using Qml.Net.Internal.Qml;
 using Qml.Net.Internal.Types;
+
+[assembly: InternalsVisibleTo("Anonymously Hosted DynamicMethods Assembly")]
 
 namespace Qml.Net.Internal.CodeGen
 {
@@ -71,9 +78,50 @@ namespace Qml.Net.Internal.CodeGen
                     case NetVariantType.Double:
                         returnMethod = isNullable ? LoadMethods.LoadDoubleNullableMethod : LoadMethods.LoadDoubleMethod;
                         break;
+                    case NetVariantType.Size:
+                        returnMethod = isNullable ? LoadMethods.LoadSizeNullableMethod : LoadMethods.LoadSizeMethod;
+                        break;
+                    case NetVariantType.SizeF:
+                        returnMethod = isNullable ? LoadMethods.LoadSizeFNullableMethod : LoadMethods.LoadSizeFMethod;
+                        break;
+                    case NetVariantType.Rect:
+                        returnMethod = isNullable ? LoadMethods.LoadRectNullableMethod : LoadMethods.LoadRectMethod;
+                        break;
+                    case NetVariantType.RectF:
+                        returnMethod = isNullable ? LoadMethods.LoadRectFNullableMethod : LoadMethods.LoadRectFMethod;
+                        break;
+                    case NetVariantType.Point:
+                        returnMethod = isNullable ? LoadMethods.LoadPointNullableMethod : LoadMethods.LoadPointMethod;
+                        break;
+                    case NetVariantType.PointF:
+                        returnMethod = isNullable ? LoadMethods.LoadPointFNullableMethod : LoadMethods.LoadPointFMethod;
+                        break;
+#if NETSTANDARD2_1
+                    case NetVariantType.Vector2D:
+                        returnMethod = isNullable ? LoadMethods.LoadVector2DNullableMethod : LoadMethods.LoadVector2DMethod;
+                        break;
+                    case NetVariantType.Vector3D:
+                        returnMethod = isNullable ? LoadMethods.LoadVector3DNullableMethod : LoadMethods.LoadVector3DMethod;
+                        break;
+                    case NetVariantType.Vector4D:
+                        returnMethod = isNullable ? LoadMethods.LoadVector4DNullableMethod : LoadMethods.LoadVector4DMethod;
+                        break;
+                    case NetVariantType.Quaternion:
+                        returnMethod = isNullable ? LoadMethods.LoadQuaternionNullableMethod : LoadMethods.LoadQuaternionMethod;
+                        break;
+                    case NetVariantType.Matrix4x4:
+                        returnMethod = isNullable ? LoadMethods.LoadMatrix4x4NullableMethod : LoadMethods.LoadMatrix4x4Method;
+                        break;
+#endif
+                    case NetVariantType.Color:
+                        returnMethod = LoadMethods.LoadColorMethod;
+                        break;
                     case NetVariantType.String:
                         returnMethod = LoadMethods.LoadStringMethod;
                         break;
+                    case NetVariantType.ByteArray:
+                        returnMethod = LoadMethods.LoadByteArrayMethod;
+                        break;                        
                     case NetVariantType.DateTime:
                         returnMethod = isNullable ? LoadMethods.LoadDateTimeNullableMethod : LoadMethods.LoadDateTimeMethod;
                         break;
@@ -95,13 +143,49 @@ namespace Qml.Net.Internal.CodeGen
 
                 var tempValue = il.DeclareLocal(methodInfo.ReturnType);
 
-                // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
-                il.Emit(OpCodes.Ldarg_0); // net reference
-                il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
-                il.Emit(OpCodes.Castclass, invokeType);
-                InvokeParameters(il, methodInfo);
-                il.Emit(OpCodes.Callvirt, methodInfo);
-                il.Emit(OpCodes.Stloc, tempValue.LocalIndex);
+                if (methodInfo.DeclaringType.IsValueType)
+                {
+                    // NOTE: This code isn't working, not sure why.
+                    throw new Exception("Can't operate on struct types yet. See: https://github.com/qmlnet/qmlnet/issues/135");
+                    
+                    // IL_0000: nop
+                    // IL_0001: ldarg.0
+                    // IL_0002: callvirt instance object C/NetReference::get_Instance()
+                    // IL_0007: unbox.any C/TestClass
+                    // IL_000c: stloc.1
+                    // IL_000d: ldloca.s 1
+                    // IL_000f: call instance string C/TestClass::Method()
+                    // IL_0014: stloc.0
+                    // IL_0015: ret
+                    // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
+                    
+                    // il.Emit(OpCodes.Ldarg_0); // net reference
+                    // il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
+                    // il.Emit(OpCodes.Castclass, invokeType);
+                    // il.Emit(OpCodes.Unbox_Any, invokeType);
+                    // il.Emit(OpCodes.Stloc, 1);
+                    // il.Emit(OpCodes.Ldloca_S, 1);
+                    // InvokeParameters(il, methodInfo);
+                    // il.Emit(OpCodes.Callvirt, methodInfo);
+                    // il.Emit(OpCodes.Stloc, tempValue.LocalIndex);
+                }
+                else
+                {
+                    // IL_0000: nop
+                    // IL_0001: ldarg.1
+                    // IL_0002: callvirt instance object C/NetReference::get_Instance()
+                    // IL_0007: castclass C/TestClass
+                    // IL_000c: callvirt instance string C/TestClass::get_Property()
+                    // IL_0011: stloc.0
+                    // IL_0012: ret
+                    // var tempValue = (({TYPE})netReference.Instance)).{METHOD}({PARAMETERS});
+                    il.Emit(OpCodes.Ldarg_0); // net reference
+                    il.Emit(OpCodes.Callvirt, GenericMethods.InstanceProperty.GetMethod);
+                    il.Emit(OpCodes.Castclass, invokeType);
+                    InvokeParameters(il, methodInfo);
+                    il.Emit(OpCodes.Callvirt, methodInfo);
+                    il.Emit(OpCodes.Stloc, tempValue.LocalIndex);   
+                }
 
                 // {LOADMETHOD}(result, tempvalue)
                 il.Emit(OpCodes.Ldarg_2);
@@ -214,9 +298,50 @@ namespace Qml.Net.Internal.CodeGen
                     case NetVariantType.Double:
                         returnMethod = isNullable ? ListMethods.DoubleNullableAtMethod : ListMethods.DoubleAtMethod;
                         break;
+                    case NetVariantType.Size:
+                        returnMethod = isNullable ? ListMethods.SizeNullableAtMethod : ListMethods.SizeAtMethod;
+                        break;
+                    case NetVariantType.SizeF:
+                        returnMethod = isNullable ? ListMethods.SizeFNullableAtMethod : ListMethods.SizeFAtMethod;
+                        break;
+                    case NetVariantType.Rect:
+                        returnMethod = isNullable ? ListMethods.RectNullableAtMethod : ListMethods.RectAtMethod;
+                        break;
+                    case NetVariantType.RectF:
+                        returnMethod = isNullable ? ListMethods.RectFNullableAtMethod : ListMethods.RectFAtMethod;
+                        break;
+                    case NetVariantType.Point:
+                        returnMethod = isNullable ? ListMethods.PointNullableAtMethod : ListMethods.PointAtMethod;
+                        break;
+                    case NetVariantType.PointF:
+                        returnMethod = isNullable ? ListMethods.PointFNullableAtMethod : ListMethods.PointFAtMethod;
+                        break;
+#if NETSTANDARD2_1
+                    case NetVariantType.Vector2D:
+                        returnMethod = isNullable ? ListMethods.Vector2DNullableAtMethod : ListMethods.Vector2DAtMethod;
+                        break;
+                    case NetVariantType.Vector3D:
+                        returnMethod = isNullable ? ListMethods.Vector3DNullableAtMethod : ListMethods.Vector3DAtMethod;
+                        break;
+                    case NetVariantType.Vector4D:
+                        returnMethod = isNullable ? ListMethods.Vector4DNullableAtMethod : ListMethods.Vector4DAtMethod;
+                        break;
+                    case NetVariantType.Quaternion:
+                        returnMethod = isNullable ? ListMethods.QuaternionNullableAtMethod : ListMethods.QuaternionAtMethod;
+                        break;
+                    case NetVariantType.Matrix4x4:
+                        returnMethod = isNullable ? ListMethods.Matrix4x4NullableAtMethod : ListMethods.Matrix4x4AtMethod;
+                        break;
+#endif
+                    case NetVariantType.Color:
+                        returnMethod = ListMethods.ColorAtMethod;
+                        break;
                     case NetVariantType.String:
                         returnMethod = ListMethods.StringAtMethod;
                         break;
+                    case NetVariantType.ByteArray:
+                        returnMethod = ListMethods.ByteArrayAtMethod;
+                        break;                        
                     case NetVariantType.DateTime:
                         returnMethod = isNullable ? ListMethods.DateTimeNullableAtMethod : ListMethods.DateTimeAtMethod;
                         break;
@@ -263,8 +388,36 @@ namespace Qml.Net.Internal.CodeGen
                 return NetVariantType.Float;
             if (typeInfo == typeof(double))
                 return NetVariantType.Double;
+            if (typeInfo == typeof(Size))
+                return NetVariantType.Size;
+            if (typeInfo == typeof(SizeF))
+                return NetVariantType.SizeF;
+            if (typeInfo == typeof(Rectangle))
+                return NetVariantType.Rect;
+            if (typeInfo == typeof(RectangleF))
+                return NetVariantType.RectF;
+            if (typeInfo == typeof(Point))
+                return NetVariantType.Point;
+            if (typeInfo == typeof(PointF))
+                return NetVariantType.PointF;
+#if NETSTANDARD2_1
+            if (typeInfo == typeof(Vector2))
+                return NetVariantType.Vector2D;
+            if (typeInfo == typeof(Vector3))
+                return NetVariantType.Vector3D;
+            if (typeInfo == typeof(Vector4))
+                return NetVariantType.Vector4D;
+            if (typeInfo == typeof(Quaternion))
+                return NetVariantType.Quaternion;
+            if (typeInfo == typeof(Matrix4x4))
+                return NetVariantType.Matrix4x4;
+#endif
+            if (typeInfo == typeof(Color))
+                return NetVariantType.Color;
             if (typeInfo == typeof(string))
                 return NetVariantType.String;
+            if (typeInfo == typeof(byte[]))
+                return NetVariantType.ByteArray;
             if (typeInfo == typeof(DateTimeOffset))
                 return NetVariantType.DateTime;
 

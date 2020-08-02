@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Behaviors;
 using Qml.Net.Internal.Qml;
@@ -104,56 +105,78 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_create")]
         public CreateDel Create { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr CreateDel(IntPtr existingEngine);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_destroy")]
         public DestroyDel Destroy { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DestroyDel(IntPtr engine);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_load")]
         public LoadDel Load { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int LoadDel(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_loadData")]
         public LoadDataDel LoadData { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int LoadDataDel(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerType")]
         public RegisterTypeDel RegisterType { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int RegisterTypeDel(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerSingletonTypeQml")]
         public RegisterSingletonTypeQmlDel RegisterSingletonTypeQml { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int RegisterSingletonTypeQmlDel([MarshalAs(UnmanagedType.LPWStr)]string url, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerSingletonTypeNet")]
         public RegisterSingletonTypeNetDel RegisterSingletonTypeNet { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int RegisterSingletonTypeNetDel(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string typeName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_addImportPath")]
         public AddImportPathDel AddImportPath { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddImportPathDel(IntPtr engine, [MarshalAs(UnmanagedType.LPWStr)]string path);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_internalPointer")]
         public InternalPointerDel InternalPointer { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr InternalPointerDel(IntPtr app);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_getContextProperty")]
         public GetContextPropertyDel GetContextProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate IntPtr GetContextPropertyDel(IntPtr app, [MarshalAs(UnmanagedType.LPWStr)]string name);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_setContextProperty")]
         public SetContextPropertyDel SetContextProperty { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetContextPropertyDel(IntPtr app, [MarshalAs(UnmanagedType.LPWStr)]string path, IntPtr value);
     }
 }

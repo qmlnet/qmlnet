@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Security;
 using Qml.Net.Internal;
 
 namespace Qml.Net
@@ -33,14 +34,19 @@ namespace Qml.Net
         [NativeSymbol(Entrypoint = "qtest_qwait")]
         public QWaitDel QWait { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate byte QWaitDel(int ms);
 
+        [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int WaitForCb();
 
         [NativeSymbol(Entrypoint = "qtest_qWaitFor")]
         public QWaitForDel QWaitFor { get; set; }
 
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int QWaitForDel(IntPtr cb, int ms);
     }
 }

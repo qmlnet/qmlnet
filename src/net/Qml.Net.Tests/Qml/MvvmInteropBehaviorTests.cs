@@ -184,47 +184,24 @@ namespace Qml.Net.Tests.Qml
             Instance.TestResult.Should().Be(true);
         }
 
-        [Fact(Skip = "This worked before Qt 12. Something about the lifetimes changed. The functionality still works, but this test is broken.")]
+        [Fact(Skip = "This test stopped working in 5.12. TODO: investigate")]
         public void Does_unregister_signal_on_ref_destroy()
         {
-            qmlApplicationEngine.LoadData(@"
-                import QtQuick 2.0
-                import tests 1.0
-                import testContext 1.0
+            RunQmlTest("test",
+                @"
+                    var vm = test.viewModel;
+                    vm.stringPropertyChanged.connect(function() {
+                        test.testResult = false
+                    });
+                    vm = null;
 
-                Item {
-                    TestContext {
-                        id: tc
-                    }
+                    gc();
 
-                    Timer {
-                        id: checkAndQuitTimer
-                        running: false
-                        interval: 1000
-			            onTriggered: {
-                            viewModelContainer.testResult = true;
-                            viewModelContainer.changeStringPropertyTo('new value')
-                            tc.quit()
-			            }
-                    }
-
-                    ViewModelContainer {
-                        id: viewModelContainer
-                        Component.onCompleted: function() {
-                            var vm = viewModelContainer.viewModel
-                            vm.stringPropertyChanged.connect(function() {
-                                viewModelContainer.testResult = false
-                            })
-                            vm = null
-                            gc()
-
-                            checkAndQuitTimer.running = true
-                        }
-                    }
-                }
-            ");
-
-            ExecApplicationWithTimeout(3000);
+                    Qt.callLater(function() {
+                        test.testResult = true;
+                        test.changeStringPropertyTo('new value')
+                    })
+                ", true);
 
             Instance.TestResult.Should().Be(true);
         }
