@@ -11,12 +11,12 @@ namespace Qml.Net.Internal.CodeGen
 {
     internal partial class CodeGen
     {
-        private class GenericMethods
+        internal class GenericMethods
         {
             public static PropertyInfo InstanceProperty = typeof(NetReference).GetProperty(nameof(NetReference.Instance));
         }
 
-        private class LoadMethods
+        internal class LoadMethods
         {
             public static MethodInfo LoadBoolMethod = typeof(LoadMethods).GetMethod(nameof(LoadBool), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadBoolNullableMethod = typeof(LoadMethods).GetMethod(nameof(LoadBoolNullable), BindingFlags.Static | BindingFlags.NonPublic);
@@ -65,12 +65,12 @@ namespace Qml.Net.Internal.CodeGen
             public static MethodInfo LoadDateTimeNullableMethod = typeof(LoadMethods).GetMethod(nameof(LoadDateTimeNullable), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo LoadObjectMethod = typeof(LoadMethods).GetMethod(nameof(LoadObject), BindingFlags.Static | BindingFlags.NonPublic);
 
-            private static void LoadBool(NetVariant variant, bool value)
+            internal static void LoadBool(NetVariant variant, bool value)
             {
                 variant.Bool = value;
             }
 
-            private static void LoadBoolNullable(NetVariant variant, bool? value)
+            internal static void LoadBoolNullable(NetVariant variant, bool? value)
             {
                 if (value.HasValue)
                 {
@@ -82,12 +82,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadChar(NetVariant variant, char value)
+            internal static void LoadChar(NetVariant variant, char value)
             {
                 variant.Char = value;
             }
 
-            private static void LoadCharNullable(NetVariant variant, char? value)
+            internal static void LoadCharNullable(NetVariant variant, char? value)
             {
                 if (value.HasValue)
                 {
@@ -99,12 +99,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadInt(NetVariant variant, int value)
+            internal static void LoadInt(NetVariant variant, int value)
             {
                 variant.Int = value;
             }
 
-            private static void LoadIntNullable(NetVariant variant, int? value)
+            internal static void LoadIntNullable(NetVariant variant, int? value)
             {
                 if (value.HasValue)
                 {
@@ -116,12 +116,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadUInt(NetVariant variant, uint value)
+            internal static void LoadUInt(NetVariant variant, uint value)
             {
                 variant.UInt = value;
             }
 
-            private static void LoadUIntNullable(NetVariant variant, uint? value)
+            internal static void LoadUIntNullable(NetVariant variant, uint? value)
             {
                 if (value.HasValue)
                 {
@@ -133,12 +133,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadLong(NetVariant variant, long value)
+            internal static void LoadLong(NetVariant variant, long value)
             {
                 variant.Long = value;
             }
 
-            private static void LoadLongNullable(NetVariant variant, long? value)
+            internal static void LoadLongNullable(NetVariant variant, long? value)
             {
                 if (value.HasValue)
                 {
@@ -150,12 +150,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadULong(NetVariant variant, ulong value)
+            internal static void LoadULong(NetVariant variant, ulong value)
             {
                 variant.ULong = value;
             }
 
-            private static void LoadULongNullable(NetVariant variant, ulong? value)
+            internal static void LoadULongNullable(NetVariant variant, ulong? value)
             {
                 if (value.HasValue)
                 {
@@ -167,12 +167,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadFloat(NetVariant variant, float value)
+            internal static void LoadFloat(NetVariant variant, float value)
             {
                 variant.Float = value;
             }
 
-            private static void LoadFloatNullable(NetVariant variant, float? value)
+            internal static void LoadFloatNullable(NetVariant variant, float? value)
             {
                 if (value.HasValue)
                 {
@@ -184,12 +184,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadDouble(NetVariant variant, double value)
+            internal static void LoadDouble(NetVariant variant, double value)
             {
                 variant.Double = value;
             }
 
-            private static void LoadDoubleNullable(NetVariant variant, double? value)
+            internal static void LoadDoubleNullable(NetVariant variant, double? value)
             {
                 if (value.HasValue)
                 {
@@ -201,12 +201,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadSize(NetVariant variant, Size value)
+            internal static void LoadSize(NetVariant variant, Size value)
             {
                 variant.Size = value;
             }
 
-            private static void LoadSizeNullable(NetVariant variant, Size? value)
+            internal static void LoadSizeNullable(NetVariant variant, Size? value)
             {
                 if (value.HasValue)
                 {
@@ -218,12 +218,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadSizeF(NetVariant variant, SizeF value)
+            internal static void LoadSizeF(NetVariant variant, SizeF value)
             {
                 variant.SizeF = value;
             }
 
-            private static void LoadSizeFNullable(NetVariant variant, SizeF? value)
+            internal static void LoadSizeFNullable(NetVariant variant, SizeF? value)
             {
                 if (value.HasValue)
                 {
@@ -235,12 +235,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadRect(NetVariant variant, Rectangle value)
+            internal static void LoadRect(NetVariant variant, Rectangle value)
             {
                 variant.Rect = value;
             }
 
-            private static void LoadRectNullable(NetVariant variant, Rectangle? value)
+            internal static void LoadRectNullable(NetVariant variant, Rectangle? value)
             {
                 if (value.HasValue)
                 {
@@ -252,12 +252,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadRectF(NetVariant variant, RectangleF value)
+            internal static void LoadRectF(NetVariant variant, RectangleF value)
             {
                 variant.RectF = value;
             }
 
-            private static void LoadRectFNullable(NetVariant variant, RectangleF? value)
+            internal static void LoadRectFNullable(NetVariant variant, RectangleF? value)
             {
                 if (value.HasValue)
                 {
@@ -269,12 +269,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadPoint(NetVariant variant, Point value)
+            internal static void LoadPoint(NetVariant variant, Point value)
             {
                 variant.Point = value;
             }
 
-            private static void LoadPointNullable(NetVariant variant, Point? value)
+            internal static void LoadPointNullable(NetVariant variant, Point? value)
             {
                 if (value.HasValue)
                 {
@@ -286,12 +286,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadPointF(NetVariant variant, PointF value)
+            internal static void LoadPointF(NetVariant variant, PointF value)
             {
                 variant.PointF = value;
             }
 
-            private static void LoadPointFNullable(NetVariant variant, PointF? value)
+            internal static void LoadPointFNullable(NetVariant variant, PointF? value)
             {
                 if (value.HasValue)
                 {
@@ -304,12 +304,12 @@ namespace Qml.Net.Internal.CodeGen
             }
             
 #if NETSTANDARD2_1
-            private static void LoadVector2D(NetVariant variant, Vector2 value)
+            internal static void LoadVector2D(NetVariant variant, Vector2 value)
             {
                 variant.Vector2D = value;
             }
 
-            private static void LoadVector2DNullable(NetVariant variant, Vector2? value)
+            internal static void LoadVector2DNullable(NetVariant variant, Vector2? value)
             {
                 if (value.HasValue)
                 {
@@ -321,12 +321,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadVector3D(NetVariant variant, Vector3 value)
+            internal static void LoadVector3D(NetVariant variant, Vector3 value)
             {
                 variant.Vector3D = value;
             }
 
-            private static void LoadVector3DNullable(NetVariant variant, Vector3? value)
+            internal static void LoadVector3DNullable(NetVariant variant, Vector3? value)
             {
                 if (value.HasValue)
                 {
@@ -338,12 +338,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadVector4D(NetVariant variant, Vector4 value)
+            internal static void LoadVector4D(NetVariant variant, Vector4 value)
             {
                 variant.Vector4D = value;
             }
 
-            private static void LoadVector4DNullable(NetVariant variant, Vector4? value)
+            internal static void LoadVector4DNullable(NetVariant variant, Vector4? value)
             {
                 if (value.HasValue)
                 {
@@ -355,12 +355,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadQuaternion(NetVariant variant, Quaternion value)
+            internal static void LoadQuaternion(NetVariant variant, Quaternion value)
             {
                 variant.Quaternion = value;
             }
 
-            private static void LoadQuaternionNullable(NetVariant variant, Quaternion? value)
+            internal static void LoadQuaternionNullable(NetVariant variant, Quaternion? value)
             {
                 if (value.HasValue)
                 {
@@ -372,12 +372,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadMatrix4x4(NetVariant variant, Matrix4x4 value)
+            internal static void LoadMatrix4x4(NetVariant variant, Matrix4x4 value)
             {
                 variant.Matrix4x4 = value;
             }
 
-            private static void LoadMatrix4x4Nullable(NetVariant variant, Matrix4x4? value)
+            internal static void LoadMatrix4x4Nullable(NetVariant variant, Matrix4x4? value)
             {
                 if (value.HasValue)
                 {
@@ -390,7 +390,7 @@ namespace Qml.Net.Internal.CodeGen
             }
 #endif
 
-            private static void LoadColor(NetVariant variant, Color value)
+            internal static void LoadColor(NetVariant variant, Color value)
             {
                 if (value.IsEmpty)
                 {
@@ -402,7 +402,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadString(NetVariant variant, string value)
+            internal static void LoadString(NetVariant variant, string value)
             {
                 if (value == null)
                 {
@@ -414,7 +414,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-             private static void LoadByteArray(NetVariant variant, byte[] value)
+            internal static void LoadByteArray(NetVariant variant, byte[] value)
             {
                 if (value == null)
                 {
@@ -426,12 +426,12 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadDateTime(NetVariant variant, DateTimeOffset value)
+            internal static void LoadDateTime(NetVariant variant, DateTimeOffset value)
             {
                 variant.DateTime = value;
             }
 
-            private static void LoadDateTimeNullable(NetVariant variant, DateTimeOffset? value)
+            internal static void LoadDateTimeNullable(NetVariant variant, DateTimeOffset? value)
             {
                 if (value.HasValue)
                 {
@@ -443,7 +443,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static void LoadObject(NetVariant variant, object value)
+            internal static void LoadObject(NetVariant variant, object value)
             {
                 if (value != null)
                 {
@@ -507,7 +507,7 @@ namespace Qml.Net.Internal.CodeGen
             }
         }
 
-        private class ListMethods
+        internal class ListMethods
         {
             public static MethodInfo BoolAtMethod = typeof(ListMethods).GetMethod(nameof(BoolAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo BoolNullableAtMethod = typeof(ListMethods).GetMethod(nameof(BoolNullableAt), BindingFlags.Static | BindingFlags.NonPublic);
@@ -556,7 +556,7 @@ namespace Qml.Net.Internal.CodeGen
             public static MethodInfo DateTimeNullableAtMethod = typeof(ListMethods).GetMethod(nameof(DateTimeNullableAt), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo ObjectAtMethod = typeof(ListMethods).GetMethod(nameof(ObjectAt), BindingFlags.Static | BindingFlags.NonPublic);
 
-            private static bool BoolAt(NetVariantList list, int index)
+            internal static bool BoolAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -564,7 +564,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static bool? BoolNullableAt(NetVariantList list, int index)
+            internal static bool? BoolNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -577,7 +577,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static char CharAt(NetVariantList list, int index)
+            internal static char CharAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -585,7 +585,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static char? CharNullableAt(NetVariantList list, int index)
+            internal static char? CharNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -598,7 +598,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static int IntAt(NetVariantList list, int index)
+            internal static int IntAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -606,7 +606,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static int? IntNullableAt(NetVariantList list, int index)
+            internal static int? IntNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -619,7 +619,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static uint UIntAt(NetVariantList list, int index)
+            internal static uint UIntAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -627,7 +627,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static uint? UIntNullableAt(NetVariantList list, int index)
+            internal static uint? UIntNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -640,7 +640,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static long LongAt(NetVariantList list, int index)
+            internal static long LongAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -648,7 +648,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static long? LongNullableAt(NetVariantList list, int index)
+            internal static long? LongNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -661,7 +661,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static ulong ULongAt(NetVariantList list, int index)
+            internal static ulong ULongAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -669,7 +669,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static ulong? ULongNullableAt(NetVariantList list, int index)
+            internal static ulong? ULongNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -682,7 +682,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static float FloatAt(NetVariantList list, int index)
+            internal static float FloatAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -690,7 +690,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static float? FloatNullableAt(NetVariantList list, int index)
+            internal static float? FloatNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -703,7 +703,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static double DoubleAt(NetVariantList list, int index)
+            internal static double DoubleAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -711,7 +711,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static double? DoubleNullableAt(NetVariantList list, int index)
+            internal static double? DoubleNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -724,7 +724,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Size SizeAt(NetVariantList list, int index)
+            internal static Size SizeAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -732,7 +732,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Size? SizeNullableAt(NetVariantList list, int index)
+            internal static Size? SizeNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -745,7 +745,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static SizeF SizeFAt(NetVariantList list, int index)
+            internal static SizeF SizeFAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -753,7 +753,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static SizeF? SizeFNullableAt(NetVariantList list, int index)
+            internal static SizeF? SizeFNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -766,7 +766,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Rectangle RectAt(NetVariantList list, int index)
+            internal static Rectangle RectAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -774,7 +774,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Rectangle? RectNullableAt(NetVariantList list, int index)
+            internal static Rectangle? RectNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -787,7 +787,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static RectangleF RectFAt(NetVariantList list, int index)
+            internal static RectangleF RectFAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -795,7 +795,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static RectangleF? RectFNullableAt(NetVariantList list, int index)
+            internal static RectangleF? RectFNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -808,7 +808,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Point PointAt(NetVariantList list, int index)
+            internal static Point PointAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -816,7 +816,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Point? PointNullableAt(NetVariantList list, int index)
+            internal static Point? PointNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -829,7 +829,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static PointF PointFAt(NetVariantList list, int index)
+            internal static PointF PointFAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -837,7 +837,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static PointF? PointFNullableAt(NetVariantList list, int index)
+            internal static PointF? PointFNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -851,7 +851,7 @@ namespace Qml.Net.Internal.CodeGen
             }
 
 #if NETSTANDARD2_1
-            private static Vector2 Vector2DAt(NetVariantList list, int index)
+            internal static Vector2 Vector2DAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -859,7 +859,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Vector2? Vector2DNullableAt(NetVariantList list, int index)
+            internal static Vector2? Vector2DNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -872,7 +872,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Vector3 Vector3DAt(NetVariantList list, int index)
+            internal static Vector3 Vector3DAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -880,7 +880,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Vector3? Vector3DNullableAt(NetVariantList list, int index)
+            internal static Vector3? Vector3DNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -893,7 +893,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Vector4 Vector4DAt(NetVariantList list, int index)
+            internal static Vector4 Vector4DAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -901,7 +901,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Vector4? Vector4DNullableAt(NetVariantList list, int index)
+            internal static Vector4? Vector4DNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -914,7 +914,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Quaternion QuaternionAt(NetVariantList list, int index)
+            internal static Quaternion QuaternionAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -922,7 +922,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Quaternion? QuaternionNullableAt(NetVariantList list, int index)
+            internal static Quaternion? QuaternionNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -935,7 +935,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Matrix4x4 Matrix4x4At(NetVariantList list, int index)
+            internal static Matrix4x4 Matrix4x4At(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -943,7 +943,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static Matrix4x4? Matrix4x4NullableAt(NetVariantList list, int index)
+            internal static Matrix4x4? Matrix4x4NullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -957,7 +957,7 @@ namespace Qml.Net.Internal.CodeGen
             }
 #endif
 
-            private static System.Drawing.Color ColorAt(NetVariantList list, int index)
+            internal static System.Drawing.Color ColorAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -970,7 +970,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static string StringAt(NetVariantList list, int index)
+            internal static string StringAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -983,7 +983,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static byte[] ByteArrayAt(NetVariantList list, int index)
+            internal static byte[] ByteArrayAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -996,7 +996,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static DateTimeOffset DateTimeAt(NetVariantList list, int index)
+            internal static DateTimeOffset DateTimeAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -1004,7 +1004,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static DateTimeOffset? DateTimeNullableAt(NetVariantList list, int index)
+            internal static DateTimeOffset? DateTimeNullableAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -1017,7 +1017,7 @@ namespace Qml.Net.Internal.CodeGen
                 }
             }
 
-            private static object ObjectAt(NetVariantList list, int index)
+            internal static object ObjectAt(NetVariantList list, int index)
             {
                 using (var variant = list.Get(index))
                 {
@@ -1026,7 +1026,7 @@ namespace Qml.Net.Internal.CodeGen
             }
         }
 
-        private class GetMethods
+        internal class GetMethods
         {
             public static MethodInfo BoolMethod = typeof(GetMethods).GetMethod(nameof(Bool), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo BoolNullableMethod = typeof(GetMethods).GetMethod(nameof(BoolNullable), BindingFlags.Static | BindingFlags.NonPublic);
@@ -1049,12 +1049,12 @@ namespace Qml.Net.Internal.CodeGen
             public static MethodInfo DateTimeNullableMethod = typeof(GetMethods).GetMethod(nameof(DateTimeNullable), BindingFlags.Static | BindingFlags.NonPublic);
             public static MethodInfo ObjMethod = typeof(GetMethods).GetMethod(nameof(Obj), BindingFlags.Static | BindingFlags.NonPublic);
 
-            private static bool Bool(NetVariant variant)
+            internal static bool Bool(NetVariant variant)
             {
                 return variant.Bool;
             }
 
-            private static bool? BoolNullable(NetVariant variant)
+            internal static bool? BoolNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1064,12 +1064,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.Bool;
             }
 
-            private static char Char(NetVariant variant)
+            internal static char Char(NetVariant variant)
             {
                 return variant.Char;
             }
 
-            private static char? CharNullable(NetVariant variant)
+            internal static char? CharNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1079,12 +1079,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.Char;
             }
 
-            private static int Int(NetVariant variant)
+            internal static int Int(NetVariant variant)
             {
                 return variant.Int;
             }
 
-            private static int? IntNullable(NetVariant variant)
+            internal static int? IntNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1094,12 +1094,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.Int;
             }
 
-            private static uint UInt(NetVariant variant)
+            internal static uint UInt(NetVariant variant)
             {
                 return variant.UInt;
             }
 
-            private static uint? UIntNullable(NetVariant variant)
+            internal static uint? UIntNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1109,12 +1109,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.UInt;
             }
 
-            private static long Long(NetVariant variant)
+            internal static long Long(NetVariant variant)
             {
                 return variant.Long;
             }
 
-            private static long? LongNullable(NetVariant variant)
+            internal static long? LongNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1124,12 +1124,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.Long;
             }
 
-            private static ulong ULong(NetVariant variant)
+            internal static ulong ULong(NetVariant variant)
             {
                 return variant.ULong;
             }
 
-            private static ulong? ULongNullable(NetVariant variant)
+            internal static ulong? ULongNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1139,12 +1139,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.ULong;
             }
 
-            private static float Float(NetVariant variant)
+            internal static float Float(NetVariant variant)
             {
                 return variant.ULong;
             }
 
-            private static float? FloatNullable(NetVariant variant)
+            internal static float? FloatNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1154,12 +1154,12 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.Float;
             }
 
-            private static double Double(NetVariant variant)
+            internal static double Double(NetVariant variant)
             {
                 return variant.Double;
             }
 
-            private static double? DoubleNullable(NetVariant variant)
+            internal static double? DoubleNullable(NetVariant variant)
             {
                 if (variant.VariantType == NetVariantType.Invalid)
                 {
@@ -1169,23 +1169,23 @@ namespace Qml.Net.Internal.CodeGen
                 return variant.Double;
             }
 
-            private static string String(NetVariant variant)
+            internal static string String(NetVariant variant)
             {
                 return variant.String;
             }
 
-            private static DateTimeOffset DateTime(NetVariant variant)
+            internal static DateTimeOffset DateTime(NetVariant variant)
             {
                 var result = variant.DateTime;
                 return result ?? default(DateTimeOffset);
             }
 
-            private static DateTimeOffset? DateTimeNullable(NetVariant variant)
+            internal static DateTimeOffset? DateTimeNullable(NetVariant variant)
             {
                 return variant.DateTime;
             }
 
-            private static object Obj(NetVariant variant)
+            internal static object Obj(NetVariant variant)
             {
                 using (var reference = variant.Instance)
                 {
