@@ -4,3 +4,5 @@ samples/PhotoFrame/\.vscode/
 samples/PhotoFrame/\.idea/ 
 build/Qt/
 build/qtci/
+src/native/.DS_Store
+.DS_Store
