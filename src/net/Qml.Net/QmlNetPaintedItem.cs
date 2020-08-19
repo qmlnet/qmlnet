@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
@@ -8,100 +9,114 @@ namespace Qml.Net
     public class QmlNetPaintedItem
     {
         private IntPtr _qmlNetPaintedItemRef;
+        private Dictionary<string, int> _registeredColors = new Dictionary<string, int>();
 
         public QmlNetPaintedItem(IntPtr qmlNetPaintedItemRef)
         {
             _qmlNetPaintedItemRef = qmlNetPaintedItemRef;
         }
 
-        public void beginRecordPaintActions()
+        public void BeginRecordPaintActions()
         {
             Interop.QmlNetPaintedItem.BeginRecordPaintActions(_qmlNetPaintedItemRef);
         }
 
-        public void endRecordPaintActions()
+        public void EndRecordPaintActions()
         {
             Interop.QmlNetPaintedItem.EndRecordPaintActions(_qmlNetPaintedItemRef);
         }
 
-        public void setPen(int colorId)
+        public void SetPen(string colorString)
         {
+            var colorId = GetColorId(colorString);
             Interop.QmlNetPaintedItem.SetPen(_qmlNetPaintedItemRef, colorId);
         }
 
-        public void resetPen()
+        public void ResetPen()
         {
             Interop.QmlNetPaintedItem.ResetPen(_qmlNetPaintedItemRef);
         }
 
-        public void setBrush(int colorId)
+        public void SetBrush(string colorString)
         {
+            var colorId = GetColorId(colorString);
             Interop.QmlNetPaintedItem.SetBrush(_qmlNetPaintedItemRef, colorId);
         }
 
-        public void resetBrush()
+        public void ResetBrush()
         {
             Interop.QmlNetPaintedItem.ResetBrush(_qmlNetPaintedItemRef);
         }
 
-        public void setFont(string fontFamilyName, bool isBold, bool isItalic, bool isUnderline, int pxSize)
+        public void SetFont(string fontFamilyName, bool isBold, bool isItalic, bool isUnderline, int pxSize)
         {
             Interop.QmlNetPaintedItem.SetFont(_qmlNetPaintedItemRef, fontFamilyName, isBold, isItalic, isUnderline, pxSize);
         }
 
-        public void setFontFamily(string fontFamilyName)
+        public void SetFontFamily(string fontFamilyName)
         {
             Interop.QmlNetPaintedItem.SetFontFamily(_qmlNetPaintedItemRef, fontFamilyName);
         }
 
-        public void setFontBold(bool isBold)
+        public void SetFontBold(bool isBold)
         {
             Interop.QmlNetPaintedItem.SetFontBold(_qmlNetPaintedItemRef, isBold);
         }
 
-        public void setFontItalic(bool isItalic)
+        public void SetFontItalic(bool isItalic)
         {
             Interop.QmlNetPaintedItem.SetFontItalic(_qmlNetPaintedItemRef, isItalic);
         }
 
-        public void setFontUnderline(bool isUnderline)
+        public void SetFontUnderline(bool isUnderline)
         {
             Interop.QmlNetPaintedItem.SetFontUnderline(_qmlNetPaintedItemRef, isUnderline);
         }
 
-        public void setFontSize(int pxSize)
+        public void SetFontSize(int pxSize)
         {
             Interop.QmlNetPaintedItem.SetFontSize(_qmlNetPaintedItemRef, pxSize);
         }
 
-        public void drawText(int x, int y, string text)
+        public void DrawText(int x, int y, string text)
         {
             Interop.QmlNetPaintedItem.DrawText(_qmlNetPaintedItemRef, x, y, text);
         }
 
-        public void drawRect(int x, int y, int width, int height)
+        public void DrawRect(int x, int y, int width, int height)
         {
             Interop.QmlNetPaintedItem.DrawRect(_qmlNetPaintedItemRef, x, y, width, height);
         }
 
-        public void fillRect(int x, int y, int width, int height, int colorId)
+        public void FillRect(int x, int y, int width, int height, int colorId)
         {
             Interop.QmlNetPaintedItem.FillRectColor(_qmlNetPaintedItemRef, x, y, width, height, colorId);
         }
 
-        public void fillRect(int x, int y, int width, int height)
+        public void FillRect(int x, int y, int width, int height)
         {
             Interop.QmlNetPaintedItem.FillRect(_qmlNetPaintedItemRef, x, y, width, height);
         }
 
-        public int createColor(string colorString)
+        public int CreateColor(string colorString)
         {
             return Interop.QmlNetPaintedItem.CreateColor(_qmlNetPaintedItemRef, colorString);
         }
 
-        public void freeColor(int colorId)
+        public void FreeColor(int colorId)
         {
             Interop.QmlNetPaintedItem.FreeColor(_qmlNetPaintedItemRef, colorId);
+        }
+
+        private int GetColorId(string colorString)
+        {
+            if (_registeredColors.ContainsKey(colorString))
+            {
+                return _registeredColors[colorString];
+            }
+            var colorId = CreateColor(colorString);
+            _registeredColors.Add(colorString, colorId);
+            return colorId;
         }
     }
 
