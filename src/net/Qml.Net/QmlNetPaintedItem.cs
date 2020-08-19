@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
@@ -106,6 +107,12 @@ namespace Qml.Net
         public void FreeColor(int colorId)
         {
             Interop.QmlNetPaintedItem.FreeColor(_qmlNetPaintedItemRef, colorId);
+        }
+
+        public Size GetStringSize(string fontFamily, int fontSizePx, string text)
+        {
+            var res = Interop.QmlNetPaintedItem.GetStringSize(_qmlNetPaintedItemRef, fontFamily, fontSizePx, text);
+            return new Size(res.width, res.height);
         }
 
         private int GetColorId(string colorString)
@@ -247,5 +254,20 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void FreeColorDel(IntPtr paintedItem, int colorId);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct StringSizeResult
+        {
+            public int width;
+            public int height;
+        }
+
+        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_getStringSize")]
+        public GetStringSizeDel GetStringSize { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate StringSizeResult GetStringSizeDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string fontFamily, int sizePx, [MarshalAs(UnmanagedType.LPWStr)] string text);
+
     }
 }
