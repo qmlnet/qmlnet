@@ -83,10 +83,29 @@ namespace Qml.Net
         {
             Interop.QmlNetPaintedItem.DrawText(_qmlNetPaintedItemRef, x, y, text);
         }
-
-        public void DrawText(int x, int y, int width, int height, string text)
+        
+        [Flags]
+        public enum DrawTextFlags
         {
-            Interop.QmlNetPaintedItem.DrawTextRect(_qmlNetPaintedItemRef, x, y, width, height, text);
+            AlignLeft = 0x0001,
+            AlignRight = 0x0002,
+            AlignHCenter = 0x0004,
+            AlignJustify = 0x0008,
+            AlignTop = 0x0020,
+            AlignBottom = 0x0040,
+            AlignVCenter = 0x0080,
+            AlignCenter = AlignVCenter | AlignHCenter,
+            TextSingleLine = 0x0100,
+            TextDontClip = 0x0200,
+            TextExpandTabs = 0x0400,
+            TextShowMnemonic = 0x0800,
+            TextWordWrap = 0x1000,
+            TextIncludeTrailingSpaces = 0x08000000
+        }
+
+        public void DrawText(int x, int y, int width, int height, DrawTextFlags flags, string text)
+        {
+            Interop.QmlNetPaintedItem.DrawTextRect(_qmlNetPaintedItemRef, x, y, width, height, (int)flags, text);
         }
 
         public void DrawRect(int x, int y, int width, int height)
@@ -230,7 +249,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, [MarshalAs(UnmanagedType.LPWStr)] string text);
+        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags, [MarshalAs(UnmanagedType.LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "qqmlnetpainteditem_drawRect")]
         public DrawRectDel DrawRect { get; set; }
