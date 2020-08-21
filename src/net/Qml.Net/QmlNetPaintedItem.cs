@@ -10,11 +10,12 @@ namespace Qml.Net
     public class QmlNetPaintedItem
     {
         private IntPtr _qmlNetPaintedItemRef;
-        private Dictionary<string, int> _registeredColors = new Dictionary<string, int>();
+        private INetQPainter _qPainter;
 
-        public QmlNetPaintedItem(IntPtr qmlNetPaintedItemRef)
+        public QmlNetPaintedItem(IntPtr qmlNetPaintedItemRef, IntPtr inetQPainterRef)
         {
             _qmlNetPaintedItemRef = qmlNetPaintedItemRef;
+            _qPainter = new INetQPainter(inetQPainterRef);
         }
 
         public void BeginRecordPaintActions()
@@ -29,125 +30,82 @@ namespace Qml.Net
 
         public void SetPen(string colorString)
         {
-            var colorId = GetColorId(colorString);
-            Interop.QmlNetPaintedItem.SetPen(_qmlNetPaintedItemRef, colorId);
+            _qPainter.SetPen(colorString);
         }
 
         public void ResetPen()
         {
-            Interop.QmlNetPaintedItem.ResetPen(_qmlNetPaintedItemRef);
+            _qPainter.ResetPen();
         }
 
         public void SetBrush(string colorString)
         {
-            var colorId = GetColorId(colorString);
-            Interop.QmlNetPaintedItem.SetBrush(_qmlNetPaintedItemRef, colorId);
+            _qPainter.SetBrush(colorString);
         }
 
         public void ResetBrush()
         {
-            Interop.QmlNetPaintedItem.ResetBrush(_qmlNetPaintedItemRef);
+            _qPainter.ResetBrush();
         }
 
         public void SetFont(string fontFamilyName, bool isBold, bool isItalic, bool isUnderline, int pxSize)
         {
-            Interop.QmlNetPaintedItem.SetFont(_qmlNetPaintedItemRef, fontFamilyName, isBold, isItalic, isUnderline, pxSize);
+            _qPainter.SetFont(fontFamilyName, isBold, isItalic, isUnderline, pxSize);
         }
 
         public void SetFontFamily(string fontFamilyName)
         {
-            Interop.QmlNetPaintedItem.SetFontFamily(_qmlNetPaintedItemRef, fontFamilyName);
+            _qPainter.SetFontFamily(fontFamilyName);
         }
 
         public void SetFontBold(bool isBold)
         {
-            Interop.QmlNetPaintedItem.SetFontBold(_qmlNetPaintedItemRef, isBold);
+            _qPainter.SetFontBold(isBold);
         }
 
         public void SetFontItalic(bool isItalic)
         {
-            Interop.QmlNetPaintedItem.SetFontItalic(_qmlNetPaintedItemRef, isItalic);
+            _qPainter.SetFontItalic(isItalic);
         }
 
         public void SetFontUnderline(bool isUnderline)
         {
-            Interop.QmlNetPaintedItem.SetFontUnderline(_qmlNetPaintedItemRef, isUnderline);
+            _qPainter.SetFontUnderline(isUnderline);
         }
 
         public void SetFontSize(int pxSize)
         {
-            Interop.QmlNetPaintedItem.SetFontSize(_qmlNetPaintedItemRef, pxSize);
+            _qPainter.SetFontSize(pxSize);
         }
 
         public void DrawText(int x, int y, string text)
         {
-            Interop.QmlNetPaintedItem.DrawText(_qmlNetPaintedItemRef, x, y, text);
+            _qPainter.DrawText(x, y, text);
         }
         
-        [Flags]
-        public enum DrawTextFlags
+        public void DrawText(int x, int y, int width, int height, INetQPainter.DrawTextFlags flags, string text)
         {
-            AlignLeft = 0x0001,
-            AlignRight = 0x0002,
-            AlignHCenter = 0x0004,
-            AlignJustify = 0x0008,
-            AlignTop = 0x0020,
-            AlignBottom = 0x0040,
-            AlignVCenter = 0x0080,
-            AlignCenter = AlignVCenter | AlignHCenter,
-            TextSingleLine = 0x0100,
-            TextDontClip = 0x0200,
-            TextExpandTabs = 0x0400,
-            TextShowMnemonic = 0x0800,
-            TextWordWrap = 0x1000,
-            TextIncludeTrailingSpaces = 0x08000000
-        }
-
-        public void DrawText(int x, int y, int width, int height, DrawTextFlags flags, string text)
-        {
-            Interop.QmlNetPaintedItem.DrawTextRect(_qmlNetPaintedItemRef, x, y, width, height, (int)flags, text);
+            _qPainter.DrawText(x, y, width, height, flags, text);
         }
 
         public void DrawRect(int x, int y, int width, int height)
         {
-            Interop.QmlNetPaintedItem.DrawRect(_qmlNetPaintedItemRef, x, y, width, height);
+            _qPainter.DrawRect(x, y, width, height);
         }
 
-        public void FillRect(int x, int y, int width, int height, int colorId)
+        public void FillRect(int x, int y, int width, int height, string color)
         {
-            Interop.QmlNetPaintedItem.FillRectColor(_qmlNetPaintedItemRef, x, y, width, height, colorId);
+            _qPainter.FillRect(x, y, width, height, color);
         }
 
         public void FillRect(int x, int y, int width, int height)
         {
-            Interop.QmlNetPaintedItem.FillRect(_qmlNetPaintedItemRef, x, y, width, height);
+            _qPainter.FillRect(x, y, width, height);
         }
-
-        public int CreateColor(string colorString)
-        {
-            return Interop.QmlNetPaintedItem.CreateColor(_qmlNetPaintedItemRef, colorString);
-        }
-
-        public void FreeColor(int colorId)
-        {
-            Interop.QmlNetPaintedItem.FreeColor(_qmlNetPaintedItemRef, colorId);
-        }
-
+        
         public Size GetStringSize(string fontFamily, int fontSizePx, string text)
         {
-            var res = Interop.QmlNetPaintedItem.GetStringSize(_qmlNetPaintedItemRef, fontFamily, fontSizePx, text);
-            return new Size(res.width, res.height);
-        }
-
-        private int GetColorId(string colorString)
-        {
-            if (_registeredColors.ContainsKey(colorString))
-            {
-                return _registeredColors[colorString];
-            }
-            var colorId = CreateColor(colorString);
-            _registeredColors.Add(colorString, colorId);
-            return colorId;
+            return _qPainter.GetStringSize(fontFamily, fontSizePx, text);
         }
     }
 
@@ -166,139 +124,5 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void EndRecordPaintActionsDel(IntPtr paintedItem);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setPen")]
-        public SetPenDel SetPen { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetPenDel(IntPtr paintedItem, int colorId);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_resetPen")]
-        public ResetPenDel ResetPen { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void ResetPenDel(IntPtr paintedItem);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setBrush")]
-        public SetBrushDel SetBrush { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetBrushDel(IntPtr paintedItem, int colorId);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_resetBrush")]
-        public ResetBrushDel ResetBrush { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void ResetBrushDel(IntPtr paintedItem);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setFont")]
-        public SetFontDel SetFont { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string fontFamilyName, bool isBold, bool isItalic, bool isUnderline, int pxSize);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setFontFamily")]
-        public SetFontFamilyDel SetFontFamily { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontFamilyDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string fontFamilyName);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setFontBold")]
-        public SetFontBoldDel SetFontBold { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontBoldDel(IntPtr paintedItem, bool isBold);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setFontItalic")]
-        public SetFontItalicDel SetFontItalic { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontItalicDel(IntPtr paintedItem, bool isItalic);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setFontUnderline")]
-        public SetFontUnderlineDel SetFontUnderline { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontUnderlineDel(IntPtr paintedItem, bool isUnderline);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_setFontSize")]
-        public SetFontSizeDel SetFontSize { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontSizeDel(IntPtr paintedItem, int pxSize);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_drawText")]
-        public DrawTextDel DrawText { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextDel(IntPtr paintedItem, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string text);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_drawTextRect")]
-        public DrawTextRectDel DrawTextRect { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags, [MarshalAs(UnmanagedType.LPWStr)] string text);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_drawRect")]
-        public DrawRectDel DrawRect { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawRectDel(IntPtr paintedItem, int x, int y, int width, int height);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_fillRectColor")]
-        public FillRectColorDel FillRectColor { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void FillRectColorDel(IntPtr paintedItem, int x, int y, int width, int height, int colorId);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_fillRect")]
-        public FillRectDel FillRect { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void FillRectDel(IntPtr paintedItem, int x, int y, int width, int height);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_createColor")]
-        public CreateColorDel CreateColor { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int CreateColorDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string colorString);
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_freeColor")]
-        public FreeColorDel FreeColor { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void FreeColorDel(IntPtr paintedItem, int colorId);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct StringSizeResult
-        {
-            public int width;
-            public int height;
-        }
-
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_getStringSize")]
-        public GetStringSizeDel GetStringSize { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate StringSizeResult GetStringSizeDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string fontFamily, int sizePx, [MarshalAs(UnmanagedType.LPWStr)] string text);
-
     }
 }
