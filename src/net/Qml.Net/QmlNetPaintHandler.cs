@@ -5,13 +5,7 @@ namespace Qml.Net
     {
         private QmlNetPaintedItem m_paintedItem;
 
-        protected QmlNetPaintedItem PaintedItem
-        {
-            get
-            {
-                return m_paintedItem;
-            }
-        }
+        protected QmlNetPaintedItem PaintedItem => m_paintedItem;
 
         public QmlNetPaintHandler()
         {
