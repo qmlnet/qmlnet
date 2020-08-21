@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
+
 // ReSharper disable InconsistentNaming
 
 namespace Qml.Net
@@ -19,7 +20,7 @@ namespace Qml.Net
         {
             _qPainterRef = qPainterRef;
         }
-        
+
         public void SetPen(string colorString)
         {
             var colorId = GetColorId(colorString);
@@ -78,7 +79,7 @@ namespace Qml.Net
         {
             Interop.INetQPainter.DrawText(_qPainterRef, x, y, text);
         }
-        
+
         [Flags]
         public enum DrawTextFlags
         {
@@ -101,7 +102,7 @@ namespace Qml.Net
 
         public void DrawText(int x, int y, int width, int height, DrawTextFlags flags, string text)
         {
-            Interop.INetQPainter.DrawTextRect(_qPainterRef, x, y, width, height, (int)flags, text);
+            Interop.INetQPainter.DrawTextRect(_qPainterRef, x, y, width, height, (int) flags, text);
         }
 
         public void DrawRect(int x, int y, int width, int height)
@@ -146,7 +147,7 @@ namespace Qml.Net
             var res = Interop.INetQPainter.GetStringSize(_qPainterRef, fontFamilyId, fontSizePx, text);
             return new Size(res.width, res.height);
         }
-        
+
         public void DrawArc(int x, int y, int width, int height, int startAngle, int spanAngle)
         {
             Interop.INetQPainter.DrawArc(_qPainterRef, x, y, width, height, startAngle, spanAngle);
@@ -156,7 +157,7 @@ namespace Qml.Net
         {
             Interop.INetQPainter.DrawChord(_qPainterRef, x, y, width, height, startAngle, spanAngle);
         }
-        
+
         public void DrawConvexPolygon(Point[] points)
         {
             var count = points.Length;
@@ -178,9 +179,10 @@ namespace Qml.Net
         {
             Interop.INetQPainter.DrawEllipse(_qPainterRef, x, y, width, height);
         }
-        
-        public enum ImageConversionFlag 
+
+        public enum ImageConversionFlag
         {
+            None = 0x00000000,
             ColorMode_Mask = 0x00000003,
             AutoColor = 0x00000000,
             ColorOnly = 0x00000003,
@@ -206,221 +208,223 @@ namespace Qml.Net
             NoFormatConversion = 0x00000200
         }
 
-    public void DrawImage(Point start, byte[] imageData, Rectangle source, ImageConversionFlag flags)
-    {
-        var p = new INetQPainterInterop.INetQPainter_Point()
+        public void DrawImage(Point start, byte[] imageData, Rectangle source, ImageConversionFlag flags)
         {
-            x = start.X,
-            y = start.Y
-        };
-        var sourceRect = new INetQPainterInterop.INetQPainter_Rect()
-        {
-            x = source.X,
-            y = source.Y,
-            width = source.Width,
-            height = source.Height
-        };
-        Interop.INetQPainter.DrawImage(_qPainterRef, p, imageData, imageData.Length, sourceRect, flags);
-    }
-
-    public void DrawLine(int x1, int y1, int x2, int y2)
-    {
-        Interop.INetQPainter.DrawLine(_qPainterRef, x1, y1, x2, y2);
-    }
-
-    public void DrawPie(int x, int y, int width, int height, int startAngle, int spanAngle)
-    {
-        Interop.INetQPainter.DrawPie(_qPainterRef, x, y, width, height, startAngle, spanAngle);
-    }
-
-    public void DrawPoint(int x, int y)
-    {
-        Interop.INetQPainter.DrawPoint(_qPainterRef, x, y);
-    }
-   
-    public void DrawPolygon(Point[] points, bool oddFill)
-    {
-        var count = points.Length;
-        var pointsArray = new INetQPainterInterop.INetQPainter_Point[count];
-        for (var i = 0; i < count; i++)
-        {
-            var p = points[i];
-            pointsArray[i] = new INetQPainterInterop.INetQPainter_Point()
+            var p = new INetQPainterInterop.INetQPainter_Point()
             {
-                x = p.X,
-                y = p.Y
+                x = start.X,
+                y = start.Y
             };
+            var sourceRect = new INetQPainterInterop.INetQPainter_Rect()
+            {
+                x = source.X,
+                y = source.Y,
+                width = source.Width,
+                height = source.Height
+            };
+            Interop.INetQPainter.DrawImage(_qPainterRef, p, imageData, imageData.Length, sourceRect, flags);
         }
 
-        Interop.INetQPainter.DrawPolygon(_qPainterRef, pointsArray, pointsArray.Length, oddFill);
-    }
-    
-    public void DrawPolyline(Point[] points)
-    {
-        var count = points.Length;
-        var pointsArray = new INetQPainterInterop.INetQPainter_Point[count];
-        for (var i = 0; i < count; i++)
+        public void DrawLine(int x1, int y1, int x2, int y2)
         {
-            var p = points[i];
-            pointsArray[i] = new INetQPainterInterop.INetQPainter_Point()
-            {
-                x = p.X,
-                y = p.Y
-            };
+            Interop.INetQPainter.DrawLine(_qPainterRef, x1, y1, x2, y2);
         }
 
-        Interop.INetQPainter.DrawPolyline(_qPainterRef, pointsArray, pointsArray.Length);
-    }
+        public void DrawPie(int x, int y, int width, int height, int startAngle, int spanAngle)
+        {
+            Interop.INetQPainter.DrawPie(_qPainterRef, x, y, width, height, startAngle, spanAngle);
+        }
 
-    public void DrawRoundedRect(int x, int y, int w, int h, double xRadius, double yRadius, bool absoluteSize)
-    {
-        Interop.INetQPainter.DrawRoundedRect(_qPainterRef, x, y, w, h, xRadius, yRadius, absoluteSize);
-    }
+        public void DrawPoint(int x, int y)
+        {
+            Interop.INetQPainter.DrawPoint(_qPainterRef, x, y);
+        }
 
-    public void EraseRect(int x, int y, int width, int height)
-    {
-        Interop.INetQPainter.EraseRect(_qPainterRef, x, y, width, height);
-    }
+        public void DrawPolygon(Point[] points, bool oddFill)
+        {
+            var count = points.Length;
+            var pointsArray = new INetQPainterInterop.INetQPainter_Point[count];
+            for (var i = 0; i < count; i++)
+            {
+                var p = points[i];
+                pointsArray[i] = new INetQPainterInterop.INetQPainter_Point()
+                {
+                    x = p.X,
+                    y = p.Y
+                };
+            }
 
-    public void SetBackground(string color)
-    {
-        var colorId = GetColorId(color);
-        Interop.INetQPainter.SetBackground(_qPainterRef, colorId);
-    }
+            Interop.INetQPainter.DrawPolygon(_qPainterRef, pointsArray, pointsArray.Length, oddFill);
+        }
 
-    public void SetBackgroundMode(bool opaque)
-    {
-        Interop.INetQPainter.SetBackgroundMode(_qPainterRef, opaque);
-    }
+        public void DrawPolyline(Point[] points)
+        {
+            var count = points.Length;
+            var pointsArray = new INetQPainterInterop.INetQPainter_Point[count];
+            for (var i = 0; i < count; i++)
+            {
+                var p = points[i];
+                pointsArray[i] = new INetQPainterInterop.INetQPainter_Point()
+                {
+                    x = p.X,
+                    y = p.Y
+                };
+            }
 
-    public enum ClipOperation 
-    {
-        NoClip = 1,
-        ReplaceClip,
-        IntersectClip
-    }
+            Interop.INetQPainter.DrawPolyline(_qPainterRef, pointsArray, pointsArray.Length);
+        }
 
-    public void SetClipRect(int x, int y, int width, int height, ClipOperation operation)
-    {
-        Interop.INetQPainter.SetClipRect(_qPainterRef, x, y, width, height, operation);
-    }
+        public void DrawRoundedRect(int x, int y, int w, int h, double xRadius, double yRadius, bool absoluteSize)
+        {
+            Interop.INetQPainter.DrawRoundedRect(_qPainterRef, x, y, w, h, xRadius, yRadius, absoluteSize);
+        }
 
-    public void SetClipping(bool enable)
-    {
-        Interop.INetQPainter.SetClipping(_qPainterRef, enable);
-    }
+        public void EraseRect(int x, int y, int width, int height)
+        {
+            Interop.INetQPainter.EraseRect(_qPainterRef, x, y, width, height);
+        }
 
-    public enum CompositionMode 
-    {
-        CompositionMode_SourceOver = 1,
-        CompositionMode_DestinationOver,
-        CompositionMode_Clear,
-        CompositionMode_Source,
-        CompositionMode_Destination,
-        CompositionMode_SourceIn,
-        CompositionMode_DestinationIn,
-        CompositionMode_SourceOut,
-        CompositionMode_DestinationOut,
-        CompositionMode_SourceAtop,
-        CompositionMode_DestinationAtop,
-        CompositionMode_Xor,
+        public void SetBackground(string color)
+        {
+            var colorId = GetColorId(color);
+            Interop.INetQPainter.SetBackground(_qPainterRef, colorId);
+        }
 
-        // svg 1.2 blend modes
-        CompositionMode_Plus,
-        CompositionMode_Multiply,
-        CompositionMode_Screen,
-        CompositionMode_Overlay,
-        CompositionMode_Darken,
-        CompositionMode_Lighten,
-        CompositionMode_ColorDodge,
-        CompositionMode_ColorBurn,
-        CompositionMode_HardLight,
-        CompositionMode_SoftLight,
-        CompositionMode_Difference,
-        CompositionMode_Exclusion,
+        public void SetBackgroundMode(bool opaque)
+        {
+            Interop.INetQPainter.SetBackgroundMode(_qPainterRef, opaque);
+        }
 
-        // ROPs
-        RasterOp_SourceOrDestination,
-        RasterOp_SourceAndDestination,
-        RasterOp_SourceXorDestination,
-        RasterOp_NotSourceAndNotDestination,
-        RasterOp_NotSourceOrNotDestination,
-        RasterOp_NotSourceXorDestination,
-        RasterOp_NotSource,
-        RasterOp_NotSourceAndDestination,
-        RasterOp_SourceAndNotDestination,
-        RasterOp_NotSourceOrDestination,
-        RasterOp_SourceOrNotDestination,
-        RasterOp_ClearDestination,
-        RasterOp_SetDestination,
-        RasterOp_NotDestination
-    }
-    
-    public void SetCompositionMode(CompositionMode mode)
-    {
-        Interop.INetQPainter.SetCompositionMode(_qPainterRef, mode);
-    }
+        public enum ClipOperation
+        {
+            NoClip = 1,
+            ReplaceClip,
+            IntersectClip
+        }
 
-    public enum LayoutDirection 
-    {
-        LeftToRight = 1,
-        RightToLeft,
-        LayoutDirectionAuto
-    }
-    
-    public void SetLayoutDirection(LayoutDirection direction)
-    {
-        Interop.INetQPainter.SetLayoutDirection(_qPainterRef, direction);
-    }
+        public void SetClipRect(int x, int y, int width, int height, ClipOperation operation)
+        {
+            Interop.INetQPainter.SetClipRect(_qPainterRef, x, y, width, height, operation);
+        }
 
-    public void SetOpacity(double opacity)
-    {
-        Interop.INetQPainter.SetOpacity(_qPainterRef, opacity);
-    }
+        public void SetClipping(bool enable)
+        {
+            Interop.INetQPainter.SetClipping(_qPainterRef, enable);
+        }
 
-    public enum RenderHint 
-    {
-        Antialiasing = 0x01,
-        TextAntialiasing = 0x02,
-        SmoothPixmapTransform = 0x04,
-        Qt4CompatiblePainting = 0x20,
-        LosslessImageRendering = 0x40,
-    }
-    
-    public void SetRenderHint(RenderHint hint, bool on)
-    {
-        Interop.INetQPainter.SetRenderHint(_qPainterRef, hint, on);
-    }
+        public enum CompositionMode
+        {
+            CompositionMode_SourceOver = 1,
+            CompositionMode_DestinationOver,
+            CompositionMode_Clear,
+            CompositionMode_Source,
+            CompositionMode_Destination,
+            CompositionMode_SourceIn,
+            CompositionMode_DestinationIn,
+            CompositionMode_SourceOut,
+            CompositionMode_DestinationOut,
+            CompositionMode_SourceAtop,
+            CompositionMode_DestinationAtop,
+            CompositionMode_Xor,
 
-    public void SetTransform(double h11, double h12, double h13, double h21, double h22, double h23, double h31, double h32, double h33, bool combine)
-    {
-        Interop.INetQPainter.SetTransform(_qPainterRef, h11, h12, h13, h21, h22, h23, h31, h32, h33, combine);
-    }
+            // svg 1.2 blend modes
+            CompositionMode_Plus,
+            CompositionMode_Multiply,
+            CompositionMode_Screen,
+            CompositionMode_Overlay,
+            CompositionMode_Darken,
+            CompositionMode_Lighten,
+            CompositionMode_ColorDodge,
+            CompositionMode_ColorBurn,
+            CompositionMode_HardLight,
+            CompositionMode_SoftLight,
+            CompositionMode_Difference,
+            CompositionMode_Exclusion,
 
-    public void SetViewTransformEnabled(bool enable)
-    {
-        Interop.INetQPainter.SetViewTransformEnabled(_qPainterRef, enable);
-    }
+            // ROPs
+            RasterOp_SourceOrDestination,
+            RasterOp_SourceAndDestination,
+            RasterOp_SourceXorDestination,
+            RasterOp_NotSourceAndNotDestination,
+            RasterOp_NotSourceOrNotDestination,
+            RasterOp_NotSourceXorDestination,
+            RasterOp_NotSource,
+            RasterOp_NotSourceAndDestination,
+            RasterOp_SourceAndNotDestination,
+            RasterOp_NotSourceOrDestination,
+            RasterOp_SourceOrNotDestination,
+            RasterOp_ClearDestination,
+            RasterOp_SetDestination,
+            RasterOp_NotDestination
+        }
 
-    public void SetWorldTransform(double h11, double h12, double h13, double h21, double h22, double h23, double h31, double h32, double h33, bool combine)
-    {
-        Interop.INetQPainter.SetWorldTransform(_qPainterRef, h11, h12, h13, h21, h22, h23, h31, h32, h33, combine);
-    }
+        public void SetCompositionMode(CompositionMode mode)
+        {
+            Interop.INetQPainter.SetCompositionMode(_qPainterRef, mode);
+        }
 
-    public void SetWorldMatrixEnabled(bool enable)
-    {
-        Interop.INetQPainter.SetWorldMatrixEnabled(_qPainterRef, enable);
-    }
+        public enum LayoutDirection
+        {
+            LeftToRight = 1,
+            RightToLeft,
+            LayoutDirectionAuto
+        }
 
-    public void Shear(double sh, double sv)
-    {
-        Interop.INetQPainter.Shear(_qPainterRef, sh, sv);
-    }
-    
-    public void Translate(double dx, double dy)
-    {
-        Interop.INetQPainter.Translate(_qPainterRef, dx, dy);
-    }
+        public void SetLayoutDirection(LayoutDirection direction)
+        {
+            Interop.INetQPainter.SetLayoutDirection(_qPainterRef, direction);
+        }
+
+        public void SetOpacity(double opacity)
+        {
+            Interop.INetQPainter.SetOpacity(_qPainterRef, opacity);
+        }
+
+        public enum RenderHint
+        {
+            Antialiasing = 0x01,
+            TextAntialiasing = 0x02,
+            SmoothPixmapTransform = 0x04,
+            Qt4CompatiblePainting = 0x20,
+            LosslessImageRendering = 0x40,
+        }
+
+        public void SetRenderHint(RenderHint hint, bool on)
+        {
+            Interop.INetQPainter.SetRenderHint(_qPainterRef, hint, on);
+        }
+
+        public void SetTransform(double h11, double h12, double h13, double h21, double h22, double h23, double h31,
+            double h32, double h33, bool combine)
+        {
+            Interop.INetQPainter.SetTransform(_qPainterRef, h11, h12, h13, h21, h22, h23, h31, h32, h33, combine);
+        }
+
+        public void SetViewTransformEnabled(bool enable)
+        {
+            Interop.INetQPainter.SetViewTransformEnabled(_qPainterRef, enable);
+        }
+
+        public void SetWorldTransform(double h11, double h12, double h13, double h21, double h22, double h23,
+            double h31, double h32, double h33, bool combine)
+        {
+            Interop.INetQPainter.SetWorldTransform(_qPainterRef, h11, h12, h13, h21, h22, h23, h31, h32, h33, combine);
+        }
+
+        public void SetWorldMatrixEnabled(bool enable)
+        {
+            Interop.INetQPainter.SetWorldMatrixEnabled(_qPainterRef, enable);
+        }
+
+        public void Shear(double sh, double sv)
+        {
+            Interop.INetQPainter.Shear(_qPainterRef, sh, sv);
+        }
+
+        public void Translate(double dx, double dy)
+        {
+            Interop.INetQPainter.Translate(_qPainterRef, dx, dy);
+        }
 
         private int GetColorId(string colorString)
         {
@@ -428,6 +432,7 @@ namespace Qml.Net
             {
                 return _registeredColors[colorString];
             }
+
             var colorId = RegisterColor(colorString);
             _registeredColors.Add(colorString, colorId);
             return colorId;
@@ -439,12 +444,13 @@ namespace Qml.Net
             {
                 return _registeredFontFamilies[fontFamilyName];
             }
+
             var fontFamilyId = RegisterFontFamily(fontFamilyName);
             _registeredFontFamilies.Add(fontFamilyName, fontFamilyId);
             return fontFamilyId;
         }
     }
-    
+
     internal class INetQPainterInterop
     {
         [NativeSymbol(Entrypoint = "inetqpainter_setPen")]
@@ -480,7 +486,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontDel(IntPtr paintedItem, int fontFamilyId, bool isBold, bool isItalic, bool isUnderline, int pxSize);
+        public delegate void SetFontDel(IntPtr paintedItem, int fontFamilyId, bool isBold, bool isItalic,
+            bool isUnderline, int pxSize);
 
         [NativeSymbol(Entrypoint = "inetqpainter_setFontFamily")]
         public SetFontFamilyDel SetFontFamily { get; set; }
@@ -522,14 +529,16 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextDel(IntPtr paintedItem, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string text);
+        public delegate void DrawTextDel(IntPtr paintedItem, int x, int y,
+            [MarshalAs(UnmanagedType.LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawTextRect")]
         public DrawTextRectDel DrawTextRect { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags, [MarshalAs(UnmanagedType.LPWStr)] string text);
+        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags,
+            [MarshalAs(UnmanagedType.LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawRect")]
         public DrawRectDel DrawRect { get; set; }
@@ -571,7 +580,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int RegisterFontFamilyDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string fontFamilyString);
+        public delegate int RegisterFontFamilyDel(IntPtr paintedItem,
+            [MarshalAs(UnmanagedType.LPWStr)] string fontFamilyString);
 
         [NativeSymbol(Entrypoint = "inetqpainter_freeFontFamily")]
         public FreeFontFamilyDel FreeFontFamily { get; set; }
@@ -592,31 +602,34 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate StringSizeResult GetStringSizeDel(IntPtr paintedItem, int fontFamilyId, int sizePx, [MarshalAs(UnmanagedType.LPWStr)] string text);
+        public delegate StringSizeResult GetStringSizeDel(IntPtr paintedItem, int fontFamilyId, int sizePx,
+            [MarshalAs(UnmanagedType.LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawArc")]
         public DrawArcDel DrawArc { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawArcDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle, int spanAngle);
+        public delegate void DrawArcDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle,
+            int spanAngle);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawChord")]
         public DrawChordDel DrawChord { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawChordDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle, int spanAngle);
+        public delegate void DrawChordDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle,
+            int spanAngle);
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct INetQPainter_Point 
+        public struct INetQPainter_Point
         {
             public int x;
             public int y;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct INetQPainter_Rect 
+        public struct INetQPainter_Rect
         {
             public int x;
             public int y;
@@ -643,7 +656,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawImageDel(IntPtr paintedItem, INetQPainter_Point point, byte[] imgData, int imgDataSize, INetQPainter_Rect sourceRect, INetQPainter.ImageConversionFlag flags);
+        public delegate void DrawImageDel(IntPtr paintedItem, INetQPainter_Point point, byte[] imgData, int imgDataSize,
+            INetQPainter_Rect sourceRect, INetQPainter.ImageConversionFlag flags);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawLine")]
         public DrawLineDel DrawLine { get; set; }
@@ -657,7 +671,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawPieDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle, int spanAngle);
+        public delegate void DrawPieDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle,
+            int spanAngle);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawPoint")]
         public DrawPointDel DrawPoint { get; set; }
@@ -671,7 +686,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawPolygonDel(IntPtr paintedItem, INetQPainter_Point[] points, int pointCount, bool oddFill);
+        public delegate void DrawPolygonDel(IntPtr paintedItem, INetQPainter_Point[] points, int pointCount,
+            bool oddFill);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawPolyline")]
         public DrawPolylineDel DrawPolyline { get; set; }
@@ -685,7 +701,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawRoundedRectDel(IntPtr paintedItem, int x, int y, int w, int h, double xRadius, double yRadius, bool absoluteSize);
+        public delegate void DrawRoundedRectDel(IntPtr paintedItem, int x, int y, int w, int h, double xRadius,
+            double yRadius, bool absoluteSize);
 
         [NativeSymbol(Entrypoint = "inetqpainter_eraseRect")]
         public EraseRectDel EraseRect { get; set; }
@@ -707,13 +724,14 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetBackgroundModeDel(IntPtr paintedItem, bool opaque);
-        
+
         [NativeSymbol(Entrypoint = "inetqpainter_setClipRect")]
         public SetClipRectDel SetClipRect { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetClipRectDel(IntPtr paintedItem, int x, int y, int width, int height, INetQPainter.ClipOperation operation);
+        public delegate void SetClipRectDel(IntPtr paintedItem, int x, int y, int width, int height,
+            INetQPainter.ClipOperation operation);
 
         [NativeSymbol(Entrypoint = "inetqpainter_setClipping")]
         public SetClippingDel SetClipping { get; set; }
@@ -721,14 +739,14 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetClippingDel(IntPtr paintedItem, bool enable);
-        
+
         [NativeSymbol(Entrypoint = "inetqpainter_setCompositionMode")]
         public SetCompositionModeDel SetCompositionMode { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetCompositionModeDel(IntPtr paintedItem, INetQPainter.CompositionMode mode);
-        
+
         [NativeSymbol(Entrypoint = "inetqpainter_setLayoutDirection")]
         public SetLayoutDirectionDel SetLayoutDirection { get; set; }
 
@@ -755,8 +773,9 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetTransformDel(IntPtr paintedItem, double h11, double h12, double h13, double h21, double h22, double h23, double h31, double h32, double h33, bool combine);
-        
+        public delegate void SetTransformDel(IntPtr paintedItem, double h11, double h12, double h13, double h21,
+            double h22, double h23, double h31, double h32, double h33, bool combine);
+
         [NativeSymbol(Entrypoint = "inetqpainter_setViewTransformEnabled")]
         public SetViewTransformEnabledDel SetViewTransformEnabled { get; set; }
 
@@ -769,7 +788,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetWorldTransformDel(IntPtr paintedItem, double h11, double h12, double h13, double h21, double h22, double h23, double h31, double h32, double h33, bool combine);
+        public delegate void SetWorldTransformDel(IntPtr paintedItem, double h11, double h12, double h13, double h21,
+            double h22, double h23, double h31, double h32, double h33, bool combine);
 
         [NativeSymbol(Entrypoint = "inetqpainter_setWorldMatrixEnabled")]
         public SetWorldMatrixEnabledDel SetWorldMatrixEnabled { get; set; }
@@ -791,6 +811,5 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void TranslateDel(IntPtr paintedItem, double dx, double dy);
-
     }
 }
