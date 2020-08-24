@@ -3,9 +3,9 @@ namespace Qml.Net
 {
     public class QmlNetPaintHandler
     {
-        private QmlNetPaintedItem m_paintedItem;
+        private QmlNetRecordingPaintedItem m_paintedItem;
 
-        protected QmlNetPaintedItem PaintedItem => m_paintedItem;
+        protected QmlNetRecordingPaintedItem PaintedItem => m_paintedItem;
 
         public QmlNetPaintHandler()
         {
@@ -15,7 +15,7 @@ namespace Qml.Net
         {
             if (paintHandlerRef > 0)
             {
-                m_paintedItem = new QmlNetPaintedItem((IntPtr)paintHandlerRef, (IntPtr)inetqpainterRef);
+                m_paintedItem = new QmlNetRecordingPaintedItem((IntPtr)paintHandlerRef, (IntPtr)inetqpainterRef);
             }
             else
             {

@@ -7,12 +7,12 @@ using Qml.Net.Internal;
 
 namespace Qml.Net
 {
-    public class QmlNetPaintedItem
+    public class QmlNetRecordingPaintedItem
     {
         private IntPtr _qmlNetPaintedItemRef;
         private INetQPainter _qPainter;
 
-        public QmlNetPaintedItem(IntPtr qmlNetPaintedItemRef, IntPtr inetQPainterRef)
+        public QmlNetRecordingPaintedItem(IntPtr qmlNetPaintedItemRef, IntPtr inetQPainterRef)
         {
             _qmlNetPaintedItemRef = qmlNetPaintedItemRef;
             _qPainter = new INetQPainter(inetQPainterRef);
@@ -241,14 +241,14 @@ namespace Qml.Net
 
     internal class QmlNetPaintedItemInterop
     {
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_beginRecordPaintActions")]
+        [NativeSymbol(Entrypoint = "qqmlnetrecordingpainteditem_beginRecordPaintActions")]
         public BeginRecordPaintActionsDel BeginRecordPaintActions { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void BeginRecordPaintActionsDel(IntPtr paintedItem);
 
-        [NativeSymbol(Entrypoint = "qqmlnetpainteditem_endRecordPaintActions")]
+        [NativeSymbol(Entrypoint = "qqmlnetrecordingpainteditem_endRecordPaintActions")]
         public EndRecordPaintActionsDel EndRecordPaintActions { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
