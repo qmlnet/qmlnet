@@ -32,6 +32,14 @@ namespace Qml.Net.Tests.Qml
             _registeredTypes.Add(typeof(T));
             Net.Qml.RegisterType<T>("tests");
         }
+        
+        protected virtual void RegisterPaintedQuickItemType<T>()
+            where T : QmlNetQuickPaintedItem
+        {
+            if (_registeredTypes.Contains(typeof(T))) return;
+            _registeredTypes.Add(typeof(T));
+            Net.Qml.RegisterPaintedQuickItemType<T>("tests");
+        }
 
         protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false, bool failOnQmlWarnings = true)
         {
@@ -81,6 +89,32 @@ namespace Qml.Net.Tests.Qml
             RegisterType<T>();
             Mock = new Mock<T>();
             TypeCreator.SetInstance(typeof(T), Mock.Object);
+        }
+    }
+    
+    public abstract class BaseQmlQuickPaintedItemTests<T> : AbstractBaseQmlTests<T>
+        where T : QmlNetQuickPaintedItem
+    {
+        protected readonly Mock<T> Mock;
+
+        protected BaseQmlQuickPaintedItemTests()
+        {
+            RegisterPaintedQuickItemType<T>();
+            Mock = new Mock<T>();
+            TypeCreator.SetInstance(typeof(T), Mock.Object);
+        }
+    }
+    
+    public abstract class BaseQmlQuickPaintedItemTestsWithInstance<T> : AbstractBaseQmlTests<T>
+        where T : QmlNetQuickPaintedItem, new()
+    {
+        protected readonly T Instance;
+
+        protected BaseQmlQuickPaintedItemTestsWithInstance()
+        {
+            RegisterPaintedQuickItemType<T>();
+            Instance = new T();
+            TypeCreator.SetInstance(typeof(T), Instance);
         }
     }
 

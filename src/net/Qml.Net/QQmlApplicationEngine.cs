@@ -80,6 +80,11 @@ namespace Qml.Net
             return Interop.QQmlApplicationEngine.RegisterType(type.Handle, uri, versionMajor, versionMinor, qmlName);
         }
 
+        internal static int RegisterPaintedQuickItemType(NetTypeInfo type, string uri, string qmlName, int versionMajor = 1, int versionMinor = 0)
+        {
+            return Interop.QQmlApplicationEngine.RegisterPaintedQuickItemType(type.Handle, uri, versionMajor, versionMinor, qmlName);
+        }
+
         /// <summary>
         /// Activates the MVVM behavior.
         /// This Behavior automatically connects INotifyPropertyChanged instances with appropriate signals on the QML side
@@ -136,6 +141,13 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int RegisterTypeDel(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
+
+        [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerPaintedQuickItemType")]
+        public RegisterPaintedQuickItemTypeDel RegisterPaintedQuickItemType { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int RegisterPaintedQuickItemTypeDel(IntPtr type, [MarshalAs(UnmanagedType.LPWStr)]string uri, int versionMajor, int versionMinor, [MarshalAs(UnmanagedType.LPWStr)]string qmlName);
 
         [NativeSymbol(Entrypoint = "qqmlapplicationengine_registerSingletonTypeQml")]
         public RegisterSingletonTypeQmlDel RegisterSingletonTypeQml { get; set; }
