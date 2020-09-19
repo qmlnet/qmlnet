@@ -43,10 +43,8 @@ namespace Qml.Net.Tests.Qml
 
         protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false, bool failOnQmlWarnings = true)
         {
-            var result = NetTestHelper.RunQml(
-                qmlApplicationEngine,
-                string.Format(
-                    @"
+            var qml = string.Format(
+                @"
                     import QtQuick 2.0
                     import tests 1.0
                     {0} {{
@@ -57,14 +55,36 @@ namespace Qml.Net.Tests.Qml
                         }}
                     }}
                     ",
-                    typeof(TTypeToRegister).Name,
-                    instanceId,
-                    componentOnCompletedCode),
-                runEvents,
-                failOnQmlWarnings);
+                typeof(TTypeToRegister).Name,
+                instanceId,
+                componentOnCompletedCode);
+            var result = true;
+            Exception exception= null;
+            try
+            {
+                result = NetTestHelper.RunQml(
+                    qmlApplicationEngine,
+                    qml,
+                    runEvents,
+                    failOnQmlWarnings);
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+                result = false;
+            }
+
             if (result == false)
             {
-                throw new Exception($"Couldn't execute qml: {componentOnCompletedCode}");
+                var msg = $"Couldn't execute qml: {Environment.NewLine}{qml}";
+                if (exception != null)
+                {
+                    throw new Exception(msg, exception);
+                }
+                else
+                {
+                    throw new Exception(msg);
+                }
             }
         }
 

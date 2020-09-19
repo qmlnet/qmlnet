@@ -36,7 +36,7 @@ namespace Qml.Net.Internal
                 }
 
                 var baseType = typeInfo.BaseType;
-                if (baseType != null)
+                if (baseType != null && !Helpers.ShouldBeHiddenFromQml(baseType))
                 {
                     type.BaseType = baseType.AssemblyQualifiedName;
                 }
