@@ -20,12 +20,12 @@ namespace Qml.Net
 
         public void BeginRecordPaintActions()
         {
-            Interop.QmlNetPaintedItem.BeginRecordPaintActions(_qmlNetPaintedItemRef);
+            Interop.QmlNetRecordingPaintedItem.BeginRecordPaintActions(_qmlNetPaintedItemRef);
         }
 
         public void EndRecordPaintActions()
         {
-            Interop.QmlNetPaintedItem.EndRecordPaintActions(_qmlNetPaintedItemRef);
+            Interop.QmlNetRecordingPaintedItem.EndRecordPaintActions(_qmlNetPaintedItemRef);
         }
 
         public void SetPen(string colorString)
@@ -239,7 +239,7 @@ namespace Qml.Net
         }
     }
 
-    internal class QmlNetPaintedItemInterop
+    internal class QmlNetRecordingPaintedItemInterop
     {
         [NativeSymbol(Entrypoint = "qqmlnetrecordingpainteditem_beginRecordPaintActions")]
         public BeginRecordPaintActionsDel BeginRecordPaintActions { get; set; }

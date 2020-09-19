@@ -76,6 +76,7 @@ namespace Qml.Net.Internal
             NetQObject = LoadInteropType<NetQObjectInterop>(library, loader);
             NetQObjectSignalConnection = LoadInteropType<NetQObjectSignalConnectionInterop>(library, loader);
             QLocale = LoadInteropType<QLocaleInterop>(library, loader);
+            QmlNetRecordingPaintedItem = LoadInteropType<QmlNetRecordingPaintedItemInterop>(library, loader);
             QmlNetPaintedItem = LoadInteropType<QmlNetPaintedItemInterop>(library, loader);
             INetQPainter = LoadInteropType<INetQPainterInterop>(library, loader);
 
@@ -134,8 +135,10 @@ namespace Qml.Net.Internal
         
         public static QLocaleInterop QLocale { get; set; }
 
+        public static QmlNetRecordingPaintedItemInterop QmlNetRecordingPaintedItem { get; set; }
+
         public static QmlNetPaintedItemInterop QmlNetPaintedItem { get; set; }
-        
+
         public static INetQPainterInterop INetQPainter { get; set; }
 
         private static T LoadInteropType<T>(IntPtr library, IPlatformLoader loader)
