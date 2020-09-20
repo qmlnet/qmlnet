@@ -35,7 +35,7 @@ namespace Qml.Net
             }
         }
 
-        public abstract void Paint(INetQPainter painter);
+        public abstract void Paint(NetQPainter painter);
 
         public virtual void OnHeightChanged(int height)
         {
@@ -112,7 +112,7 @@ namespace Qml.Net
             object obj = null;
             if (ObjectIdReferenceTracker.TryGetObjectFor(objectId, out obj))
             {
-                (obj as QmlNetQuickPaintedItem)?.Paint(new INetQPainter(netQPainter));
+                (obj as QmlNetQuickPaintedItem)?.Paint(new NetQPainter(netQPainter));
             }
         }
 

@@ -17,7 +17,7 @@ namespace Qml.Net.Tests.Qml
 
             public object QmlValue { get; set; }
 
-            public override void Paint(INetQPainter painter)
+            public override void Paint(NetQPainter painter)
             {
             }
         }
@@ -51,7 +51,7 @@ namespace Qml.Net.Tests.Qml
 
             public object QmlValue { get; set; }
 
-            public override void Paint(INetQPainter painter)
+            public override void Paint(NetQPainter painter)
             {
             }
         }
@@ -82,7 +82,7 @@ namespace Qml.Net.Tests.Qml
         {
             public virtual string SomeBaseProperty { get; set; }
 
-            public override void Paint(INetQPainter painter)
+            public override void Paint(NetQPainter painter)
             {
             }
         }
