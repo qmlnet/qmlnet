@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
+using static System.Runtime.InteropServices.UnmanagedType;
 
 // ReSharper disable InconsistentNaming
 
@@ -141,10 +142,9 @@ namespace Qml.Net
             Interop.INetQPainter.FreeFontFamily(_qPainterRef, fontFamilyId);
         }
 
-        public Size GetStringSize(string fontFamily, int fontSizePx, string text)
+        public static Size GetStringSize(string fontFamily, int fontSizePx, string text)
         {
-            int fontFamilyId = GetFontFamilyId(fontFamily);
-            var res = Interop.INetQPainter.GetStringSize(_qPainterRef, fontFamilyId, fontSizePx, text);
+            var res = Interop.INetQPainter.GetStringSize(fontFamily, fontSizePx, text);
             return new Size(res.width, res.height);
         }
 
@@ -530,7 +530,7 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DrawTextDel(IntPtr paintedItem, int x, int y,
-            [MarshalAs(UnmanagedType.LPWStr)] string text);
+            [MarshalAs(LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawTextRect")]
         public DrawTextRectDel DrawTextRect { get; set; }
@@ -538,7 +538,7 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags,
-            [MarshalAs(UnmanagedType.LPWStr)] string text);
+            [MarshalAs(LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawRect")]
         public DrawRectDel DrawRect { get; set; }
@@ -566,7 +566,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int RegisterColorDel(IntPtr paintedItem, [MarshalAs(UnmanagedType.LPWStr)] string colorString);
+        public delegate int RegisterColorDel(IntPtr paintedItem, [MarshalAs(LPWStr)] string colorString);
 
         [NativeSymbol(Entrypoint = "inetqpainter_freeColor")]
         public FreeColorDel FreeColor { get; set; }
@@ -581,7 +581,7 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int RegisterFontFamilyDel(IntPtr paintedItem,
-            [MarshalAs(UnmanagedType.LPWStr)] string fontFamilyString);
+            [MarshalAs(LPWStr)] string fontFamilyString);
 
         [NativeSymbol(Entrypoint = "inetqpainter_freeFontFamily")]
         public FreeFontFamilyDel FreeFontFamily { get; set; }
@@ -602,8 +602,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate StringSizeResult GetStringSizeDel(IntPtr paintedItem, int fontFamilyId, int sizePx,
-            [MarshalAs(UnmanagedType.LPWStr)] string text);
+        public delegate StringSizeResult GetStringSizeDel([MarshalAs(LPWStr)] string fontFamily, int sizePx,
+            [MarshalAs(LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "inetqpainter_drawArc")]
         public DrawArcDel DrawArc { get; set; }

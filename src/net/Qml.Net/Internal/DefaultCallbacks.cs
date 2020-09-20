@@ -58,7 +58,7 @@ namespace Qml.Net.Internal
                 }
 
                 // Don't grab properties and methods for system-level types.
-                if (Helpers.IsPrimitive(typeInfo))
+                if (Helpers.IsPrimitive(typeInfo) || Helpers.ShouldBeHiddenFromQml(typeInfo))
                 {
                     return;
                 }

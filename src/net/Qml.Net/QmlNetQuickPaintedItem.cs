@@ -10,9 +10,9 @@ namespace Qml.Net
     {
         private IntPtr _ref;
 
-        public int Height => Interop.QmlNetPaintedItem.GetHeight(_ref);
+        public int Height => _ref != IntPtr.Zero ? Interop.QmlNetPaintedItem.GetHeight(_ref) : 0;
 
-        public int Width => Interop.QmlNetPaintedItem.GetWidth(_ref);
+        public int Width => _ref != IntPtr.Zero ? Interop.QmlNetPaintedItem.GetWidth(_ref) : 0;
 
         public QmlNetQuickPaintedItem()
         {
@@ -25,6 +25,14 @@ namespace Qml.Net
         internal void SetRef(IntPtr @ref)
         {
             _ref = @ref;
+        }
+
+        public void Update()
+        {
+            if (_ref != IntPtr.Zero)
+            {
+                Interop.QmlNetPaintedItem.Update(_ref);
+            }
         }
 
         public abstract void Paint(INetQPainter painter);

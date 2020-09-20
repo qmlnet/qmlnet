@@ -103,11 +103,6 @@ namespace Qml.Net
             _qPainter.FillRect(x, y, width, height);
         }
         
-        public Size GetStringSize(string fontFamily, int fontSizePx, string text)
-        {
-            return _qPainter.GetStringSize(fontFamily, fontSizePx, text);
-        }
-        
         public void DrawArc(int x, int y, int width, int height, int startAngle, int spanAngle)
         {
             _qPainter.DrawArc(x, y, width, height, startAngle, spanAngle);
