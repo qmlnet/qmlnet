@@ -208,6 +208,23 @@ namespace Qml.Net
             NoFormatConversion = 0x00000200
         }
 
+        public void DrawImage(Point start, string imagePath, Rectangle source, ImageConversionFlag flags)
+        {
+            var p = new NetQPainterInterop.netqpainter_Point()
+            {
+                x = start.X,
+                y = start.Y
+            };
+            var sourceRect = new NetQPainterInterop.netqpainter_Rect()
+            {
+                x = source.X,
+                y = source.Y,
+                width = source.Width,
+                height = source.Height
+            };
+            Interop.NetQPainter.DrawImageFile(_qPainterRef, p, imagePath, sourceRect, flags);
+        }
+        
         public void DrawImage(Point start, byte[] imageData, Rectangle source, ImageConversionFlag flags)
         {
             var p = new NetQPainterInterop.netqpainter_Point()
@@ -657,6 +674,14 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void DrawImageDel(IntPtr paintedItem, netqpainter_Point point, byte[] imgData, int imgDataSize,
+            netqpainter_Rect sourceRect, NetQPainter.ImageConversionFlag flags);
+
+        [NativeSymbol(Entrypoint = "netqpainter_drawImageFile")]
+        public DrawImageFileDel DrawImageFile { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void DrawImageFileDel(IntPtr paintedItem, netqpainter_Point point, [MarshalAs(LPWStr)] string imageFilePath,
             netqpainter_Rect sourceRect, NetQPainter.ImageConversionFlag flags);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawLine")]
