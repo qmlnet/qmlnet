@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using Moq;
 using SixLabors.ImageSharp;
@@ -8,6 +9,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 using Color = System.Drawing.Color;
+using Point = System.Drawing.Point;
 
 namespace Qml.Net.Tests.Qml
 {
@@ -236,6 +238,44 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[149, 50]);
             Assert.Equal(white, img[150, 51]);
             Assert.Equal(white, img[150, 49]);
+        }
+        
+        [Fact]
+        public void DrawConvexPolygon_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.DrawConvexPolygon(new[]
+                {
+                    new Point(10, 10),
+                    new Point(10, 100),
+                    new Point(100, 100),
+                    new Point(100, 10),
+                    new Point(10, 10)
+                });
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+            
+            Assert.Equal(green, img[10, 10]);
+            Assert.Equal(green, img[10, 50]);
+            Assert.Equal(green, img[10, 100]);
+            Assert.Equal(green, img[50, 100]);
+            Assert.Equal(green, img[100, 100]);
+            Assert.Equal(green, img[100, 50]);
+            Assert.Equal(green, img[100, 10]);
+            Assert.Equal(green, img[50, 10]);
+            
+            Assert.Equal(white, img[8, 10]);
+            Assert.Equal(white, img[12, 12]);
+            Assert.Equal(white, img[8, 100]);
+            
+            Assert.Equal(white, img[100, 8]);
+            Assert.Equal(white, img[102, 10]);
+            Assert.Equal(white, img[102, 100]);
+            Assert.Equal(white, img[50, 102]);
         }
     }
     
