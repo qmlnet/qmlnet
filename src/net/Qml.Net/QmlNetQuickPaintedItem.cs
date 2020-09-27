@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
 using Qml.Net.Internal.Types;
+using static System.Runtime.InteropServices.UnmanagedType;
 
 namespace Qml.Net
 {
@@ -33,6 +34,15 @@ namespace Qml.Net
             {
                 Interop.QmlNetPaintedItem.Update(_ref);
             }
+        }
+
+        public byte[] PaintToImage(string format)
+        {
+            var arrayPtr = Interop.QmlNetPaintedItem.PaintToImage(_ref, out var size, format);
+            byte[] result = new byte[size];
+            Marshal.Copy(arrayPtr, result, 0, (int)size);
+            Marshal.FreeHGlobal(arrayPtr);
+            return result;
         }
 
         public abstract void Paint(NetQPainter painter);
@@ -173,5 +183,12 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int GetWidthDel(IntPtr paintedItem);
+
+        [NativeSymbol(Entrypoint = "qqmlnetpainteditembase_paintToImage")]
+        public PaintToImageDel PaintToImage { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr PaintToImageDel(IntPtr paintedItem, out long sizeOut, [MarshalAs(LPWStr)] string format);
     }
 }

@@ -22,10 +22,10 @@ namespace Qml.Net
             _qPainterRef = qPainterRef;
         }
 
-        public void SetPen(string colorString)
+        public void SetPen(string colorString, int width)
         {
             var colorId = GetColorId(colorString);
-            Interop.NetQPainter.SetPen(_qPainterRef, colorId);
+            Interop.NetQPainter.SetPen(_qPainterRef, colorId, width);
         }
 
         public void ResetPen()
@@ -475,7 +475,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetPenDel(IntPtr paintedItem, int colorId);
+        public delegate void SetPenDel(IntPtr paintedItem, int colorId, int width);
 
         [NativeSymbol(Entrypoint = "netqpainter_resetPen")]
         public ResetPenDel ResetPen { get; set; }

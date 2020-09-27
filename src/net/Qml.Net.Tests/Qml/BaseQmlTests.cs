@@ -41,7 +41,7 @@ namespace Qml.Net.Tests.Qml
             Net.Qml.RegisterPaintedQuickItemType<T>("tests");
         }
 
-        protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false, bool failOnQmlWarnings = true)
+        protected void RunQmlTest(string instanceId, string componentOnCompletedCode, bool runEvents = false, bool failOnQmlWarnings = true, string additionalProperties = "")
         {
             var qml = string.Format(
                 @"
@@ -49,14 +49,16 @@ namespace Qml.Net.Tests.Qml
                     import tests 1.0
                     {0} {{
                         id: {1}
+                        {2}
                         property var testQObject: null
                         function runTest() {{
-                            {2}
+                            {3}
                         }}
                     }}
                     ",
                 typeof(TTypeToRegister).Name,
                 instanceId,
+                additionalProperties,
                 componentOnCompletedCode);
             var result = true;
             Exception exception= null;
