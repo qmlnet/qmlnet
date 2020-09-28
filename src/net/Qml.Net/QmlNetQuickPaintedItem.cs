@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
@@ -60,20 +61,31 @@ namespace Qml.Net
     
     internal class QmlNetPaintedItemCallbacksImpl
     {
+        private List<GCHandle> _handles = new List<GCHandle>();
+        
         internal QmlNetPaintedItemCallbacksImpl()
         {
             _setRef = SetRef;
-            GCHandle.Alloc(_setRef);
+            _handles.Add(GCHandle.Alloc(_setRef));
             _paint = Paint;
-            GCHandle.Alloc(_paint);
+            _handles.Add(GCHandle.Alloc(_paint));
             _heightChanged = HeightChanged;
-            GCHandle.Alloc(_heightChanged);
+            _handles.Add(GCHandle.Alloc(_heightChanged));
             _widthChanged = WidthChanged;
-            GCHandle.Alloc(_paint);
+            _handles.Add(GCHandle.Alloc(_widthChanged));
 
             var cb = Callbacks();
 
             Interop.QmlNetPaintedItem.SetCallbacks(ref cb);
+        }
+
+        ~QmlNetPaintedItemCallbacksImpl()
+        {
+            foreach (var gcHandle in _handles)
+            {
+                gcHandle.Free();
+            }
+            _handles.Clear();
         }
 
         internal QmlNetPaintedItemCallbacks Callbacks()
