@@ -24,5 +24,10 @@ namespace Qml.Net
             : base(existingApp)
         {
         }
+
+        public void SetWindowIcon(string pngFilePath)
+        {
+            Interop.QCoreApplication.SetWindowIcon(Handle, pngFilePath);
+        }
     }
 }
