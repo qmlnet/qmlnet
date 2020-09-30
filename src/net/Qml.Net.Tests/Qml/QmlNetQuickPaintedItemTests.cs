@@ -277,8 +277,94 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[102, 100]);
             Assert.Equal(white, img[50, 102]);
         }
+        
+        [Fact]
+        public void DrawEllipse_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.DrawEllipse(10, 10, 100, 20);
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            // left side
+            Assert.Equal(green, img[10, 19]);
+            Assert.Equal(green, img[10, 20]);
+            Assert.Equal(green, img[10, 21]);
+            
+            Assert.Equal(white, img[9, 20]);
+            Assert.Equal(white, img[9, 21]);
+            Assert.Equal(white, img[10, 22]);
+            Assert.Equal(white, img[10, 18]);
+            
+            Assert.Equal(white, img[11, 20]);
+            Assert.Equal(white, img[11, 21]);
+
+            Assert.Equal(green, img[11, 18]);
+            Assert.Equal(green, img[11, 22]);
+
+            // right side
+            Assert.Equal(green, img[110, 19]);
+            Assert.Equal(green, img[110, 20]);
+            Assert.Equal(green, img[110, 21]);
+            
+            Assert.Equal(white, img[111, 20]);
+            Assert.Equal(white, img[111, 21]);
+            Assert.Equal(white, img[110, 22]);
+            Assert.Equal(white, img[110, 18]);
+            
+            Assert.Equal(white, img[109, 20]);
+            Assert.Equal(white, img[109, 21]);
+            
+            Assert.Equal(green, img[109, 18]);
+            Assert.Equal(green, img[109, 22]);
+        }
+        
+        [Fact]
+        public void DrawLine_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.DrawLine(10, 10, 100, 100);
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            Assert.Equal(white, img[9, 8]);
+            Assert.Equal(white, img[9, 9]);
+            Assert.Equal(white, img[9, 10]);
+            
+            Assert.Equal(green, img[10, 10]);
+            Assert.Equal(green, img[11, 11]);
+            Assert.Equal(green, img[12, 12]);
+
+            Assert.Equal(green, img[98, 98]);
+            Assert.Equal(green, img[99, 99]);
+            Assert.Equal(green, img[100, 100]);
+            
+            Assert.Equal(white, img[101, 101]);
+
+            Assert.Equal(white, img[10, 9]);
+            Assert.Equal(white, img[10, 11]);
+            Assert.Equal(white, img[11, 10]);
+            Assert.Equal(white, img[11, 12]);
+
+            Assert.Equal(white, img[99, 98]);
+            Assert.Equal(white, img[99, 100]);
+            Assert.Equal(white, img[100, 99]);
+            Assert.Equal(white, img[100, 101]);
+
+            Assert.Equal(white, img[101, 100]);
+            Assert.Equal(white, img[101, 101]);
+            Assert.Equal(white, img[101, 102]);
+        }
     }
-    
+
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
     {
         public class TestPaintedItem : TestPaintedItemBase
