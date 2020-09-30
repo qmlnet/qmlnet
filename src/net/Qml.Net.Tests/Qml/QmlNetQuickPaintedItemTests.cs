@@ -363,6 +363,39 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[101, 101]);
             Assert.Equal(white, img[101, 102]);
         }
+        
+        [Fact]
+        public void DrawPoint_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.DrawPoint(47, 11);
+                p.DrawPoint(78, 110);
+                p.DrawPoint(60, 3);
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            Assert.Equal(green, img[47, 11]);
+            Assert.Equal(white, img[46, 11]);
+            Assert.Equal(white, img[48, 11]);
+            Assert.Equal(white, img[47, 10]);
+            Assert.Equal(white, img[47, 12]);
+            
+            Assert.Equal(green, img[78, 110]);
+            Assert.Equal(white, img[77, 110]);
+            Assert.Equal(white, img[79, 110]);
+            Assert.Equal(white, img[78, 109]);
+            Assert.Equal(white, img[78, 111]);
+            
+            Assert.Equal(green, img[60, 3]);
+            Assert.Equal(white, img[59, 3]);
+            Assert.Equal(white, img[61, 3]);
+            Assert.Equal(white, img[60, 2]);
+            Assert.Equal(white, img[60, 4]);
+        }
     }
 
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
