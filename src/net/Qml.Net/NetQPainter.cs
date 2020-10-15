@@ -411,28 +411,6 @@ namespace Qml.Net
             Interop.NetQPainter.SetRenderHint(_qPainterRef, hint, on);
         }
 
-        public void SetTransform(double h11, double h12, double h13, double h21, double h22, double h23, double h31,
-            double h32, double h33, bool combine)
-        {
-            Interop.NetQPainter.SetTransform(_qPainterRef, h11, h12, h13, h21, h22, h23, h31, h32, h33, combine);
-        }
-
-        public void SetViewTransformEnabled(bool enable)
-        {
-            Interop.NetQPainter.SetViewTransformEnabled(_qPainterRef, enable);
-        }
-
-        public void SetWorldTransform(double h11, double h12, double h13, double h21, double h22, double h23,
-            double h31, double h32, double h33, bool combine)
-        {
-            Interop.NetQPainter.SetWorldTransform(_qPainterRef, h11, h12, h13, h21, h22, h23, h31, h32, h33, combine);
-        }
-
-        public void SetWorldMatrixEnabled(bool enable)
-        {
-            Interop.NetQPainter.SetWorldMatrixEnabled(_qPainterRef, enable);
-        }
-
         public void Shear(double sh, double sv)
         {
             Interop.NetQPainter.Shear(_qPainterRef, sh, sv);
@@ -792,37 +770,7 @@ namespace Qml.Net
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void SetRenderHintDel(IntPtr paintedItem, NetQPainter.RenderHint hint, bool on);
-
-        [NativeSymbol(Entrypoint = "netqpainter_setTransform")]
-        public SetTransformDel SetTransform { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetTransformDel(IntPtr paintedItem, double h11, double h12, double h13, double h21,
-            double h22, double h23, double h31, double h32, double h33, bool combine);
-
-        [NativeSymbol(Entrypoint = "netqpainter_setViewTransformEnabled")]
-        public SetViewTransformEnabledDel SetViewTransformEnabled { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetViewTransformEnabledDel(IntPtr paintedItem, bool enabled);
-
-        [NativeSymbol(Entrypoint = "netqpainter_setWorldTransform")]
-        public SetWorldTransformDel SetWorldTransform { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetWorldTransformDel(IntPtr paintedItem, double h11, double h12, double h13, double h21,
-            double h22, double h23, double h31, double h32, double h33, bool combine);
-
-        [NativeSymbol(Entrypoint = "netqpainter_setWorldMatrixEnabled")]
-        public SetWorldMatrixEnabledDel SetWorldMatrixEnabled { get; set; }
-
-        [SuppressUnmanagedCodeSecurity]
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetWorldMatrixEnabledDel(IntPtr paintedItem, bool enabled);
-
+        
         [NativeSymbol(Entrypoint = "netqpainter_shear")]
         public ShearDel Shear { get; set; }
 
