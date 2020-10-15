@@ -476,8 +476,44 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[60, 10]);
 
         }
+
+        [Fact]
+        public void DrawPie_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.DrawPie(0, 0, 150, 100, 0, 45 * 16);
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            Assert.Equal(green, img[128, 14]);
+            Assert.Equal(white, img[129, 14]);
+            Assert.Equal(white, img[127, 14]);
+            Assert.Equal(white, img[128, 15]);
+            Assert.Equal(white, img[128, 13]);
+
+            Assert.Equal(green, img[129, 15]);
+
+            Assert.Equal(green, img[130, 16]);
+
+            Assert.Equal(green, img[131, 17]);
+            Assert.Equal(green, img[132, 17]);
+
+            Assert.Equal(green, img[149, 50]);
+            Assert.Equal(white, img[150, 50]);
+            Assert.Equal(green, img[148, 50]);
+            Assert.Equal(white, img[149, 51]);
+            Assert.Equal(green, img[149, 49]);
+            Assert.Equal(green, img[147, 50]);
+            Assert.Equal(green, img[146, 50]);
+            Assert.Equal(green, img[145, 50]);
+            Assert.Equal(green, img[144, 50]);
+        }
     }
-    
+
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
     {
         public class TestPaintedItem : TestPaintedItemBase
