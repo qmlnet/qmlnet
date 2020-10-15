@@ -587,6 +587,56 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[20, 19]);
 
         }
+        
+        [Fact]
+        public void SetClipRect_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetBrush("#00FF00");
+                p.SetClipRect(10, 10, 10, 10, NetQPainter.ClipOperation.IntersectClip);
+                p.FillRect(0, 0, 150, 150);
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            Assert.Equal(white, img[0, 0]);
+            Assert.Equal(white, img[9, 0]);
+            Assert.Equal(white, img[0, 9]);
+            
+            Assert.Equal(green, img[10, 10]);
+            Assert.Equal(green, img[19, 10]);
+            
+            Assert.Equal(white, img[20, 10]);
+            
+            Assert.Equal(green, img[10, 19]);
+            
+            Assert.Equal(white, img[10, 20]);
+            
+            Assert.Equal(green, img[19, 19]);
+            
+            Assert.Equal(white, img[20, 20]);
+            Assert.Equal(white, img[19, 20]);
+            Assert.Equal(white, img[20, 19]);
+
+        }
+        
+        [Fact]
+        public void SetOpacity_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetOpacity(0.5);
+                p.SetBrush("#00FF00");
+                p.FillRect(0, 0, 150, 150);
+            });
+
+            var opaqueGreen = new Rgba32(0x80, 0xFF, 0x80);
+
+            Assert.Equal(opaqueGreen, img[50, 50]);
+
+        }
     }
 
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
