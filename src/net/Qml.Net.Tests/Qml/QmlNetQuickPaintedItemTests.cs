@@ -637,6 +637,22 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(opaqueGreen, img[50, 50]);
 
         }
+        
+        [Fact]
+        public void Shear_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.Shear(0.5, 1);
+                p.DrawPoint(50, 50);
+            });
+            
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+
+            Assert.Equal(green, img[75, 100]);
+
+        }
     }
 
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
