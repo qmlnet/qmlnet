@@ -513,6 +513,45 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[145, 50]);
             Assert.Equal(green, img[144, 50]);
         }
+        
+        [Fact]
+        public void DrawPolyline_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetPen("#00FF00", 1);
+                p.DrawPolyline(
+                    new[]
+                    {
+                        new Point(10, 10),
+                        new Point(10, 100),
+                        new Point(100, 100),
+                        new Point(100, 10),
+                        new Point(10, 10)
+                    });
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            Assert.Equal(green, img[10, 10]);
+            Assert.Equal(green, img[10, 50]);
+            Assert.Equal(green, img[10, 100]);
+            Assert.Equal(green, img[50, 100]);
+            Assert.Equal(green, img[100, 100]);
+            Assert.Equal(green, img[100, 50]);
+            Assert.Equal(green, img[100, 10]);
+            Assert.Equal(green, img[50, 10]);
+
+            Assert.Equal(white, img[8, 10]);
+            Assert.Equal(white, img[12, 12]);
+            Assert.Equal(white, img[8, 100]);
+
+            Assert.Equal(white, img[100, 8]);
+            Assert.Equal(white, img[102, 10]);
+            Assert.Equal(white, img[102, 100]);
+            Assert.Equal(white, img[50, 102]);
+        }
     }
 
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
