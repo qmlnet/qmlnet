@@ -19,7 +19,7 @@ namespace Qml.Net.Tests.Qml
         {
             public TestPaintedItem()
             {
-                
+
             }
 
             public virtual string SomeProperty { get; set; }
@@ -30,12 +30,12 @@ namespace Qml.Net.Tests.Qml
             {
             }
         }
-        
+
         [Fact]
         public void Can_get_and_set_additional_properties()
         {
             Mock.SetupGet(x => x.SomeProperty).Returns("Some property value");
-            
+
             RunQmlTest(
                 "test",
                 @"
@@ -46,14 +46,15 @@ namespace Qml.Net.Tests.Qml
             Mock.VerifySet(x => x.SomeProperty = "Some property value");
         }
     }
-    
-    public class QmlNetQuickPaintedItemInstanceTests : BaseQmlQuickPaintedItemTestsWithInstance<QmlNetQuickPaintedItemInstanceTests.TestPaintedItem>
+
+    public class QmlNetQuickPaintedItemInstanceTests : BaseQmlQuickPaintedItemTestsWithInstance<
+        QmlNetQuickPaintedItemInstanceTests.TestPaintedItem>
     {
         public class TestPaintedItem : QmlNetQuickPaintedItem
         {
             public TestPaintedItem()
             {
-                
+
             }
 
             public virtual string SomeProperty { get; set; }
@@ -79,8 +80,9 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(20d, Instance.QmlValue);
         }
     }
-    
-    public class QmlNetQuickPaintedItemRenderingTests : BaseQmlQuickPaintedItemTestsWithInstance<QmlNetQuickPaintedItemRenderingTests.TestPaintedItem>
+
+    public class QmlNetQuickPaintedItemRenderingTests : BaseQmlQuickPaintedItemTestsWithInstance<
+        QmlNetQuickPaintedItemRenderingTests.TestPaintedItem>
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
@@ -94,12 +96,12 @@ namespace Qml.Net.Tests.Qml
             private byte[] _imgData;
 
             public byte[] ImageData => _imgData;
-            
+
             public TestPaintedItem()
             {
-                
+
             }
-            
+
             public override void Paint(NetQPainter painter)
             {
                 foreach (var paintAction in _paintActions)
@@ -127,29 +129,28 @@ namespace Qml.Net.Tests.Qml
             {
                 Instance.AddPaintAction(pa);
             }
+
             RunQmlTest(
                 "test",
                 @"
                     test.doStoreImageData();
                 ",
-                additionalProperties: "height: 200" + Environment.NewLine + "width:300" + Environment.NewLine + "fillColor:'#FFFFFFFF'");
-            
+                additionalProperties: "height: 200" + Environment.NewLine + "width:300" + Environment.NewLine +
+                                      "fillColor:'#FFFFFFFF'");
+
             return Image.Load<Rgba32>(Instance.ImageData);
         }
-        
+
         [Fact]
         public void FillRect_works()
         {
-            var img = RunQmlRendering((p) =>
-            {
-                p.FillRect(0, 0, 150, 100, "#FF0000");
-            });
+            var img = RunQmlRendering((p) => { p.FillRect(0, 0, 150, 100, "#FF0000"); });
 
             var red = new Rgba32(0xFF, 0x00, 0x00);
             var white = new Rgba32(0xFF, 0xFF, 0xFF);
 
             Assert.Equal(white, img[299, 199]);
-            
+
             Assert.Equal(red, img[0, 0]);
             Assert.Equal(red, img[149, 0]);
             Assert.Equal(red, img[0, 99]);
@@ -158,7 +159,7 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[149, 100]);
             Assert.Equal(white, img[150, 99]);
         }
-        
+
         [Fact]
         public void FillRectWithImplicitColor_works()
         {
@@ -172,7 +173,7 @@ namespace Qml.Net.Tests.Qml
             var white = new Rgba32(0xFF, 0xFF, 0xFF);
 
             Assert.Equal(white, img[299, 199]);
-            
+
             Assert.Equal(red, img[0, 0]);
             Assert.Equal(red, img[149, 0]);
             Assert.Equal(red, img[0, 99]);
@@ -193,9 +194,9 @@ namespace Qml.Net.Tests.Qml
 
             var green = new Rgba32(0x00, 0xFF, 0x00);
             var white = new Rgba32(0xFF, 0xFF, 0xFF);
-            
+
             Assert.Equal(white, img[299, 199]);
-            
+
             Assert.Equal(green, img[0, 0]);
             Assert.Equal(green, img[149, 0]);
             Assert.Equal(white, img[151, 0]);
@@ -219,27 +220,27 @@ namespace Qml.Net.Tests.Qml
 
             var green = new Rgba32(0x00, 0xFF, 0x00);
             var white = new Rgba32(0xFF, 0xFF, 0xFF);
-            
+
             Assert.Equal(green, img[128, 14]);
             Assert.Equal(white, img[129, 14]);
             Assert.Equal(white, img[127, 14]);
             Assert.Equal(white, img[128, 15]);
             Assert.Equal(white, img[128, 13]);
-            
+
             Assert.Equal(green, img[129, 15]);
-            
+
             Assert.Equal(green, img[130, 16]);
-            
+
             Assert.Equal(green, img[131, 17]);
             Assert.Equal(green, img[132, 17]);
-            
+
             Assert.Equal(green, img[150, 50]);
             Assert.Equal(white, img[151, 50]);
             Assert.Equal(white, img[149, 50]);
             Assert.Equal(white, img[150, 51]);
             Assert.Equal(white, img[150, 49]);
         }
-        
+
         [Fact]
         public void DrawConvexPolygon_works()
         {
@@ -258,7 +259,7 @@ namespace Qml.Net.Tests.Qml
 
             var green = new Rgba32(0x00, 0xFF, 0x00);
             var white = new Rgba32(0xFF, 0xFF, 0xFF);
-            
+
             Assert.Equal(green, img[10, 10]);
             Assert.Equal(green, img[10, 50]);
             Assert.Equal(green, img[10, 100]);
@@ -267,17 +268,17 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[100, 50]);
             Assert.Equal(green, img[100, 10]);
             Assert.Equal(green, img[50, 10]);
-            
+
             Assert.Equal(white, img[8, 10]);
             Assert.Equal(white, img[12, 12]);
             Assert.Equal(white, img[8, 100]);
-            
+
             Assert.Equal(white, img[100, 8]);
             Assert.Equal(white, img[102, 10]);
             Assert.Equal(white, img[102, 100]);
             Assert.Equal(white, img[50, 102]);
         }
-        
+
         [Fact]
         public void DrawEllipse_works()
         {
@@ -294,12 +295,12 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[10, 19]);
             Assert.Equal(green, img[10, 20]);
             Assert.Equal(green, img[10, 21]);
-            
+
             Assert.Equal(white, img[9, 20]);
             Assert.Equal(white, img[9, 21]);
             Assert.Equal(white, img[10, 22]);
             Assert.Equal(white, img[10, 18]);
-            
+
             Assert.Equal(white, img[11, 20]);
             Assert.Equal(white, img[11, 21]);
 
@@ -310,19 +311,19 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[110, 19]);
             Assert.Equal(green, img[110, 20]);
             Assert.Equal(green, img[110, 21]);
-            
+
             Assert.Equal(white, img[111, 20]);
             Assert.Equal(white, img[111, 21]);
             Assert.Equal(white, img[110, 22]);
             Assert.Equal(white, img[110, 18]);
-            
+
             Assert.Equal(white, img[109, 20]);
             Assert.Equal(white, img[109, 21]);
-            
+
             Assert.Equal(green, img[109, 18]);
             Assert.Equal(green, img[109, 22]);
         }
-        
+
         [Fact]
         public void DrawLine_works()
         {
@@ -338,7 +339,7 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[9, 8]);
             Assert.Equal(white, img[9, 9]);
             Assert.Equal(white, img[9, 10]);
-            
+
             Assert.Equal(green, img[10, 10]);
             Assert.Equal(green, img[11, 11]);
             Assert.Equal(green, img[12, 12]);
@@ -346,7 +347,7 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[98, 98]);
             Assert.Equal(green, img[99, 99]);
             Assert.Equal(green, img[100, 100]);
-            
+
             Assert.Equal(white, img[101, 101]);
 
             Assert.Equal(white, img[10, 9]);
@@ -363,7 +364,7 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[101, 101]);
             Assert.Equal(white, img[101, 102]);
         }
-        
+
         [Fact]
         public void DrawPoint_works()
         {
@@ -383,20 +384,20 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[48, 11]);
             Assert.Equal(white, img[47, 10]);
             Assert.Equal(white, img[47, 12]);
-            
+
             Assert.Equal(green, img[78, 110]);
             Assert.Equal(white, img[77, 110]);
             Assert.Equal(white, img[79, 110]);
             Assert.Equal(white, img[78, 109]);
             Assert.Equal(white, img[78, 111]);
-            
+
             Assert.Equal(green, img[60, 3]);
             Assert.Equal(white, img[59, 3]);
             Assert.Equal(white, img[61, 3]);
             Assert.Equal(white, img[60, 2]);
             Assert.Equal(white, img[60, 4]);
         }
-        
+
         [Fact]
         public void DrawPolygon_works()
         {
@@ -417,7 +418,7 @@ namespace Qml.Net.Tests.Qml
 
             var green = new Rgba32(0x00, 0xFF, 0x00);
             var white = new Rgba32(0xFF, 0xFF, 0xFF);
-            
+
             Assert.Equal(green, img[10, 10]);
             Assert.Equal(green, img[10, 50]);
             Assert.Equal(green, img[10, 100]);
@@ -426,17 +427,17 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(green, img[100, 50]);
             Assert.Equal(green, img[100, 10]);
             Assert.Equal(green, img[50, 10]);
-            
+
             Assert.Equal(white, img[8, 10]);
             Assert.Equal(white, img[12, 12]);
             Assert.Equal(white, img[8, 100]);
-            
+
             Assert.Equal(white, img[100, 8]);
             Assert.Equal(white, img[102, 10]);
             Assert.Equal(white, img[102, 100]);
             Assert.Equal(white, img[50, 102]);
         }
-        
+
         [Fact]
         public void DrawRoundedRect_works()
         {
@@ -454,9 +455,9 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[10, 11]);
             Assert.Equal(white, img[10, 12]);
             Assert.Equal(green, img[10, 13]);
-            
+
             Assert.Equal(green, img[10, 35]);
-            
+
             Assert.Equal(green, img[10, 57]);
             Assert.Equal(white, img[10, 58]);
             Assert.Equal(white, img[10, 59]);
@@ -467,7 +468,7 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[11, 10]);
             Assert.Equal(white, img[12, 10]);
             Assert.Equal(green, img[13, 10]);
-            
+
             Assert.Equal(green, img[35, 10]);
 
             Assert.Equal(green, img[57, 10]);
