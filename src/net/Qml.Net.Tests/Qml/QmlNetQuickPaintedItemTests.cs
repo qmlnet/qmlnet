@@ -552,6 +552,41 @@ namespace Qml.Net.Tests.Qml
             Assert.Equal(white, img[102, 100]);
             Assert.Equal(white, img[50, 102]);
         }
+        
+        [Fact]
+        public void EraseRect_works()
+        {
+            var img = RunQmlRendering((p) =>
+            {
+                p.SetBrush("#00FF00");
+                p.SetBackground("#FFFFFF");
+                p.FillRect(0, 0, 150, 150);
+                p.EraseRect(10, 10, 10, 10);
+            });
+
+            var green = new Rgba32(0x00, 0xFF, 0x00);
+            var white = new Rgba32(0xFF, 0xFF, 0xFF);
+
+            Assert.Equal(green, img[0, 0]);
+            Assert.Equal(green, img[9, 0]);
+            Assert.Equal(green, img[0, 9]);
+            
+            Assert.Equal(white, img[10, 10]);
+            Assert.Equal(white, img[19, 10]);
+            
+            Assert.Equal(green, img[20, 10]);
+            
+            Assert.Equal(white, img[10, 19]);
+            
+            Assert.Equal(green, img[10, 20]);
+            
+            Assert.Equal(white, img[19, 19]);
+            
+            Assert.Equal(green, img[20, 20]);
+            Assert.Equal(green, img[19, 20]);
+            Assert.Equal(green, img[20, 19]);
+
+        }
     }
 
     public class QmlNetQuickPaintedItemTwoLevelClassHierarchyTests : BaseQmlQuickPaintedItemTests<QmlNetQuickPaintedItemTwoLevelClassHierarchyTests.TestPaintedItem>
