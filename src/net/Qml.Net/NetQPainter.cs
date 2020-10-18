@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using Qml.Net.Internal;
 using static System.Runtime.InteropServices.UnmanagedType;
 
 // ReSharper disable InconsistentNaming
-
 namespace Qml.Net
 {
     public class NetQPainter
@@ -103,7 +102,7 @@ namespace Qml.Net
 
         public void DrawText(int x, int y, int width, int height, DrawTextFlags flags, string text)
         {
-            Interop.NetQPainter.DrawTextRect(_qPainterRef, x, y, width, height, (int) flags, text);
+            Interop.NetQPainter.DrawTextRect(_qPainterRef, x, y, width, height, (int)flags, text);
         }
 
         public void DrawRect(int x, int y, int width, int height)
@@ -127,6 +126,7 @@ namespace Qml.Net
             return Interop.NetQPainter.RegisterColor(_qPainterRef, colorString);
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void FreeColor(int colorId)
         {
             Interop.NetQPainter.FreeColor(_qPainterRef, colorId);
@@ -137,6 +137,7 @@ namespace Qml.Net
             return Interop.NetQPainter.RegisterFontFamily(_qPainterRef, fontFamily);
         }
 
+        // ReSharper disable once UnusedMember.Local
         private void FreeFontFamily(int fontFamilyId)
         {
             Interop.NetQPainter.FreeFontFamily(_qPainterRef, fontFamilyId);
@@ -446,6 +447,7 @@ namespace Qml.Net
         }
     }
 
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global", Justification = "Properties get set via Reflection")]
     internal class NetQPainterInterop
     {
         [NativeSymbol(Entrypoint = "netqpainter_setPen")]
@@ -481,8 +483,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetFontDel(IntPtr paintedItem, int fontFamilyId, bool isBold, bool isItalic,
-            bool isUnderline, int pxSize);
+        public delegate void SetFontDel(IntPtr paintedItem, int fontFamilyId, bool isBold, bool isItalic, bool isUnderline, int pxSize);
 
         [NativeSymbol(Entrypoint = "netqpainter_setFontFamily")]
         public SetFontFamilyDel SetFontFamily { get; set; }
@@ -524,16 +525,14 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextDel(IntPtr paintedItem, int x, int y,
-            [MarshalAs(LPWStr)] string text);
+        public delegate void DrawTextDel(IntPtr paintedItem, int x, int y, [MarshalAs(LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawTextRect")]
         public DrawTextRectDel DrawTextRect { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags,
-            [MarshalAs(LPWStr)] string text);
+        public delegate void DrawTextRectDel(IntPtr paintedItem, int x, int y, int width, int height, int flags, [MarshalAs(LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawRect")]
         public DrawRectDel DrawRect { get; set; }
@@ -575,7 +574,8 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate int RegisterFontFamilyDel(IntPtr paintedItem,
+        public delegate int RegisterFontFamilyDel(
+            IntPtr paintedItem,
             [MarshalAs(LPWStr)] string fontFamilyString);
 
         [NativeSymbol(Entrypoint = "netqpainter_freeFontFamily")]
@@ -597,24 +597,21 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate StringSizeResult GetStringSizeDel([MarshalAs(LPWStr)] string fontFamily, int sizePx,
-            [MarshalAs(LPWStr)] string text);
+        public delegate StringSizeResult GetStringSizeDel([MarshalAs(LPWStr)] string fontFamily, int sizePx, [MarshalAs(LPWStr)] string text);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawArc")]
         public DrawArcDel DrawArc { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawArcDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle,
-            int spanAngle);
+        public delegate void DrawArcDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle, int spanAngle);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawChord")]
         public DrawChordDel DrawChord { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawChordDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle,
-            int spanAngle);
+        public delegate void DrawChordDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle, int spanAngle);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct netqpainter_Point
@@ -651,16 +648,14 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawImageDel(IntPtr paintedItem, netqpainter_Point point, byte[] imgData, int imgDataSize,
-            netqpainter_Rect sourceRect, NetQPainter.ImageConversionFlag flags);
+        public delegate void DrawImageDel(IntPtr paintedItem, netqpainter_Point point, byte[] imgData, int imgDataSize, netqpainter_Rect sourceRect, NetQPainter.ImageConversionFlag flags);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawImageFile")]
         public DrawImageFileDel DrawImageFile { get; set; }
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawImageFileDel(IntPtr paintedItem, netqpainter_Point point, [MarshalAs(LPWStr)] string imageFilePath,
-            netqpainter_Rect sourceRect, NetQPainter.ImageConversionFlag flags);
+        public delegate void DrawImageFileDel(IntPtr paintedItem, netqpainter_Point point, [MarshalAs(LPWStr)] string imageFilePath, netqpainter_Rect sourceRect, NetQPainter.ImageConversionFlag flags);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawLine")]
         public DrawLineDel DrawLine { get; set; }
@@ -674,8 +669,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawPieDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle,
-            int spanAngle);
+        public delegate void DrawPieDel(IntPtr paintedItem, int x, int y, int width, int height, int startAngle, int spanAngle);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawPoint")]
         public DrawPointDel DrawPoint { get; set; }
@@ -689,8 +683,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawPolygonDel(IntPtr paintedItem, netqpainter_Point[] points, int pointCount,
-            bool oddFill);
+        public delegate void DrawPolygonDel(IntPtr paintedItem, netqpainter_Point[] points, int pointCount, bool oddFill);
 
         [NativeSymbol(Entrypoint = "netqpainter_drawPolyline")]
         public DrawPolylineDel DrawPolyline { get; set; }
@@ -704,8 +697,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void DrawRoundedRectDel(IntPtr paintedItem, int x, int y, int w, int h, double xRadius,
-            double yRadius, bool absoluteSize);
+        public delegate void DrawRoundedRectDel(IntPtr paintedItem, int x, int y, int w, int h, double xRadius, double yRadius, bool absoluteSize);
 
         [NativeSymbol(Entrypoint = "netqpainter_eraseRect")]
         public EraseRectDel EraseRect { get; set; }
@@ -733,8 +725,7 @@ namespace Qml.Net
 
         [SuppressUnmanagedCodeSecurity]
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        public delegate void SetClipRectDel(IntPtr paintedItem, int x, int y, int width, int height,
-            NetQPainter.ClipOperation operation);
+        public delegate void SetClipRectDel(IntPtr paintedItem, int x, int y, int width, int height, NetQPainter.ClipOperation operation);
 
         [NativeSymbol(Entrypoint = "netqpainter_setClipping")]
         public SetClippingDel SetClipping { get; set; }
