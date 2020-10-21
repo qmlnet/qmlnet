@@ -18,6 +18,8 @@ namespace Qml.Net
 
         public static bool ShouldEnsureUIThread { get; set; } = true;
 
+        public static bool AutoGenerateNotifySignals { get; set; } = false;
+        
         public static Action EnsureUIThreadDelegate = () =>
         {
             if (!QCoreApplication.IsMainThread)
