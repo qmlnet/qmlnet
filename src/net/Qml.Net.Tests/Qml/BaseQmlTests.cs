@@ -102,8 +102,9 @@ namespace Qml.Net.Tests.Qml
     {
         protected readonly T Instance;
 
-        protected BaseQmlMvvmTestsWithInstance()
+        protected BaseQmlMvvmTestsWithInstance(bool autogenerateSignals = false)
         {
+            QmlNetConfig.AutoGenerateNotifySignals = autogenerateSignals;
             InteropBehaviors.ClearQmlInteropBehaviors();
             InteropBehaviors.RegisterQmlInteropBehavior(new MvvmQmlInteropBehavior());
 

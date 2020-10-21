@@ -270,4 +270,28 @@ namespace Qml.Net.Tests.Qml
             Instance.TestResult.Should().Be(true);
         }
     }
+
+    public class MvvmInteropBehaviorWithAutoGenerateSignalsTests : BaseQmlMvvmTestsWithInstance<ViewModelContainer>
+    {
+        public MvvmInteropBehaviorWithAutoGenerateSignalsTests()
+            : base(true)
+        {
+        }
+
+        [Fact]
+        public void Does_register_property_changed_signal_when_auto_signals_are_active()
+        {
+            RunQmlTest(
+                "viewModelContainer",
+                @"
+                    var vm = viewModelContainer.viewModel
+                    vm.stringPropertyChanged.connect(function() {
+                        viewModelContainer.testResult = true
+                    })
+                    viewModelContainer.changeStringPropertyTo('new value')
+                ");
+
+            Instance.TestResult.Should().Be(true);
+        }
+    }
 }
