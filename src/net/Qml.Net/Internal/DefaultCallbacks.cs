@@ -146,6 +146,19 @@ namespace Qml.Net.Internal
 
                     NetSignalInfo notifySignal = null;
                     var notifySignalAttribute = propertyInfo.GetCustomAttribute<NotifySignalAttribute>();
+                    
+                    // All properties have a default notify signal.
+                    // This is so that when we read properties in QML,
+                    // we don't get errors with "NON-NOTIFY PROPERTY BOUND
+                    if (notifySignalAttribute == null && QmlNetConfig.AutoGenerateNotifySignals)
+                    {
+                        var dynamicName = $"dynamic__{propertyInfo.Name}Changed";
+                        notifySignalAttribute = new NotifySignalAttribute
+                        {
+                            Name = dynamicName
+                        };
+                    }
+                    
                     if (notifySignalAttribute != null)
                     {
                         var name = notifySignalAttribute.Name;
