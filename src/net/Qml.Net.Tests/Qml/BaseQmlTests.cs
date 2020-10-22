@@ -106,8 +106,9 @@ namespace Qml.Net.Tests.Qml
     {
         protected readonly Mock<T> Mock;
 
-        protected BaseQmlTests()
+        protected BaseQmlTests(bool enableAutoSignals = false)
         {
+            QmlNetConfig.AutoGenerateNotifySignals = enableAutoSignals;
             RegisterType<T>();
             Mock = new Mock<T>();
             TypeCreator.SetInstance(typeof(T), Mock.Object);
@@ -145,8 +146,9 @@ namespace Qml.Net.Tests.Qml
     {
         protected readonly T Instance;
 
-        protected BaseQmlTestsWithInstance()
+        protected BaseQmlTestsWithInstance(bool enableAutoSignals = false)
         {
+            QmlNetConfig.AutoGenerateNotifySignals = enableAutoSignals;
             RegisterType<T>();
             Instance = new T();
             TypeCreator.SetInstance(typeof(T), Instance);
@@ -158,9 +160,10 @@ namespace Qml.Net.Tests.Qml
     {
         protected readonly T Instance;
 
-        protected BaseQmlMvvmTestsWithInstance()
+        protected BaseQmlMvvmTestsWithInstance(bool autogenerateSignals = false)
         {
             InteropBehaviors.ClearQmlInteropBehaviors();
+            QmlNetConfig.AutoGenerateNotifySignals = autogenerateSignals;
             InteropBehaviors.RegisterQmlInteropBehavior(new MvvmQmlInteropBehavior());
 
             RegisterType<T>();

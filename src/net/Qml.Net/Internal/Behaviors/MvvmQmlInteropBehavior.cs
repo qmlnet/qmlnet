@@ -42,6 +42,8 @@ namespace Qml.Net.Internal.Behaviors
 
         private static readonly Dictionary<Type, MvvmTypeInfo> TypeInfos = new Dictionary<Type, MvvmTypeInfo>();
 
+        public int Priority => 1;
+
         public bool IsApplicableFor(Type type)
         {
             return typeof(INotifyPropertyChanged).IsAssignableFrom(type);

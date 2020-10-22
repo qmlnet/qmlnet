@@ -1,4 +1,6 @@
 using System;
+using Qml.Net.Internal;
+using Qml.Net.Internal.Behaviors;
 
 namespace Qml.Net
 {
@@ -18,8 +20,23 @@ namespace Qml.Net
 
         public static bool ShouldEnsureUIThread { get; set; } = true;
 
-        public static bool AutoGenerateNotifySignals { get; set; } = false;
-        
+        public static bool AutoGenerateNotifySignals
+        {
+            get => _autoGenerateNotifySignals;
+            set
+            {
+                _autoGenerateNotifySignals = value;
+                if (value)
+                {
+                    InteropBehaviors.RegisterQmlInteropBehavior(new AutoGenerateNotifySignalsBehavior());
+                }
+                else
+                {
+                    InteropBehaviors.RemoveQmlInteropBehavior<AutoGenerateNotifySignalsBehavior>();
+                }
+            }
+        }
+
         public static Action EnsureUIThreadDelegate = () =>
         {
             if (!QCoreApplication.IsMainThread)
@@ -32,6 +49,8 @@ Stack Trace:
                     "You must be on the UI thread to perform this task. See https://github.com/qmlnet/qmlnet/issues/112");
             }
         };
+
+        private static bool _autoGenerateNotifySignals = false;
 
         internal static void EnsureUIThread()
         {

@@ -14,7 +14,8 @@ namespace Qml.Net.Internal
         private static IEnumerable<IQmlInteropBehavior> GetApplicableInteropBehaviors(Type forType)
         {
             return _QmlInteropBehaviors
-                        .Where(b => b.IsApplicableFor(forType));
+                        .Where(b => b.IsApplicableFor(forType))
+                        .OrderBy(b => b.Priority);
         }
 
         /// <summary>
@@ -31,6 +32,11 @@ namespace Qml.Net.Internal
             {
                 _QmlInteropBehaviors.Add(behavior);
             }
+        }
+
+        public static void RemoveQmlInteropBehavior<TBehavior>()
+        {
+            _QmlInteropBehaviors.RemoveAll(b => typeof(TBehavior).IsAssignableFrom(b.GetType()));
         }
 
         public static void ClearQmlInteropBehaviors()
