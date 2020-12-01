@@ -31,6 +31,17 @@ namespace Qml.Net.Internal
             return false;
         }
 
+        public static bool ShouldBeHiddenFromQml(Type type)
+        {
+            // we don't mirror QmlNetQuickPaintedItem properties and methods into QML because they (partly) mirror the QML type (QQuickPaintedItem)
+            if (type == typeof(QmlNetQuickPaintedItem))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static void Pack(object source, NetVariant destination, Type type)
         {
             if (type == typeof(bool))

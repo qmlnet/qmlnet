@@ -180,7 +180,6 @@ namespace Qml.Net.Tests.Qml
                     })
                     viewModelContainer.changeStringPropertyTo('new value')
                 ");
-
             Instance.TestResult.Should().Be(true);
         }
 

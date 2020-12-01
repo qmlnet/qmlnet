@@ -36,7 +36,7 @@ namespace Qml.Net.Internal
                 }
 
                 var baseType = typeInfo.BaseType;
-                if (baseType != null)
+                if (baseType != null && !Helpers.ShouldBeHiddenFromQml(baseType))
                 {
                     type.BaseType = baseType.AssemblyQualifiedName;
                 }
@@ -58,7 +58,7 @@ namespace Qml.Net.Internal
                 }
 
                 // Don't grab properties and methods for system-level types.
-                if (Helpers.IsPrimitive(typeInfo))
+                if (Helpers.IsPrimitive(typeInfo) || Helpers.ShouldBeHiddenFromQml(typeInfo))
                 {
                     return;
                 }

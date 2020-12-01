@@ -434,6 +434,13 @@ namespace Qml.Net
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void AddCallbacksDel(IntPtr app, ref QCoreAppCallbacks callbacks);
 
+        [NativeSymbol(Entrypoint = "qapp_setWindowIcon")]
+        public SetWindowIconDel SetWindowIcon { get; set; }
+
+        [SuppressUnmanagedCodeSecurity]
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SetWindowIconDel(IntPtr app, [MarshalAs(UnmanagedType.LPWStr)]string pngFilePath);
+
         [NativeSymbol(Entrypoint = "qapp_requestTrigger")]
         public RequestTriggerDel RequestTrigger { get; set; }
 
