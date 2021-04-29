@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/src/net/Qml.Net"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Newtonsoft.Json
+    versions:
+    - "> 12.0.2, < 13"
+  - dependency-name: System.Reflection.Emit.Lightweight
+    versions:
+    - "> 4.3.0, < 5"
