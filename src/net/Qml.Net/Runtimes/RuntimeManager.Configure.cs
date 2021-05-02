@@ -31,7 +31,7 @@ namespace Qml.Net.Runtimes
 
             if (version != expectedVersion)
             {
-                throw new Exception($"The version of the runtime directory was {versionFile}, but expected {expectedVersion}");
+                throw new Exception($"The version of the runtime directory was {version}, but expected {expectedVersion}");
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
