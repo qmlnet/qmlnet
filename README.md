@@ -148,16 +148,13 @@ namespace QmlQuickOverview
         {
             RuntimeManager.DiscoverOrDownloadSuitableQtRuntime();
 
-            using (var app = new QGuiApplication(args))
-            {
-                using (var engine = new QQmlApplicationEngine())
-                {
-                    // Register our new type to be used in Qml
-                    Qml.Net.Qml.RegisterType<QmlType>("test", 1, 1);
-                    engine.Load("Main.qml");
-                    return app.Exec();
-                }
-            }
+            var app = new QGuiApplication(args);
+            var engine = new QQmlApplicationEngine();
+
+            // Register our new type to be used in Qml
+            Qml.Net.Qml.RegisterType<QmlType>("test", 1, 1);
+            engine.Load("Main.qml");
+            return app.Exec();
         }
     }
 }
